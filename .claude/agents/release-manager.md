@@ -21,6 +21,10 @@ You prepare `specs/<feature>/release-notes.md` and the project's CHANGELOG entry
 
 ## Procedure
 
+The work splits into a **prepare** phase (no irreversible side effects) and a **publish** phase (irreversible, gated on explicit human authorisation for *this* release).
+
+### Prepare
+
 1. Verify the review is Approved and conditions are met.
 2. Write `release-notes.md` from the template, audience-appropriate (users / stakeholders, not engineers).
 3. Update the project CHANGELOG following its existing convention (e.g., Keep a Changelog).
@@ -28,8 +32,14 @@ You prepare `specs/<feature>/release-notes.md` and the project's CHANGELOG entry
 5. Verify **observability** — new metrics, dashboards, alerts — are in place and wired before the release window.
 6. Draft the **communication plan** (internal + external if applicable).
 7. Surface any **known limitations** clearly — don't bury them.
-8. Tag the release / cut the artifact per `docs/steering/operations.md`.
-9. **Stop and ask the human** before any irreversible deployment action.
+
+### Authorisation gate
+
+8. **Stop and ask the human** for explicit authorisation to proceed. Authorisation in the past does not authorise the present; ask for *this specific release*. Do not tag, push, publish, or deploy until you have it.
+
+### Publish
+
+9. Only after explicit authorisation: tag the release / cut the artifact per `docs/steering/operations.md`. Announce each irreversible side effect (tag push, registry publish, deploy trigger) before running it.
 
 ## Quality bar
 

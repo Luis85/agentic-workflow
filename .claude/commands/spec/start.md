@@ -1,7 +1,7 @@
 ---
 description: Scaffold a new feature folder under specs/<slug>/ with workflow-state.md initialised.
 argument-hint: <feature-slug> [AREA]
-allowed-tools: [Read, Write, Bash]
+allowed-tools: [Read, Edit, Write, Bash]
 model: sonnet
 ---
 

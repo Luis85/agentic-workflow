@@ -31,7 +31,7 @@ Each task ≤ ~½ day, has a stable ID, references ≥ 1 requirement, and has a 
 
 - **Description:** …
 - **Satisfies:** REQ-<AREA>-NNN, SPEC-<AREA>-NNN
-- **Owner:** dev | qa | architect | human
+- **Owner:** dev | qa | sre | human   *(`/spec:implement` only routes these four; `human` halts the command and hands back to the user)*
 - **Depends on:** —
 - **Estimate:** S | M (avoid L — split it)
 - **Definition of done:**

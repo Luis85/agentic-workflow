@@ -14,10 +14,13 @@ Run **stage 7 — Implementation** for a single task.
    - dependencies are `done`,
    - the task's owner role,
    - the spec sections it satisfies.
-3. **Spawn the right subagent:**
-   - owner=`dev` → `dev` agent.
-   - owner=`qa` → `qa` agent (for test tasks; the test must fail initially).
-4. The agent implements the task **to spec**, runs lint/types/unit tests for the changed surface, and **appends an entry** to `implementation-log.md`.
+3. **Route by owner** (must match the task template's allowed values):
+   - owner=`dev` → spawn `dev` agent.
+   - owner=`qa` → spawn `qa` agent (for test tasks; the test must fail initially).
+   - owner=`sre` → spawn `sre` agent (for ops / observability / runbook tasks).
+   - owner=`human` → **stop**, surface the task to the user, append a hand-off note to `workflow-state.md`, and exit. Do not auto-execute.
+   - any other value → escalate as a clarification; the task template restricts owners to `dev | qa | sre | human`.
+4. The agent implements the task **to spec**, runs lint/types/unit tests for the changed surface, and **appends an entry** to `implementation-log.md`. (Skipped for `owner=human` — the user owns execution.)
 5. Commit with imperative mood referencing the task ID:
    ```
    feat(<area>): <task-id> <short title>

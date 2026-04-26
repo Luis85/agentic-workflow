@@ -52,25 +52,25 @@ Traceability is mechanical because IDs live in two predictable places — never 
 
 The RTM generator parses both — frontmatter for document-level metadata, marked-up headings and fields for per-item links.
 
-Document-level frontmatter shape:
+Document-level frontmatter shape (this is a PRD; substitute the right document prefix for other artifacts — `DESIGN-`, `SPECDOC-`, `TASKS-`, `TESTPLAN-`, etc.):
 
 ```yaml
 ---
-id: REQ-AUTH-001
-title: Password reset via email
+id: PRD-AUTH-001         # document prefix — distinct from per-item REQ-/SPEC-/T-/TEST- IDs
+title: Auth redesign — PRD
 stage: requirements
 feature: auth-redesign
-status: accepted        # draft | proposed | accepted | superseded
+status: accepted          # draft | proposed | accepted | superseded
 owner: pm
-inputs:                 # IDs from upstream artifacts
+inputs:                   # IDs of upstream documents this artifact derives from
   - IDEA-AUTH-001
-  - RESEARCH-AUTH-002
-satisfies:              # IDs this artifact satisfies (for downstream items)
-  - REQ-AUTH-001
+  - RESEARCH-AUTH-001
 created: 2026-04-26
 updated: 2026-04-26
 ---
 ```
+
+Per-item entries inside the document use marked-up headings (e.g. `### REQ-AUTH-001 — <title>`); their cross-links to upstream items go in inline `Satisfies:` / `Depends on:` / `Links:` fields under the heading, not in YAML frontmatter.
 
 ## Traceability matrix (RTM)
 
