@@ -11,3 +11,10 @@ Thumbs.db
 # Claude Code local state
 .claude/settings.local.json
 .claude/.session/
+
+# Operational-bot scratch (FAILED-* recovery files, etc.)
+.claude/cache/
+
+# Worktrees — every topic branch lives under .worktrees/<slug>/.
+# See docs/worktrees.md.
+.worktrees/
