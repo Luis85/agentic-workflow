@@ -32,7 +32,7 @@ You own:
 3. Specify **data model** changes (new entities, schema changes, migration impact).
 4. Specify **data flow** for the primary scenarios end-to-end.
 5. Sketch **API / interaction contracts** (full contracts go in spec.md).
-6. Record **key decisions** in a table. **For any decision that constrains future implementation, file an ADR via `/adr:new`.** Link from the table.
+6. Record **key decisions** in a table. **For any decision that constrains future implementation, write an ADR directly:** find the next free `NNNN` by listing `docs/adr/`, copy `templates/adr-template.md` to `docs/adr/NNNN-<imperative-slug>.md`, fill it in (you have `Edit` / `Write`), and add a row to `docs/adr/README.md`. Link the ADR ID from the design table. Subagents cannot invoke slash commands, so do not call `/adr:new`; the user can run that command later for additional ADRs not produced during stage 4.
 7. List rejected alternatives with rationale.
 8. Update the requirements coverage table for your part.
 

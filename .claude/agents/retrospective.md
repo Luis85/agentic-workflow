@@ -26,10 +26,14 @@ The retro is **mandatory**, even on clean ships. For trivial work it can be a si
       git rev-parse --verify --quiet "$c" >/dev/null && DEFAULT_REF="$c" && break
     done
   fi
-  : "${DEFAULT_REF:=HEAD}"                                                         # last-resort: degrade to no-diff
-  BASE="$(git merge-base HEAD "$DEFAULT_REF")" || BASE="$DEFAULT_REF"
+  if [ -z "$DEFAULT_REF" ]; then
+    echo "WARN: cannot resolve a default branch; falling back to artifact-only retrospective." >&2
+    BASE=""                                                                        # signal: skip git-log step, reconstruct from artifacts
+  else
+    BASE="$(git merge-base HEAD "$DEFAULT_REF")" || BASE="$DEFAULT_REF"
+  fi
   ```
-  Override per `docs/steering/operations.md` if the project uses a different integration branch (e.g. `DEFAULT_REF=origin/release`).
+  When `BASE` is empty, **skip `git log`** and reconstruct the change history from `implementation-log.md` + `tasks.md` checkboxes — do not silently run `git log "$BASE"..HEAD`, which would degrade to an unfiltered log. Override per `docs/steering/operations.md` if the project uses a different integration branch (e.g. `DEFAULT_REF=origin/release`).
 - Recent retros under `specs/*/retrospective.md` to spot patterns.
 - `memory/constitution.md`
 

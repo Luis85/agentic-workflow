@@ -29,10 +29,14 @@ You produce `specs/<feature>/review.md` and validate (or refresh) `specs/<featur
       git rev-parse --verify --quiet "$c" >/dev/null && DEFAULT_REF="$c" && break
     done
   fi
-  : "${DEFAULT_REF:=HEAD}"                                                         # last-resort: degrade to no-diff
+  if [ -z "$DEFAULT_REF" ]; then
+    echo "FATAL: cannot resolve a default branch (no origin/HEAD; none of origin/{main,master,trunk,develop} exist)." >&2
+    echo "Set DEFAULT_REF explicitly per docs/steering/operations.md and re-run, or stop and ask the user." >&2
+    exit 1                                                                         # fail closed — never degrade to an empty diff
+  fi
   BASE="$(git merge-base HEAD "$DEFAULT_REF")" || BASE="$DEFAULT_REF"
   ```
-  If the project uses a different integration branch, override per `docs/steering/operations.md` (e.g. `DEFAULT_REF=origin/release`).
+  **Fail closed** here is deliberate: a silent fallback to `HEAD` would make `git diff "$BASE"...HEAD` empty and let stage-9 review proceed without inspecting any code. If the project uses a different integration branch, override per `docs/steering/operations.md` (e.g. `DEFAULT_REF=origin/release`).
 - `memory/constitution.md`
 - `docs/quality-framework.md`
 
