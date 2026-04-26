@@ -55,3 +55,15 @@ Don't add one when:
 ## Relationship to agents and commands
 
 A skill never overrides an agent's tool restrictions. If `qa.md` can't `Edit` source files, a skill invoked from `qa` still can't `Edit` source files. Skills are *behavioural* shortcuts, not *permission* shortcuts.
+
+### Tool requirements per seeded skill
+
+Some skills assume tools that not every lifecycle agent has. The table below makes the requirements explicit; agents missing a required tool cannot invoke the skill — they must either request the tool's addition (which needs an ADR) or hand off to an agent that has it.
+
+| Skill | Requires | Lifecycle agents that can invoke it |
+| --- | --- | --- |
+| [`verify`](./verify/SKILL.md) | `Bash` | `dev`, `qa`, `release-manager`, `sre`, `reviewer` (read‑only Bash usage) |
+| [`new-adr`](./new-adr/SKILL.md) | `Read`, `Write`, `Edit` (and `Bash` to scan for the next number) | `architect` (no `Bash` — list the next number from the directory listing the user supplies; or hand off to an agent with `Bash`) |
+| [`review-fix`](./review-fix/SKILL.md) | `Bash` (worktree creation), `Write` (plan scaffold) | `dev`, `reviewer` (with caveats — `reviewer` typically lacks worktree authority; hand off to `dev`) |
+
+If you add a new skill that assumes `Bash`, document the requirement in its `SKILL.md` and update this table. Lifecycle agents `analyst`, `pm`, `ux-designer`, `ui-designer`, `planner`, `orchestrator`, and `retrospective` have **no `Bash`** by default.

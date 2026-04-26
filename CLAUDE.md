@@ -14,8 +14,8 @@ A template for **spec-driven, agentic software development**. The workflow itsel
 
 ## How to work here
 
-1. Pick or start a feature: `specs/<feature-slug>/`.
-2. Read `specs/<feature-slug>/workflow-state.md` to learn what stage is active and what's already produced.
+1. To start a *new* feature, run `/spec:start <feature-slug>` — it scaffolds `specs/<feature-slug>/` and sets `workflow-state.md` to the first stage.
+2. To resume work, read `specs/<feature-slug>/workflow-state.md` to learn what stage is active and what's already produced.
 3. Use the slash command for the active stage: `/spec:idea`, `/spec:research`, `/spec:requirements`, `/spec:design`, `/spec:specify`, `/spec:tasks`, `/spec:implement`, `/spec:test`, `/spec:review`, `/spec:release`, `/spec:retro`. Quality gates: `/spec:clarify` and `/spec:analyze`.
 4. Each command spawns the appropriate subagent from `.claude/agents/`. Don't bypass — agent scoping is intentional.
 5. When you finish a stage, update `specs/<feature-slug>/workflow-state.md` and move on.

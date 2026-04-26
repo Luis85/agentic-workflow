@@ -27,11 +27,7 @@ You do **not** open PRs, edit code, or merge anything. You are read‑only on th
 
 1. List the commits in scope with `git log --oneline <last-sha>..HEAD`.
 2. For each commit, read the diff, then the files in their post‑merge state for context.
-3. Classify each finding by severity:
-   - **`[BLOCKER]`** — known wrong, must fix before next release.
-   - **`[MAJOR]`** — wrong‑on‑some‑inputs, fix soon.
-   - **`[MINOR]`** — questionable, owner judgement call.
-   - **`[NIT]`** — style / preference; do not file unless asked.
+3. Classify each finding by severity using the canonical four‑tier scale in [`agents/operational/README.md`](../README.md#severity-scale-canonical-all-bots) (`[BLOCKER]` / `[MAJOR]` / `[MINOR]` / `[NIT]`). Do not redefine the tiers.
 4. Assemble a Markdown checklist of findings. Each item:
    - has a stable ID `<head-sha[:7]>.<idx>` embedded as an HTML comment;
    - cites the file and line in the post‑merge tree;

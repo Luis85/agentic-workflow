@@ -23,7 +23,7 @@ The exact command differs per language:
 | Node / TS | `npm run verify` | `format:check && lint && typecheck && test && build` |
 | Python | `make verify` or `just verify` | `ruff format --check && ruff check && mypy . && pytest && python -m build` |
 | Go | `make verify` | `gofmt -l . && go vet ./... && go build ./... && go test ./...` |
-| Rust | `cargo verify` (alias) | `cargo fmt --check && cargo clippy && cargo build && cargo test` |
+| Rust | `just verify` or `make verify` (Cargo has no built-in alias mechanism — wrap the script in a runner) | `cargo fmt --check && cargo clippy -- -D warnings && cargo build && cargo test` |
 | Mixed | `just verify` | recipes per stage |
 
 The composite name (`verify`) is the contract. Whatever lives behind it is the project's choice.

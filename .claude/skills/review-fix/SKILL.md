@@ -45,10 +45,11 @@ For each finding in scope:
 The agent (not this skill) handles:
 
 - Run the verify gate ([`verify`](../verify/SKILL.md)).
-- Open the PR; include the magic line in the PR body so the source review can auto‑flip:
+- Open the PR; include the canonical magic line in the PR body so the source review can auto‑flip. **Format must match exactly** (single space after the `#<number>`):
   ```
-  Refs <finding-source>  finding:<id>
+  Refs #<review-issue-number> finding:<sha7>.<idx>
   ```
+  This is the same string the [`review-bot/PROMPT.md`](../../../agents/operational/review-bot/PROMPT.md#auto-flip-on-merge) "Auto‑flip on merge" section parses. Any deviation (`Refs <name>`, double space, missing `#`) breaks the auto‑flip.
 - Wait for review approval + clean state, then merge per [`feedback_autonomous_merge.md`](../../memory/feedback_autonomous_merge.md).
 
 ## Post‑merge cleanup

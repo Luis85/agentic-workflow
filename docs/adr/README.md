@@ -9,6 +9,7 @@ Records of architecturally significant decisions. Format follows Michael Nygard'
 | [0001](0001-record-architecture-decisions.md) | Record architecture decisions | Accepted |
 | [0002](0002-adopt-spec-driven-development.md) | Adopt spec-driven development | Accepted |
 | [0003](0003-adopt-ears-for-functional-requirements.md) | Adopt EARS for functional requirements | Accepted |
+| [0004](0004-adopt-operational-agents-alongside-lifecycle-agents.md) | Adopt operational agents alongside lifecycle agents | Accepted |
 
 ## Conventions
 

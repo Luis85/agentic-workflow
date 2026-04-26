@@ -9,7 +9,7 @@ Runs daily against the integration branch. For every commit that landed since th
 ## Outputs
 
 - **GitHub issue:** title `Daily review YYYY-MM-DD — <head-sha7>`, label `review-bot`, body is a checklist where each item has a stable ID `<sha7>.<idx>`.
-- **Optional daily digest:** `docs/daily-reviews/YYYY-MM-DD.md`, opened via a docs‑only PR. CI for that PR can skip the heavy verify stages (the diff is docs‑only) but should still run format check and security scans.
+- **Optional daily digest:** `docs/daily-reviews/YYYY-MM-DD.md`, opened via a docs‑only PR. See [`docs/daily-reviews/README.md`](../../../docs/daily-reviews/README.md) for the file shape and when to enable. CI for that PR can skip the heavy verify stages (the diff is docs‑only) but should still run format check and security scans.
 
 ## How findings get closed
 

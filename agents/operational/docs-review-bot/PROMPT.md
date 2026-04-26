@@ -26,8 +26,10 @@ Hard exclusions:
 
 ## Severity
 
-- **`[BLOCKER]`** — the doc states something false that would break a contributor's setup or merge.
-- **`[MAJOR]`** — drift a contributor would notice within one work session.
+Use the canonical four‑tier scale from [`agents/operational/README.md`](../README.md#severity-scale-canonical-all-bots). Specialised to docs drift:
+
+- **`[BLOCKER]`** — the doc states something false that would break a contributor's setup or merge (a wrong install command, a removed flag still documented, a CI workflow named that doesn't exist).
+- **`[MAJOR]`** — drift a contributor would notice within one work session (a function signature changed, a renamed file, an outdated diagram).
 - **`[MINOR]`** — stale but harmless.
 - **`[NIT]`** — fast‑aging quantitative claim ("as of X we have N tests"). Suppress by default.
 

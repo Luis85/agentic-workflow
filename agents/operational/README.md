@@ -17,16 +17,36 @@ The pattern is well‑established (Dependabot, Renovate, scheduled‑review bots
 
 ## Common shape
 
-Every operational agent's `PROMPT.md` covers the same eight sections so reviewers and operators can scan them quickly:
+Every operational agent's `PROMPT.md` covers the same eight sections so reviewers and operators can scan them quickly. The section headings must match exactly (no renames like "Process per PR" — write a sub‑heading underneath instead):
 
 1. **Role** — one sentence: what this agent does, what it does **not** do.
-2. **Scope this run** — what triggers it, what artifacts it inspects.
-3. **Process** — ordered steps, with the exact decision criteria.
+2. **Scope this run** — what triggers it, what artifacts it inspects, what would make this run a no‑op.
+3. **Process** — ordered steps, with the exact decision criteria. Sub‑headings ("Process — per PR", "Process — per file") are fine; the parent heading is `## Process`.
 4. **Hard rules** — non‑negotiables. Always one of: "never edit X", "never push to Y", "never auto‑merge Z".
 5. **Output** — primary sink (PR or issue), secondary sink, and the conditions under which the run is silent (no PR, no issue).
 6. **Idempotency** — how a re‑run on the same repo state is a no‑op (HTML markers, branch‑name dedup, label scan).
 7. **Failure handling** — exact behaviour when the verify gate fails, when GitHub API fails, when the gate detects an upstream break.
 8. **Dry‑run mode** — the contract that `DRY_RUN=1` produces zero side effects, useful for testing the prompt itself.
+
+## Severity scale (canonical, all bots)
+
+Every bot that emits findings (`review-bot`, `docs-review-bot`) uses the same four‑tier scale, so a reader can compare severities across bots without re‑reading each prompt. Each bot's prompt is allowed to *narrow* the scope ("docs‑only drift" vs. "logic bugs") but not to *redefine* the tiers themselves.
+
+- **`[BLOCKER]`** — known wrong, costs the project something concrete (a broken build, a security gap, an onboarding failure, a false claim that a contributor will hit). Must fix before the next release or merge.
+- **`[MAJOR]`** — wrong on some inputs / in some workflows; an attentive reader would notice within one work session. Fix soon.
+- **`[MINOR]`** — questionable shape, possible future bug, owner judgement call. Park or fix per backlog.
+- **`[NIT]`** — style / preference; do not file unless explicitly asked.
+
+A finding tagged `[BLOCKER]` by `review-bot` and a finding tagged `[BLOCKER]` by `docs-review-bot` are equally severe — both must‑fix‑before‑release. Don't escalate or de‑escalate the meaning per bot.
+
+## Authentication contract
+
+Every bot that talks to GitHub depends on:
+
+- **`GH_TOKEN`** (or `GITHUB_TOKEN`) — token with the scopes the bot's prompt declares it needs. A run with the token unset must exit non‑zero with a setup‑error message; never silently skip writes.
+- **`ROUTINE_GH_LOGIN`** — the GitHub login the bot posts as. This is the trust boundary for "an existing PR / comment is mine vs. someone else's". A run with `ROUTINE_GH_LOGIN` unset must exit non‑zero — never fall back to "any author" (the routine would then claim other people's comments).
+
+Scope these in your scheduler (GitHub Actions secret, external cron env, etc.). Do not bake them into prompts.
 
 ## Seeded operational agents
 
