@@ -17,7 +17,14 @@ The retro is **mandatory**, even on clean ships. For trivial work it can be a si
 ## Read first
 
 - All artifacts in `specs/<feature>/`.
-- The diff: `git log "$(git merge-base HEAD "$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||' || echo main)")"..HEAD` via Bash if available, otherwise reconstruct from the artifacts. The base is the merge-base of `HEAD` with the project's default branch (resolves the remote's default; falls back to `main`). Override per `docs/steering/operations.md` if the project uses a different integration branch.
+- The change history: resolve the base, then run `git log "$BASE"..HEAD` via Bash if available, otherwise reconstruct from the artifacts.
+  Resolve `$BASE` like this — empty results must fall through to the default explicitly, since piping through `sed` makes `||` fallback unreliable:
+  ```bash
+  DEFAULT_BRANCH="$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||')"
+  : "${DEFAULT_BRANCH:=main}"   # fallback when origin/HEAD is unset (local-only / fresh CI checkouts)
+  BASE="$(git merge-base HEAD "$DEFAULT_BRANCH")" || BASE="$DEFAULT_BRANCH"
+  ```
+  Override per `docs/steering/operations.md` if the project uses a different integration branch.
 - Recent retros under `specs/*/retrospective.md` to spot patterns.
 - `memory/constitution.md`
 

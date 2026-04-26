@@ -20,7 +20,14 @@ You produce `specs/<feature>/review.md` and validate (or refresh) `specs/<featur
 - `specs/<feature>/tasks.md`
 - `specs/<feature>/implementation-log.md`
 - `specs/<feature>/test-plan.md` and `test-report.md`
-- The diff: `git diff "$(git merge-base HEAD "$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||' || echo main)")"...HEAD` (Bash, read-only). The base is the merge-base of `HEAD` with the project's default branch (resolves the remote's default; falls back to `main`). If the project uses a different integration branch, override per `docs/steering/operations.md`.
+- The diff: resolve the base, then run `git diff "$BASE"...HEAD` (Bash, read-only).
+  Resolve `$BASE` like this — empty results must fall through to the default explicitly, since piping through `sed` makes `||` fallback unreliable:
+  ```bash
+  DEFAULT_BRANCH="$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||')"
+  : "${DEFAULT_BRANCH:=main}"   # fallback when origin/HEAD is unset (local-only / fresh CI checkouts)
+  BASE="$(git merge-base HEAD "$DEFAULT_BRANCH")" || BASE="$DEFAULT_BRANCH"
+  ```
+  If the project uses a different integration branch (e.g. `develop`, `trunk`), override per `docs/steering/operations.md`.
 - `memory/constitution.md`
 - `docs/quality-framework.md`
 
