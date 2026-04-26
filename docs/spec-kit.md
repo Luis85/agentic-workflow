@@ -232,7 +232,7 @@ See [`docs/quality-framework.md`](quality-framework.md) for the full framework. 
 
 ## 7. Traceability
 
-Every artifact gets stable IDs in YAML frontmatter so the traceability matrix is mechanically generable. See [`docs/traceability.md`](traceability.md).
+Every artifact uses stable IDs (in document-level frontmatter and as marked-up REQ/SPEC/T headings + `Satisfies:` fields in body), so the traceability matrix is mechanically generable. See [`docs/traceability.md`](traceability.md).
 
 ```
 REQ-AUTH-001 → SPEC-AUTH-001 → T-AUTH-014 → src/auth/reset.ts:42 → TEST-AUTH-007

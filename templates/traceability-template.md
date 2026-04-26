@@ -4,7 +4,7 @@ title: <Feature name> — Traceability matrix
 stage: review
 feature: <feature-slug>
 status: draft           # draft | complete
-owner: qa
+owner: reviewer
 inputs:
   - PRD-<AREA>-NNN
   - SPEC-<AREA>-NNN
@@ -21,9 +21,9 @@ generated: YYYY-MM-DD HH:MM
 
 | REQ | Spec | Tasks | Code | Tests | Status |
 |---|---|---|---|---|---|
-| REQ-<AREA>-001 | SPEC-<AREA>-001 | T-001, T-002, T-003 | `src/...:42-98` | TEST-001, TEST-002 | ✅ |
-| REQ-<AREA>-002 | SPEC-<AREA>-002 | T-004, T-005 | `src/...:12-60` | TEST-003 | ⚠️ 1 failing |
-| REQ-<AREA>-003 | SPEC-<AREA>-003 | T-006 | — | — | ❌ not started |
+| REQ-<AREA>-001 | SPEC-<AREA>-001 | T-<AREA>-001, T-<AREA>-002, T-<AREA>-003 | `src/...:42-98` | TEST-<AREA>-001, TEST-<AREA>-002 | ✅ |
+| REQ-<AREA>-002 | SPEC-<AREA>-002 | T-<AREA>-004, T-<AREA>-005 | `src/...:12-60` | TEST-<AREA>-003 | ⚠️ 1 failing |
+| REQ-<AREA>-003 | SPEC-<AREA>-003 | T-<AREA>-006 | — | — | ❌ not started |
 
 ## Reverse coverage check
 
