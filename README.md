@@ -22,7 +22,7 @@ LLM coding agents are powerful, but they fail predictably when given vague inten
 | [`memory/constitution.md`](memory/constitution.md) | Project principles loaded ahead of every workflow command |
 | [`templates/`](templates/) | Blank artifacts for each stage (idea, prd, design, spec, tasks, …) |
 | [`.claude/agents/`](.claude/agents/) | One subagent per SDLC role (PM, UX, architect, dev, QA, SRE, …) |
-| [`.claude/commands/`](.claude/commands/) | Slash commands per workflow phase (`/spec:specify`, `/spec:plan`, …) |
+| [`.claude/commands/`](.claude/commands/) | Slash commands per workflow phase (`/spec:specify`, `/spec:tasks`, …) |
 | [`AGENTS.md`](AGENTS.md) | Cross-tool root context (Codex, Cursor, Aider, Copilot all read this) |
 | [`CLAUDE.md`](CLAUDE.md) | Claude Code entry point — imports `AGENTS.md` |
 | [`examples/`](examples/) | Worked end-to-end examples (placeholder for v0.2) |
