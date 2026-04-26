@@ -1,5 +1,5 @@
 ---
-id: SPEC-<AREA>-NNN
+id: SPECDOC-<AREA>-NNN
 title: <Feature name> — Specification
 stage: specification
 feature: <feature-slug>

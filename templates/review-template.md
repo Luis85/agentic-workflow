@@ -8,7 +8,7 @@ owner: reviewer
 inputs:
   - PRD-<AREA>-NNN
   - DESIGN-<AREA>-NNN
-  - SPEC-<AREA>-NNN
+  - SPECDOC-<AREA>-NNN
   - IMPL-LOG-<AREA>-NNN
   - TESTREPORT-<AREA>-NNN
 created: YYYY-MM-DD

@@ -7,7 +7,7 @@ status: draft           # draft | complete
 owner: reviewer
 inputs:
   - PRD-<AREA>-NNN
-  - SPEC-<AREA>-NNN
+  - SPECDOC-<AREA>-NNN
   - TASKS-<AREA>-NNN
   - TESTREPORT-<AREA>-NNN
 generated: YYYY-MM-DD HH:MM

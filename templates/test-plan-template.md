@@ -7,7 +7,7 @@ status: draft         # draft | accepted | executing | complete
 owner: qa
 inputs:
   - PRD-<AREA>-NNN
-  - SPEC-<AREA>-NNN
+  - SPECDOC-<AREA>-NNN
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 ---

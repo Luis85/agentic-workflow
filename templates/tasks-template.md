@@ -6,7 +6,7 @@ feature: <feature-slug>
 status: draft        # draft | accepted | in-progress | complete
 owner: planner
 inputs:
-  - SPEC-<AREA>-NNN
+  - SPECDOC-<AREA>-NNN
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 ---

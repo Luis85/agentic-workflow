@@ -6,7 +6,7 @@ feature: <feature-slug>
 status: in-progress  # in-progress | complete
 owner: dev
 inputs:
-  - SPEC-<AREA>-NNN
+  - SPECDOC-<AREA>-NNN
   - TASKS-<AREA>-NNN
 created: YYYY-MM-DD
 updated: YYYY-MM-DD

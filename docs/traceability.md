@@ -21,7 +21,7 @@ Requirement (REQ-X-NNN)
 | Requirement (per-item, in PRD) | `REQ-<AREA>-NNN` | `REQ-AUTH-001` |
 | NFR (per-item, in PRD) | `NFR-<AREA>-NNN` | `NFR-AUTH-002` |
 | Design (document) | `DESIGN-<AREA>-NNN` | `DESIGN-AUTH-001` |
-| Spec (document) | `SPEC-<AREA>-NNN` | `SPEC-AUTH-001` |
+| Spec (document) | `SPECDOC-<AREA>-NNN` | `SPECDOC-AUTH-001` |
 | Spec item (per-item, in spec) | `SPEC-<AREA>-NNN` | `SPEC-AUTH-001` |
 | Tasks (document) | `TASKS-<AREA>-NNN` | `TASKS-AUTH-001` |
 | Task (per-item, in tasks) | `T-<AREA>-NNN` | `T-AUTH-014` |
