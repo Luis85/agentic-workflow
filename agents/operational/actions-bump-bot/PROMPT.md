@@ -22,15 +22,23 @@ Pending action‑tag SHA bumps detected by the project's scanner script. The sca
 
 ## Process
 
-1. **Pre‑flight:** if the scanner reports any `ERROR` row, abort the run and open a failure issue (auth, network, rate‑limit). `DIVERGENT`, `no-releases`, and `unresolved` rows do **not** abort — they file separate triage issues but processing of `PENDING` rows continues.
-2. **Idempotency check:** if any open `chore/actions-bump-*` PR already exists from this routine's login, exit silently. Older un‑merged bump PRs must block new ones to avoid stacking.
-3. **Cut the bump branch** off the integration branch as `chore/actions-bump-YYYY-MM-DD` (UTC).
-4. **For each `PENDING` row, re‑resolve the SHA fresh.** Never copy the scanner's column verbatim — re‑run the peel through the project‑provided helper (annotated tags require `git/tags/<sha>` dereferencing; a naive `git/refs/tags/<tag>` returns the *tag* SHA, which is unresolvable when pinned in `uses:`).
-5. **Apply the bump across every workflow file** that pins the same action at the same old SHA. Update both the 40‑char SHA and the trailing `# vX.Y.Z` comment to match the new tag exactly.
-6. **Run `actionlint` clean** locally. Pre‑existing actionlint failures unrelated to the bumps are flagged in a separate issue, not fixed in this PR.
-7. **Run the project verify gate.** If it fails, jump to failure handling.
-8. **Commit one combined commit** with all applied bumps. Skip cleanly if no bumps applied (all `PENDING` rows were skipped by policy, e.g. all majors).
-9. **Push and open one PR per run** titled `chore: bump pinned action SHAs (YYYY-MM-DD)` with the bump table + verify status in the body.
+The two halves of the run are independent: **issue filing** (majors / divergent / unresolved) MUST happen on every run, regardless of whether an older bump PR is still open. **Bump PR creation** is what the prior-PR idempotency check gates. Do not collapse them.
+
+1. **Run the scanner** (read‑only; no writes).
+2. **Pre‑flight `ERROR` check.** If the scanner reports any `ERROR` row (auth, network, rate‑limit), abort the run and open a failure issue. Skip everything below.
+3. **File escalation issues from the scan, regardless of any prior open bump PR.** This is what the [hard rule "majors escalate every run a major is pending"](#hard-rules) requires; it MUST run before the idempotency exit in step 4. For each:
+   - **Major `PENDING` rows** → for each one, search for an open `Major action bump pending: <owner>/<repo> <old> → <new>` issue under the `actions-bump-bot` label; if absent, open it. Do not duplicate (one issue per major, not per run).
+   - **`DIVERGENT` rows** → one `Divergent action pins: <owner>/<repo>` issue per divergent action; non‑aborting.
+   - **`no-releases` / `unresolved` rows** → one `Unresolved action pins YYYY-MM-DD` triage issue per run; non‑aborting.
+4. **Bump-PR idempotency check.** If any open `chore/actions-bump-*` PR already exists from this routine's login, exit cleanly **after step 3 has filed any escalation issues**. Older un‑merged bump PRs block *new bump PRs* to avoid stacking; they do **not** block escalation issues.
+5. **Filter scope to non‑major `PENDING` rows.** If none remain, exit cleanly (the escalation issues from step 3 are this run's only artifact).
+6. **Cut the bump branch** off the integration branch as `chore/actions-bump-YYYY-MM-DD` (UTC).
+7. **For each non‑major `PENDING` row, re‑resolve the SHA fresh.** Never copy the scanner's column verbatim — re‑run the peel through the project‑provided helper (annotated tags require `git/tags/<sha>` dereferencing; a naive `git/refs/tags/<tag>` returns the *tag* SHA, which is unresolvable when pinned in `uses:`).
+8. **Apply the bump across every workflow file** that pins the same action at the same old SHA. Update both the 40‑char SHA and the trailing `# vX.Y.Z` comment to match the new tag exactly.
+9. **Run `actionlint` clean** locally. Pre‑existing actionlint failures unrelated to the bumps are flagged in a separate issue, not fixed in this PR.
+10. **Run the project verify gate.** If it fails, jump to failure handling.
+11. **Commit one combined commit** with all applied bumps. Skip cleanly if no bumps applied.
+12. **Push and open one PR per run** titled `chore: bump pinned action SHAs (YYYY-MM-DD)` with the bump table + verify status in the body.
 
 ## Hard rules
 
@@ -73,7 +81,10 @@ Pending action‑tag SHA bumps detected by the project's scanner script. The sca
 
 ## Idempotency
 
-A re‑run on the same day, or against an unmerged prior bump PR, exits silently. The check is: any open PR from this routine's login on a `chore/actions-bump-*` branch.
+This routine has **two** idempotency gates with different scopes:
+
+1. **Bump-PR idempotency.** A re‑run on the same day, or against any prior unmerged `chore/actions-bump-*` PR from this routine's login, **skips bump-PR creation**. The check is: any open PR from this routine's login on a `chore/actions-bump-*` branch. This gate does **not** skip escalation-issue filing (see [Process](#process) step 3).
+2. **Escalation-issue idempotency.** Each `Major action bump pending: <owner>/<repo> <old> → <new>` and each `Divergent action pins: <owner>/<repo>` is searched by exact title under the `actions-bump-bot` label before opening. If an open issue with the same title exists, it is reused (no duplicate). The `Unresolved action pins YYYY-MM-DD` issue is dated and naturally one-per-day.
 
 ## Failure handling
 
