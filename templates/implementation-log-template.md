@@ -58,6 +58,7 @@ A running record of *what* was implemented, *why* a deviation was taken, and *wh
 ## Quality gate
 
 - [ ] All tasks accounted for (done, partial, blocked, or dropped).
-- [ ] Every deviation has a rationale and (if material) an ADR.
+- [ ] Implementation matches the spec; any deviation is logged with rationale (and ADR if material).
+- [ ] No unrelated changes ("scope creep") in any task entry.
 - [ ] Lint, type checks, unit tests green for the changed surface.
 - [ ] Commits reference task IDs.

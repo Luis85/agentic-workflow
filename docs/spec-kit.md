@@ -134,21 +134,21 @@ Quality gates per stage are summarised below; the full Definition of Done lives 
 
 Each stage is owned by a dedicated agent defined in [`.claude/agents/`](../.claude/agents/). Agents have **narrow tool lists** by design — a QA agent shouldn't have `Edit` on production code; a Dev agent shouldn't be running deletes.
 
-| Stage | Agent | Defined at |
+| Stage / role | Agent | Defined at |
 |---|---|---|
-| Idea, Research | `analyst` | `.claude/agents/analyst.md` |
-| Requirements | `pm` | `.claude/agents/pm.md` |
-| Design (UX) | `ux-designer` | `.claude/agents/ux-designer.md` |
-| Design (UI) | `ui-designer` | `.claude/agents/ui-designer.md` |
-| Design (architecture), Specification | `architect` | `.claude/agents/architect.md` |
-| Tasks | `planner` | `.claude/agents/planner.md` |
-| Implementation | `dev` | `.claude/agents/dev.md` |
-| Testing | `qa` | `.claude/agents/qa.md` |
-| Review | `reviewer` | `.claude/agents/reviewer.md` |
-| Release | `release-manager` | `.claude/agents/release-manager.md` |
-| Operations | `sre` | `.claude/agents/sre.md` |
-| Retrospective | `retrospective` | `.claude/agents/retrospective.md` |
-| Cross-cutting | `orchestrator` | `.claude/agents/orchestrator.md` |
+| 1 — Idea, 2 — Research | `analyst` | `.claude/agents/analyst.md` |
+| 3 — Requirements | `pm` | `.claude/agents/pm.md` |
+| 4 — Design (UX) | `ux-designer` | `.claude/agents/ux-designer.md` |
+| 4 — Design (UI) | `ui-designer` | `.claude/agents/ui-designer.md` |
+| 4 — Design (architecture), 5 — Specification | `architect` | `.claude/agents/architect.md` |
+| 6 — Tasks | `planner` | `.claude/agents/planner.md` |
+| 7 — Implementation | `dev` | `.claude/agents/dev.md` |
+| 8 — Testing | `qa` | `.claude/agents/qa.md` |
+| 9 — Review | `reviewer` | `.claude/agents/reviewer.md` |
+| 10 — Release | `release-manager` | `.claude/agents/release-manager.md` |
+| 11 — Learning | `retrospective` | `.claude/agents/retrospective.md` |
+| Cross-cutting role (post-release ops, incident response, day-2) | `sre` | `.claude/agents/sre.md` |
+| Cross-cutting role (stage routing & hand-off) | `orchestrator` | `.claude/agents/orchestrator.md` |
 
 ### Agent rules
 
@@ -167,21 +167,28 @@ Every feature has a `specs/<feature>/workflow-state.md`:
 
 ```yaml
 feature: payments-redesign
-current_stage: design
-artifacts:
+area: PAY                              # used in IDs (REQ-PAY-NNN, T-PAY-NNN, …)
+current_stage: design                  # idea | research | requirements | design | specification | tasks | implementation | testing | review | release | learning
+status: active                         # active | blocked | paused | done
+last_updated: 2026-04-26
+last_agent: ux-designer
+artifacts:                             # status enum: pending | in-progress | complete | skipped | blocked
   idea.md: complete
   research.md: complete
   requirements.md: complete
   design.md: in-progress
   spec.md: pending
-status: active
-last_updated: 2026-04-26
-last_agent: ux-designer
-notes: |
-  Awaiting human review on the checkout flow before architect picks up.
+  tasks.md: pending
+  implementation-log.md: pending
+  test-plan.md: pending
+  test-report.md: pending
+  review.md: pending
+  traceability.md: pending
+  release-notes.md: pending
+  retrospective.md: pending
 ```
 
-Template: [`templates/workflow-state-template.md`](../templates/workflow-state-template.md).
+Plus the body sections (Skips, Blocks, Hand-off notes, Open clarifications) per the canonical template at [`templates/workflow-state-template.md`](../templates/workflow-state-template.md).
 
 ### 5.2 Orchestrator responsibilities
 
@@ -266,7 +273,7 @@ The workflow is iterative, not waterfall:
 ## 10. Future extensions
 
 - Domain-specific template variants (mobile, ML, infra)
-- Automated artifact validation (markdown structure, EARS syntax, ID uniqueness, cross-ref resolution) — see roadmap in [`README.md`](../README.md)
+- Automated artifact validation and an RTM generator — see the v0.2 plans in [`README.md`](../README.md) (Versioning section)
 - Layered template overrides (`templates/overrides/`)
 - Metrics and maturity model
 - CI quality gates

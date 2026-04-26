@@ -3,7 +3,7 @@ id: PRD-<AREA>-NNN
 title: <Feature name>
 stage: requirements
 feature: <feature-slug>
-status: draft        # draft | accepted | superseded
+status: draft        # draft | proposed | accepted | superseded
 owner: pm
 inputs:
   - IDEA-<AREA>-NNN
@@ -52,7 +52,7 @@ One paragraph: what we're building, for whom, and why now.
   - When …
   - Then …
 - **Priority:** must | should | could
-- **Links:** (upstream IDs)
+- **Satisfies:** (upstream IDs from `idea.md` / `research.md`, e.g. `IDEA-<AREA>-NNN`, `RESEARCH-<AREA>-NNN`)
 
 ### REQ-<AREA>-002 — <short title>
 
@@ -98,9 +98,10 @@ What we explicitly will not do this cycle.
 
 - [ ] Goals and non-goals explicit.
 - [ ] Personas / stakeholders named.
+- [ ] Jobs to be done captured.
 - [ ] Every functional requirement uses EARS and has an ID.
 - [ ] Acceptance criteria testable.
 - [ ] NFRs listed with targets.
-- [ ] Success metrics defined.
+- [ ] Success metrics defined (including a counter-metric).
 - [ ] Release criteria stated.
 - [ ] `/spec:clarify` returned no open questions.

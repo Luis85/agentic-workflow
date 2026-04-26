@@ -69,7 +69,7 @@ templates/  — artifact templates
 
 - Secrets management: …
 - AuthN / AuthZ patterns: …
-- Threat model: link to `docs/threat-model.md` (when present).
+- Threat model: link your project's threat-model document here when one exists (e.g. `docs/threat-model.md`).
 
 ## Things agents commonly get wrong here
 

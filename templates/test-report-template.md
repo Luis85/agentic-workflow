@@ -63,5 +63,7 @@ Areas where coverage is incomplete and why. Risk of each gap.
 
 - [ ] Every EARS clause has ≥ 1 test executed.
 - [ ] Critical paths covered.
+- [ ] Coverage threshold met (project-defined in `docs/steering/quality.md`).
+- [ ] Non-functional checks run where relevant (perf, a11y, security, i18n).
 - [ ] Failures reproducible from the report.
 - [ ] Coverage gaps disclosed (not hidden).

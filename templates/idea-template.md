@@ -4,7 +4,7 @@ title: <Short title>
 stage: idea
 feature: <feature-slug>
 status: draft         # draft | accepted | parked | dropped
-owner: <human-or-agent>
+owner: analyst
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 ---

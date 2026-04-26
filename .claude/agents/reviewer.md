@@ -21,13 +21,18 @@ You produce `specs/<feature>/review.md` and validate (or refresh) `specs/<featur
 - `specs/<feature>/implementation-log.md`
 - `specs/<feature>/test-plan.md` and `test-report.md`
 - The diff: resolve the base, then run `git diff "$BASE"...HEAD` (Bash, read-only).
-  Resolve `$BASE` like this — keep the full remote-tracking ref so it resolves in detached / shallow / CI checkouts that have `origin/<default>` but no local branch:
+  Resolve `$BASE` like this — keep the full remote-tracking ref so it resolves in detached / shallow / CI checkouts, and probe multiple common defaults so we don't hard-code `origin/main`:
   ```bash
   DEFAULT_REF="$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null)"   # e.g. "origin/main"
-  : "${DEFAULT_REF:=origin/main}"                                                  # fallback when origin/HEAD is unset
+  if [ -z "$DEFAULT_REF" ]; then
+    for c in origin/main origin/master origin/trunk origin/develop; do
+      git rev-parse --verify --quiet "$c" >/dev/null && DEFAULT_REF="$c" && break
+    done
+  fi
+  : "${DEFAULT_REF:=HEAD}"                                                         # last-resort: degrade to no-diff
   BASE="$(git merge-base HEAD "$DEFAULT_REF")" || BASE="$DEFAULT_REF"
   ```
-  If the project uses a different integration branch (e.g. `develop`, `trunk`), override per `docs/steering/operations.md` (e.g. `DEFAULT_REF=origin/develop`).
+  If the project uses a different integration branch, override per `docs/steering/operations.md` (e.g. `DEFAULT_REF=origin/release`).
 - `memory/constitution.md`
 - `docs/quality-framework.md`
 
@@ -41,6 +46,7 @@ You produce `specs/<feature>/review.md` and validate (or refresh) `specs/<featur
 6. **Findings.** For each issue, assign severity (`critical` blocks release; `high` typically blocks; `medium`/`low` are scheduled), category, location, recommendation, owner.
 7. **Traceability.** Validate `traceability.md` — every REQ has downstream cells; no orphan tests / tasks / ADRs.
 8. **Verdict.** Approved / Approved with conditions / Blocked.
+9. Update `workflow-state.md`: mark `review.md` and `traceability.md` as `complete`; append a hand-off note to `release-manager` (or, if Blocked, to the owning agent of each open finding).
 
 ## Quality bar
 
@@ -50,5 +56,6 @@ You produce `specs/<feature>/review.md` and validate (or refresh) `specs/<featur
 
 ## Boundaries
 
-- Don't edit code, tests, specs, or requirements. Surface the defect; let the owning agent fix it.
+- Edit only `review.md` and `traceability.md`. Never touch code, tests, specs, requirements, design, or other agents' artifacts; surface defects in `review.md` and let the owning agent fix them.
+- **Bash is read-only here:** `git status`, `git log`, `git diff`, `git show`, `cat`, `ls`, plus the project's test runner. No installs, no migrations, no commits, no pushes.
 - Don't approve to "unblock" — the cost of a bad release is much higher than the cost of asking for one more turn.

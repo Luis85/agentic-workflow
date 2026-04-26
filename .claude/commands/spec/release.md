@@ -18,5 +18,5 @@ Run **stage 10 — Release**. Irreversible actions (tagging, publishing, deployi
    - drafts the communication plan.
    The agent **does not** tag, push, publish, or deploy in this phase.
 3. **Stop and ask the human** for explicit authorisation to proceed with the irreversible actions. Authorisation in the past does not authorise the present; ask for the current release.
-4. Only after explicit authorisation, the release-manager performs the **publish** phase: tag the release / cut the artifact per `docs/steering/operations.md`. Each irreversible side effect (tag push, registry publish, deploy trigger) is announced before it runs.
+4. Only after explicit authorisation, **re-spawn the `release-manager` subagent in publish mode** (the prepare-phase agent has already returned; subagents are stateless across the human-authorisation pause). The publish-phase agent performs each irreversible side effect (tag push, registry publish, deploy trigger) one at a time, announcing each before it runs. The step-3 authorisation covers the announced sequence; any deviation requires a fresh ask.
 5. Update `workflow-state.md`. Recommend `/spec:retro` next.

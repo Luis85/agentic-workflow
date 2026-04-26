@@ -10,7 +10,7 @@ Persistent, scoped context loaded by agents on demand. Inspired by Kiro's `.kiro
 | `quality.md` | QA, Reviewer | Test plans, reviews |
 | `operations.md` | SRE, Release Manager | Release, deploy, incident |
 
-**These files are templates.** Replace the placeholders with your project's reality. Keep each file under ~200 lines — split or `@import` if you need more.
+**These files are templates.** Replace the placeholders with your project's reality. Keep each file under ~200 lines. If you need more, split into multiple steering files (tool-neutral) — the `@import` directive used in `CLAUDE.md` is Claude-Code-specific and other tools (Codex / Cursor / Aider) will see the literal text.
 
 ## Loading rules
 

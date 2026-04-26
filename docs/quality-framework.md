@@ -134,6 +134,17 @@ artifacts:
 
 A retrospective is **never** skipped, even for trivial work — though for trivial work it may be a single sentence.
 
+## Severity levels
+
+Used in test reports, review findings, and incident triage:
+
+- **S1 — Critical.** Data loss, security breach, full outage, regulatory exposure. Drop everything.
+- **S2 — High.** Critical user flow broken, no acceptable workaround. Fix this sprint.
+- **S3 — Medium.** Non-critical flow broken with workaround, or quality regression. Backlog with priority.
+- **S4 — Low.** Cosmetic, polish, or low-frequency edge case. Backlog.
+
+`/spec:review` and `/spec:test` use these labels. A finding's severity is the *user impact*, not the engineering effort to fix.
+
 ## Failure modes to watch for
 
 - **Spec drift** — implementation diverges from spec without updating it. Catch in Review.

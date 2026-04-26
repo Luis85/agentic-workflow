@@ -19,7 +19,7 @@ One command per workflow phase. Subdirectories namespace commands (`spec/specify
 | `/spec:release` | 10 | `release-manager` |
 | `/spec:retro` | 11 | `retrospective` |
 | `/spec:clarify` | gate | active stage's agent |
-| `/spec:analyze` | gate | `reviewer` (in lightweight mode) |
+| `/spec:analyze` | gate | — (in-command consistency checks; no subagent spawned) |
 
 ## `/adr:*` — decisions
 

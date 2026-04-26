@@ -48,8 +48,8 @@
 ## Incident response
 
 - On-call rota: …
-- Severity definitions: see `docs/playbooks/incident.md` (when present).
-- Postmortem: blameless, due within 5 working days, lives in `docs/postmortems/`.
+- Severity definitions: see `docs/quality-framework.md` (S1–S4) for the canonical labels, plus `docs/playbooks/incident.md` (create when first needed) for project-specific paging rules.
+- Postmortem: blameless, due within 5 working days, lives in `docs/postmortems/` (see `docs/postmortems/README.md`).
 
 ## Compliance & data handling
 

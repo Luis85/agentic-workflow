@@ -9,6 +9,7 @@ inputs:
   - PRD-<AREA>-NNN
   - DESIGN-<AREA>-NNN
   - SPECDOC-<AREA>-NNN
+  - TASKS-<AREA>-NNN
   - IMPL-LOG-<AREA>-NNN
   - TESTREPORT-<AREA>-NNN
 created: YYYY-MM-DD

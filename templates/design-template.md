@@ -4,12 +4,14 @@ title: <Feature name> — Design
 stage: design
 feature: <feature-slug>
 status: draft        # draft | accepted | superseded
-owners:
+owner: architect          # the lead role for orchestrator routing — architect closes Part C and the cross-cutting requirements-coverage table
+collaborators:            # within-stage co-authors of this artifact (per /spec:design sequencing)
   - ux-designer
   - ui-designer
   - architect
 inputs:
   - PRD-<AREA>-NNN
+  - RESEARCH-<AREA>-NNN
 adrs: []             # list ADR IDs created during this design
 created: YYYY-MM-DD
 updated: YYYY-MM-DD

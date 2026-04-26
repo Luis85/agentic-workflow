@@ -20,7 +20,7 @@ One subagent per SDLC role. Each has:
 | [`reviewer`](reviewer.md) | Review | Read, Edit, Write, Grep, Bash |
 | [`release-manager`](release-manager.md) | Release | Read, Edit, Write, Bash |
 | [`sre`](sre.md) | Operations | Read, Edit, Write, Bash, Grep |
-| [`retrospective`](retrospective.md) | Learning | Read, Edit, Write, Grep |
+| [`retrospective`](retrospective.md) | Learning | Read, Edit, Write, Grep, Bash |
 
 ## Conventions
 
@@ -31,4 +31,4 @@ One subagent per SDLC role. Each has:
 
 ## Tool restrictions are deliberate
 
-**Tool grants are coarse; scope is enforced by the prompt.** Most agents need `Edit`/`Write` to produce their artifacts, so `Edit`/`Write` cannot be path-restricted at the tool layer. The narrow scope is enforced in the agent's body prompt — `qa` may edit tests but not production source; `reviewer` may edit `review.md` and `traceability.md` only; `dev` may not change test assertions; `release-manager` may not deploy without explicit authorisation. The hard tool-layer restrictions are the *omissions*: `analyst` / `pm` / `ux-designer` / `ui-designer` / `architect` / `planner` / `retrospective` have no `Bash` (they don't run code or shells). The agents that *do* have `Bash` — `dev`, `qa`, `reviewer`, `release-manager`, `sre` — need it for builds, tests, git inspection, or release tooling, and their prompts constrain how it's used. Don't broaden tool grants without an ADR; don't loosen prompt scopes without one either.
+**Tool grants are coarse; scope is enforced by the prompt.** Most agents need `Edit`/`Write` to produce their artifacts, so `Edit`/`Write` cannot be path-restricted at the tool layer. The narrow scope is enforced in the agent's body prompt — `qa` may edit tests but not production source; `reviewer` may edit `review.md` and `traceability.md` only; `dev` may not change test assertions; `release-manager` may not deploy without explicit authorisation. The hard tool-layer restrictions are the *omissions*: `analyst` / `pm` / `ux-designer` / `ui-designer` / `architect` / `planner` have no `Bash` (they don't run code or shells). The agents that *do* have `Bash` — `dev`, `qa`, `reviewer`, `release-manager`, `sre`, `retrospective` — need it for builds, tests, git inspection, release tooling, or change-history reconstruction; their prompts constrain how it's used (e.g. `reviewer` and `retrospective` are read-only with git: `status`, `log`, `diff`, `show`). Don't broaden tool grants without an ADR; don't loosen prompt scopes without one either.

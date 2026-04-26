@@ -21,5 +21,5 @@ Run **stage 5 — Specification**.
    - performance budgets,
    - compatibility / migration plan.
 4. Every spec item traces to ≥ 1 requirement ID.
-5. Run the quality gate. Run `/spec:analyze` to cross-check spec ↔ requirements ↔ design consistency.
-6. Update `workflow-state.md`. Recommend `/spec:tasks` next.
+5. Run the quality gate. **Recommend the user run `/spec:analyze`** to cross-check spec ↔ requirements ↔ design consistency before proceeding (slash commands are user-invoked).
+6. Update `workflow-state.md`. Recommend `/spec:analyze` (optional gate) followed by `/spec:tasks` next.

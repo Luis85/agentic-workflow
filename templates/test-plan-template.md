@@ -3,7 +3,7 @@ id: TESTPLAN-<AREA>-NNN
 title: <Feature name> — Test plan
 stage: testing
 feature: <feature-slug>
-status: draft         # draft | accepted | executing | complete
+status: draft         # draft | accepted | complete  (use the artifact-map's `in-progress` for the executing window)
 owner: qa
 inputs:
   - PRD-<AREA>-NNN
@@ -73,7 +73,7 @@ Where test data comes from, how it's seeded, how secrets are handled.
 
 ## Quality gate
 
-- [ ] Every functional requirement has at least one planned test.
+- [ ] Every EARS clause has ≥ 1 planned test referencing its REQ ID.
 - [ ] Edge cases from spec have planned tests.
 - [ ] Non-functional checks listed with tools and thresholds.
 - [ ] Entry and exit criteria stated.

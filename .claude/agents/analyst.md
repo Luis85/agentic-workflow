@@ -17,9 +17,10 @@ You own two stages:
 
 You **do not** write requirements (that's `pm`). You **do not** propose designs (that's `architect` / `ux-designer`).
 
-## Steering
+## Read first
 
-Load on demand:
+- `memory/constitution.md`
+- For Research: `specs/<feature>/idea.md` (the open questions become your research agenda).
 - `docs/steering/product.md` — for context on users, mission, strategic priorities.
 
 ## Procedure — Idea

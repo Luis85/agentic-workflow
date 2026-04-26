@@ -51,16 +51,17 @@ Optional gates `/spec:clarify` and `/spec:analyze` may be inserted between any t
 
 ```yaml
 feature: <slug>
+area: <AREA>                                                       # uppercase short code; used in IDs
 current_stage: <stage>
-artifacts:
-  idea.md: complete | in-progress | pending | skipped
-  research.md: ...
 status: active | blocked | paused | done
 last_updated: YYYY-MM-DD
 last_agent: <role>
-notes: |
-  Free-form. Why are we paused? Who needs to do what next?
+artifacts:
+  idea.md: pending | in-progress | complete | skipped | blocked    # full enum
+  research.md: ...
 ```
+
+Plus body sections (Skips, Blocks, Hand-off notes, Open clarifications). Canonical shape lives at [`templates/workflow-state-template.md`](../templates/workflow-state-template.md).
 
 ## Slash commands
 

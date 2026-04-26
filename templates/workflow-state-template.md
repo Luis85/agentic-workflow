@@ -58,7 +58,7 @@ artifacts:              # canonical machine-readable map; the table below is its
 Free-form. What does the next agent / human need to know? Where did the previous agent stop?
 
 ```
-2026-04-26 (analyst): Research complete. RECommend Alternative B (event-sourced).
+2026-04-26 (analyst): Research complete. Recommend Alternative B (event-sourced).
                       PM should treat as starting point; revisit RISK-003 in PRD.
 2026-04-27 (pm):     Drafting REQ-* now. Will run /spec:clarify before handoff.
 ```

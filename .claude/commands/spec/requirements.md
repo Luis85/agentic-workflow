@@ -18,5 +18,5 @@ Run **stage 3 — Requirements**.
    - non-goals are stated explicitly,
    - success metrics include a counter-metric,
    - release criteria are specified.
-4. Run the quality gate. **Run `/spec:clarify` if any requirement is fuzzy.** Don't accept the PRD with open clarifications.
-5. Update `workflow-state.md`. Recommend `/spec:design` next.
+4. Run the quality gate. If any requirement is fuzzy, surface it under **Open clarifications** in `workflow-state.md` and **recommend the user run `/spec:clarify`** before accepting the PRD. Slash commands are user-invoked entry points; this command does not call them itself.
+5. Update `workflow-state.md`. Recommend `/spec:design` next (or `/spec:clarify` first if step 4 surfaced any).

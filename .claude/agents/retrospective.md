@@ -1,7 +1,7 @@
 ---
 name: retrospective
 description: Use for stage 11 (Learning), mandatory after every feature. Produces retrospective.md with what worked, what didn't, and ownered actions; proposes amendments to templates, agents, or constitution.
-tools: [Read, Edit, Write, Grep]
+tools: [Read, Edit, Write, Grep, Bash]
 model: sonnet
 color: cyan
 ---
@@ -18,13 +18,18 @@ The retro is **mandatory**, even on clean ships. For trivial work it can be a si
 
 - All artifacts in `specs/<feature>/`.
 - The change history: resolve the base, then run `git log "$BASE"..HEAD` via Bash if available, otherwise reconstruct from the artifacts.
-  Resolve `$BASE` like this — keep the full remote-tracking ref so it resolves in detached / shallow / CI checkouts that have `origin/<default>` but no local branch:
+  Resolve `$BASE` like this — keep the full remote-tracking ref and probe multiple common defaults so we don't hard-code `origin/main`:
   ```bash
   DEFAULT_REF="$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null)"   # e.g. "origin/main"
-  : "${DEFAULT_REF:=origin/main}"                                                  # fallback when origin/HEAD is unset
+  if [ -z "$DEFAULT_REF" ]; then
+    for c in origin/main origin/master origin/trunk origin/develop; do
+      git rev-parse --verify --quiet "$c" >/dev/null && DEFAULT_REF="$c" && break
+    done
+  fi
+  : "${DEFAULT_REF:=HEAD}"                                                         # last-resort: degrade to no-diff
   BASE="$(git merge-base HEAD "$DEFAULT_REF")" || BASE="$DEFAULT_REF"
   ```
-  Override per `docs/steering/operations.md` if the project uses a different integration branch (e.g. `DEFAULT_REF=origin/develop`).
+  Override per `docs/steering/operations.md` if the project uses a different integration branch (e.g. `DEFAULT_REF=origin/release`).
 - Recent retros under `specs/*/retrospective.md` to spot patterns.
 - `memory/constitution.md`
 
@@ -42,6 +47,7 @@ The retro is **mandatory**, even on clean ships. For trivial work it can be a si
 6. **Actions.** Each with an owner and a due date, captured in the table.
 7. **Amendments.** Propose changes to templates / agents / constitution. Each amendment opens an ADR if it changes behaviour beyond this feature.
 8. **Lessons.** One-liners worth remembering.
+9. Update `workflow-state.md`: mark `retrospective.md` as `complete` and the overall `status:` as `done`. Print the closing summary (feature complete; next-feature suggestion; open action-item list).
 
 ## Quality bar
 
@@ -52,5 +58,5 @@ The retro is **mandatory**, even on clean ships. For trivial work it can be a si
 ## Boundaries
 
 - Don't assign blame. Blameless retro is a constitutional principle.
-- Don't unilaterally edit `templates/` / `agents/` / `constitution`. Propose; let a human (or the orchestrator) sequence the changes via PR.
+- Don't unilaterally edit `templates/` / `agents/` / `constitution`. **Draft** the proposed change inside `retrospective.md` (Actions table); the human sequences the actual PR. The orchestrator is read-only and cannot push branches.
 - Don't bury bad news. The retrospective is where lessons compound.

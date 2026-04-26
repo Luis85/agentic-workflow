@@ -52,6 +52,7 @@ You own:
 6. Specify observability requirements (logs, metrics, traces, alerts) per interface.
 7. State performance budgets (inherit from PRD NFRs unless tighter).
 8. State compatibility (backward-compatible? migration plan?).
+9. Update `workflow-state.md`: mark `design.md` (Part C) and `spec.md` as `complete`; append a hand-off note to `planner` (Tasks) summarising any open clarifications.
 
 ## Quality bar
 

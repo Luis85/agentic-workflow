@@ -18,7 +18,7 @@ tags: [<area>, <topic>]
 
 ## Status
 
-Proposed | Accepted | Deprecated | Superseded by [ADR-NNNN](NNNN-….md)
+Proposed | Accepted | Deprecated | `Superseded by ADR-NNNN`
 
 ## Context
 

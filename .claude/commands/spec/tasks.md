@@ -7,7 +7,7 @@ model: sonnet
 
 # /spec:tasks
 
-Run **stage 6 — Task planning**.
+Run **stage 6 — Tasks**.
 
 1. Resolve slug; verify `spec.md` is `complete`.
 2. **Spawn the `planner` subagent.**

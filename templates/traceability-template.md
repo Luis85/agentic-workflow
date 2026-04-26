@@ -9,6 +9,7 @@ inputs:
   - PRD-<AREA>-NNN
   - SPECDOC-<AREA>-NNN
   - TASKS-<AREA>-NNN
+  - IMPL-LOG-<AREA>-NNN
   - TESTREPORT-<AREA>-NNN
 generated: YYYY-MM-DD HH:MM
 ---

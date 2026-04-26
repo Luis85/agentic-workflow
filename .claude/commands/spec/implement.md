@@ -1,5 +1,5 @@
 ---
-description: Stage 7 — Implementation. Invokes dev (or qa for test tasks) to execute one task and append to implementation-log.md.
+description: Stage 7 — Implementation. Routes a single task to dev / qa / sre based on its owner (or hands off to human), appends to implementation-log.md, and stages a per-task commit.
 argument-hint: [task-id] [feature-slug]
 allowed-tools: [Agent, Read, Edit, Write, Bash, Grep]
 model: opus
@@ -21,12 +21,13 @@ Run **stage 7 — Implementation** for a single task.
    - owner=`human` → **stop**, surface the task to the user, append a hand-off note to `workflow-state.md`, and exit. Do not auto-execute.
    - any other value → escalate as a clarification; the task template restricts owners to `dev | qa | sre | human`.
 4. The agent implements the task **to spec**, runs lint/types/unit tests for the changed surface, and **appends an entry** to `implementation-log.md`. (Skipped for `owner=human` — the user owns execution.)
-5. Commit with imperative mood referencing the task ID:
+5. **Stage the changes and propose a commit** with imperative mood referencing the task ID:
    ```
    feat(<area>): <task-id> <short title>
    ```
+   Per-task commits are local-only and reversible (`git reset --soft HEAD~1` undoes the last). Do not push from this command. If `docs/steering/tech.md` opts out (`auto_commit: false`), stage only and surface the proposed message for the user to commit.
 6. Update `workflow-state.md` (and the task's checkbox in `tasks.md`).
-7. Recommend the next task or, if all `dev` tasks are done, recommend `/spec:test`.
+7. Recommend the next ready task. Recommend `/spec:test` only when **all non-skipped tasks** in `tasks.md` (every owner: dev / qa / sre / human) are checked done.
 
 ## Don't
 

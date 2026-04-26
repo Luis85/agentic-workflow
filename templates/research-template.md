@@ -82,5 +82,6 @@ Which alternative do we recommend taking into Requirements, and why? What still 
 - [ ] Sources cited.
 - [ ] ≥ 2 alternatives explored.
 - [ ] User needs supported by evidence (or assumptions explicit).
+- [ ] Technical considerations noted.
 - [ ] Risks listed with severity.
 - [ ] Recommendation made.

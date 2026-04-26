@@ -14,6 +14,7 @@ You own **Part B — UI** of `specs/<feature>/design.md`. UX flows (Part A) are 
 
 ## Read first
 
+- `memory/constitution.md`
 - `specs/<feature>/requirements.md`
 - `specs/<feature>/design.md` (Part A — UX), once `ux-designer` has drafted it.
 - `docs/steering/ux.md` — design system, tokens, content rules.
@@ -39,3 +40,4 @@ You own **Part B — UI** of `specs/<feature>/design.md`. UX flows (Part A) are 
 - Don't pick libraries or define data models — that's `architect`.
 - Don't write i18n strings into code — they live in i18n files (steering will tell you where).
 - Escalate any deviation from the design system as a clarification.
+- Hand off cleanly to `architect` via notes in `workflow-state.md` when Part B is drafted.

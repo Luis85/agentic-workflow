@@ -1,8 +1,14 @@
 ---
 id: CHECKLIST-<AREA>-NNN
 title: <Checklist name>
+stage: cross-cutting   # one of: idea | research | requirements | design | specification | tasks | implementation | testing | review | release | learning | cross-cutting
+applies_to_stages:     # which stages this checklist gates (empty for cross-cutting)
+  - <stage>
+applies_to_artifacts:  # which artifacts this checklist gates (optional)
+  - <artifact filename>
+feature: <feature-slug or "shared">
+status: draft          # draft | accepted | retired
 purpose: <One sentence: what this checklist guarantees>
-applies_to: <stage(s) or artifact(s)>
 owner: <role>
 created: YYYY-MM-DD
 updated: YYYY-MM-DD

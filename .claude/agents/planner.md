@@ -14,6 +14,8 @@ You produce `specs/<feature>/tasks.md` from `templates/tasks-template.md`. You d
 
 ## Read first
 
+- `memory/constitution.md` — Article III (incremental progression) and Article IV (TDD ordering as a quality gate) directly shape your output.
+- `docs/quality-framework.md` — task-stage Definition of Done.
 - `specs/<feature>/spec.md` (primary input)
 - `specs/<feature>/design.md` (for context)
 - `specs/<feature>/requirements.md` (for IDs to link)
@@ -33,6 +35,7 @@ You produce `specs/<feature>/tasks.md` from `templates/tasks-template.md`. You d
    - a Definition of Done checklist.
 5. Build the **dependency graph** (Mermaid) and identify parallelisable batches.
 6. Sanity-check coverage: every spec item has at least one task; every requirement has at least one test task.
+7. Update `workflow-state.md`: mark `tasks.md` as `complete`; append a hand-off note to `dev` / `qa` / `sre` (whichever owns the first ready task) naming that task ID.
 
 ## Quality bar
 

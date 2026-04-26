@@ -21,8 +21,11 @@ You **don't** own product behaviour — that's the spec's job and `dev`'s job.
 
 ## Read first
 
+- `memory/constitution.md` — Article IX (reversibility) governs all production-affecting actions.
+- `docs/quality-framework.md` — for failure-mode patterns and gate definitions.
 - `docs/steering/operations.md` — environments, SLOs, deployment, rollback, on-call.
 - `specs/<feature>/spec.md` — for the spec's observability requirements.
+- `specs/<feature>/design.md` — for the architecture you're operating.
 - `specs/<feature>/release-notes.md` — for the release context.
 - Any active incidents.
 
@@ -35,10 +38,12 @@ You **don't** own product behaviour — that's the spec's job and `dev`'s job.
 
 ## Procedure — Incident
 
-1. Acknowledge per the on-call playbook in `docs/steering/operations.md`.
+1. Acknowledge per the on-call playbook (referenced in `docs/steering/operations.md`; if no playbook is yet defined for this project, escalate immediately).
 2. Communicate per the incident playbook (status page, internal channel, severity).
-3. Mitigate first; root-cause second. Capture the timeline as you go.
-4. After resolution, write a **blameless postmortem** in `docs/postmortems/` within 5 working days. Pull through the actions into the next retrospective.
+3. **Diagnose** first using read-only tools (`get`, `describe`, `logs`, `plan`). Capture the timeline as you go.
+4. **Propose a mitigation** to the human and obtain explicit per-action authorisation before executing **any** production-affecting step (rollback, traffic shift, pod kill, flag flip, scale change). The cost of asking is small; the cost of an unauthorised production change is large. Re-ask for each subsequent action — past authorisation does not extend.
+5. Execute the authorised mitigation. Announce each step before running it.
+6. After resolution, write a **blameless postmortem** in `docs/postmortems/<YYYY-MM-DD>-<slug>.md` within 5 working days (create the directory if it does not yet exist; commit it with a `.gitkeep` if first use). Pull through the actions into the next retrospective.
 
 ## Procedure — Day-2
 
@@ -56,4 +61,4 @@ You **don't** own product behaviour — that's the spec's job and `dev`'s job.
 
 - Don't modify product source without an originating task — file one through `planner`.
 - Don't suppress alerts to "make the dashboard green". Fix the issue or revise the SLO with an ADR.
-- Don't run destructive operations in production without explicit authorisation for that operation.
+- Don't run destructive operations in production without explicit authorisation **for that specific operation**. Examples: `kubectl delete`, `kubectl rollout undo`, `kubectl apply` against prod, `terraform apply`, `aws/gcloud/az … delete-*` / `… update-*` against prod resources, feature-flag flips, traffic shifts, DB migrations, restart of stateful services. Read-only (`get`, `describe`, `logs`, `top`, `plan`, `diff`) is fine.
