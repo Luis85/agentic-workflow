@@ -4,12 +4,13 @@ This is the operator‑facing companion to [`PROMPT.md`](./PROMPT.md). The promp
 
 ## What it does
 
-Runs daily against the integration branch. For every commit that landed since the last run, it produces an adversarial review and files findings on a single GitHub issue labelled `review-bot`. Optionally also commits a daily Markdown digest under `docs/daily-reviews/`.
+Runs daily against the integration branch. For every commit that landed since the last run, it produces an adversarial review and files findings on a single GitHub issue labelled `review-bot`. **The routine is purely read‑only — it never opens a PR, commits a digest, or edits any file.**
 
 ## Outputs
 
 - **GitHub issue:** title `Daily review YYYY-MM-DD — <head-sha7>`, label `review-bot`, body is a checklist where each item has a stable ID `<sha7>.<idx>`.
-- **Optional daily digest:** `docs/daily-reviews/YYYY-MM-DD.md`, opened via a docs‑only PR. See [`docs/daily-reviews/README.md`](../../../docs/daily-reviews/README.md) for the file shape and when to enable. CI for that PR can skip the heavy verify stages (the diff is docs‑only) but should still run format check and security scans.
+
+A separate optional pattern — committing a daily Markdown digest at `docs/daily-reviews/YYYY-MM-DD.md` — is described in [`docs/daily-reviews/README.md`](../../../docs/daily-reviews/README.md). That is **not** done by this routine; projects wanting a Markdown archive must implement it as a separate scheduled job (or commit by hand).
 
 ## How findings get closed
 
@@ -27,10 +28,8 @@ Per‑project, before the first scheduled run:
 
 1. Create the `review-bot` label.
 2. (Optional) Author a `review-fix-shipped` GitHub Action that auto‑flips checklist items on merge. The contract is documented in [`PROMPT.md`](./PROMPT.md) ("Auto‑flip on merge" section) — implementation is project‑specific and is **not** scaffolded by this template. A starter may be added to a project's own `.github/workflows/` once the bot is adopted.
-3. Wire the verify gate (`docs/verify-gate.md`) so the digest PR's CI is fast.
-4. Run `DRY_RUN=1` twice manually before scheduling — once on a quiet day, once on a busy day — and read the stdout dump.
-5. Update branch protection so the digest PR's CI gate is the only required check (or none at all — docs‑only diffs).
-6. Schedule the run (typical: 06:00 UTC weekdays).
+3. Run `DRY_RUN=1` twice manually before scheduling — once on a quiet day, once on a busy day — and read the stdout dump.
+4. Schedule the run (typical: 06:00 UTC weekdays).
 
 ## Tuning
 

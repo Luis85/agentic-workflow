@@ -1,16 +1,17 @@
 # `docs/daily-reviews/`
 
-Optional secondary sink for [`review-bot`](../../agents/operational/review-bot/PROMPT.md). Every run that produces findings *may* commit a Markdown digest of the same body into `docs/daily-reviews/YYYY-MM-DD.md` (one file per run) via a tiny docs‑only PR.
+An **optional, project‑implemented** Markdown archive pattern for [`review-bot`](../../agents/operational/review-bot/PROMPT.md) findings. The `review-bot` routine itself is purely read‑only — it never commits files or opens PRs. If a project wants a git‑browseable archive in addition to GitHub issues, it must run a **separate** scheduled job (or a person commits by hand) that copies the issue body into `docs/daily-reviews/YYYY-MM-DD.md`.
+
+This directory is therefore the destination of an optional pattern, not an output of any bot in this template.
 
 ## When to enable
 
-Enable the digest sink if the project wants:
+Implement the digest pattern if the project wants:
 
 - A **searchable** archive of reviews, browseable inside the repo (issues alone are search‑filterable but not git‑diffable).
-- A way for the **`docs-review-bot`** to detect drift between an old review and the current code state.
 - A trail readers can traverse with `git log -- docs/daily-reviews/` after the GitHub issues have been closed and labels pruned.
 
-Skip it if your team treats issues as the canonical archive — the bot's primary sink (one issue per run, label `review-bot`) covers the same content. There is no behaviour the digest unlocks beyond what the issue already provides.
+Skip it if your team treats issues as the canonical archive — `review-bot`'s primary sink (one issue per run, label `review-bot`) covers the same content. There is no behaviour the digest unlocks beyond what the issue already provides.
 
 ## File shape
 
@@ -47,6 +48,6 @@ Two reasons:
 
 ## Relationship to `docs-review-bot`
 
-`docs-review-bot` audits `docs/` for drift (see its [`PROMPT.md`](../../agents/operational/docs-review-bot/PROMPT.md)). This directory is **excluded** from that audit by default — old reviews are expected to be stale relative to current code; that's their whole purpose.
+`docs-review-bot` audits `docs/` for drift (see its [`PROMPT.md`](../../agents/operational/docs-review-bot/PROMPT.md#scope-this-run)). This directory is **explicitly excluded** in the bot's "Hard exclusions" list — old reviews are SHA‑anchored snapshots and are *expected* to go stale relative to current code; flagging them as drift is noise.
 
-If you do want `docs-review-bot` to flag stale review findings whose source code has been deleted or substantially rewritten, configure that as a separate routine — don't loosen the scope of the existing one.
+If you do want `docs-review-bot` to flag stale review findings whose source code has been deleted or substantially rewritten, that is a different bot — configure it as a separate routine; don't loosen the scope of the existing one.

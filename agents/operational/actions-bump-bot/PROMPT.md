@@ -34,7 +34,7 @@ Pending action‑tag SHA bumps detected by the project's scanner script. The sca
 
 ## Hard rules
 
-- **Never** bump across a major version (`v3.x → v4.0.0`, `v5 → v7`) without explicit owner approval. Major bumps escalate via a fresh `actions-bump-bot`‑labelled issue, never via a bump PR.
+- **Never** bump across a major version (`v3.x → v4.0.0`, `v5 → v7`) without explicit owner approval. Major bumps escalate via a `Major action bump pending: …` issue under the `actions-bump-bot` label, **every run a major is still pending** — never via a bump PR, and never silently. If an issue with the same title is already open, do not open a duplicate.
 - **Never** edit anything outside `.github/workflows/*.{yml,yaml}` in the bump PR. No README updates, no plan flips, no version bumps.
 - **Never** weaken a workflow file to make a bump pass. New required inputs are owner‑review territory.
 - **Never** push directly to the integration branch.
@@ -44,12 +44,13 @@ Pending action‑tag SHA bumps detected by the project's scanner script. The sca
 ## Output
 
 - **Primary sink:** one PR per run, with the full applied‑bump table in the body and the verify status in the footer.
-- **Secondary sink:** issues under the `actions-bump-bot` label, one per failure category:
+- **Secondary sink:** issues under the `actions-bump-bot` label, one per failure or escalation category:
   - `Action SHA bumps YYYY-MM-DD — script error` (scanner `ERROR` rows; aborts the run).
+  - `Major action bump pending: <owner>/<repo> <old> → <new>` (one per pending major version bump). Filed *every* run a major is pending — idempotent because the PR search in [Idempotency](#idempotency) is on the bump PR, not on these issues; reuse an open issue rather than opening a duplicate (search by title before opening).
   - `Divergent action pins: <owner>/<repo>` (one per divergent action; non‑aborting).
   - `Unresolved action pins YYYY-MM-DD` (one per run grouping `no-releases` / `unresolved` rows; non‑aborting).
   - `Action SHA bumps YYYY-MM-DD — <sha7>` (actionlint or verify failure after applying bumps).
-- **No‑op runs leave no trace** when the scanner exits 0 *and* zero `no-releases`/`unresolved` rows exist.
+- **No‑op runs leave no trace** when **all** of these hold: the scanner exits 0; zero `no-releases` / `unresolved` rows exist; zero major bumps are pending; zero divergent rows exist. A scan whose **only** `PENDING` rows are majors is **not** a no‑op — it produces one `Major action bump pending: …` issue per major (so owners can never silently miss a major upstream release) but no bump PR.
 
 ## PR body shape
 

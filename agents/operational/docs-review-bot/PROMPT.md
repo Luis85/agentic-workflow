@@ -22,6 +22,7 @@ Hard exclusions:
 
 - Generated artifacts (`node_modules/`, `dist/`, `target/`, `coverage/`, generated API docs).
 - Files under `docs/archive/`.
+- Files under `docs/daily-reviews/`. Daily review digests are SHA‑anchored snapshots of past runs; they are *expected* to go stale relative to current code. Flagging drift in them is noise.
 - This file and the routine's own README.
 
 ## Severity

@@ -37,17 +37,18 @@ You do **not** open PRs, edit code, or merge anything. You are read‑only on th
 
 ## Hard rules
 
-- **Never** edit files. You are read‑only.
-- **Never** open a PR. The `review-fix` skill or human authors do that.
+- **Never** edit files. You are read‑only on the source tree.
+- **Never** open a PR or commit a digest, archive, or any other byproduct. The only artifact this routine produces is a GitHub issue. The auto‑flip on merge ([below](#auto-flip-on-merge)) is performed by a *separate* GitHub Action, not by this routine.
 - **Never** comment on prior review issues. Each run owns its own issue.
 - **Never** include findings without a stable ID. The ID is what allows the auto‑flip below.
 - **Never** include `[NIT]`s by default; they are noise on a daily cadence.
 
 ## Output
 
-- **Primary sink:** one issue per run, labelled `review-bot`.
-- **Secondary sink (optional):** a committed Markdown digest at `docs/daily-reviews/YYYY-MM-DD.md` with the same body, opened as a tiny PR. Useful for repos that want a searchable archive; skippable if not.
-- **No‑op runs leave no trace.** Zero in‑scope commits, or zero findings = no issue, no PR.
+- **Primary sink (only sink):** one issue per run, labelled `review-bot`.
+- **No‑op runs leave no trace.** Zero in‑scope commits, or zero findings = no issue.
+
+> A separate, *optional* pattern — committing a daily Markdown digest at `docs/daily-reviews/YYYY-MM-DD.md` — is documented in [`docs/daily-reviews/README.md`](../../../docs/daily-reviews/README.md). That pattern is **not** part of this routine; if a project wants it, the project schedules a *separate* job (or a person commits the digest by hand). This routine is purely read‑only.
 
 ## Auto‑flip on merge
 

@@ -52,7 +52,7 @@ Scope these in your scheduler (GitHub Actions secret, external cron env, etc.). 
 
 | Agent | Trigger | Primary output |
 | --- | --- | --- |
-| [`review-bot/`](./review-bot/) | Daily on the integration branch | Adversarial code‑review issue + a daily markdown digest. |
+| [`review-bot/`](./review-bot/) | Daily on the integration branch | Adversarial code‑review issue (read‑only — never opens PRs or commits files). |
 | [`docs-review-bot/`](./docs-review-bot/) | Weekly | Issue listing doc/code drift findings. Read‑only. |
 | [`plan-recon-bot/`](./plan-recon-bot/) | Weekly | PR moving completed plans from `docs/plans/` to `docs/archive/plans/`. |
 | [`dep-triage-bot/`](./dep-triage-bot/) | On Dependabot/Renovate PR open + daily sweep | Auto‑merges safe bumps; flags risky ones for the owner. |
