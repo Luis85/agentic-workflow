@@ -6,6 +6,7 @@ Entry point for Claude Code in this repository.
 
 @AGENTS.md
 @memory/constitution.md
+@.claude/memory/MEMORY.md
 
 ## What this repo is
 
@@ -22,6 +23,11 @@ A template for **spec-driven, agentic software development**. The workflow itsel
 ## Conventions specific to Claude Code
 
 - Subagents are project-scoped (`.claude/agents/`). They have intentionally narrow tool lists — if a tool seems missing, that's a feature, not a bug.
+- Skills (`.claude/skills/`) are reusable how-tos any agent can invoke — `verify`, `new-adr`, `review-fix`. They never override an agent's tool list; they only encode "we always do it this way".
+- Operational bots live under `agents/operational/`. Each is a `PROMPT.md` + `README.md` pair; the prompt is the source of truth the scheduled run loads.
+- Permission rules live in `.claude/settings.json`. Pushes to `main` / `develop` are denied by default; `--no-verify` is denied. See `docs/branching.md`.
+- Topic branches live in worktrees under `.worktrees/<slug>/`. See `docs/worktrees.md`.
+- Run the verify gate before opening a PR. See `docs/verify-gate.md`.
 - For irreversible architectural decisions, run `/adr:new "<title>"`.
 - Don't add `.claudeignore` exclusions silently — note them in `docs/steering/tech.md`.
 

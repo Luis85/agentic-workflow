@@ -23,6 +23,16 @@ LLM coding agents are powerful, but they fail predictably when given vague inten
 | [`templates/`](templates/) | Blank artifacts for each stage (idea, prd, design, spec, tasks, …) |
 | [`.claude/agents/`](.claude/agents/) | One subagent per SDLC role (PM, UX, architect, dev, QA, SRE, …) |
 | [`.claude/commands/`](.claude/commands/) | Slash commands per workflow phase (`/spec:specify`, `/spec:tasks`, …) |
+| [`.claude/skills/`](.claude/skills/) | Reusable how-tos any agent can invoke (verify, new-adr, review-fix) |
+| [`.claude/memory/`](.claude/memory/) | Operational memory: workflow rules + project state, indexed in [`MEMORY.md`](.claude/memory/MEMORY.md) |
+| [`.claude/settings.json`](.claude/settings.json) | Permission baseline (allow/deny) + SessionStart hook |
+| [`agents/operational/`](agents/operational/) | Always-on, scheduled agents (review-bot, docs-review-bot, plan-recon-bot, dep-triage-bot, actions-bump-bot) |
+| [`docs/branching.md`](docs/branching.md) | Branching model + topic-branch prefixes |
+| [`docs/worktrees.md`](docs/worktrees.md) | `.worktrees/<slug>/` pattern for parallel agents |
+| [`docs/verify-gate.md`](docs/verify-gate.md) | The single-command pre-PR quality gate |
+| [`docs/plans/`](docs/plans/) | Cross-cutting working plans (`YYYY-MM-DD-<slug>.md`) |
+| [`docs/archive/`](docs/archive/) | Read-only archive of completed plans / superseded specs |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | How to contribute to this template (uses its own workflow) |
 | [`AGENTS.md`](AGENTS.md) | Cross-tool root context (Codex, Cursor, Aider, Copilot all read this) |
 | [`CLAUDE.md`](CLAUDE.md) | Claude Code entry point — imports `AGENTS.md` |
 | [`examples/`](examples/) | Worked end-to-end examples (placeholder for v0.2) |
@@ -58,6 +68,15 @@ Each arrow is a quality gate. See [`docs/spec-kit.md`](docs/spec-kit.md) for the
 7. **Human oversight** — humans own intent, priorities, and acceptance.
 
 Full version in [`memory/constitution.md`](memory/constitution.md).
+
+## Two classes of agent
+
+The template ships **two** agent flavours:
+
+- **Lifecycle agents** (`.claude/agents/`) — one per SDLC role, used while building one feature: analyst, pm, ux-designer, ui-designer, architect, planner, dev, qa, reviewer, release-manager, sre, retrospective, orchestrator.
+- **Operational agents** (`agents/operational/`) — always-on routines that run on a schedule against the live repo: `review-bot`, `docs-review-bot`, `plan-recon-bot`, `dep-triage-bot`, `actions-bump-bot`. Each is a `PROMPT.md` + `README.md` pair, conservative by default, idempotent, and silent on quiet days.
+
+Adopt operational agents one at a time after the lifecycle workflow is in routine use.
 
 ## Versioning
 

@@ -15,9 +15,10 @@ When working in a project that *uses* this template, replace this section with y
 Before doing any non-trivial work, read:
 
 1. **`memory/constitution.md`** — governing principles. Override only with explicit human approval.
-2. **`docs/spec-kit.md`** — the full workflow definition.
-3. **`docs/steering/`** — scoped context (product, tech, ux, quality, operations). Load only what's relevant to your task.
-4. **The current feature's `specs/<feature>/workflow-state.md`** — tells you which stage is active and what's already produced.
+2. **`.claude/memory/MEMORY.md`** — operational memory: workflow rules + project state, indexed.
+3. **`docs/spec-kit.md`** — the full workflow definition.
+4. **`docs/steering/`** — scoped context (product, tech, ux, quality, operations). Load only what's relevant to your task.
+5. **The current feature's `specs/<feature>/workflow-state.md`** — tells you which stage is active and what's already produced.
 
 ## Operating rules
 
@@ -29,6 +30,8 @@ Before doing any non-trivial work, read:
 - **ADRs for irreversible decisions.** Anything architecturally load-bearing gets an ADR in `docs/adr/`. Use the template in `templates/adr-template.md`.
 - **Update workflow state.** When you finish or hand off a stage, update `specs/<feature>/workflow-state.md` so the next agent can resume.
 - **Escalate ambiguity.** Don't guess. Either ask the human or open a `clarifications` block in the active artifact.
+- **Branch per concern; verify before push.** Topic branches live in `.worktrees/<slug>/`; one concern per PR; `verify` green locally before opening a PR. Never `--no-verify`. See `docs/branching.md`, `docs/worktrees.md`, `docs/verify-gate.md`.
+- **Memory edits are docs‑only.** Updates to `.claude/memory/` ride in their own PR with no changeset and no version bump. See `.claude/memory/feedback_memory_edits.md`.
 
 ## Repo conventions
 
@@ -42,8 +45,15 @@ Before doing any non-trivial work, read:
 
 This repo is **process-light by design** for v0.1: no required CI, no PR checks, no enforced branch protection. If you find yourself fighting tooling, prefer fixing the process to working around it.
 
+## Two classes of agent
+
+- **Lifecycle agents** (`.claude/agents/`) — one per SDLC role, used to build one feature.
+- **Operational agents** (`agents/operational/`) — always-on, scheduled routines that act against the live repo (review-bot, docs-review-bot, plan-recon-bot, dep-triage-bot, actions-bump-bot). Each is a `PROMPT.md` + `README.md`.
+
+Skills (`.claude/skills/`) are reusable how-tos any agent can invoke (`verify`, `new-adr`, `review-fix`).
+
 ## Tool-specific notes
 
-- **Claude Code.** Subagents at `.claude/agents/`, slash commands at `.claude/commands/`. `CLAUDE.md` imports this file.
+- **Claude Code.** Subagents at `.claude/agents/`, slash commands at `.claude/commands/`, skills at `.claude/skills/`, operational memory at `.claude/memory/`, permission baseline at `.claude/settings.json`. `CLAUDE.md` imports this file plus the constitution and the memory index.
 - **Codex / Cursor / Aider.** This file is the primary context. Cursor users: `.cursor/rules/` may be added later if needed.
 - **All tools.** Templates in `templates/` are framework-agnostic Markdown.
