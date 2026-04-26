@@ -17,7 +17,7 @@ The retro is **mandatory**, even on clean ships. For trivial work it can be a si
 ## Read first
 
 - All artifacts in `specs/<feature>/`.
-- The diff: `git log <base>..HEAD` (via Bash if available, otherwise via the artifacts).
+- The diff: `git log "$(git merge-base HEAD "$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||' || echo main)")"..HEAD` via Bash if available, otherwise reconstruct from the artifacts. The base is the merge-base of `HEAD` with the project's default branch (resolves the remote's default; falls back to `main`). Override per `docs/steering/operations.md` if the project uses a different integration branch.
 - Recent retros under `specs/*/retrospective.md` to spot patterns.
 - `memory/constitution.md`
 

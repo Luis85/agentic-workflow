@@ -20,7 +20,7 @@ You produce `specs/<feature>/review.md` and validate (or refresh) `specs/<featur
 - `specs/<feature>/tasks.md`
 - `specs/<feature>/implementation-log.md`
 - `specs/<feature>/test-plan.md` and `test-report.md`
-- The diff: `git diff <base>...HEAD` (Bash, read-only).
+- The diff: `git diff "$(git merge-base HEAD "$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||' || echo main)")"...HEAD` (Bash, read-only). The base is the merge-base of `HEAD` with the project's default branch (resolves the remote's default; falls back to `main`). If the project uses a different integration branch, override per `docs/steering/operations.md`.
 - `memory/constitution.md`
 - `docs/quality-framework.md`
 
