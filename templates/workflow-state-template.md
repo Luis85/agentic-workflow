@@ -39,13 +39,13 @@ artifacts:              # canonical machine-readable map; the table below is its
 | 10. Release | `release-notes.md` | pending |
 | 11. Learning | `retrospective.md` | pending |
 
-> **Statuses:** `pending` | `in-progress` | `complete` | `skipped` (with reason) | `blocked` (with blocker)
+> **Statuses:** `pending` | `in-progress` | `complete` | `skipped` | `blocked`. Use the bare enum value in frontmatter; document skip reasons in the **Skips** section below and blockers in **Blocks**.
 
 ## Skips
 
 > Document any skipped stages and why. Trivial work may skip stages; retrospective is never skipped.
 
-- e.g., `idea.md: skipped — trivial copy fix`
+- e.g., `idea.md` — trivial copy fix
 
 ## Blocks
 

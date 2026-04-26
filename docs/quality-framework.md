@@ -118,13 +118,18 @@
 
 ## When to skip a stage
 
-Trivial work (typo fix, dependency bump, copy change) may skip stages. Document the skip in `workflow-state.md`:
+Trivial work (typo fix, dependency bump, copy change) may skip stages. Set the artifact's status to the bare `skipped` enum in `workflow-state.md` frontmatter, and put the reason in the body's "Skips" section so the status remains machine-parseable:
 
 ```yaml
 artifacts:
-  idea.md: skipped (trivial: typo fix)
+  idea.md: skipped
   research.md: skipped
   ...
+```
+
+```markdown
+## Skips
+- `idea.md`, `research.md` — trivial: typo fix
 ```
 
 A retrospective is **never** skipped, even for trivial work — though for trivial work it may be a single sentence.
