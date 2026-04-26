@@ -1,7 +1,7 @@
 ---
 description: Stage 10 — Release. Invokes release-manager to produce release-notes.md, verify rollback and observability, and prepare the release. Does not deploy without explicit user authorisation.
 argument-hint: [feature-slug]
-allowed-tools: [Read, Edit, Write, Bash]
+allowed-tools: [Agent, Read, Edit, Write, Bash]
 model: sonnet
 ---
 

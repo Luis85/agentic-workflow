@@ -1,7 +1,7 @@
 ---
 description: Stage 9 — Review. Invokes reviewer to produce review.md and refresh traceability.md. Writes only its own review artifacts; does not modify specs, code, tests, or other agents' outputs.
 argument-hint: [feature-slug]
-allowed-tools: [Read, Edit, Write, Grep, Bash]
+allowed-tools: [Agent, Read, Edit, Write, Grep, Bash]
 model: opus
 ---
 

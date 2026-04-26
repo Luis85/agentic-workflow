@@ -1,7 +1,7 @@
 ---
 description: Stage 2 — Research. Invokes the analyst to produce research.md (alternatives, sources, risks).
 argument-hint: [feature-slug]
-allowed-tools: [Read, Edit, Write, WebSearch, WebFetch]
+allowed-tools: [Agent, Read, Edit, Write, WebSearch, WebFetch]
 model: sonnet
 ---
 

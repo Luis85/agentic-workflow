@@ -1,7 +1,7 @@
 ---
 description: Stage 5 — Specification. Invokes architect to produce implementation-ready spec.md (interfaces, data, edge cases, test scenarios).
 argument-hint: [feature-slug]
-allowed-tools: [Read, Edit, Write]
+allowed-tools: [Agent, Read, Edit, Write]
 model: opus
 ---
 

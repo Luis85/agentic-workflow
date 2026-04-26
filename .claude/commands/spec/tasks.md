@@ -1,7 +1,7 @@
 ---
 description: Stage 6 — Tasks. Invokes planner to produce TDD-ordered tasks.md with dependencies and DoDs.
 argument-hint: [feature-slug]
-allowed-tools: [Read, Edit, Write]
+allowed-tools: [Agent, Read, Edit, Write]
 model: sonnet
 ---
 

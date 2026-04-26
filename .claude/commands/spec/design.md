@@ -1,7 +1,7 @@
 ---
 description: Stage 4 — Design. Sequences ux-designer, ui-designer, and architect to produce design.md (Parts A, B, C).
 argument-hint: [feature-slug]
-allowed-tools: [Read, Edit, Write]
+allowed-tools: [Agent, Read, Edit, Write]
 model: sonnet
 ---
 

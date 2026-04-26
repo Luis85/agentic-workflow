@@ -1,7 +1,7 @@
 ---
 description: Stage 1 — Idea. Invokes the analyst to produce idea.md from a brief.
 argument-hint: [feature-slug]
-allowed-tools: [Read, Edit, Write, WebSearch]
+allowed-tools: [Agent, Read, Edit, Write, WebSearch]
 model: sonnet
 ---
 

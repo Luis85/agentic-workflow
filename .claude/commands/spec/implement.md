@@ -1,7 +1,7 @@
 ---
 description: Stage 7 — Implementation. Invokes dev (or qa for test tasks) to execute one task and append to implementation-log.md.
 argument-hint: [task-id] [feature-slug]
-allowed-tools: [Read, Edit, Write, Bash, Grep]
+allowed-tools: [Agent, Read, Edit, Write, Bash, Grep]
 model: opus
 ---
 

@@ -1,7 +1,7 @@
 ---
 description: Stage 3 — Requirements (PRD). Invokes pm to produce requirements.md with EARS-formatted functional requirements.
 argument-hint: [feature-slug]
-allowed-tools: [Read, Edit, Write]
+allowed-tools: [Agent, Read, Edit, Write]
 model: sonnet
 ---
 

@@ -1,7 +1,7 @@
 ---
 description: Stage 8 — Testing. Invokes qa to draft / refresh test-plan.md, run the suite, and produce test-report.md.
 argument-hint: [feature-slug]
-allowed-tools: [Read, Edit, Write, Bash, Grep]
+allowed-tools: [Agent, Read, Edit, Write, Bash, Grep]
 model: sonnet
 ---
 

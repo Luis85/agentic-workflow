@@ -1,7 +1,7 @@
 ---
 description: Stage 11 — Retrospective (mandatory). Invokes retrospective agent to capture what worked / didn't / actions and propose amendments to the kit.
 argument-hint: [feature-slug]
-allowed-tools: [Read, Edit, Write, Grep]
+allowed-tools: [Agent, Read, Edit, Write, Grep]
 model: sonnet
 ---
 

@@ -1,7 +1,7 @@
 ---
 description: Optional gate. Interrogates the active artifact for under-specification and produces a list of clarifications to resolve before exiting the stage.
 argument-hint: [feature-slug] [stage]
-allowed-tools: [Read, Edit, Write]
+allowed-tools: [Agent, Read, Edit, Write]
 model: sonnet
 ---
 
