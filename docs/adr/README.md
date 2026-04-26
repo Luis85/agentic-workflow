@@ -15,7 +15,7 @@ Records of architecturally significant decisions. Format follows Michael Nygard'
 - Files are named `NNNN-imperative-title.md`. Numbers are zero-padded, monotonic, never reused.
 - Title is in the imperative mood: *"Use PostgreSQL"*, not *"PostgreSQL was chosen"*.
 - Status is one of: `Proposed`, `Accepted`, `Deprecated`, `Superseded by ADR-NNNN`.
-- ADRs are **immutable**. Don't edit a decided ADR; supersede it.
+- ADR **bodies** are immutable. To change a decision, supersede it; only the predecessor's `status` and `superseded-by` pointer fields may be updated.
 
 ## When to file an ADR
 

@@ -35,7 +35,7 @@ Before doing any non-trivial work, read:
 - Markdown for all artifacts. Keep them concise; prefer precision over completeness in early iterations.
 - File names are kebab-case. Per-feature work lives under `specs/<feature-slug>/`.
 - IDs are stable: `REQ-<AREA>-NNN`, `T-<AREA>-NNN`, `TEST-<AREA>-NNN`, `ADR-NNNN`.
-- ADRs are immutable — supersede them, don't edit them.
+- ADR bodies are immutable. To change a decision, supersede it; the predecessor's `status` and `superseded-by` pointers are the only fields that may be updated.
 - Commit messages: imperative mood, reference IDs (`feat(auth): add T-AUTH-014 password reset`).
 
 ## When the harness gets in your way

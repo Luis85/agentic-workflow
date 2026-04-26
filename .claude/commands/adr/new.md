@@ -30,5 +30,5 @@ Create a new ADR.
 
 ## Don't
 
-- Don't edit existing ADRs. If you need to change a decision, supersede it (status: `Superseded by ADR-NNNN` on the old one; status: `Accepted` on the new one).
+- Don't edit the **body** of an existing ADR. To change a decision, supersede it: file a new ADR with `status: Accepted` and `supersedes: [ADR-NNNN]` in its frontmatter. Then, on the predecessor ADR, the only allowed mutations are pointer updates: set `status: Superseded by ADR-NNNN` and append the new ID to `superseded-by:`. Body content stays untouched.
 - Don't file an ADR for routine, easily reversible choices. ADRs are for decisions that constrain future implementation.

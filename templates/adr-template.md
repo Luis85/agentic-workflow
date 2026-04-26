@@ -72,4 +72,4 @@ How will we know this decision is being honoured? Linters, CI checks, review che
 
 ---
 
-> **ADRs are immutable.** Don't edit a decided ADR; supersede it with a new one.
+> **ADR bodies are immutable.** To change a decision, supersede it with a new ADR; only the predecessor's `status` and `superseded-by` pointer fields may be updated.

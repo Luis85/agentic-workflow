@@ -5,6 +5,20 @@ current_stage: idea     # idea | research | requirements | design | specificatio
 status: active          # active | blocked | paused | done
 last_updated: YYYY-MM-DD
 last_agent: <role>
+artifacts:              # canonical machine-readable map; the table below is its human view
+  idea.md: pending              # pending | in-progress | complete | skipped | blocked
+  research.md: pending
+  requirements.md: pending
+  design.md: pending
+  spec.md: pending
+  tasks.md: pending
+  implementation-log.md: pending
+  test-plan.md: pending
+  test-report.md: pending
+  review.md: pending
+  traceability.md: pending
+  release-notes.md: pending
+  retrospective.md: pending
 ---
 
 # Workflow state — <feature-slug>
