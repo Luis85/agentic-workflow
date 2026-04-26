@@ -16,8 +16,9 @@ Triages every open dependency‑update PR (Dependabot, Renovate, …). Auto‑me
 1. Create the `dep-triage-bot` label.
 2. Configure your dependency tool (Dependabot config in `.github/dependabot.yml`, or Renovate config) so PRs land with consistent titles.
 3. Define `ROUTINE_GH_LOGIN` so the routine knows which login is "itself" (PAT user vs. bot user).
-4. Run `DRY_RUN=1` against a busy day's PR list before enabling auto‑merge.
-5. Schedule daily during weekdays (typical: 09:00 UTC).
+4. **Define `TRUSTED_DEP_BOT_LOGINS`** — comma‑separated allowlist of dependency-bot author logins (e.g. `dependabot[bot],renovate[bot]`). The routine **refuses to run** without this. Without an identity allowlist, body-shape matching alone would let a spoofed PR walk all the way to the auto-merge decision after running the attacker's `postinstall` scripts on the privileged runner. See [`PROMPT.md`](./PROMPT.md#trusted-bot-allowlist) for the full rationale.
+5. Run `DRY_RUN=1` against a busy day's PR list before enabling auto‑merge.
+6. Schedule daily during weekdays (typical: 09:00 UTC).
 
 ## Tuning
 

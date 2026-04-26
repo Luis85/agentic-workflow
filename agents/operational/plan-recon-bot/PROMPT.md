@@ -45,13 +45,30 @@ All files matching `docs/plans/*.md` on the integration branch. For each file, d
 
 ## Docs-only check
 
-Plans are Markdown. Instead of running the full verify gate, the routine performs three lightweight checks before opening the PR:
+Plans are Markdown. Instead of running the full verify gate, the routine performs two lightweight checks before opening the PR, plus an **informational** scan whose findings go in the PR body but do not block:
 
 1. **Markdown format check** — the project's Markdown formatter in check mode (e.g. `prettier --check 'docs/**/*.md'`, `mdformat --check docs/`). Skip the build / test / typecheck stages.
-2. **Local‑link integrity** — every relative Markdown link inside the moved files still resolves after the `git mv`. (A plan moving from `docs/plans/foo.md` to `docs/archive/plans/foo.md` keeps relative paths under `docs/` intact, but cross‑references *into* the moved file from elsewhere need a quick scan.)
-3. **`git status` clean** — no stray edits beyond the banner prepends and the renames.
+2. **`git status` clean** — no stray edits beyond the banner prepends and the renames.
 
-If any of the three fails, jump to [Failure handling](#failure-handling).
+**Informational only — does NOT block:**
+
+3. **Incoming-reference scan.** Find any file outside `docs/archive/plans/` that still links to the moved plan's old path (`docs/plans/<filename>`). List those references in the PR body's `## Notes` section so the owner can update them in a follow-up. Do **not** rewrite them in this PR — the bot's hard rule is "Never edit plan bodies beyond the banner" *and* the owner may legitimately want the old path to redirect.
+
+**Explicitly NOT checked:** relative links *inside* a moved plan. A plan moving from `docs/plans/foo.md` to `docs/archive/plans/foo.md` gains one directory level of depth, so `../steering/quality.md` would now resolve to `docs/archive/steering/quality.md` (which doesn't exist). The bot does **not** rewrite these — archived plans are point-in-time snapshots and the link rot is the natural state. See [Archived plans are snapshots](#archived-plans-are-snapshots) below.
+
+If either of the two blocking checks fails, jump to [Failure handling](#failure-handling).
+
+## Archived plans are snapshots
+
+Once archived, a plan is a **read-only historical record** of what the team intended at the time. Relative links inside the plan are expected to rot:
+
+- Cross-references to other plans that have since archived (and moved with them) — broken.
+- Cross-references to source files / docs that have since moved or been deleted — broken.
+- Cross-references to ADRs that have since been superseded — possibly outdated even when the link still resolves.
+
+That rot is **not** a bug to fix in the archive PR. It is the consequence of preserving the document as written. Operators who want a live, current version of an archived plan's content should produce a fresh artifact (a new plan, an ADR, a steering update) — not edit the archived snapshot.
+
+This is why `docs/archive/` is excluded from `docs-review-bot` and why the [`Hard rules`](#hard-rules) below permit only the banner prepend.
 
 ## Archive banner
 
@@ -76,8 +93,12 @@ Prepend, before any existing content:
 ## Verify
 
 - Markdown format check: clean
-- Local‑link integrity: clean
 - `git status`: clean
+
+## Incoming references (informational — owner follow-up)
+
+- `<file>:<line>` still links to `docs/plans/<archived-filename>` — owner may want to update or leave as historical pointer.
+- (omit this section entirely if no incoming references found)
 
 ## Notes
 

@@ -14,9 +14,32 @@ Default is conservative: only auto‑merge when *every* safety criterion below p
 
 ## Scope this run
 
-- All open dependency‑update PRs in the repo whose body shape matches Dependabot / Renovate / equivalent. PRs without the recognised body shape are skipped (they are not dep PRs even if their branch name looks like one).
-- For each PR: read its title and body to extract `<package> <old>→<new>` and the dependency category, then run the per‑PR process below.
-- A run with **zero open dep PRs** exits silently with no summary issue.
+- All open dependency‑update PRs in the repo whose **author identity is on the project's trusted-bot allowlist** AND whose body shape matches Dependabot / Renovate / equivalent. **Both** gates apply; either alone is insufficient.
+- A PR matching the body shape but authored by an untrusted login is **not** in scope and is skipped silently. Body-shape matching alone would let an attacker open a malicious PR that mimics Dependabot, then this routine would `npm ci`/`npm run verify` the attacker's code on the privileged runner and walk it through the auto-merge decision path. Author identity is the primary gate; body shape is a secondary filter.
+- For each in-scope PR: read its title and body to extract `<package> <old>→<new>` and the dependency category, then run the per‑PR process below.
+- A run with **zero in-scope dep PRs** exits silently with no summary issue.
+
+### Trusted-bot allowlist
+
+The allowlist is a project-level config: an env var `TRUSTED_DEP_BOT_LOGINS` (comma-separated, exact matches against the GitHub `user.login` of the PR author). Typical values:
+
+- `dependabot[bot]` (GitHub-hosted Dependabot — confirm `user.type == "Bot"`)
+- `renovate[bot]` (Renovate — confirm `user.type == "Bot"`)
+- a project-specific bot login if the team runs its own dependency updater
+- **never** a human login (humans open dep PRs by hand, but those go through normal review, not this routine)
+
+The check **fails closed**: if `TRUSTED_DEP_BOT_LOGINS` is unset, the routine exits with a setup-error issue and processes no PRs. Never default to "any bot" or "no allowlist needed".
+
+```bash
+: "${TRUSTED_DEP_BOT_LOGINS:?TRUSTED_DEP_BOT_LOGINS must be set to a comma-separated list of trusted bot logins}"
+```
+
+For each candidate PR, fetch the author's `login` and `type` via `gh pr view --json author`, and require:
+
+1. `author.login` is exactly one of the entries in `TRUSTED_DEP_BOT_LOGINS` (no glob, no prefix match).
+2. `author.type == "Bot"` (rejects PAT-driven impersonation).
+
+Either check failing skips the PR silently. Both passing is necessary but not sufficient — body-shape matching still applies on top.
 
 ## Classification framework
 
@@ -53,16 +76,17 @@ If any gate fails, downgrade to **approve‑and‑leave‑for‑owner** with a c
 
 For every open dep PR:
 
-1. **Skip check.** If the PR body already contains the marker `<!-- dep-triaged:<head-sha7>:<action> -->` from this routine's login *and* the PR's current head SHA matches the marker's `<head-sha7>`, skip — already handled. After a `@dependabot rebase` (step 3 below) the head SHA changes, so the marker no longer matches and the PR is re‑triaged on the next sweep — that's intentional.
-2. **Classify.** Read the PR title / body to extract `<package> <old>→<new>` and the dependency category (dev / runtime / peer).
-3. **Refresh.** If the PR is BEHIND the integration branch, trigger the upstream tool to rebase (`@dependabot rebase` / `@renovate rebase`) and wait for the rebase commit.
-4. **Local verify.** In a fresh worktree, check out the PR's head, install deps, run the verify gate.
-5. **Decide.**
+1. **Author identity check (mandatory, first).** Reject the PR if the author's login is not on `TRUSTED_DEP_BOT_LOGINS` or `author.type != "Bot"`. **Never** advance to step 2 for a rejected PR — do not fetch its head, do not install deps, do not run verify. This is the trust boundary; everything below assumes the diff came from the upstream tool the project actually uses.
+2. **Skip check.** If the PR body already contains the marker `<!-- dep-triaged:<head-sha7>:<action> -->` from this routine's login *and* the PR's current head SHA matches the marker's `<head-sha7>`, skip — already handled. After a `@dependabot rebase` (step 4 below) the head SHA changes, so the marker no longer matches and the PR is re‑triaged on the next sweep — that's intentional.
+3. **Classify.** Read the PR title / body to extract `<package> <old>→<new>` and the dependency category (dev / runtime / peer).
+4. **Refresh.** If the PR is BEHIND the integration branch, trigger the upstream tool to rebase (`@dependabot rebase` / `@renovate rebase`) and wait for the rebase commit.
+5. **Local verify.** In a fresh worktree, check out the PR's head, install deps, run the verify gate.
+6. **Decide.**
    - Permissive cell + all autonomous‑merge gates pass → **auto‑merge**.
    - Permissive cell + one or more gates fail → **approve, leave for owner** with a comment citing the failed gate.
    - Restrictive cell (runtime, peer, or major) → **approve‑and‑leave‑for‑owner** with a one‑paragraph upstream changelog summary.
    - Verify red, regardless of cell → **block** with the verify tail in a fenced code block.
-6. **Mark idempotency.** Add `<!-- dep-triaged:<head-sha7>:<action> -->` to the PR body so re‑runs at the same head skip.
+7. **Mark idempotency.** Add `<!-- dep-triaged:<head-sha7>:<action> -->` to the PR body so re‑runs at the same head skip.
 
 ## Hard rules
 
@@ -80,6 +104,8 @@ For every open dep PR:
 - **Never** auto‑merge a peer dependency.
 - **Never** auto‑merge a major bump.
 - **Never** auto‑merge a runtime patch or minor — those are always **approve‑and‑leave‑for‑owner**.
+- **Never** process a PR whose author is not on `TRUSTED_DEP_BOT_LOGINS`. Body shape alone is spoofable; identity is the trust boundary.
+- **Never** install dependencies or run verify against a PR whose author is not on the allowlist. The verify step is what makes a malicious dep PR dangerous — it executes attacker-controlled code (postinstall scripts, build steps) on the routine's privileged runner. If the identity check fails, **do not** even fetch the PR's head into a worktree.
 - **Never** close a PR without an explanation comment.
 - **Never** weaken the verify gate to make a bump pass. If the new version requires a config change, that's an owner‑review escalation.
 - **Never** post `Closes #N` referencing the per‑run summary issue. It is an archive, not a tracker.

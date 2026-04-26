@@ -45,6 +45,7 @@ Every bot that talks to GitHub depends on:
 
 - **`GH_TOKEN`** (or `GITHUB_TOKEN`) — token with the scopes the bot's prompt declares it needs. A run with the token unset must exit non‑zero with a setup‑error message; never silently skip writes.
 - **`ROUTINE_GH_LOGIN`** — the GitHub login the bot posts as. This is the trust boundary for "an existing PR / comment is mine vs. someone else's". A run with `ROUTINE_GH_LOGIN` unset must exit non‑zero — never fall back to "any author" (the routine would then claim other people's comments).
+- **`TRUSTED_DEP_BOT_LOGINS`** (`dep-triage-bot` only) — comma-separated allowlist of dependency-bot logins the routine will triage. Body-shape matching alone is spoofable; an attacker can open a malicious PR mimicking Dependabot and the routine would otherwise install + verify their code on the privileged runner. The allowlist is **fail-closed**: unset means "process zero PRs and exit with a setup error", never "process every PR".
 
 Scope these in your scheduler (GitHub Actions secret, external cron env, etc.). Do not bake them into prompts.
 
