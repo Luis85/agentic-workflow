@@ -15,7 +15,7 @@ generated: YYYY-MM-DD HH:MM
 
 # Traceability matrix — <Feature name>
 
-> Should be regenerable from artifact frontmatter. Any empty cell is a defect.
+> Should be regenerable from the artifacts — document-level frontmatter plus the marked-up per-item entries in body (REQ/SPEC/T headings and `Satisfies:` fields). Any empty cell is a defect.
 
 ## Forward chain
 

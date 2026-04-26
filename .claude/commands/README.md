@@ -51,6 +51,6 @@ The user can run them in order; the orchestrator will recommend the next one bas
 ## Conventions
 
 - Commands accept `$ARGUMENTS` (full string) and `$1`, `$2`, … (positional, shell-quoted).
-- The first positional, when relevant, is the **feature slug**.
+- The first positional, when relevant, is the **feature slug** — with one deliberate exception: `/spec:implement` takes the **task ID** as `$1` (the slug auto-resolves from the active `workflow-state.md`, and a user mid-implementation types task IDs far more often than slugs). Always check the command's `argument-hint` for the authoritative order.
 - Commands read `specs/<slug>/workflow-state.md` first to confirm the stage is the right next move.
 - Commands always **end** by updating `workflow-state.md`.

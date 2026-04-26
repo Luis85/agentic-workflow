@@ -27,9 +27,16 @@ Requirement (REQ-X-NNN)
 
 `NNN` is a zero-padded sequence within the area, never reused.
 
-## YAML frontmatter
+## YAML frontmatter and body markup
 
-Every artifact starts with frontmatter that makes traceability mechanical:
+Traceability is mechanical because IDs live in two predictable places — never in prose:
+
+- **Document-level YAML frontmatter** at the top of every artifact (the example below).
+- **Per-item entries in body**, for multi-item artifacts: REQs in `requirements.md` use `### REQ-<AREA>-NNN` headings; SPEC items in `spec.md` use `### SPEC-<AREA>-NNN` headings; tasks in `tasks.md` use `### T-<AREA>-NNN` headings; cross-links use `Satisfies:`, `Depends on:`, `Links:` fields directly under each heading.
+
+The RTM generator parses both — frontmatter for document-level metadata, marked-up headings and fields for per-item links.
+
+Document-level frontmatter shape:
 
 ```yaml
 ---
@@ -49,11 +56,9 @@ updated: 2026-04-26
 ---
 ```
 
-For per-feature single files (`requirements.md` containing many `REQ-…` entries), put the document-level frontmatter at the top and the per-item ID inline as a heading or table column.
-
 ## Traceability matrix (RTM)
 
-Lives at `specs/<feature>/traceability.md`. Generated mechanically from artifact frontmatter. Template at [`templates/traceability-template.md`](../templates/traceability-template.md).
+Lives at `specs/<feature>/traceability.md`. Generated mechanically by walking the artifacts and parsing both surfaces above (frontmatter + marked-up body entries). Template at [`templates/traceability-template.md`](../templates/traceability-template.md).
 
 Example shape:
 

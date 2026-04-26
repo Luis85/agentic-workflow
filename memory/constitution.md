@@ -47,7 +47,7 @@ Requirement (REQ-X-NNN)
           → Review finding (R-X-NNN)
 ```
 
-The traceability matrix in `specs/<feature>/traceability.md` is regenerable from artifact frontmatter — no requirement may exist without a downstream chain by the time `/spec:review` runs.
+The traceability matrix in `specs/<feature>/traceability.md` is regenerable from the artifacts (document-level frontmatter plus marked-up per-item entries in body — see `docs/traceability.md`). No requirement may exist without a downstream chain by the time `/spec:review` runs.
 
 ## Article VI — Agent Specialisation
 
