@@ -9,9 +9,12 @@ Included skills:
 - `caveman-commit/` — terse Conventional Commits messages
 - `caveman-review/` — one-line PR review comments
 - `caveman-help/` — quick-reference card for caveman commands
-- `compress/` — compress prose-heavy markdown files (CLAUDE.md, notes) into
-  caveman form to save input tokens; depends on the Python scripts in
-  `compress/scripts/`
+
+The upstream `compress` skill (which compresses prose-heavy markdown files
+into caveman form to save input tokens) is **not** vendored here, since it
+ships executable Python scripts that we don't want to maintain a fork of. If
+you want it, install the upstream plugin directly:
+<https://github.com/juliusbrussee/caveman#caveman-compress>
 
 ## Usage
 
