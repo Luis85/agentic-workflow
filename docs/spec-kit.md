@@ -77,7 +77,7 @@ Each stage **consumes inputs**, **produces a defined artifact**, **is owned by o
 | 6 | Tasks | Planner | `tasks.md` | [`templates/tasks-template.md`](../templates/tasks-template.md) |
 | 7 | Implementation | Dev | code + `implementation-log.md` | [`templates/implementation-log-template.md`](../templates/implementation-log-template.md) |
 | 8 | Testing | QA | `test-plan.md`, `test-report.md` | [`templates/test-plan-template.md`](../templates/test-plan-template.md), [`templates/test-report-template.md`](../templates/test-report-template.md) |
-| 9 | Review | Reviewer | `review.md` | [`templates/review-template.md`](../templates/review-template.md) |
+| 9 | Review | Reviewer | `review.md`, `traceability.md` (RTM) | [`templates/review-template.md`](../templates/review-template.md), [`templates/traceability-template.md`](../templates/traceability-template.md) |
 | 10 | Release | Release Manager | `release-notes.md` | [`templates/release-notes-template.md`](../templates/release-notes-template.md) |
 | 11 | Learning | Retrospective | `retrospective.md` | [`templates/retrospective-template.md`](../templates/retrospective-template.md) |
 

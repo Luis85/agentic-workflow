@@ -21,7 +21,7 @@
 | What's the input? | The previous stage's artifact in `specs/<feature>/` |
 | What's the output? | The matching `templates/<stage>-template.md` |
 | When am I done? | The quality gate in [`docs/quality-framework.md`](quality-framework.md) |
-| How do I trigger it? | `/spec:<stage>` |
+| How do I trigger it? | The slash command for the stage — see the **Slash commands** block below for the full list (`/spec:idea`, `/spec:research`, `/spec:requirements`, `/spec:design`, `/spec:specify`, `/spec:tasks`, `/spec:implement`, `/spec:test`, `/spec:review`, `/spec:release`, `/spec:retro`). |
 
 ## Quality gates between stages
 

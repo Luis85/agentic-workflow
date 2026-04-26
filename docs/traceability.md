@@ -15,13 +15,29 @@ Requirement (REQ-X-NNN)
 
 | Kind | Pattern | Example |
 |---|---|---|
-| Requirement | `REQ-<AREA>-NNN` | `REQ-AUTH-001` |
-| Spec item | `SPEC-<AREA>-NNN` | `SPEC-AUTH-001` |
-| Task | `T-<AREA>-NNN` | `T-AUTH-014` |
-| Test | `TEST-<AREA>-NNN` | `TEST-AUTH-007` |
+| Idea | `IDEA-<AREA>-NNN` | `IDEA-AUTH-001` |
+| Research | `RESEARCH-<AREA>-NNN` | `RESEARCH-AUTH-001` |
+| PRD (document) | `PRD-<AREA>-NNN` | `PRD-AUTH-001` |
+| Requirement (per-item, in PRD) | `REQ-<AREA>-NNN` | `REQ-AUTH-001` |
+| NFR (per-item, in PRD) | `NFR-<AREA>-NNN` | `NFR-AUTH-002` |
+| Design (document) | `DESIGN-<AREA>-NNN` | `DESIGN-AUTH-001` |
+| Spec (document) | `SPEC-<AREA>-NNN` | `SPEC-AUTH-001` |
+| Spec item (per-item, in spec) | `SPEC-<AREA>-NNN` | `SPEC-AUTH-001` |
+| Tasks (document) | `TASKS-<AREA>-NNN` | `TASKS-AUTH-001` |
+| Task (per-item, in tasks) | `T-<AREA>-NNN` | `T-AUTH-014` |
+| Implementation log | `IMPL-LOG-<AREA>-NNN` | `IMPL-LOG-AUTH-001` |
+| Test plan | `TESTPLAN-<AREA>-NNN` | `TESTPLAN-AUTH-001` |
+| Test report | `TESTREPORT-<AREA>-NNN` | `TESTREPORT-AUTH-001` |
+| Test (per-item, in plan/report) | `TEST-<AREA>-NNN` | `TEST-AUTH-007` |
+| Review | `REVIEW-<AREA>-NNN` | `REVIEW-AUTH-001` |
+| Review finding (per-item) | `R-<AREA>-NNN` | `R-AUTH-002` |
+| Release notes | `RELEASE-<AREA>-NNN` | `RELEASE-AUTH-001` |
+| Retrospective | `RETRO-<AREA>-NNN` | `RETRO-AUTH-001` |
+| Traceability matrix | `RTM-<AREA>-NNN` | `RTM-AUTH-001` |
+| Checklist | `CHECKLIST-<AREA>-NNN` | `CHECKLIST-AUTH-001` |
 | ADR | `ADR-NNNN` | `ADR-0007` |
-| Review finding | `R-<AREA>-NNN` | `R-AUTH-002` |
 | Risk | `RISK-NNN` | `RISK-014` |
+| Clarification | `CLAR-NNN` | `CLAR-014` |
 
 `<AREA>` is a short feature/domain code (e.g., `AUTH`, `PAY`, `SEARCH`). Pick one when starting the feature; record it in `workflow-state.md`.
 
