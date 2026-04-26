@@ -27,7 +27,7 @@ updated: YYYY-MM-DD
 
 | REQ ID | Satisfied? | Evidence |
 |---|---|---|
-| REQ-<AREA>-001 | ✅ | TEST-001, TEST-002, RTM row |
+| REQ-<AREA>-001 | ✅ | TEST-<AREA>-001, TEST-<AREA>-002, RTM row |
 | REQ-<AREA>-002 | ❌ | Implementation missing branch X |
 
 ## Design compliance

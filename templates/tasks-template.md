@@ -74,8 +74,8 @@ graph TD
 
 Batches whose tasks have no inter-dependencies and can run concurrently:
 
-- **Batch 1:** T-001, T-005
-- **Batch 2:** T-002, T-006
+- **Batch 1:** T-<AREA>-001, T-<AREA>-005
+- **Batch 2:** T-<AREA>-002, T-<AREA>-006
 - …
 
 ---

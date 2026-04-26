@@ -23,8 +23,8 @@ updated: YYYY-MM-DD
 
 | REQ ID | Tests | Passed | Failed | Status |
 |---|---|---|---|---|
-| REQ-<AREA>-001 | TEST-001, TEST-002 | 2 | 0 | ✅ |
-| REQ-<AREA>-002 | TEST-003 | 0 | 1 | ❌ |
+| REQ-<AREA>-001 | TEST-<AREA>-001, TEST-<AREA>-002 | 2 | 0 | ✅ |
+| REQ-<AREA>-002 | TEST-<AREA>-003 | 0 | 1 | ❌ |
 
 ## Failures
 

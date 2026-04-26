@@ -31,4 +31,4 @@ One subagent per SDLC role. Each has:
 
 ## Tool restrictions are deliberate
 
-`qa` doesn't have `Edit` on production code — it changes tests, not source. `reviewer` doesn't have `Edit` at all — its output is `review.md`, not patches. `analyst` doesn't have `Bash` — research doesn't need a shell. Don't broaden these without an ADR.
+`qa` doesn't have `Edit` on production code — it changes tests, not source. `reviewer` has `Edit` / `Write` only to produce its own artifacts (`review.md`, `traceability.md`); its prompt forbids editing specs, code, or other agents' outputs. `analyst` doesn't have `Bash` — research doesn't need a shell. Don't broaden these without an ADR.
