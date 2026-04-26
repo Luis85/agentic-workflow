@@ -18,13 +18,13 @@ The retro is **mandatory**, even on clean ships. For trivial work it can be a si
 
 - All artifacts in `specs/<feature>/`.
 - The change history: resolve the base, then run `git log "$BASE"..HEAD` via Bash if available, otherwise reconstruct from the artifacts.
-  Resolve `$BASE` like this — empty results must fall through to the default explicitly, since piping through `sed` makes `||` fallback unreliable:
+  Resolve `$BASE` like this — keep the full remote-tracking ref so it resolves in detached / shallow / CI checkouts that have `origin/<default>` but no local branch:
   ```bash
-  DEFAULT_BRANCH="$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||')"
-  : "${DEFAULT_BRANCH:=main}"   # fallback when origin/HEAD is unset (local-only / fresh CI checkouts)
-  BASE="$(git merge-base HEAD "$DEFAULT_BRANCH")" || BASE="$DEFAULT_BRANCH"
+  DEFAULT_REF="$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null)"   # e.g. "origin/main"
+  : "${DEFAULT_REF:=origin/main}"                                                  # fallback when origin/HEAD is unset
+  BASE="$(git merge-base HEAD "$DEFAULT_REF")" || BASE="$DEFAULT_REF"
   ```
-  Override per `docs/steering/operations.md` if the project uses a different integration branch.
+  Override per `docs/steering/operations.md` if the project uses a different integration branch (e.g. `DEFAULT_REF=origin/develop`).
 - Recent retros under `specs/*/retrospective.md` to spot patterns.
 - `memory/constitution.md`
 

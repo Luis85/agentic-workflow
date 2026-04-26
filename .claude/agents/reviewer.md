@@ -21,13 +21,13 @@ You produce `specs/<feature>/review.md` and validate (or refresh) `specs/<featur
 - `specs/<feature>/implementation-log.md`
 - `specs/<feature>/test-plan.md` and `test-report.md`
 - The diff: resolve the base, then run `git diff "$BASE"...HEAD` (Bash, read-only).
-  Resolve `$BASE` like this — empty results must fall through to the default explicitly, since piping through `sed` makes `||` fallback unreliable:
+  Resolve `$BASE` like this — keep the full remote-tracking ref so it resolves in detached / shallow / CI checkouts that have `origin/<default>` but no local branch:
   ```bash
-  DEFAULT_BRANCH="$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||')"
-  : "${DEFAULT_BRANCH:=main}"   # fallback when origin/HEAD is unset (local-only / fresh CI checkouts)
-  BASE="$(git merge-base HEAD "$DEFAULT_BRANCH")" || BASE="$DEFAULT_BRANCH"
+  DEFAULT_REF="$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null)"   # e.g. "origin/main"
+  : "${DEFAULT_REF:=origin/main}"                                                  # fallback when origin/HEAD is unset
+  BASE="$(git merge-base HEAD "$DEFAULT_REF")" || BASE="$DEFAULT_REF"
   ```
-  If the project uses a different integration branch (e.g. `develop`, `trunk`), override per `docs/steering/operations.md`.
+  If the project uses a different integration branch (e.g. `develop`, `trunk`), override per `docs/steering/operations.md` (e.g. `DEFAULT_REF=origin/develop`).
 - `memory/constitution.md`
 - `docs/quality-framework.md`
 
