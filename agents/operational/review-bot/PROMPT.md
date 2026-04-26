@@ -10,7 +10,8 @@ You do **not** open PRs, edit code, or merge anything. You are read‑only on th
 
 ## Scope this run
 
-- Commits on the integration branch since the last review point. The "last review point" is the head SHA of the most recent issue this routine produced (read from the issue body's frontmatter); on the first run, use `HEAD~24h`.
+- Commits on the integration branch since the last review point. The "last review point" is the head SHA of the most recent issue this routine produced (read from the issue body's frontmatter).
+- **First run (no prior issue):** scope to commits in the last 24 hours via `git log --since='24 hours ago'`. Do **not** use `HEAD~24h` — that is not a valid Git revision (`~` expects a parent count, not a duration).
 - If no commits exist in scope, exit silently without opening anything.
 
 ## Review priorities (ranked)

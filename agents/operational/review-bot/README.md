@@ -26,7 +26,7 @@ a project‑specific GitHub Action ticks `[x]` next to that checklist item on th
 Per‑project, before the first scheduled run:
 
 1. Create the `review-bot` label.
-2. (Optional) Add the `review-fix-shipped` GitHub Action that auto‑flips checklist items on merge. A starter is in [`.github/workflows/`](../../../.github/workflows/) — adopt as needed.
+2. (Optional) Author a `review-fix-shipped` GitHub Action that auto‑flips checklist items on merge. The contract is documented in [`PROMPT.md`](./PROMPT.md) ("Auto‑flip on merge" section) — implementation is project‑specific and is **not** scaffolded by this template. A starter may be added to a project's own `.github/workflows/` once the bot is adopted.
 3. Wire the verify gate (`docs/verify-gate.md`) so the digest PR's CI is fast.
 4. Run `DRY_RUN=1` twice manually before scheduling — once on a quiet day, once on a busy day — and read the stdout dump.
 5. Update branch protection so the digest PR's CI gate is the only required check (or none at all — docs‑only diffs).
