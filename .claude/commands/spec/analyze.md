@@ -1,7 +1,7 @@
 ---
 description: Optional gate. Cross-checks consistency between requirements, design, spec, and tasks. Reports gaps and contradictions.
 argument-hint: [feature-slug]
-allowed-tools: [Read, Grep]
+allowed-tools: [Read, Edit, Grep]
 model: sonnet
 ---
 

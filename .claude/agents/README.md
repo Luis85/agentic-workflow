@@ -17,7 +17,7 @@ One subagent per SDLC role. Each has:
 | [`planner`](planner.md) | Tasks | Read, Edit, Write |
 | [`dev`](dev.md) | Implementation | Read, Edit, Write, Bash |
 | [`qa`](qa.md) | Testing | Read, Edit, Write, Bash |
-| [`reviewer`](reviewer.md) | Review | Read, Grep |
+| [`reviewer`](reviewer.md) | Review | Read, Edit, Write, Grep, Bash |
 | [`release-manager`](release-manager.md) | Release | Read, Edit, Write |
 | [`sre`](sre.md) | Operations | Read, Edit, Write, Bash |
 | [`retrospective`](retrospective.md) | Learning | Read, Edit, Write |

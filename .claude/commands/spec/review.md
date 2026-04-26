@@ -1,7 +1,7 @@
 ---
 description: Stage 9 — Review. Invokes reviewer to produce review.md and validate traceability.md. Read-only on artifacts.
 argument-hint: [feature-slug]
-allowed-tools: [Read, Grep, Bash]
+allowed-tools: [Read, Edit, Write, Grep, Bash]
 model: opus
 ---
 
