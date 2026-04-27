@@ -92,6 +92,14 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │       ├── traceability.md                  # stage 9 (reviewer) — RTM
 │       ├── release-notes.md                 # stage 10 (release-manager)
 │       └── retrospective.md                 # stage 11 (retrospective)
+├── portfolio/                               # one folder per portfolio (opt-in, P5 Express track)
+│   └── <portfolio-slug>/
+│       ├── portfolio-state.md               # cycle state machine, owned by /portfolio:* commands
+│       ├── portfolio-definition.md          # Doc 1 — scope, projects, governance, resources
+│       ├── portfolio-roadmap.md             # Doc 2 — 6-monthly strategy (X cycle)
+│       ├── portfolio-progress.md            # Doc 3 — monthly health snapshot (Y cycle)
+│       ├── portfolio-improvements.md        # Doc 4 — monthly improvement plan (Y cycle)
+│       └── portfolio-log.md                 # Doc 5 — daily operations log (Z cycle, append-only)
 ├── examples/                                # demonstration artifacts — NOT the template's own workflow (see §Examples sub-tree)
 │   └── <feature-slug>/
 │       ├── workflow-state.md                # mirrors specs/<slug>/workflow-state.md shape
@@ -139,6 +147,12 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 | `discovery/<sprint>/chosen-brief.md` | `facilitator` (Handoff) | One per surviving concept; mandatory input to `/spec:idea` |
 | `specs/<slug>/workflow-state.md` | `/spec:start`, then `/spec:*` commands on transition | State machine; orchestrator amends final fields |
 | `specs/<slug>/<artifact>.md` | The stage's owning agent (per `docs/spec-kit.md` §3) | Each stage writes once; later stages **never rewrite** upstream artifacts |
+| `portfolio/<slug>/portfolio-state.md` | `/portfolio:start`, then `/portfolio:*` commands on each cycle | Cycle state machine; portfolio-manager-owned |
+| `portfolio/<slug>/portfolio-definition.md` | `/portfolio:start` (created), Z cycle Z2 (status updates) | Ongoing; X and Y cycles read but do not rewrite |
+| `portfolio/<slug>/portfolio-roadmap.md` | X cycle (X2, X3) | Updated in place each X run; previous exec summaries appended |
+| `portfolio/<slug>/portfolio-progress.md` | Y cycle (Y4) | Replaced each Y run; history in git |
+| `portfolio/<slug>/portfolio-improvements.md` | Y cycle (Y3, Y4) | Replaced each Y run; history in git |
+| `portfolio/<slug>/portfolio-log.md` | Z cycle (Z3) | **Append-only** — never edit previous entries |
 | `specs/<slug>/arc42-questionnaire.md` | `arc42-baseline` skill | Created lazily on opt-in; canonical input to `design.md` Part C |
 | `specs/<slug>/design-alt-*.md`, `design-comparison.md` | `design-twice` skill | Created lazily on opt-in |
 | `.claude/skills/<name>/SKILL.md` | Skill author | Versioned in repo |
@@ -211,6 +225,12 @@ See [`docs/project-track.md`](project-track.md) for the full methodology and [AD
 When a team enters the kit with a **blank page** (no brief), the Discovery Track produces `chosen-brief.md` first; that brief is then the input the analyst reads in Stage 1. The track lives at `discovery/<sprint-slug>/` parallel to `specs/`. See [`docs/discovery-track.md`](discovery-track.md) for the methodology and [ADR-0005](adr/0005-add-discovery-track-before-stage-1.md) for the rationale.
 
 A sprint may emit **0, 1, or N** chosen briefs. Zero is a valid outcome (no-go); the sprint folder is preserved as historical context regardless. The handoff is the *only* link between the discovery and specs trees — before handoff no `specs/<slug>/` exists; after handoff the brief is referenced from `idea.md`'s frontmatter `inputs:`.
+
+## Portfolio Track sub-tree
+
+When a team needs to manage **multiple parallel features** or operates as a **service provider**, the Portfolio Track adds a management layer above the Spec Kit. It lives at `portfolio/<portfolio-slug>/` parallel to `specs/` and `discovery/`. See [`docs/portfolio-track.md`](portfolio-track.md) for the methodology and [ADR-0009](adr/0009-add-portfolio-manager-role.md) for the rationale.
+
+A portfolio is bootstrapped with `/portfolio:start <slug>`. The three cycle commands populate the five management documents. The portfolio track is **read-only on the `specs/` side** — it never modifies spec artifacts.
 
 ## Examples sub-tree
 
