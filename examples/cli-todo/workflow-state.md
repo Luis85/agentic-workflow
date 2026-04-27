@@ -4,7 +4,7 @@ area: CLI
 current_stage: design
 status: active
 last_updated: 2026-04-27
-last_agent: ui-designer
+last_agent: architect
 artifacts:
   idea.md: complete
   research.md: complete
@@ -151,6 +151,82 @@ Free-form. What does the next agent / human need to know?
                           data model, storage format, atomic-write
                           mechanism, and the data-file-path resolution
                           (XDG default vs. TODO_FILE env var).
+```
+
+```
+2026-04-27 (architect):   Part C — Architecture and the cross-cutting section
+                          drafted in design.md; design.md left in-progress
+                          pending human acceptance. Quality gate ticked.
+
+                          System shape: 9 in-process components (entry,
+                          dispatcher, 5 handlers, storage layer, path
+                          resolver, task model). No network, no daemon,
+                          no shared state beyond the on-disk store. Two
+                          data flows (write path: load -> mutate ->
+                          atomic save; read path: load -> filter -> render).
+                          Help path never touches the store.
+
+                          Data model: task (id, text, done, created_at)
+                          plus a store envelope (version, tasks, next_id).
+                          The next_id field carries the never-reused-ID
+                          property across file round-trips. version=1
+                          from day one per RISK-006.
+
+                          Decisions resolved:
+                          - Exit-code scheme: single non-zero (exit 1)
+                            for every error, exit 0 for success including
+                            empty list and help. Resolves the open question
+                            handed off from Part A. Recorded in the
+                            key-decisions table with rationale.
+                          - Atomic-write pattern: temp file in the
+                            target's directory + fsync + rename. Single
+                            mutation entry point in the storage layer.
+                          - Concurrency posture: no lockfile;
+                            last-writer-wins for the update-update race;
+                            partial-write race eliminated.
+                          - ID scheme: sequential positive integers,
+                            never reused after rm.
+                          - Data file location: XDG default + TODO_FILE
+                            override (full path, not just a directory).
+                          - Help handlers do not read the data store.
+
+                          ADRs created:
+                          - ADR-CLI-0001 — Use atomic temp-file rename
+                            for writes; no lockfile in v1. Covers the
+                            durability + concurrency trade-off (the only
+                            architecturally load-bearing, hard-to-reverse
+                            decision in this design). Other decisions
+                            stay in the key-decisions table.
+
+                          New architecture-level risks (added to research
+                          carry-overs RISK-001..004):
+                          - RISK-CLI-ARCH-001 — cross-filesystem temp file
+                            silently breaks atomicity (mitigated by
+                            placing the temp file in the target's
+                            directory).
+                          - RISK-CLI-ARCH-002 — missing parent directory
+                            on first run (mitigated by path resolver
+                            creating it).
+
+                          All 13 REQ-CLI-NNN appear in the requirements
+                          coverage table with at least one section each.
+                          No new CLAR entries opened.
+
+                          Hand-off to spec (stage 5): the architect-side
+                          inputs are settled. spec.md should now turn the
+                          interaction grammar into a per-subcommand
+                          contract (signature, pre/post-conditions, error
+                          codes mapped to the exit-1-for-everything rule,
+                          edge cases including the SIGKILL-mid-write
+                          scenario, the cross-filesystem TODO_FILE
+                          scenario, and the empty/missing-parent-dir
+                          first-run scenario). The exact serialisation
+                          format for the data store is the spec stage's
+                          call — Part C names only the field set and
+                          invariants, not the on-disk encoding. The QA
+                          agent will need a SIGKILL-mid-write test
+                          scenario to discharge ADR-CLI-0001's
+                          compliance clause.
 ```
 
 ## Open clarifications
