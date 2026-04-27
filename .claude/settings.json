@@ -1,0 +1,94 @@
+{
+  "$schema": "https://www.schemastore.org/claude-code-settings.json",
+  "_comment": "Baseline permissions for projects using this workflow. Tighten by adding repo-specific allow/deny rules; do not loosen any deny rule without an ADR. See docs/branching.md for the branching model these rules assume. Permission rules are prefix matches against the literal command string — keep deny rules at the top of any new entries you add and verify that whitespace / short-flag aliases (-n for --no-verify, -f for --force) are also covered.",
+
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git switch:*)",
+      "Bash(git fetch:*)",
+      "Bash(git pull --ff-only:*)",
+      "Bash(git add:*)",
+      "Bash(git restore:*)",
+      "Bash(git commit:*)",
+      "Bash(git merge origin/develop)",
+      "Bash(git merge origin/main)",
+      "Bash(git worktree add:*)",
+      "Bash(git worktree list:*)",
+      "Bash(git worktree remove:*)",
+      "Bash(git worktree prune:*)",
+      "Bash(git push -u origin feat/*)",
+      "Bash(git push -u origin fix/*)",
+      "Bash(git push -u origin refactor/*)",
+      "Bash(git push -u origin chore/*)",
+      "Bash(git push -u origin docs/*)",
+      "Bash(git push origin feat/*)",
+      "Bash(git push origin fix/*)",
+      "Bash(git push origin refactor/*)",
+      "Bash(git push origin chore/*)",
+      "Bash(git push origin docs/*)",
+      "Bash(git push -u origin claude/*)",
+      "Bash(git push origin claude/*)"
+    ],
+    "deny": [
+      "Bash(git push origin main:*)",
+      "Bash(git push origin develop:*)",
+      "Bash(git push -u origin main:*)",
+      "Bash(git push -u origin develop:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push --force-with-lease:*)",
+      "Bash(git push -f:*)",
+      "Bash(git push --no-verify:*)",
+      "Bash(git push -n:*)",
+      "Bash(git commit --no-verify:*)",
+      "Bash(git commit -n:*)",
+      "Bash(git -c core.hooksPath=:*)",
+      "Bash(git -c commit.verbose=:*)",
+      "Bash(env HUSKY=:*)",
+      "Bash(HUSKY=:*)",
+      "Bash(env HUSKY_SKIP_HOOKS=:*)",
+      "Bash(HUSKY_SKIP_HOOKS=:*)",
+      "Bash(git reset --hard origin/main:*)",
+      "Bash(git reset --hard origin/develop:*)",
+      "Bash(git reset --hard main:*)",
+      "Bash(git reset --hard develop:*)",
+      "Bash(git checkout main:*)",
+      "Bash(git checkout develop:*)",
+      "Bash(git branch -D main:*)",
+      "Bash(git branch -D develop:*)",
+      "Bash(git branch -d main:*)",
+      "Bash(git branch -d develop:*)",
+      "Bash(rm -rf /:*)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf ~:*)",
+      "Bash(rm -rf $HOME:*)",
+      "Bash(rm -rf .git:*)",
+      "Bash(rm -rf .git/:*)",
+      "Bash(rm -rf src:*)",
+      "Bash(rm -rf docs:*)",
+      "Bash(rm -rf .claude:*)",
+      "Bash(rm -rf memory:*)",
+      "Bash(rm -rf templates:*)",
+      "Bash(rm -rf specs:*)",
+      "Bash(rm -rf agents:*)"
+    ]
+  },
+
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "test -f .claude/memory/MEMORY.md && echo \"[memory] Read .claude/memory/MEMORY.md before non-trivial work — workflow rules + project state are indexed there.\" || true"
+          }
+        ]
+      }
+    ]
+  }
+}
