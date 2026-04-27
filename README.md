@@ -1,68 +1,286 @@
-# Spec Kit — Quality-Driven, Agentic Development Workflow
+# Spec Kit — Agentic Development Workflow
 
-A solution-agnostic, **spec-driven** workflow template for building software with humans and AI agents working together. Covers the full SDLC: Product → UX → UI → Engineering → Testing → Quality → Delivery → Operations.
+**Build software the right way with AI.** Spec Kit is a ready-to-use workflow template that keeps humans in charge of *what* to build while AI agents handle the heavy lifting of *how*.
 
-> **Status:** v0.1 — Foundation. Intentionally generic and starting-point-y. Iterate on it.
+> **Status:** v0.2 — Foundation + Skills layer. Intentionally generic and starting-point-y — fork it, adapt it, make it yours.
 
-## Why
+---
 
-LLM coding agents are powerful, but they fail predictably when given vague intent. This kit treats **specifications as the source of truth** and code as their artifact. Each SDLC stage has a defined input, output, owner, and quality gate, so work is traceable from idea to release and parallelisable across specialised agents.
+## What is this?
 
-## What's in here
+Most AI coding tools jump straight to writing code — often the wrong code. Spec Kit flips that: **specs first, code second**.
 
-| Path | Purpose |
+Every feature follows a structured journey — understand the problem, research the options, write clear requirements, design a solution, *then* build it. AI agents (powered by Claude) assist at every step while staying in their lane. You remain in charge of intent, priorities, and sign-off.
+
+The result: fewer dead ends, less rework, and software that does what you actually needed.
+
+---
+
+## Who is this for?
+
+- **Product managers and designers** — run discovery sprints, write requirements, and review designs without touching code.
+- **Developers** — implement from clear specs with AI assistance; no more guessing what the PM meant.
+- **Team leads** — coordinate humans and AI agents across a full release cycle with built-in quality checks.
+- **Solo builders** — run the whole workflow yourself, with AI agents filling every specialist role.
+
+---
+
+## Start here — pick your role
+
+### Product manager / designer
+
+Your job is to define *what* to build and *why*. The workflow starts with you.
+
+1. Open Claude Code in the project folder: `claude`
+2. If you're exploring ideas: say **"let's run a design sprint"** → the AI facilitates Frame → Diverge → Converge → Prototype → Validate for you.
+3. If you have a brief: say **"let's start a feature: [your one-liner]"** → the AI walks you through Idea, Research, and Requirements stages, asking you questions and producing a clear PRD (`requirements.md`).
+4. Review the output in `specs/<feature>/requirements.md`, push back on anything wrong, and sign off when it's right.
+5. Hand off to engineering — they'll pick up from the same folder.
+
+You don't need to run any commands yourself. Natural language is enough.
+
+---
+
+### Developer / engineer
+
+Your job starts once Requirements and Design are signed off. You build what the spec says — no more, no less.
+
+1. Check where things stand: `cat specs/<feature>/workflow-state.md`
+2. Open Claude Code: `claude`
+3. Say **"continue the [feature-name] feature"** — the orchestrator picks up at the right stage.
+4. For implementation specifically: `/spec:implement` runs the dev agent against the tasks in `specs/<feature>/tasks.md`.
+5. Run the verify gate before opening a PR: `/verify`
+6. For TDD discipline, use the `tdd-cycle` skill during implementation.
+
+If you spot a gap in the spec, escalate — don't silently invent a requirement. Update the spec first, then the code.
+
+---
+
+### Team lead / engineering manager
+
+Your job is to set up the workflow, gate between stages, and make sure quality holds.
+
+1. Fork or clone this repo as your project's starting point.
+2. Adapt `memory/constitution.md` to your team's principles.
+3. Fill `docs/steering/` — at minimum `tech.md` and `quality.md` — so agents have the right context.
+4. Use `/adr:new "<title>"` any time an irreversible architectural decision is made.
+5. Gate each stage: check `specs/<feature>/workflow-state.md` and confirm the quality gate passed before the next stage starts.
+6. Activate operational bots in `agents/operational/` one at a time as the team gets comfortable — `review-bot` and `dep-triage-bot` are good starting points.
+
+You own acceptance at each stage. Agents surface decisions; you make them.
+
+---
+
+### Solo builder
+
+You're doing every role yourself. Use the `orchestrate` skill to run the full lifecycle without switching mental modes.
+
+1. Clone the repo and open Claude Code: `claude`
+2. Say **"drive this end-to-end: [your feature idea]"** — the `orchestrate` skill gates with you between stages and dispatches the right specialist agent each time.
+3. When you need to brainstorm first, say **"let's run a design sprint"** before kicking off the lifecycle.
+4. Your state is always in `specs/<feature>/workflow-state.md` — you can pause and resume across sessions safely.
+
+Tip: even alone, don't skip the Retrospective at the end. It's where the process improves.
+
+---
+
+## How it works
+
+The workflow has two tracks:
+
+**Discovery Track** *(optional — use this when you don't have a clear brief yet)*
+
+```
+Frame → Diverge → Converge → Prototype → Validate → Handoff
+```
+
+Explore ideas, narrow them down, prototype the most promising one, validate assumptions, then produce a brief that feeds the next track.
+
+**Lifecycle Track** *(11 stages — use this when you have a brief)*
+
+```
+Idea → Research → Requirements → Design → Specification → Tasks
+                                                              ↓
+Retro ← Release ← Review  ←  Testing  ←  Implementation  ←──┘
+```
+
+Each stage has **one owner** (a specialist AI agent), **one output** (a Markdown file in `specs/<feature>/`), and **one quality gate** before the next stage can begin. No stage is skipped; quality gates are non-negotiable.
+
+---
+
+## Get started in 5 minutes
+
+### What you need
+
+- [Claude Code](https://claude.ai/code) (the CLI — free tier works)
+- Git
+
+### 1. Get the template
+
+Click **"Use this template"** on GitHub, or clone it directly:
+
+```bash
+git clone https://github.com/luis85/agentic-workflow.git my-project
+cd my-project
+```
+
+### 2. Personalise (optional but recommended)
+
+- Edit `memory/constitution.md` to set your project's governing principles.
+- Fill in `docs/steering/` with your product, tech stack, and UX context — these files are loaded by agents automatically.
+
+### 3. Open Claude Code and start working
+
+```bash
+claude
+```
+
+Then just talk to it:
+
+**If you have a clear idea:**
+> *"let's start a feature: user login with email and password"*
+
+**If you're still exploring:**
+> *"let's run a design sprint"*
+
+Claude guides you through the rest — asking the right questions, running the right agents, and producing the right artifacts at each stage.
+
+---
+
+## Common starting points
+
+### I know what I want to build
+
+```
+/spec:start my-feature-slug
+```
+
+Then walk the stages in order, or just say **"drive this end-to-end"** and the `orchestrate` skill handles everything conversationally, gating with you at each step.
+
+### I have a blank page
+
+```
+/discovery:start my-sprint-slug
+```
+
+Or say **"let's brainstorm new product ideas"** and the `discovery-sprint` skill walks you through Frame → Diverge → Converge → Prototype → Validate → Handoff. The output feeds `/spec:idea`.
+
+### I want to resume a feature in progress
+
+Check the state file to see where things stand:
+
+```bash
+cat specs/<feature-slug>/workflow-state.md
+```
+
+Then say **"continue the [feature-name] feature"** in Claude Code — any agent can pick up from the state file.
+
+### I want to make an important architectural decision
+
+```
+/record-decision "why we chose PostgreSQL over DynamoDB"
+```
+
+This files a permanent Architecture Decision Record (ADR) in `docs/adr/`.
+
+---
+
+## Plain-English glossary
+
+New to this kind of workflow? Here's the jargon decoded:
+
+| Term | What it means in practice |
 |---|---|
-| [`docs/spec-kit.md`](docs/spec-kit.md) | The full workflow definition (read this first) |
-| [`docs/discovery-track.md`](docs/discovery-track.md) | Pre-stage Discovery Track — ideation, design sprint, concept validation (opt-in, see [ADR-0005](docs/adr/0005-add-discovery-track-before-stage-1.md)) |
-| [`docs/workflow-overview.md`](docs/workflow-overview.md) | One-page visual + cheat sheet |
-| [`docs/quality-framework.md`](docs/quality-framework.md) | Quality dimensions, gates, Definition of Done |
-| [`docs/traceability.md`](docs/traceability.md) | ID scheme: requirement → spec → task → code → test |
-| [`docs/ears-notation.md`](docs/ears-notation.md) | Reference for writing testable requirements |
-| [`docs/sink.md`](docs/sink.md) | Catalog of every markdown artifact: where it lives, who owns it, how it evolves |
-| [`docs/steering/`](docs/steering/) | Persistent, scoped context for agents (product, tech, ux, quality, ops) |
-| [`docs/adr/`](docs/adr/) | Architecture Decision Records — start with [`0001`](docs/adr/0001-record-architecture-decisions.md) |
-| [`memory/constitution.md`](memory/constitution.md) | Project principles loaded ahead of every workflow command |
-| [`templates/`](templates/) | Blank artifacts for each stage (idea, prd, design, spec, tasks, …) |
-| [`.claude/agents/`](.claude/agents/) | One subagent per SDLC role (PM, UX, architect, dev, QA, SRE, …) |
-| [`.claude/commands/`](.claude/commands/) | Slash commands per workflow phase (`/spec:specify`, `/spec:tasks`, …) |
-| [`.claude/skills/`](.claude/skills/) | Auto-discoverable skill bundles — `orchestrate` (lifecycle entry), `discovery-sprint` (pre-stage entry), `grill`, `design-twice`, `tracer-bullet`, `tdd-cycle`, `record-decision`, `domain-context`, `ubiquitous-language`, `verify`, `new-adr`, `review-fix` |
-| [`.claude/memory/`](.claude/memory/) | Operational memory: workflow rules + project state, indexed in [`MEMORY.md`](.claude/memory/MEMORY.md) |
-| [`.claude/settings.json`](.claude/settings.json) | Permission baseline (allow/deny) + SessionStart hook |
-| [`agents/operational/`](agents/operational/) | Always-on, scheduled agents (review-bot, docs-review-bot, plan-recon-bot, dep-triage-bot, actions-bump-bot) |
-| [`docs/branching.md`](docs/branching.md) | Branching model + topic-branch prefixes |
-| [`docs/worktrees.md`](docs/worktrees.md) | `.worktrees/<slug>/` pattern for parallel agents |
-| [`docs/verify-gate.md`](docs/verify-gate.md) | The single-command pre-PR quality gate |
-| [`docs/plans/`](docs/plans/) | Cross-cutting working plans (`YYYY-MM-DD-<slug>.md`) |
-| [`docs/archive/`](docs/archive/) | Read-only archive of completed plans / superseded specs |
-| [`CONTRIBUTING.md`](CONTRIBUTING.md) | How to contribute to this template (uses its own workflow) |
-| [`AGENTS.md`](AGENTS.md) | Cross-tool root context (Codex, Cursor, Aider, Copilot all read this) |
-| [`CLAUDE.md`](CLAUDE.md) | Claude Code entry point — imports `AGENTS.md` |
-| [`examples/`](examples/) | Demonstration artifacts — what a project using this template produces. Each `examples/<slug>/` mirrors `specs/<slug>/` shape. Not part of the template's own workflow; agents must not treat these as active features. (`cli-todo`: stages 1–3 complete, stage 4 in-progress) |
+| **Spec** | A written description of exactly what to build — no ambiguity, no guessing |
+| **Quality gate** | A short checklist a stage must pass before the next one starts |
+| **Agent** | An AI assistant specialised for one role: PM, designer, developer, QA, and so on |
+| **Artifact** | A Markdown file produced at each stage (`idea.md`, `requirements.md`, `design.md`, …) |
+| **EARS** | A sentence format for requirements that makes them unambiguous and testable (e.g. *"When the user submits the form, the system shall send a confirmation email"*) |
+| **ADR** | A one-page record of an important decision — what was decided, why, and what alternatives were rejected |
+| **Traceability** | Every piece of code traces to a task, every task to a requirement, every requirement to a test |
+| **Retrospective** | A short look-back after every feature: what worked, what didn't, what to change next time |
+| **Discovery Track** | A structured ideation mini-sprint for when you have a problem but no clear solution yet |
 
-## Quickstart
-
-1. **Clone or fork** this repo as a starting point for your project.
-2. **Adapt the constitution** at `memory/constitution.md` to your project's principles and constraints.
-3. **Fill the steering files** under `docs/steering/` with project-specific context.
-4. **Pick an entry point.** If you have a brief, jump to step 5. If you have a *blank page* (a problem area, an outcome, multiple candidate ideas), run the **Discovery Track** first:
-   - **Conversational:** say "let's run a design sprint" / "let's brainstorm new product ideas" → the [`discovery-sprint`](.claude/skills/discovery-sprint/SKILL.md) skill walks Frame → Diverge → Converge → Prototype → Validate → Handoff.
-   - **Manual:** `/discovery:start <sprint-slug>` … `/discovery:handoff`. See [`docs/discovery-track.md`](docs/discovery-track.md). Output is a `chosen-brief.md` which becomes the input to step 5.
-5. **Start a feature** in one of two ways:
-   - **Conversational (recommended in Claude Code):** say "let's start a feature" or run `/orchestrate <one-line goal>`. The [`orchestrate`](.claude/skills/orchestrate/SKILL.md) skill gates with you and dispatches the right stage per turn.
-   - **Manual:** create `specs/<feature-slug>/` via `/spec:start <slug>` and walk the stages (`/spec:idea` → `/spec:research` → … → `/spec:retro`).
-6. **State lives in `specs/<feature-slug>/workflow-state.md`** — any agent (or you, in a fresh session) can pick up from there. Discovery sprints have their own state at `discovery/<sprint-slug>/discovery-state.md`.
-
-If you use Claude Code, the slash commands, subagents, and skills work out of the box. If you use Codex / Cursor / Aider, the artifact templates and `AGENTS.md` are tool-agnostic; the slash commands and skills are Claude-specific but the conventions they enforce (workflow stages, EARS, ADR pattern) carry over.
+---
 
 ## Workflow at a glance
 
 ```
-[Discovery Track] -.brief.-> Idea → Research → Requirements → Design → Specification → Tasks
-   (opt-in)                                                                              ↓
-                              Retrospective ← Release ← Review ← Testing ← Implementation
+                        [Discovery Track — opt-in]
+         Frame → Diverge → Converge → Prototype → Validate → Handoff
+                                                                 │
+                                                           (brief feeds ↓)
+┌──────────┐  ┌──────────┐  ┌──────────────┐  ┌──────────┐  ┌─────────────┐  ┌────────┐
+│ 1. Idea  │→ │2. Research│→ │3. Requirements│→ │ 4. Design│→ │5. Specification│→│6. Tasks│
+│ analyst  │  │ analyst  │  │ pm           │  │ux/ui/arch│  │ architect   │  │planner │
+└──────────┘  └──────────┘  └──────────────┘  └──────────┘  └─────────────┘  └────────┘
+                                                                                    │
+┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────────┐          │
+│11. Retro │← │10.Release│← │ 9. Review│← │ 8. Testing│← │7.Implementation│◄───────┘
+│ retro    │  │ rel-mgr  │  │ reviewer │  │ qa       │  │ dev          │
+└──────────┘  └──────────┘  └──────────┘  └──────────┘  └──────────────┘
 ```
 
-The Discovery Track is opt-in and runs only when no brief exists yet (Frame → Diverge → Converge → Prototype → Validate → Handoff). Each arrow in the lifecycle is a quality gate. See [`docs/spec-kit.md`](docs/spec-kit.md) for the full definition, [`docs/discovery-track.md`](docs/discovery-track.md) for the pre-stage track, and [`docs/workflow-overview.md`](docs/workflow-overview.md) for the cheat sheet.
+Each arrow is a quality gate. See [`docs/workflow-overview.md`](docs/workflow-overview.md) for the full cheat sheet and slash command reference.
+
+---
+
+## Slash commands reference
+
+```
+# Discovery Track (when you don't have a brief yet):
+/discovery:start <sprint>    /discovery:converge      /discovery:validate
+/discovery:frame             /discovery:prototype     /discovery:handoff
+/discovery:diverge
+
+# Lifecycle (Stages 1–11):
+/spec:start <slug>           /spec:tasks              /spec:retro
+/spec:idea                   /spec:implement [task]   /spec:clarify
+/spec:research               /spec:test               /spec:analyze
+/spec:requirements           /spec:review             /adr:new "<title>"
+/spec:design                 /spec:release
+/spec:specify
+```
+
+You can also trigger everything conversationally — the `orchestrate` and `discovery-sprint` skills listen for natural language and dispatch the right command.
+
+---
+
+## Using a different AI tool (not Claude Code)
+
+The workflow is built for Claude Code, but the *conventions* are tool-agnostic:
+
+- **Cursor / Aider / Copilot** — use `AGENTS.md` as your root context and follow the stage order manually.
+- **Codex** — same; slash commands won't auto-run but the templates and stage sequence carry over.
+
+The artifact format (Markdown files in `specs/<feature>/`) and the ID scheme (`REQ-X-NNN`, `T-X-NNN`, `TEST-X-NNN`) work with any editor.
+
+---
+
+## What's in the repo
+
+| Path | What it is |
+|---|---|
+| [`docs/spec-kit.md`](docs/spec-kit.md) | Full workflow definition — read this before any non-trivial work |
+| [`docs/discovery-track.md`](docs/discovery-track.md) | Discovery Track detail and phase-by-phase guide |
+| [`docs/workflow-overview.md`](docs/workflow-overview.md) | One-page visual + cheat sheet + slash command list |
+| [`docs/quality-framework.md`](docs/quality-framework.md) | Quality dimensions, gates, and Definition of Done per stage |
+| [`docs/ears-notation.md`](docs/ears-notation.md) | How to write requirements in EARS format |
+| [`docs/traceability.md`](docs/traceability.md) | ID scheme: requirement → spec → task → code → test |
+| [`docs/sink.md`](docs/sink.md) | Catalog of every artifact: where it lives, who owns it |
+| [`docs/steering/`](docs/steering/) | Scoped context for agents (product, tech, ux, quality, ops) |
+| [`docs/adr/`](docs/adr/) | Architecture Decision Records — start with [ADR-0001](docs/adr/0001-record-architecture-decisions.md) |
+| [`memory/constitution.md`](memory/constitution.md) | Governing principles loaded before every command |
+| [`templates/`](templates/) | Blank artifact templates for each stage |
+| [`.claude/agents/`](.claude/agents/) | One subagent per SDLC role |
+| [`.claude/skills/`](.claude/skills/) | Reusable skill bundles (`orchestrate`, `grill`, `tdd-cycle`, `verify`, …) |
+| [`agents/operational/`](agents/operational/) | Scheduled bots: review-bot, dep-triage-bot, plan-recon-bot, and more |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | How to improve this template |
+| [`AGENTS.md`](AGENTS.md) | Cross-tool root context (Codex, Cursor, Aider, Copilot all read this) |
+| [`CLAUDE.md`](CLAUDE.md) | Claude Code entry point — imports `AGENTS.md` |
+| [`examples/`](examples/) | Demonstration artifacts — what a project using this template produces. Each `examples/<slug>/` mirrors `specs/<slug>/` shape. Not part of the template's own workflow; agents must not treat these as active features. (`cli-todo`: stages 1–3 complete, stage 4 in-progress) |
+
+---
 
 ## Principles
 
@@ -76,23 +294,18 @@ The Discovery Track is opt-in and runs only when no brief exists yet (Frame → 
 
 Full version in [`memory/constitution.md`](memory/constitution.md).
 
-## Two classes of agent
+---
 
-The template ships **two** agent flavours:
+## Roadmap
 
-- **Lifecycle agents** (`.claude/agents/`) — used while building one feature.
-  - *Stages 1–11:* analyst, pm, ux-designer, ui-designer, architect, planner, dev, qa, reviewer, release-manager, sre, retrospective, orchestrator.
-  - *Discovery Track* (pre-stage 1, opt-in): facilitator + product-strategist, user-researcher, game-designer, divergent-thinker, critic, prototyper. See [ADR-0005](docs/adr/0005-add-discovery-track-before-stage-1.md).
-- **Operational agents** (`agents/operational/`) — always-on routines that run on a schedule against the live repo: `review-bot`, `docs-review-bot`, `plan-recon-bot`, `dep-triage-bot`, `actions-bump-bot`. Each is a `PROMPT.md` + `README.md` pair, conservative by default, idempotent, and silent on quiet days.
+| Version | Status | Focus |
+|---|---|---|
+| v0.1 | Done | Workflow definition, templates, agents, slash commands |
+| v0.2 | Done | Skills layer, operational bots, branching / verify / worktrees guides |
+| v0.3 | Planned | Worked end-to-end examples, artifact validation |
+| v0.4 | Planned | CI quality gates, metrics, maturity model |
 
-Adopt operational agents one at a time after the lifecycle workflow is in routine use.
-
-## Versioning
-
-- **v0.1** — Foundation: workflow definition, templates, agents, slash commands.
-- **v0.2** — Skills layer: `orchestrate` skill (conversational entry), practice skills (`grill`, `design-twice`, `tracer-bullet`, `tdd-cycle`, `record-decision`), cross-cutting sink skills (`domain-context`, `ubiquitous-language`), operational learnings (memory, ops bots, branching/verify/worktrees guides), and `docs/sink.md` cataloging the full markdown sink.
-- **v0.3** (planned) — Worked examples, automated artifact validation, RTM generator.
-- **v0.4** (planned) — CI quality gates, metrics, maturity model.
+---
 
 ## License
 
