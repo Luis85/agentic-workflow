@@ -37,7 +37,7 @@ LLM coding agents are powerful, but they fail predictably when given vague inten
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | How to contribute to this template (uses its own workflow) |
 | [`AGENTS.md`](AGENTS.md) | Cross-tool root context (Codex, Cursor, Aider, Copilot all read this) |
 | [`CLAUDE.md`](CLAUDE.md) | Claude Code entry point — imports `AGENTS.md` |
-| [`examples/`](examples/) | Worked end-to-end examples (placeholder for v0.2) |
+| [`examples/`](examples/) | Demonstration artifacts — what a project using this template produces. Each `examples/<slug>/` mirrors `specs/<slug>/` shape. Not part of the template's own workflow; agents must not treat these as active features. (`cli-todo`: stages 1–3 complete, stage 4 in-progress) |
 
 ## Quickstart
 
