@@ -6,7 +6,7 @@ Worked end-to-end examples of features developed with this kit.
 
 Status:
 
-- [`examples/cli-todo/`](./cli-todo/) — a tiny CLI todo app, walked through every stage. Demonstrates the workflow on something small enough to read in one sitting. **In progress** — currently at stage 1 (idea); see `cli-todo/workflow-state.md`.
+- [`examples/cli-todo/`](./cli-todo/) — a tiny CLI todo app, walked through every stage. Demonstrates the workflow on something small enough to read in one sitting. **In progress** — stages 1–3 complete (idea, research, requirements); stage 4 design in-progress. See `cli-todo/workflow-state.md`.
 
 Planned:
 
