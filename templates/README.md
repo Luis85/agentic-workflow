@@ -8,6 +8,7 @@ Blank artifacts for each workflow stage. Copy into `specs/<feature>/<artifact>.m
 | [`research-template.md`](research-template.md) | 2 — Research | `research.md` |
 | [`prd-template.md`](prd-template.md) | 3 — Requirements | `requirements.md` |
 | [`design-template.md`](design-template.md) | 4 — Design | `design.md` |
+| [`arc42-questionnaire-template.md`](arc42-questionnaire-template.md) | 4 — Design (lazy, via `arc42-baseline` skill) | `arc42-questionnaire.md` |
 | [`spec-template.md`](spec-template.md) | 5 — Specification | `spec.md` |
 | [`tasks-template.md`](tasks-template.md) | 6 — Tasks | `tasks.md` |
 | [`implementation-log-template.md`](implementation-log-template.md) | 7 — Implementation | `implementation-log.md` |

@@ -48,6 +48,7 @@ Skills MAY include supporting files (templates, scripts, fixtures) alongside `SK
 |---|---|---|
 | [`grill/`](grill/SKILL.md) | "grill me", "interrogate this", any clarification gate | `analyst`, `pm`, `architect`, `/spec:clarify` |
 | [`design-twice/`](design-twice/SKILL.md) | "design it twice", non-trivial design choice | User or orchestrator, *before* `/spec:design` (stage 4); design agents read its synthesis as input |
+| [`arc42-baseline/`](arc42-baseline/SKILL.md) | "Arc42", "12-factor check", "fill the questionnaire", any architecture-significant feature | User or orchestrator, *before* `/spec:design` (stage 4); the `architect` reads the answered questionnaire as canonical input for Part C; sections not applicable to the project type are marked N/A |
 | [`tracer-bullet/`](tracer-bullet/SKILL.md) | "vertical slice", "tracer bullet", "smallest possible commits" | `planner` (stage 6) |
 | [`tdd-cycle/`](tdd-cycle/SKILL.md) | "TDD", "red-green-refactor", "test first" | `dev` (stage 7) |
 | [`record-decision/`](record-decision/SKILL.md) | "file an ADR", "record a decision", any irreversible choice | `architect`, all stage agents on flag |

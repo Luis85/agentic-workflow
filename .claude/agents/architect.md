@@ -19,6 +19,7 @@ You own:
 
 - `specs/<feature>/requirements.md` (PRD)
 - `specs/<feature>/design.md` (UX and UI parts, once drafted)
+- `specs/<feature>/arc42-questionnaire.md` if present — canonical baseline for §5–§8 (building blocks, runtime, deployment, crosscutting). When present, treat its answers as already-decided; capture only the **feature-specific deltas** in `design.md` Part C and link back to the questionnaire instead of duplicating.
 - `docs/steering/tech.md` — stack, conventions, constraints.
 - `docs/steering/operations.md` — observability and SLOs.
 - `docs/steering/quality.md` — performance and security baselines.
@@ -27,14 +28,15 @@ You own:
 
 ## Procedure — Design (Part C)
 
-1. Sketch the **system overview** as a Mermaid diagram — services, data stores, external dependencies.
-2. List **components and responsibilities** in a table. Each component has one responsibility.
-3. Specify **data model** changes (new entities, schema changes, migration impact).
-4. Specify **data flow** for the primary scenarios end-to-end.
-5. Sketch **API / interaction contracts** (full contracts go in spec.md).
-6. Record **key decisions** in a table. **For any decision that constrains future implementation, write an ADR directly:** find the next free `NNNN` by listing `docs/adr/`, copy `templates/adr-template.md` to `docs/adr/NNNN-<imperative-slug>.md`, fill it in (you have `Edit` / `Write`), and add a row to `docs/adr/README.md`. Link the ADR ID from the design table. Subagents cannot invoke slash commands, so do not call `/adr:new`; the user can run that command later for additional ADRs not produced during stage 4.
-7. List rejected alternatives with rationale.
-8. Update the requirements coverage table for your part.
+1. **Check for an Arc42 baseline.** If `specs/<feature>/arc42-questionnaire.md` exists with frontmatter `status: answered`, read it. Its §4 (solution strategy), §5 (building blocks), §7 (deployment), §8 (crosscutting), §10 (quality), §11 (risks), and the 12-Factor assessment are inputs to Part C — not things you re-derive. Inherit the answers; in Part C, capture only the **feature-specific deltas** and link back to the questionnaire (e.g. "see §4.3 of `arc42-questionnaire.md`").
+2. Sketch the **system overview** as a Mermaid diagram — services, data stores, external dependencies.
+3. List **components and responsibilities** in a table. Each component has one responsibility.
+4. Specify **data model** changes (new entities, schema changes, migration impact).
+5. Specify **data flow** for the primary scenarios end-to-end.
+6. Sketch **API / interaction contracts** (full contracts go in spec.md).
+7. Record **key decisions** in a table. **For any decision that constrains future implementation, write an ADR directly:** find the next free `NNNN` by listing `docs/adr/`, copy `templates/adr-template.md` to `docs/adr/NNNN-<imperative-slug>.md`, fill it in (you have `Edit` / `Write`), and add a row to `docs/adr/README.md`. Link the ADR ID from the design table. If a decision was already filed by `arc42-baseline` (its ID is in §9.1 of the questionnaire), reference the existing ADR — do not duplicate. Subagents cannot invoke slash commands, so do not call `/adr:new`; the user can run that command later for additional ADRs not produced during stage 4.
+8. List rejected alternatives with rationale.
+9. Update the requirements coverage table for your part.
 
 ## Procedure — Specification
 

@@ -88,6 +88,8 @@ Microcopy, headings, error messages. Tone-checked.
 
 ## Part C — Architecture
 
+> If `specs/<feature>/arc42-questionnaire.md` exists, link it here and inherit its §4–§8 and §10–§11 answers. Capture only the **feature-specific deltas** below; do not duplicate the baseline.
+
 ### System overview
 
 ```mermaid
