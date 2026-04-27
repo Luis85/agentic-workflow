@@ -1,10 +1,10 @@
-# Codex workflow
+# PR delivery workflow
 
 This repo treats Codex as an autonomous topic-branch contributor. When a human asks Codex to make a non-trivial repo change, Codex should complete the full PR loop unless the human explicitly asks for local-only work.
 
 ## Default delivery loop
 
-1. Read the required project context from `AGENTS.md`.
+1. Read the required project context from `AGENTS.md` and `.codex/instructions.md`.
 2. Check the main checkout is clean enough to start and identify the integration branch (`main` for Shape A, `develop` for Shape B).
 3. Create a fresh worktree under `.worktrees/<slug>/` from the integration branch:
 

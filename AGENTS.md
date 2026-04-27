@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Cross-tool root context for AI coding agents (Claude Code, Codex, Cursor, Aider, Copilot, Gemini, etc.). Tool-specific files (`CLAUDE.md`, `.cursor/rules/`, `.aider.conf.yml`) should `@import` or reference this file rather than duplicate it.
+Cross-tool root context for AI coding agents (Claude Code, Codex, Cursor, Aider, Copilot, Gemini, etc.). Tool-specific files and folders (`CLAUDE.md`, `.codex/`, `.cursor/rules/`, `.aider.conf.yml`) should `@import` or reference this file rather than duplicate it.
 
 > **One source of truth, many tools.** When you change project conventions, change them here.
 
@@ -31,7 +31,7 @@ Before doing any non-trivial work, read:
 - **Update workflow state.** When you finish or hand off a stage, update `specs/<feature>/workflow-state.md` so the next agent can resume.
 - **Escalate ambiguity.** Don't guess. Either ask the human or open a `clarifications` block in the active artifact.
 - **Branch per concern; verify before push.** Topic branches live in `.worktrees/<slug>/`; one concern per PR; `verify` green locally before opening a PR. Never `--no-verify`. See `docs/branching.md`, `docs/worktrees.md`, `docs/verify-gate.md`.
-- **Codex opens the PR.** For non-trivial repo changes, Codex creates its own worktree, commits, pushes, opens the pull request, reports the PR URL/status, and asks the human for the next step. See `docs/codex-workflow.md`.
+- **Codex opens the PR.** For non-trivial repo changes, Codex creates its own worktree, commits, pushes, opens the pull request, reports the PR URL/status, and asks the human for the next step. See `.codex/README.md`.
 - **Memory edits are docs‑only.** Updates to `.claude/memory/` ride in their own PR with no changeset and no version bump. See `.claude/memory/feedback_memory_edits.md`.
 
 ## Repo conventions
@@ -61,6 +61,6 @@ Skills (`.claude/skills/`) are reusable how-tos any agent can invoke (`verify`, 
 ## Tool-specific notes
 
 - **Claude Code.** Subagents at `.claude/agents/`, slash commands at `.claude/commands/`, skills at `.claude/skills/`, operational memory at `.claude/memory/`, permission baseline at `.claude/settings.json`. `CLAUDE.md` imports this file plus the constitution and the memory index.
-- **Codex.** This file is the primary context. For delivery mechanics, follow [`docs/codex-workflow.md`](docs/codex-workflow.md): create a worktree, verify, push, open the PR, then ask for next steps.
+- **Codex.** This file is the primary context. Codex-specific instructions and workflows live in [`.codex/`](.codex/README.md): create a worktree, verify, push, open the PR, then ask for next steps.
 - **Cursor / Aider.** This file is the primary context. Cursor users: `.cursor/rules/` may be added later if needed.
 - **All tools.** Templates in `templates/` are framework-agnostic Markdown.
