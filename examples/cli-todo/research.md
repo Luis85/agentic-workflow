@@ -26,6 +26,8 @@ Carried forward from `idea.md`. Each is answered below; see the relevant section
 | Q5 | Data file location: `~/.todo.json` vs. XDG vs. env-var override | answered |
 | Q6 | Distribution: source-only vs. pre-built binaries vs. Homebrew | answered |
 
+> **Note on library names.** This is a worked example. Where the analysis below names a specific third-party library (e.g., a particular XDG or atomic-rename helper), treat it as **illustrative, not prescriptive** — the implementation stage picks the actual dependency. Stdlib APIs are referenced at the *behavioural* level (e.g., "atomic temp-file rename") rather than by version-pinned function name, to keep the artifact from rotting as the language evolves.
+
 ---
 
 ## Market / ecosystem
@@ -66,7 +68,7 @@ The three alternatives below represent genuinely different trade-off positions, 
 
 ### Alternative A — Go + JSON file
 
-**Description:** A Go CLI (`cobra` or stdlib `flag`) that reads/writes a single JSON file (`~/.local/share/todo/tasks.json` with `$TODO_FILE` override). Tasks are a JSON array of objects with `id`, `text`, `done`, `created_at`. Atomic writes via temp-file rename. Single binary via `go build`.
+**Description:** A Go CLI (using stdlib argument parsing or a third-party CLI helper — choice deferred to implementation) that reads/writes a single JSON file (`~/.local/share/todo/tasks.json` with `$TODO_FILE` override). Tasks are a JSON array of objects with `id`, `text`, `done`, `created_at`. Atomic writes via temp-file rename. Single binary via `go build`.
 
 **Pros:**
 - `go install github.com/...` produces a single static binary; no runtime dependency on the target machine.
@@ -75,16 +77,16 @@ The three alternatives below represent genuinely different trade-off positions, 
 - JSON is inspectable with `cat` / `jq` and trivially editable by hand.
 - Standard library contains everything needed (no third-party deps for a basic implementation).
 - Sequential integer IDs (`1`, `2`, `3`) are adequate for local-only use and immediately human-usable (`todo done 3`).
-- Atomic rename is well-supported: `google/renameio` or the stdlib temp-file pattern covers Linux, macOS, and Windows.
+- Atomic rename is well-supported: the stdlib temp-file + rename pattern covers Linux, macOS, and (with a small Windows-safe helper if needed) Windows. Specific helper library is an implementation-stage choice.
 
 **Cons:**
 - JSON loses ordering on map keys (struct-serialised arrays avoid this, but it's a subtlety).
 - Not as "safe" from corruption as SQLite journalling, but adequate for the use case.
 - Go module system adds a `go.sum` / `go.mod` file, which is a small amount of boilerplate for readers unfamiliar with Go modules.
 
-### Alternative B — Rust + SQLite (via `rusqlite`)
+### Alternative B — Rust + SQLite
 
-**Description:** A Rust CLI (`clap`) backed by a SQLite file (`~/.local/share/todo/tasks.db`). Tasks stored as rows.
+**Description:** A Rust CLI (using a standard CLI argument parser) backed by a SQLite file (`~/.local/share/todo/tasks.db`). Tasks stored as rows.
 
 **Pros:**
 - Rust produces the smallest, fastest binary.
@@ -93,14 +95,14 @@ The three alternatives below represent genuinely different trade-off positions, 
 
 **Cons:**
 - Rust's learning curve (borrow checker, lifetimes) makes the source harder to follow for engineers who don't already know Rust. The didactic goal requires that a contributor can read source alongside the spec; Rust raises the cognitive overhead significantly.
-- `rusqlite` links against libsqlite3, which may require a system C library on some targets; full static linking requires extra toolchain steps (`RUSTFLAGS="-C target-feature=+crt-static"`).
-- SQLite binary is not human-inspectable without `sqlite3` CLI; it cannot be edited in a text editor or versioned in git without extra tooling.
+- A typical SQLite Rust binding links against libsqlite3, which may require a system C library on some targets; full static linking requires extra toolchain steps.
+- SQLite binary is not human-inspectable without an external SQLite CLI; it cannot be edited in a text editor or versioned in git without extra tooling.
 - For a single-user local tool, SQLite's concurrency advantage is theoretical, not practical.
 - Compile times are substantially longer than Go, which slows the development loop during the worked example.
 
 ### Alternative C — Python + plain text (todo.txt-style)
 
-**Description:** A Python CLI (`argparse` or `click`) that reads/writes a `~/.local/share/todo/tasks.txt` file in a simplified todo.txt-inspired format (one task per line, `x` prefix for done, numeric ID embedded as `id:N` key:value).
+**Description:** A Python CLI (using a stdlib or third-party argument parser) that reads/writes a `~/.local/share/todo/tasks.txt` file in a simplified todo.txt-inspired format (one task per line, `x` prefix for done, numeric ID embedded as `id:N` key:value).
 
 **Pros:**
 - Python source is maximally readable to the broadest audience; nearly pseudocode.
@@ -111,9 +113,9 @@ The three alternatives below represent genuinely different trade-off positions, 
 **Cons:**
 - Not a single binary. Requires Python ≥ 3.9 on the target machine, plus pipx or pip. On Windows, this is a non-trivial setup path.
 - Plain-text format requires careful parsing to embed IDs without breaking human-readability; the todo.txt `id:N` extension is non-standard and not universally supported.
-- Atomic writes in Python require either `os.replace` (Python ≥ 3.3) with a temp file, or a third-party library (`atomicwrites`); the pattern is slightly less idiomatic than Go's.
+- Atomic writes in Python require either a stdlib replace-and-temp-file pattern or a third-party helper; the pattern is slightly less idiomatic than Go's.
 - The "single binary or single-runtime install" constraint in `IDEA-CLI-001` is met only loosely; pipx is a prerequisite that many users won't have.
-- Cross-platform path resolution (`pathlib`, `platformdirs`) adds a dependency or verbose conditional logic.
+- Cross-platform path resolution (via stdlib path utilities plus a platform-dirs helper) adds a dependency or verbose conditional logic.
 
 ---
 
@@ -125,7 +127,7 @@ Three options: plain text, JSON, SQLite.
 
 - **Plain text (todo.txt style):** Human-readable; grep/sed-friendly; no parser library needed. Drawbacks: no natural ID field (IDs are positional line numbers — fragile on delete); concurrent appends can produce partially-written lines; migration to richer schema means line-format changes.
 - **JSON (single file, array of objects):** Structured; easy to read/write with stdlib; IDs are explicit fields; adding new fields is backward-compatible. The file as a whole must be read and rewritten on every mutation (acceptable for <10 k tasks). Atomic write via temp-file rename avoids partial writes. **Recommended for v1.**
-- **SQLite:** Best durability and concurrent-access story. Overkill for local single-user v1; requires a C dependency or a pure-Go driver (`modernc.org/sqlite`); binary format is not human-inspectable.
+- **SQLite:** Best durability and concurrent-access story. Overkill for local single-user v1; requires either a C dependency or a pure-Go driver; binary format is not human-inspectable.
 
 ### Q2 — Implementation language
 
@@ -133,10 +135,10 @@ Evaluated against single-binary distribution AND didactic clarity for spec-kit r
 
 | Language | Single binary | Install path | Source readability (mixed audience) | Cross-platform path handling |
 |---|---|---|---|---|
-| Go | Yes (static by default) | `go install` / pre-built release | High — approachable to most engineers | `os.UserHomeDir` + `adrg/xdg` (stdlib has no `UserDataDir`; `os.UserConfigDir` is config-only) |
-| Rust | Yes (with flags) | `cargo install` / pre-built release | Medium — borrow checker surprises newcomers | `dirs` crate |
-| Python | No (requires runtime) | `pipx install` | Very high | `pathlib` + `platformdirs` |
-| Node | No (requires runtime; pkg/nexe for bundles) | `npm install -g` | High | `os.homedir`, `xdg` package |
+| Go | Yes (static by default) | `go install` / pre-built release | High — approachable to most engineers | stdlib home-dir + a third-party XDG helper |
+| Rust | Yes (with flags) | `cargo install` / pre-built release | Medium — borrow checker surprises newcomers | a directories / XDG crate |
+| Python | No (requires runtime) | `pipx install` | Very high | stdlib path utilities + a platform-dirs helper |
+| Node | No (requires runtime; bundlers for binary-style packaging) | `npm install -g` | High | stdlib home-dir + a third-party XDG package |
 
 Go is the strongest fit: single binary without flags, easy cross-compilation, readable to a wide audience, and strong stdlib for CLI and file I/O.
 
@@ -158,17 +160,17 @@ For a single-user local-only tool, true concurrent access (two terminals calling
 - **No lockfile** in v1: lockfiles add complexity (stale-lock detection, platform-specific advisory vs. mandatory locking) and the scenario they guard against is unlikely in normal use.
 - **Document the limitation** explicitly in the spec: "last writer wins; simultaneous invocations from separate terminals may lose one update". This is an honest, traceable decision, not an omission.
 
-The atomic-rename pattern is well-supported in Go via `os.CreateTemp` + `os.Rename` (POSIX) or `google/renameio` for Windows-safe rename.
+The atomic-rename pattern is well-supported in Go: a stdlib temp-file create + rename works on POSIX, and a small third-party helper handles Windows-safe rename if the implementation chooses to support it. Library selection is deferred to the implementation stage.
 
 ### Q5 — Data file location
 
 Three options:
 
 - `~/.todo.json` (dotfile in home): Simple. Pollutes `$HOME`. Not XDG-compliant.
-- `$XDG_DATA_HOME/todo/tasks.json` (default: `~/.local/share/todo/tasks.json`): XDG-compliant on Linux/macOS. On Windows, maps to `%LOCALAPPDATA%\todo\tasks.json` via the `adrg/xdg` Go library. The spec can reference the XDG spec directly.
+- `$XDG_DATA_HOME/todo/tasks.json` (default: `~/.local/share/todo/tasks.json`): XDG-compliant on Linux/macOS. On Windows, maps to `%LOCALAPPDATA%\todo\tasks.json` via a cross-platform XDG helper (specific library chosen at implementation time). The spec can reference the XDG spec directly.
 - `$TODO_FILE` env-var override: Allows power users and CI/test environments to redirect the file without touching config.
 
-**Recommended:** XDG data dir as the default, with `$TODO_FILE` as a full-path override. This is the most principled approach, teaches XDG to readers, and keeps `$HOME` uncluttered. Go library `adrg/xdg` handles the cross-platform mapping without conditional logic in application code.
+**Recommended:** XDG data dir as the default, with `$TODO_FILE` as a full-path override. This is the most principled approach, teaches XDG to readers, and keeps `$HOME` uncluttered. A cross-platform XDG helper (selected at implementation time) handles the mapping without conditional logic in application code.
 
 ### Q6 — Distribution
 
@@ -194,7 +196,7 @@ Sequential integers (1, 2, 3…) are the right choice for a local single-user to
 | RISK-002 | **Language alienation** — readers unfamiliar with Go find the source opaque, undermining the didactic goal | med | low | Go's syntax is intentionally simple. Mitigate further by keeping the implementation in a single file or two files maximum, with inline comments that cross-reference requirement IDs. Avoid Go-isms (goroutines, channels, complex interfaces) entirely in v1. |
 | RISK-003 | **Data corruption on concurrent writes** — two simultaneous invocations produce a truncated or interleaved JSON file | med | low | Atomic-rename write pattern (temp file + rename) prevents partial writes. Document the last-writer-wins caveat in the spec. |
 | RISK-004 | **Pulled-into-real-product trap** — a contributor forks the example and uses it as a production codebase, inheriting its deliberate simplifications (no auth, no backup, last-writer-wins) | med | low | Add a prominent notice in `README.md` and `spec.md` header: "This is a spec-kit demonstration. It omits production concerns deliberately." The spec's out-of-scope list is the contractual boundary. |
-| RISK-005 | **Windows path handling edge cases** — `adrg/xdg` or temp-file rename behaves unexpectedly on Windows | low | med | Test on Windows in CI (GitHub Actions `windows-latest` runner) as part of the pre-built binary build. If the example does not run CI, document "Linux/macOS only" clearly. |
+| RISK-005 | **Windows path handling edge cases** — the chosen XDG helper or temp-file rename behaves unexpectedly on Windows | low | med | Test on Windows in CI (e.g., a Windows runner) as part of the pre-built binary build. If the example does not run CI, document "Linux/macOS only" clearly. |
 | RISK-006 | **Migration cost** — if the JSON schema changes between example iterations, existing users' data files become unreadable | low | low | Include a `version` field in the JSON root object from day one. Document migration strategy (re-read old format, write new) in a follow-up example if needed. |
 
 ---
@@ -208,7 +210,7 @@ Sequential integers (1, 2, 3…) are the right choice for a local single-user to
 - Go produces a genuine single static binary without extra flags, satisfying the constraint in `IDEA-CLI-001` cleanly.
 - Go source is readable by a broad engineer audience (Python, Java, JS background) without requiring familiarity with a complex type system or borrow checker. A spec-kit reader can map `requirements.md` → source code in one pass.
 - JSON over a temp-file atomic rename gives adequate durability for a local single-user tool, is human-inspectable, and can be read/written with Go's stdlib alone (no third-party driver).
-- XDG data dir (`~/.local/share/todo/tasks.json`) is principled, cross-platform via `adrg/xdg`, and teaches readers a real cross-platform pattern.
+- XDG data dir (`~/.local/share/todo/tasks.json`) is principled, cross-platform via a small XDG helper library (selected at implementation time), and teaches readers a real cross-platform pattern.
 - `go install` is the honest minimum distribution path for this audience; the example can note that a real release would add a GitHub Actions matrix build for pre-built binaries.
 
 **v1 scope floor:** Five commands — `add <text>`, `list`, `done <id>`, `rm <id>`, and `--help` on every subcommand. No due dates, no priorities, no tags, no search. This is the smallest surface area that still exercises the full EARS requirement set, the test plan, and the traceability matrix.
