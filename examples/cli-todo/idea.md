@@ -18,7 +18,7 @@ Solo engineers and terminal-native developers want to capture, list, and complet
 ## Target users
 
 - **Primary:** solo engineers who live in the terminal and want a single-binary, local-first todo tool with a learnable surface area (≤ 5 commands).
-- **Secondary:** contributors reading this spec-kit who need a small-but-realistic worked example to learn the workflow on. The example's didactic value is itself a goal.
+- **Secondary:** contributors reading this specorator who need a small-but-realistic worked example to learn the workflow on. The example's didactic value is itself a goal.
 
 ## Desired outcome
 

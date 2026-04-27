@@ -23,7 +23,7 @@ artifacts:
 
 # Workflow state — cli-todo
 
-> A worked example of the spec-kit, walked through every stage. Built incrementally so each stage can be reviewed before the next one builds on it.
+> A worked example of the specorator, walked through every stage. Built incrementally so each stage can be reviewed before the next one builds on it.
 
 ## Stage progress
 
@@ -328,4 +328,4 @@ Free-form. What does the next agent / human need to know?
 
 - [x] CLAR-001 — Confirm primary readership (template contributors vs. real CLI todo users) — affects how much we lean on didactic clarity vs. product polish.
 
-  **Resolved 2026-04-27 (analyst):** Research confirms both audiences are real and compatible. The primary user (solo terminal engineer) drives the functional requirements; the secondary user (spec-kit contributor reading the worked example) drives the didactic constraints (single file / minimal deps / inline requirement cross-references). These constraints are additive, not conflicting. No further clarification needed before Requirements.
+  **Resolved 2026-04-27 (analyst):** Research confirms both audiences are real and compatible. The primary user (solo terminal engineer) drives the functional requirements; the secondary user (specorator contributor reading the worked example) drives the didactic constraints (single file / minimal deps / inline requirement cross-references). These constraints are additive, not conflicting. No further clarification needed before Requirements.

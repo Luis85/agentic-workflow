@@ -10,7 +10,7 @@ Entry point for Claude Code in this repository.
 
 ## What this repo is
 
-A template for **spec-driven, agentic software development**. The workflow itself is the deliverable. See `docs/spec-kit.md` for the full definition and `README.md` for the map of files.
+A template for **spec-driven, agentic software development**. The workflow itself is the deliverable. See `docs/specorator.md` for the full definition and `README.md` for the map of files.
 
 ## How to work here
 
@@ -47,7 +47,7 @@ In both modes:
 2. Each `/spec:*` command spawns its specialist subagent from `.claude/agents/`. Don't bypass — agent scoping is intentional.
 3. When you finish a stage, the slash command updates `workflow-state.md`. Don't edit it by hand mid-workflow.
 
-When you're managing **multiple parallel features** or working as a **service provider** across client portfolios, run the **Portfolio Track** (opt-in, above the Spec Kit):
+When you're managing **multiple parallel features** or working as a **service provider** across client portfolios, run the **Portfolio Track** (opt-in, above the Specorator):
 
 - **Conversational:** say "run portfolio review", "update the portfolio", or "check portfolio health" and the [`portfolio-track`](.claude/skills/portfolio-track/SKILL.md) skill will detect the active portfolio and dispatch the right cycle.
 - **Manual:** `/portfolio:start <slug>` (bootstrap), then `/portfolio:x` (6-monthly strategy), `/portfolio:y` (monthly review), `/portfolio:z` (daily ops). See [`docs/portfolio-track.md`](docs/portfolio-track.md) and [ADR-0009](docs/adr/0009-add-portfolio-manager-role.md).

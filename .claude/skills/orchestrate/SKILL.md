@@ -1,12 +1,12 @@
 ---
 name: orchestrate
-description: Drive a feature end-to-end through the Spec Kit workflow (idea → retrospective) by gathering scope from the user up front, then dispatching the right stage subagent for each phase, persisting artifacts under specs/<slug>/, and gating between stages with the user. Use when the user wants to start a new feature, run the full workflow, drive something end-to-end, asks "what's next?" on an active feature, or mentions "orchestrate", "kick off", or "from scratch".
+description: Drive a feature end-to-end through the Specorator workflow (idea → retrospective) by gathering scope from the user up front, then dispatching the right stage subagent for each phase, persisting artifacts under specs/<slug>/, and gating between stages with the user. Use when the user wants to start a new feature, run the full workflow, drive something end-to-end, asks "what's next?" on an active feature, or mentions "orchestrate", "kick off", or "from scratch".
 argument-hint: [feature-slug or one-line goal]
 ---
 
 # Orchestrate
 
-You are the conductor of the Spec Kit workflow defined in `docs/spec-kit.md`. Your job is to **sequence** stages and **gate** between them — never to do the stage work yourself. Each stage runs in its specialist subagent (`.claude/agents/`); you only persist state, surface choices, and dispatch.
+You are the conductor of the Specorator workflow defined in `docs/specorator.md`. Your job is to **sequence** stages and **gate** between them — never to do the stage work yourself. Each stage runs in its specialist subagent (`.claude/agents/`); you only persist state, surface choices, and dispatch.
 
 `AskUserQuestion` only works in the main thread. Subagents cannot ask the user anything. So all clarification happens in *your* turn — before and between stages.
 
@@ -14,7 +14,7 @@ You are the conductor of the Spec Kit workflow defined in `docs/spec-kit.md`. Yo
 
 Always start by reading these (they're the contract you're enforcing):
 
-- `docs/spec-kit.md` — the 11-stage workflow definition.
+- `docs/specorator.md` — the 11-stage workflow definition.
 - `memory/constitution.md` — principles every stage must obey.
 - `docs/quality-framework.md` — gate criteria.
 - The active `specs/<slug>/workflow-state.md` (if resuming).
@@ -86,7 +86,7 @@ This is the one place the orchestrator owns artifact-content edits in `workflow-
 For each depth:
 
 - **Depth = Lean**: write minimal **stub artifacts** for `specs/<slug>/idea.md` and `specs/<slug>/research.md` containing one paragraph each: the user's brief (as `idea.md`'s content) and a one-line note (as `research.md`: "Lean depth — discovery skipped; scope captured directly in requirements"). Mark both `complete` in the YAML `artifacts:` map and the human-readable table. Add a `## Skips` line: `Lean depth — idea + research stubbed, full discovery skipped`. The PM agent will read the stubs and proceed with the brief as input.
-- **Depth = Spike**: Spike is "Idea + Research only", so stages 3–10 are never dispatched. Mark all 10 of `requirements.md`, `design.md`, `spec.md`, `tasks.md`, `implementation-log.md`, `test-plan.md`, `test-report.md`, `review.md`, `traceability.md`, `release-notes.md` as `skipped` in the `artifacts:` map and table. Add one `## Skips` entry: `spike depth — research-only run, no implementation`. (Stage 11 retrospective is never skipped per `docs/spec-kit.md` §3.11.)
+- **Depth = Spike**: Spike is "Idea + Research only", so stages 3–10 are never dispatched. Mark all 10 of `requirements.md`, `design.md`, `spec.md`, `tasks.md`, `implementation-log.md`, `test-plan.md`, `test-report.md`, `review.md`, `traceability.md`, `release-notes.md` as `skipped` in the `artifacts:` map and table. Add one `## Skips` entry: `spike depth — research-only run, no implementation`. (Stage 11 retrospective is never skipped per `docs/specorator.md` §3.11.)
 - **Depth = Standard**: nothing to mark.
 
 Bump `last_updated` to today; set `last_agent: orchestrator`. The schema fields (`status`, `current_stage`, top-level enum) are not changed by this step.
@@ -116,7 +116,7 @@ For each stage in the agreed sequence, in order:
      - Stage 7 (Implementation) — `/spec:test` needs implementation tasks marked `done`.
      - Stage 8 (Testing) — `/spec:review` requires `test-report.md` to have no S1/S2 open.
      - Stage 9 (Review) — `/spec:release` requires the review verdict to be `Approved` or `Approved with conditions` (`.claude/commands/spec/release.md` step 1). A `skipped` review has no verdict.
-     - Stage 11 (Learning) — never skipped per `docs/spec-kit.md` §3.11.
+     - Stage 11 (Learning) — never skipped per `docs/specorator.md` §3.11.
 
 ### Step 5 — Stage 4 (Design) special handling
 
@@ -151,5 +151,5 @@ If a subagent returns "blocked — needs human input" (e.g. the analyst can't re
 
 - `PHASES.md` — concrete dispatch templates per stage (what to pass as additional context).
 - `RESUME.md` — resume protocol against `workflow-state.md`.
-- `docs/spec-kit.md` — workflow contract.
+- `docs/specorator.md` — workflow contract.
 - `docs/sink.md` — markdown sink layout.

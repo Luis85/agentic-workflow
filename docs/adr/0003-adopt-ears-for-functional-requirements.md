@@ -27,7 +27,7 @@ EARS (Easy Approach to Requirements Syntax, Mavin et al., Rolls-Royce, 2009) con
 
 EARS clauses map 1:1 to acceptance tests, which makes traceability and verification mechanical.
 
-Kiro mandates EARS. GitHub Spec Kit has it as an open RFC. The pattern is now the de facto standard for spec-driven workflows.
+Kiro mandates EARS. GitHub Specorator has it as an open RFC. The pattern is now the de facto standard for spec-driven workflows.
 
 ## Decision
 

@@ -2,7 +2,7 @@
 
 **Version:** 0.1 · **Status:** Draft · **Stability:** Opt-in · **ADR:** [ADR-0009](adr/0009-add-portfolio-manager-role.md)
 
-An opt-in management track for organisations running **multiple parallel features** or acting as **service providers** managing portfolios on behalf of clients. It operates above the Spec Kit 11-stage lifecycle — one portfolio manages many features — and produces the five management documents defined by [P5 Express](https://p5.express/).
+An opt-in management track for organisations running **multiple parallel features** or acting as **service providers** managing portfolios on behalf of clients. It operates above the Specorator 11-stage lifecycle — one portfolio manages many features — and produces the five management documents defined by [P5 Express](https://p5.express/).
 
 > If you are managing a single feature, **skip this track** and go straight to `/spec:start`.
 
@@ -14,18 +14,18 @@ An opt-in management track for organisations running **multiple parallel feature
 4. [The five documents](#4-the-five-documents)
 5. [Roles](#5-roles)
 6. [Quality gates](#6-quality-gates)
-7. [Connecting to the Spec Kit](#7-connecting-to-the-spec-kit)
+7. [Connecting to the Specorator](#7-connecting-to-the-specorator)
 8. [Sources and further reading](#8-sources-and-further-reading)
 
 ---
 
 ## 1. Why a Portfolio Track
 
-The Spec Kit's eleven stages assume a single feature in flight. Once you're managing **multiple features in parallel** — for your own product, for clients, or across business units — you need a second level of management that looks across the whole portfolio rather than inside any one feature.
+The Specorator's eleven stages assume a single feature in flight. Once you're managing **multiple features in parallel** — for your own product, for clients, or across business units — you need a second level of management that looks across the whole portfolio rather than inside any one feature.
 
 The Portfolio Track applies when:
 
-- You are a **service provider** and each client engagement is a Spec Kit feature running in parallel with others.
+- You are a **service provider** and each client engagement is a Specorator feature running in parallel with others.
 - Your organisation has a **portfolio manager role** (or equivalent) responsible for value delivery across multiple features or programs.
 - You need to answer questions like: "Which projects should we stop? Which should we accelerate? Where are resources contended across projects?"
 - You need to produce **stakeholder communications** summarising overall portfolio health on a regular cadence.
@@ -40,7 +40,7 @@ The track is opinionated about three things:
 
 1. **Cadence-driven.** Strategic decisions (stop/start/pivot) belong to a 6-monthly review cycle; progress signals belong to a monthly review cycle; operational decisions (resource balance, follow-ups) belong to a daily cycle. Mixing cadences produces noise.
 2. **Surfaces, never decides.** The `portfolio-manager` agent surfaces data and proposes options; the **Portfolio Sponsor** (always human) makes stop/start/pivot decisions. This enforces Article VII of the constitution (Human Oversight).
-3. **Read-only on the Spec Kit side.** The portfolio track reads `specs/*/workflow-state.md` and other spec artifacts for health signals, but never modifies them. The boundary is hard by design (agent tool scope).
+3. **Read-only on the Specorator side.** The portfolio track reads `specs/*/workflow-state.md` and other spec artifacts for health signals, but never modifies them. The boundary is hard by design (agent tool scope).
 
 ---
 
@@ -178,14 +178,14 @@ Each cycle produces documents that must meet these criteria before the cycle is 
 
 ---
 
-## 7. Connecting to the Spec Kit
+## 7. Connecting to the Specorator
 
-The portfolio track and the Spec Kit are **parallel, non-overlapping layers**.
+The portfolio track and the Specorator are **parallel, non-overlapping layers**.
 
 ```
 Portfolio Track (portfolio/<slug>/)
     ↕ reads only (health signals)
-Spec Kit (specs/<feature-slug>/)
+Specorator (specs/<feature-slug>/)
     ↕ reads only (brief from chosen-brief.md, optional)
 Discovery Track (discovery/<sprint-slug>/)
 ```
@@ -210,5 +210,5 @@ Discovery Track (discovery/<sprint-slug>/)
 - [P5 Express manual](https://p5.express/manual/) — cycle activities (X1/X2/X3, Y1–Y4, Z1–Z3) and document definitions.
 - [ADR-0009](adr/0009-add-portfolio-manager-role.md) — the decision record for adding this track.
 - [ADR-0005](adr/0005-add-discovery-track-before-stage-1.md) — the Discovery Track ADR (same opt-in parallel-track pattern).
-- `docs/spec-kit.md` — the Spec Kit 11-stage lifecycle that the portfolio track sits above.
+- `docs/specorator.md` — the Specorator 11-stage lifecycle that the portfolio track sits above.
 - `docs/sink.md` — where all artifacts (including `portfolio/`) live in the repo.

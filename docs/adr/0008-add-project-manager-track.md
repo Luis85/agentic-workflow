@@ -19,7 +19,7 @@ Accepted
 
 ## Context
 
-The Spec Kit (Stages 1–11) and the Discovery Track (ADR-0005) together address the full software development lifecycle — from blank-page ideation through feature delivery. Both tracks are scoped to **product** concerns: what to build, how to build it, and whether it was built correctly.
+The Specorator (Stages 1–11) and the Discovery Track (ADR-0005) together address the full software development lifecycle — from blank-page ideation through feature delivery. Both tracks are scoped to **product** concerns: what to build, how to build it, and whether it was built correctly.
 
 Teams using this template in a **service-provider context** — i.e., building software for clients rather than for an internal product — have a set of concerns that neither track addresses:
 
@@ -78,7 +78,7 @@ We adopt a **Project Manager Track** as an opt-in sibling to the 11-stage lifecy
 
   The P3.Express design decision: risks, issues, change requests, and lessons all share a **single Follow-Up Register** (`followup-register.md`). There are no separate `risk-register.md`, `issue-log.md`, or `change-log.md` files.
 
-- The track is **opt-in**. Teams using the Spec Kit for internal product development and teams with a brief already established may skip it entirely. No existing workflow is affected.
+- The track is **opt-in**. Teams using the Specorator for internal product development and teams with a brief already established may skip it entirely. No existing workflow is affected.
 - State lives in **`projects/<slug>/project-state.md`**, owned by `/project:*` commands.
 - The project-manager agent carries a **`WebSearch` and `WebFetch`** tool because client-side research (market data, public company information, technology scouting) is a legitimate PM task in a service-provider context. All other lifecycle agents lack this tool.
 - Feature work (`specs/<slug>/`) and discovery work (`discovery/<slug>/`) remain owned by their own agents. The `project-manager` **links to** but does not rewrite those artifacts.

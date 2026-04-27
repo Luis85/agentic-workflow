@@ -19,7 +19,7 @@ Accepted
 
 ## Context
 
-Both the Spec Kit (Stages 1–11) and the Discovery Track (ADR-0005) assume the team is starting from a blank canvas with respect to prior system reality. Stage 2 (Research) can surface *alternatives*, and the Discovery Track can surface *opportunities*, but neither provides a structured way to answer: **"what exactly do we already have?"**
+Both the Specorator (Stages 1–11) and the Discovery Track (ADR-0005) assume the team is starting from a blank canvas with respect to prior system reality. Stage 2 (Research) can surface *alternatives*, and the Discovery Track can surface *opportunities*, but neither provides a structured way to answer: **"what exactly do we already have?"**
 
 In practice, many projects are not greenfield. A new product must be built on top of, alongside, or as a replacement for one or more existing systems. The inputs to any subsequent planning work are only as good as the team's understanding of:
 
@@ -36,7 +36,7 @@ Without this inventory, teams risk:
 3. **Data migration under-estimation** — the classic "just migrate the data" assumption that blows budgets.
 4. **Requirements that repeat known failures** — missing the lessons already encoded in the existing system's painful workarounds.
 
-The Discovery Track (ADR-0005) solves "what should we build?" The Spec Kit solves "how do we build it correctly?" This ADR introduces the **Stock-taking Track** to solve "what do we already have?" — a prerequisite for both when legacy context exists.
+The Discovery Track (ADR-0005) solves "what should we build?" The Specorator solves "how do we build it correctly?" This ADR introduces the **Stock-taking Track** to solve "what do we already have?" — a prerequisite for both when legacy context exists.
 
 The track is informed by established practices for legacy assessment:
 
@@ -47,7 +47,7 @@ The track is informed by established practices for legacy assessment:
 - **Strangler Fig pattern** context-mapping for identifying what to replace vs. retain. ([Fowler, *StranglerFigApplication*, 2004](https://martinfowler.com/bliki/StranglerFigApplication.html))
 - **Technical Debt Quadrant** for classifying debt along deliberate/inadvertent and reckless/prudent axes. ([Fowler, *Technical Debt Quadrant*, 2009](https://martinfowler.com/bliki/TechnicalDebtQuadrant.html))
 
-This is a **discovery-of-what-exists** activity, structurally different from both the *discovery-of-what-to-build* activity (Discovery Track) and the *specification-of-what-to-build* activity (Spec Kit). Merging it into either would violate **Article II — Separation of Concerns**.
+This is a **discovery-of-what-exists** activity, structurally different from both the *discovery-of-what-to-build* activity (Discovery Track) and the *specification-of-what-to-build* activity (Specorator). Merging it into either would violate **Article II — Separation of Concerns**.
 
 ## Decision
 
@@ -61,13 +61,13 @@ We adopt a **Stock-taking Track** as a sibling to the 11-stage lifecycle workflo
   | 1 | Scope | Define what is being inventoried — systems, processes, boundaries, stakeholders, and what is explicitly out of scope | `scope.md` |
   | 2 | Audit | Investigate in depth — processes, use-cases, integrations, data landscape, pain points, technical debt | `audit.md` |
   | 3 | Synthesize | Distil findings into a structured inventory — gap analysis, constraints, opportunities, migration considerations | `synthesis.md` |
-  | — | Handoff | Produce the consolidated `stock-taking-inventory.md` and recommend the next track (Discovery or Spec Kit) | `stock-taking-inventory.md` |
+  | — | Handoff | Produce the consolidated `stock-taking-inventory.md` and recommend the next track (Discovery or Specorator) | `stock-taking-inventory.md` |
 
 - The track is owned by a single specialist agent, **`legacy-auditor`**, which shadows the human role of a Business/Systems Analyst or Enterprise Architect engaged in a legacy assessment. The agent carries all three phases; no facilitator-over-specialist split is used here because the domain expertise is concentrated (unlike the Discovery Track's multi-discipline divergence).
 
 - Slash commands `/stock:start`, `/stock:scope`, `/stock:audit`, `/stock:synthesize`, `/stock:handoff` are added under `.claude/commands/stock-taking/`. Conversational entry is the `stock-taking` skill.
 
-- The track ends with `/stock:handoff` writing `stock-taking-inventory.md`. The inventory's `recommended_next` field declares whether the team should proceed to the Discovery Track (`/discovery:start`) or directly to the Spec Kit (`/spec:start` + `/spec:idea`).
+- The track ends with `/stock:handoff` writing `stock-taking-inventory.md`. The inventory's `recommended_next` field declares whether the team should proceed to the Discovery Track (`/discovery:start`) or directly to the Specorator (`/spec:start` + `/spec:idea`).
 
 - A stock-taking engagement is **always project-level, not feature-level**. It scopes to a system or system cluster. Multiple features may emerge from a single engagement and fan out into multiple `specs/<feature>/` or `discovery/<sprint>/` folders.
 
@@ -115,21 +115,21 @@ Add `stock-taking/<project-slug>/` at the repo root. New `/stock:*` slash comman
 ### Neutral
 
 - The `stock-taking/` directory sits at the repo root, parallel to `specs/` and `discovery/`. Its naming ("stock-taking") deliberately signals the *activity*, not the output domain.
-- The Handoff phase is the *only* link between the stock-taking tree and the downstream trees. No `specs/<slug>/` or `discovery/<sprint>/` directory exists before handoff. After handoff, the inventory is referenced from `chosen-brief.md` (if proceeding via Discovery) or `idea.md` (if proceeding directly to Spec Kit) `inputs:` frontmatter.
+- The Handoff phase is the *only* link between the stock-taking tree and the downstream trees. No `specs/<slug>/` or `discovery/<sprint>/` directory exists before handoff. After handoff, the inventory is referenced from `chosen-brief.md` (if proceeding via Discovery) or `idea.md` (if proceeding directly to Specorator) `inputs:` frontmatter.
 
 ## Compliance
 
 How will we know this decision is being honoured?
 
 - **The reviewer** (Stage 9) flags any `idea.md` or `frame.md` that references an existing system but lacks `inputs: [stock-taking/<project-slug>/stock-taking-inventory.md]` in its frontmatter — the inventory should be the input, not tribal knowledge.
-- **The orchestrator** detects active stock-taking engagements (status `active` in `stock-taking-state.md`) and surfaces them before routing to the Discovery Track or Spec Kit.
+- **The orchestrator** detects active stock-taking engagements (status `active` in `stock-taking-state.md`) and surfaces them before routing to the Discovery Track or Specorator.
 - **The `legacy-auditor` agent** enforces its own boundary: it does not write to `specs/<feature>/` or `discovery/<sprint>/`, and does not author requirements, design decisions, or solution proposals. Findings that look like requirements are captured as "candidate requirements" in `synthesis.md` and handed off to the appropriate downstream track.
 - **The retrospective** (Stage 11) includes a stock-taking section when the feature originated from a legacy-system engagement, capturing whether the inventory was accurate and what was missed.
 
 ## References
 
 - Constitution: [`memory/constitution.md`](../../memory/constitution.md) — Articles II (Separation of Concerns), III (Incremental Progression), VI (Agent Specialisation), VII (Human Oversight).
-- [`docs/spec-kit.md`](../spec-kit.md) — the 11-stage workflow this track precedes.
+- [`docs/specorator.md`](../specorator.md) — the 11-stage workflow this track precedes.
 - [`docs/discovery-track.md`](../discovery-track.md) — the Discovery Track this track may precede.
 - [`docs/stock-taking-track.md`](../stock-taking-track.md) — the full methodology for this track.
 - [ADR-0002](0002-adopt-spec-driven-development.md) — specs are source of truth; this ADR extends it: inventory precedes specs when legacy systems are involved.

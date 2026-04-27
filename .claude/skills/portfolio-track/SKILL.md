@@ -1,6 +1,6 @@
 ---
 name: portfolio-track
-description: Drive a portfolio management cycle based on P5 Express (https://p5.express/). Detects which cycle is due (X: 6-monthly strategy, Y: monthly review, Z: daily operations) and dispatches /portfolio:x, /portfolio:y, or /portfolio:z. Use when the user says "run portfolio review", "update the portfolio", "check portfolio health", "portfolio cycle", or asks about portfolio status across multiple projects. Opt-in — does not affect the Spec Kit 11-stage lifecycle.
+description: Drive a portfolio management cycle based on P5 Express (https://p5.express/). Detects which cycle is due (X: 6-monthly strategy, Y: monthly review, Z: daily operations) and dispatches /portfolio:x, /portfolio:y, or /portfolio:z. Use when the user says "run portfolio review", "update the portfolio", "check portfolio health", "portfolio cycle", or asks about portfolio status across multiple projects. Opt-in — does not affect the Specorator 11-stage lifecycle.
 argument-hint: [portfolio-slug or "list"]
 ---
 
@@ -92,7 +92,7 @@ Then ask (single `AskUserQuestion`): "Run another cycle now, or done for today?"
 
 - Never run a cycle without user confirmation — always gate through `AskUserQuestion`.
 - Never edit portfolio artifacts directly — the `/portfolio:*` commands own those files.
-- Never modify `specs/` artifacts — portfolio track is read-only on the Spec Kit side.
+- Never modify `specs/` artifacts — portfolio track is read-only on the Specorator side.
 - Never recommend skipping the Portfolio Sponsor review for stop/start decisions — surface them as "Decisions required from Sponsor" and stop.
 - If `portfolio-definition.md` is missing, stop and tell the user to run `/portfolio:start` first.
 

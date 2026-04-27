@@ -1,5 +1,5 @@
 ---
-description: Stock-taking Track — Handoff. Invokes the legacy-auditor to produce stock-taking-inventory.md (the consolidated inventory) and recommend the downstream track (Discovery or Spec Kit).
+description: Stock-taking Track — Handoff. Invokes the legacy-auditor to produce stock-taking-inventory.md (the consolidated inventory) and recommend the downstream track (Discovery or Specorator).
 argument-hint: <project-slug>
 allowed-tools: [Read, Edit, Write, Bash]
 model: sonnet

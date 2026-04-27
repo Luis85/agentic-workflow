@@ -14,7 +14,7 @@ inputs:
 
 # Stock-taking Inventory — <project-slug>
 
-> This is the consolidated handoff artifact for the Stock-taking Engagement. It summarises key findings from all three phases. Downstream tracks (Discovery or Spec Kit) treat this as a mandatory input — they reference it in `chosen-brief.md` or `idea.md` `inputs:` frontmatter.
+> This is the consolidated handoff artifact for the Stock-taking Engagement. It summarises key findings from all three phases. Downstream tracks (Discovery or Specorator) treat this as a mandatory input — they reference it in `chosen-brief.md` or `idea.md` `inputs:` frontmatter.
 
 ---
 

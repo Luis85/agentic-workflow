@@ -36,4 +36,4 @@ Every other file in this directory is an index or this README.
 - **Treat `feedback_*.md` as binding** unless the constitution overrides it.
 - **Treat `project_*.md` as freshness‑of‑last‑edit.** If it looks stale (e.g. references a release that already shipped), flag it and propose an update — don't silently work around it.
 
-See [`docs/spec-kit.md`](../../docs/spec-kit.md) for where memory fits in the wider workflow, and [`AGENTS.md`](../../AGENTS.md) for the operating rules that govern every agent.
+See [`docs/specorator.md`](../../docs/specorator.md) for where memory fits in the wider workflow, and [`AGENTS.md`](../../AGENTS.md) for the operating rules that govern every agent.

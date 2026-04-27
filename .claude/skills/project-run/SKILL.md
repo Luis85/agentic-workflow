@@ -10,7 +10,7 @@
 
 It sequences specialist commands (`/project:*`) and gates with `AskUserQuestion` at every human-decision point (go/no-go, change approval, sign-off).
 
-This skill does **not** drive Spec Kit feature work (`/spec:*`) or Discovery Track sprints (`/discovery:*`) — it coordinates them from the project management layer.
+This skill does **not** drive Specorator feature work (`/spec:*`) or Discovery Track sprints (`/discovery:*`) — it coordinates them from the project management layer.
 
 ---
 
@@ -35,7 +35,7 @@ Run when:
 ### Phase 0 — Orientation
 
 1. Ask the user to describe the engagement in one paragraph: who is the client, what are they getting, when, and at what cost (if known).
-2. Confirm the user wants the full project management layer (not just a Spec Kit feature). If they're uncertain, explain the difference (see `docs/project-track.md` §1).
+2. Confirm the user wants the full project management layer (not just a Specorator feature). If they're uncertain, explain the difference (see `docs/project-track.md` §1).
 3. Ask for a project slug (engagement-level name, not solution name). Suggest corrections if needed.
 
 ### Phase 1 — Bootstrap and Initiation

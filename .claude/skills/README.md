@@ -10,7 +10,7 @@
 
 Skills are the smallest unit of "we always do it this way". Anything you find yourself explaining to an agent more than twice belongs here.
 
-The catalog spans three families: a **workflow conductor** (the conversational entry to spec-kit), **practice skills** (the recurring techniques agents pull in mid-stage, mattpocock-style), and **operational skills** (the deterministic procedures that gate pre-PR and ADR work).
+The catalog spans three families: a **workflow conductor** (the conversational entry to specorator), **practice skills** (the recurring techniques agents pull in mid-stage, mattpocock-style), and **operational skills** (the deterministic procedures that gate pre-PR and ADR work).
 
 ## Layout
 
@@ -40,7 +40,7 @@ Skills MAY include supporting files (templates, scripts, fixtures) alongside `SK
 
 | Skill | Triggers when… | What it does |
 |---|---|---|
-| [`orchestrate/`](orchestrate/SKILL.md) | "start a feature", "kick off", "from scratch", "what's next?", "orchestrate" | Drives the full 11-stage Spec Kit workflow conversationally. Reads `workflow-state.md`, gates with `AskUserQuestion`, dispatches `/spec:*` commands in sequence. |
+| [`orchestrate/`](orchestrate/SKILL.md) | "start a feature", "kick off", "from scratch", "what's next?", "orchestrate" | Drives the full 11-stage Specorator workflow conversationally. Reads `workflow-state.md`, gates with `AskUserQuestion`, dispatches `/spec:*` commands in sequence. |
 | [`discovery-sprint/`](discovery-sprint/SKILL.md) | "design sprint", "ideation", "brainstorm new product ideas", "blank page", "discovery sprint" | Drives the 5-phase Discovery Track (Frame → Diverge → Converge → Prototype → Validate → Handoff) conversationally. Dispatches the `facilitator` and 6 specialist consults. Output: `chosen-brief.md` that feeds `/spec:idea`. **Skip when a brief already exists — go to `orchestrate`.** |
 
 ### Practice skills (used by stage agents)

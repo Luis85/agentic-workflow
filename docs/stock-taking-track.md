@@ -2,7 +2,7 @@
 
 **Version:** 0.1 · **Status:** Draft · **Stability:** Opt-in · **ADR:** [ADR-0007](adr/0007-add-stock-taking-track-for-legacy-projects.md)
 
-A pre-workflow track for teams building on top of, alongside, or as a replacement for existing systems. Produces a structured inventory of what already exists that feeds either the Discovery Track or Stage 1 of the Spec Kit.
+A pre-workflow track for teams building on top of, alongside, or as a replacement for existing systems. Produces a structured inventory of what already exists that feeds either the Discovery Track or Stage 1 of the Specorator.
 
 > If you are starting from scratch with no existing system to understand, **skip this track** and go straight to `/discovery:start` (blank page) or `/spec:start` + `/spec:idea` (clear brief).
 
@@ -21,7 +21,7 @@ A pre-workflow track for teams building on top of, alongside, or as a replacemen
 
 ## 1. Why a Stock-taking Track
 
-The Spec Kit's eleven stages assume a brief exists and the team understands enough of the problem context to write requirements. The Discovery Track assumes you need to *find* the right thing to build. Neither addresses a common third situation: **you need to build something new, but an existing system defines the landscape you must navigate**.
+The Specorator's eleven stages assume a brief exists and the team understands enough of the problem context to write requirements. The Discovery Track assumes you need to *find* the right thing to build. Neither addresses a common third situation: **you need to build something new, but an existing system defines the landscape you must navigate**.
 
 The Stock-taking Track applies when:
 
@@ -227,7 +227,7 @@ inputs:
 - Stage 2 (Research) uses the inventory's open questions as part of its research agenda.
 
 **If `recommended_next: both`:**
-- Document which parts of the scope feed into Discovery and which have clear-enough briefs for the Spec Kit.
+- Document which parts of the scope feed into Discovery and which have clear-enough briefs for the Specorator.
 - Emit one recommendation per path.
 
 ---
