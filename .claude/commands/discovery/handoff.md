@@ -18,14 +18,16 @@ Run the **Handoff** phase of the Discovery Track. Read [`docs/discovery-track.md
    2. For each concept whose hypothesis was *supported* in `validation.md`, produce one `chosen-brief.md` (or `chosen-brief-c-NNN.md` if multiple) from [`templates/discovery-chosen-brief-template.md`](../../../templates/discovery-chosen-brief-template.md).
    3. Each brief carries forward: validation evidence, customer segment, JTBD, North Star served, remaining riskiest assumptions (becomes the analyst's research agenda), open questions, constraints, MDA framing, and a recommended feature slug + AREA.
    4. Update `discovery-state.md`: `status: complete`, `chosen_briefs: [<feature-slug>, ...]`, append a final hand-off note.
-6. Recommend the next slash commands per surviving brief:
+   5. **Only after the brief(s) are written**, recommend the next slash commands per surviving brief:
 
-   ```
-   /spec:start <recommended_feature_slug> [<AREA>]
-   /spec:idea
-   ```
+      ```
+      /spec:start <recommended_feature_slug> [<AREA>]
+      /spec:idea
+      ```
 
-   Note for the user: the analyst will read `chosen-brief.md` *and* the upstream phase artifacts as mandatory inputs to `idea.md`. The brief seeds the idea — it does not replace it.
+      Note for the user: the analyst will read `chosen-brief.md` *and* the upstream phase artifacts as mandatory inputs to `idea.md`. The brief seeds the idea — it does not replace it.
+
+   For `no-go` and `pivot` verdicts (steps 3 and 4), **stop after** their respective actions. Do not fall through to the `go` recommendations — there is no surviving concept to hand off.
 
 ## Don't
 
