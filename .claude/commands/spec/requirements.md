@@ -9,7 +9,7 @@ model: sonnet
 
 Run **stage 3 — Requirements**.
 
-1. Resolve slug; verify `idea.md` and `research.md` are `complete`.
+1. Resolve slug; verify `idea.md` and `research.md` are each `complete`. Lean depth produces stub artifacts marked `complete` containing the user's brief and a "discovery skipped" note — the PM agent reads those stubs as the source of truth for scope. A `skipped` upstream here means the file genuinely doesn't exist (PM has nothing to read); escalate.
 2. **Spawn the `pm` subagent.**
 3. The PM produces `specs/<slug>/requirements.md` from `templates/prd-template.md`:
    - functional requirements use **EARS notation** (every one, no exceptions),

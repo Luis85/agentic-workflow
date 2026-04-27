@@ -9,7 +9,7 @@ model: sonnet
 
 Run **stage 2 — Research**.
 
-1. Resolve slug; verify `specs/<slug>/idea.md` exists and is `complete`. If not, escalate.
+1. Resolve slug; verify `specs/<slug>/idea.md` exists and is `complete`. (Lean depth produces a stub marked `complete`; Spike depth never invokes this command since stages 3+ are not dispatched.) If `pending`, `in-progress`, `blocked`, or `skipped`, escalate.
 2. **Spawn the `analyst` subagent.** Pass the open questions from `idea.md` as the research agenda.
 3. The analyst produces `specs/<slug>/research.md` from `templates/research-template.md`:
    - answers each open question (or marks it open with reason),

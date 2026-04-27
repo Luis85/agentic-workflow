@@ -14,21 +14,27 @@ A template for **spec-driven, agentic software development**. The workflow itsel
 
 ## How to work here
 
-1. To start a *new* feature, run `/spec:start <feature-slug>` — it scaffolds `specs/<feature-slug>/` and sets `workflow-state.md` to the first stage.
-2. To resume work, read `specs/<feature-slug>/workflow-state.md` to learn what stage is active and what's already produced.
-3. Use the slash command for the active stage: `/spec:idea`, `/spec:research`, `/spec:requirements`, `/spec:design`, `/spec:specify`, `/spec:tasks`, `/spec:implement`, `/spec:test`, `/spec:review`, `/spec:release`, `/spec:retro`. Quality gates: `/spec:clarify` and `/spec:analyze`.
-4. Each command spawns the appropriate subagent from `.claude/agents/`. Don't bypass — agent scoping is intentional.
-5. When you finish a stage, update `specs/<feature-slug>/workflow-state.md` and move on.
+You have two equivalent entry points:
+
+- **Conversational (recommended):** say "let's start a feature" or "drive this end-to-end" and the [`orchestrate`](.claude/skills/orchestrate/SKILL.md) skill will guide you. It gates with `AskUserQuestion` and dispatches the right `/spec:*` command per stage.
+- **Manual:** drive the slash commands yourself in stage order: `/spec:start`, `/spec:idea`, `/spec:research`, `/spec:requirements`, `/spec:design`, `/spec:specify`, `/spec:tasks`, `/spec:implement`, `/spec:test`, `/spec:review`, `/spec:release`, `/spec:retro`. Optional gates: `/spec:clarify`, `/spec:analyze`.
+
+In both modes:
+
+1. State lives in `specs/<feature-slug>/workflow-state.md` — read it to learn where the feature is.
+2. Each `/spec:*` command spawns its specialist subagent from `.claude/agents/`. Don't bypass — agent scoping is intentional.
+3. When you finish a stage, the slash command updates `workflow-state.md`. Don't edit it by hand mid-workflow.
 
 ## Conventions specific to Claude Code
 
 - Subagents are project-scoped (`.claude/agents/`). They have intentionally narrow tool lists — if a tool seems missing, that's a feature, not a bug.
-- Skills (`.claude/skills/`) are reusable how-tos any agent can invoke — `verify`, `new-adr`, `review-fix`. They never override an agent's tool list; they only encode "we always do it this way".
+- Skills live in `.claude/skills/` — see [`.claude/skills/README.md`](.claude/skills/README.md). They auto-trigger from natural language and can be invoked explicitly via `/<skill-name>`. The catalog spans the conversational orchestrator, mattpocock-style practice skills (`grill`, `design-twice`, `tracer-bullet`, `tdd-cycle`), cross-cutting sink skills (`domain-context`, `ubiquitous-language`), and operational skills (`verify`, `new-adr`, `review-fix`).
 - Operational bots live under `agents/operational/`. Each is a `PROMPT.md` + `README.md` pair; the prompt is the source of truth the scheduled run loads.
 - Permission rules live in `.claude/settings.json`. Pushes to `main` / `develop` are denied by default; `--no-verify` is denied. See `docs/branching.md`.
 - Topic branches live in worktrees under `.worktrees/<slug>/`. See `docs/worktrees.md`.
 - Run the verify gate before opening a PR. See `docs/verify-gate.md`.
-- For irreversible architectural decisions, run `/adr:new "<title>"`.
+- For irreversible architectural decisions, use the [`record-decision`](.claude/skills/record-decision/SKILL.md) skill (which wraps `/adr:new`).
+- Where every markdown artifact lands is documented in [`docs/sink.md`](docs/sink.md). Don't invent new sink locations.
 - Don't add `.claudeignore` exclusions silently — note them in `docs/steering/tech.md`.
 
 ## What not to do

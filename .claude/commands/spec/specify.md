@@ -9,7 +9,7 @@ model: opus
 
 Run **stage 5 — Specification**.
 
-1. Resolve slug; verify `requirements.md` and `design.md` are `complete`.
+1. Resolve slug; verify `requirements.md` and `design.md` are each `complete`. The architect agent reads both as mandatory inputs (see `.claude/agents/architect.md`) — a `skipped` upstream is a hard escalation, not a passable state.
 2. **Spawn the `architect` subagent.**
 3. The architect produces `specs/<slug>/spec.md` from `templates/spec-template.md`:
    - precise interface contracts,

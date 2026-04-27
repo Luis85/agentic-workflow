@@ -17,13 +17,14 @@ LLM coding agents are powerful, but they fail predictably when given vague inten
 | [`docs/quality-framework.md`](docs/quality-framework.md) | Quality dimensions, gates, Definition of Done |
 | [`docs/traceability.md`](docs/traceability.md) | ID scheme: requirement → spec → task → code → test |
 | [`docs/ears-notation.md`](docs/ears-notation.md) | Reference for writing testable requirements |
+| [`docs/sink.md`](docs/sink.md) | Catalog of every markdown artifact: where it lives, who owns it, how it evolves |
 | [`docs/steering/`](docs/steering/) | Persistent, scoped context for agents (product, tech, ux, quality, ops) |
 | [`docs/adr/`](docs/adr/) | Architecture Decision Records — start with [`0001`](docs/adr/0001-record-architecture-decisions.md) |
 | [`memory/constitution.md`](memory/constitution.md) | Project principles loaded ahead of every workflow command |
 | [`templates/`](templates/) | Blank artifacts for each stage (idea, prd, design, spec, tasks, …) |
 | [`.claude/agents/`](.claude/agents/) | One subagent per SDLC role (PM, UX, architect, dev, QA, SRE, …) |
 | [`.claude/commands/`](.claude/commands/) | Slash commands per workflow phase (`/spec:specify`, `/spec:tasks`, …) |
-| [`.claude/skills/`](.claude/skills/) | Reusable how-tos any agent can invoke (verify, new-adr, review-fix) |
+| [`.claude/skills/`](.claude/skills/) | Auto-discoverable skill bundles — `orchestrate` (conversational entry), `grill`, `design-twice`, `tracer-bullet`, `tdd-cycle`, `record-decision`, `domain-context`, `ubiquitous-language`, `verify`, `new-adr`, `review-fix` |
 | [`.claude/memory/`](.claude/memory/) | Operational memory: workflow rules + project state, indexed in [`MEMORY.md`](.claude/memory/MEMORY.md) |
 | [`.claude/settings.json`](.claude/settings.json) | Permission baseline (allow/deny) + SessionStart hook |
 | [`agents/operational/`](agents/operational/) | Always-on, scheduled agents (review-bot, docs-review-bot, plan-recon-bot, dep-triage-bot, actions-bump-bot) |
@@ -42,10 +43,12 @@ LLM coding agents are powerful, but they fail predictably when given vague inten
 1. **Clone or fork** this repo as a starting point for your project.
 2. **Adapt the constitution** at `memory/constitution.md` to your project's principles and constraints.
 3. **Fill the steering files** under `docs/steering/` with project-specific context.
-4. **Start a feature** by creating `specs/<feature-slug>/` and walking the stages (`/spec:idea` → `/spec:research` → … → `/spec:retro`).
-5. **Update `specs/<feature-slug>/workflow-state.md`** as you progress so any agent can pick up where the last one left off.
+4. **Start a feature** in one of two ways:
+   - **Conversational (recommended in Claude Code):** say "let's start a feature" or run `/orchestrate <one-line goal>`. The [`orchestrate`](.claude/skills/orchestrate/SKILL.md) skill gates with you and dispatches the right stage per turn.
+   - **Manual:** create `specs/<feature-slug>/` via `/spec:start <slug>` and walk the stages (`/spec:idea` → `/spec:research` → … → `/spec:retro`).
+5. **State lives in `specs/<feature-slug>/workflow-state.md`** — any agent (or you, in a fresh session) can pick up from there.
 
-If you use Claude Code, the slash commands and subagents work out of the box. If you use Codex / Cursor / Aider, the artifact templates and `AGENTS.md` are tool-agnostic.
+If you use Claude Code, the slash commands, subagents, and skills work out of the box. If you use Codex / Cursor / Aider, the artifact templates and `AGENTS.md` are tool-agnostic; the slash commands and skills are Claude-specific but the conventions they enforce (workflow stages, EARS, ADR pattern) carry over.
 
 ## Workflow at a glance
 
@@ -81,8 +84,9 @@ Adopt operational agents one at a time after the lifecycle workflow is in routin
 ## Versioning
 
 - **v0.1** — Foundation: workflow definition, templates, agents, slash commands.
-- **v0.2** (planned) — Worked examples, automated artifact validation, RTM generator.
-- **v0.3** (planned) — CI quality gates, metrics, maturity model.
+- **v0.2** — Skills layer: `orchestrate` skill (conversational entry), practice skills (`grill`, `design-twice`, `tracer-bullet`, `tdd-cycle`, `record-decision`), cross-cutting sink skills (`domain-context`, `ubiquitous-language`), operational learnings (memory, ops bots, branching/verify/worktrees guides), and `docs/sink.md` cataloging the full markdown sink.
+- **v0.3** (planned) — Worked examples, automated artifact validation, RTM generator.
+- **v0.4** (planned) — CI quality gates, metrics, maturity model.
 
 ## License
 
