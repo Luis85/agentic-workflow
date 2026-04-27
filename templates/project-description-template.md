@@ -65,7 +65,7 @@ change-history:
 | [e.g., Security standard] | [e.g., ISO 27001] | [e.g., Client policy] |
 
 **Links to detailed requirements:**
-- [specs/feature-a/requirements.md](../specs/feature-a/requirements.md) — TBD
+- [specs/feature-a/requirements.md](../../specs/feature-a/requirements.md) — TBD
 
 ## Stakeholders
 

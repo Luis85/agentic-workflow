@@ -17,7 +17,7 @@ project: <project-slug>
 
 | Feature | Spec folder | Stage | Status | Notes |
 |---|---|---|---|---|
-| [Feature name] | [specs/slug](../specs/slug/workflow-state.md) | [Stage name] | [on track / delayed / blocked] | [one line] |
+| [Feature name] | [specs/slug](../../specs/slug/workflow-state.md) | [Stage name] | [on track / delayed / blocked] | [one line] |
 
 ### Follow-up register summary
 
