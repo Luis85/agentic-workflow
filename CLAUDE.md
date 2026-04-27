@@ -19,6 +19,13 @@ You have two equivalent entry points for the **lifecycle workflow** (Stages 1–
 - **Conversational (recommended):** say "let's start a feature" or "drive this end-to-end" and the [`orchestrate`](.claude/skills/orchestrate/SKILL.md) skill will guide you. It gates with `AskUserQuestion` and dispatches the right `/spec:*` command per stage.
 - **Manual:** drive the slash commands yourself in stage order: `/spec:start`, `/spec:idea`, `/spec:research`, `/spec:requirements`, `/spec:design`, `/spec:specify`, `/spec:tasks`, `/spec:implement`, `/spec:test`, `/spec:review`, `/spec:release`, `/spec:retro`. Optional gates: `/spec:clarify`, `/spec:analyze`.
 
+When you are a **service provider** who needs to win a project before building it — new lead, RFP response, SOW needed — run the **Sales Cycle Track first** (pre-Discovery, service-provider opt-in):
+
+- **Conversational (recommended):** say "we have a new lead", "we need to write a proposal", "we got an RFP", or "let's run a sales cycle" and the [`sales-cycle`](.claude/skills/sales-cycle/SKILL.md) skill will guide you through Qualify → Scope → Estimate → Propose → Order. The order writes `order.md` (Project Kickoff Brief) which feeds the downstream delivery workflow.
+- **Manual:** `/sales:start`, `/sales:qualify`, `/sales:scope`, `/sales:estimate`, `/sales:propose`, `/sales:order`. See [`docs/sales-cycle.md`](docs/sales-cycle.md) and [ADR-0006](docs/adr/0006-add-sales-cycle-track-before-discovery.md).
+- **Skip when** you already have a signed mandate — go straight to the Discovery Track or `/spec:start`.
+- Deal artifacts live under `sales/<deal-slug>/`. The `order.md` Project Kickoff Brief is the canonical handoff to the delivery workflow and is read as a mandatory input by the analyst (Stage 1) or the discovery facilitator (Frame phase).
+
 When you don't have a brief yet — blank page, multiple candidate ideas, no clear winner — run the **Discovery Track first** (pre-Stage 1, opt-in):
 
 - **Conversational:** say "let's run a design sprint", "let's brainstorm new product ideas", or "we have a blank page" and the [`discovery-sprint`](.claude/skills/discovery-sprint/SKILL.md) skill will guide you through Frame → Diverge → Converge → Prototype → Validate → Handoff. The handoff writes `chosen-brief.md` which feeds `/spec:idea`.
@@ -32,8 +39,8 @@ In both modes:
 
 ## Conventions specific to Claude Code
 
-- Subagents are project-scoped (`.claude/agents/`). They have intentionally narrow tool lists — if a tool seems missing, that's a feature, not a bug. Two classes ship: **lifecycle** agents (one per Stage 1–11) and **discovery** agents (one facilitator + six specialists for the pre-stage track).
-- Skills live in `.claude/skills/` — see [`.claude/skills/README.md`](.claude/skills/README.md). They auto-trigger from natural language and can be invoked explicitly via `/<skill-name>`. The catalog spans two workflow conductors (`orchestrate`, `discovery-sprint`), mattpocock-style practice skills (`grill`, `design-twice`, `tracer-bullet`, `tdd-cycle`), cross-cutting sink skills (`domain-context`, `ubiquitous-language`), and operational skills (`verify`, `new-adr`, `review-fix`).
+- Subagents are project-scoped (`.claude/agents/`). They have intentionally narrow tool lists — if a tool seems missing, that's a feature, not a bug. Three classes ship: **lifecycle** agents (one per Stage 1–11), **discovery** agents (one facilitator + six specialists for the pre-stage track), and **sales** agents (four specialists for the pre-project commercial track: `sales-qualifier`, `scoping-facilitator`, `estimator`, `proposal-writer`).
+- Skills live in `.claude/skills/` — see [`.claude/skills/README.md`](.claude/skills/README.md). They auto-trigger from natural language and can be invoked explicitly via `/<skill-name>`. The catalog spans three workflow conductors (`orchestrate`, `discovery-sprint`, `sales-cycle`), mattpocock-style practice skills (`grill`, `design-twice`, `tracer-bullet`, `tdd-cycle`), cross-cutting sink skills (`domain-context`, `ubiquitous-language`), and operational skills (`verify`, `new-adr`, `review-fix`).
 - Operational bots live under `agents/operational/`. Each is a `PROMPT.md` + `README.md` pair; the prompt is the source of truth the scheduled run loads.
 - Permission rules live in `.claude/settings.json`. Pushes to `main` / `develop` are denied by default; `--no-verify` is denied. See `docs/branching.md`.
 - Topic branches live in worktrees under `.worktrees/<slug>/`. See `docs/worktrees.md`.
