@@ -41,6 +41,7 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │       ├── research.md                      # stage 2 (analyst)
 │       ├── requirements.md                  # stage 3 (pm) — EARS-formatted
 │       ├── design.md                        # stage 4 (ux + ui + architect)
+│       ├── arc42-questionnaire.md           # stage 4, arc42-baseline only (LAZY)
 │       ├── design-alt-A.md                  # stage 4, design-twice only (LAZY)
 │       ├── design-alt-B.md                  # stage 4, design-twice only (LAZY)
 │       ├── design-alt-C.md                  # stage 4, design-twice only (LAZY)
@@ -75,6 +76,7 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 | `templates/*-template.md` | Human | Versioned; updates propagate to new features only |
 | `specs/<slug>/workflow-state.md` | `/spec:start`, then `/spec:*` commands on transition | State machine; orchestrator amends final fields |
 | `specs/<slug>/<artifact>.md` | The stage's owning agent (per `docs/spec-kit.md` §3) | Each stage writes once; later stages **never rewrite** upstream artifacts |
+| `specs/<slug>/arc42-questionnaire.md` | `arc42-baseline` skill | Created lazily on opt-in; canonical input to `design.md` Part C |
 | `specs/<slug>/design-alt-*.md`, `design-comparison.md` | `design-twice` skill | Created lazily on opt-in |
 | `.claude/skills/<name>/SKILL.md` | Skill author | Versioned in repo |
 | `.claude/agents/<name>.md` | Agent author | Versioned in repo |

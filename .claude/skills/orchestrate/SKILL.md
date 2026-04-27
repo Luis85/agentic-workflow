@@ -116,9 +116,12 @@ For each stage in the agreed sequence, in order:
 
 ### Step 5 — Stage 4 (Design) special handling
 
-If Depth is `Standard` and the feature is non-trivial (PRD has ≥3 functional requirements), suggest invoking the `design-twice` skill **before** `/spec:design` to explore divergent design alternatives in parallel. Ask via `AskUserQuestion`: `Run design-twice first` (Recommended) / `Skip — go straight to /spec:design`.
+If Depth is `Standard` and the feature is non-trivial (PRD has ≥3 functional requirements), batch the two pre-design options into a single `AskUserQuestion` (multi-select):
 
-If the user accepts, dispatch `design-twice` (it spawns 3 parallel subagents and synthesizes). Then continue to `/spec:design` — the architect will use the synthesis as input.
+- `Run arc42-baseline first` — recommended when the feature is SaaS-shaped, multi-tenant, or has load-bearing non-functional requirements (availability, scalability, data residency, observability). Produces `specs/<slug>/arc42-questionnaire.md` so the architect inherits cross-cutting decisions instead of re-deriving them in Part C.
+- `Run design-twice first` — recommended when the module shape is contested or there's a genuine fork (e.g. event vs. CRUD, pull vs. push, monolith vs. split). Produces `specs/<slug>/design-comparison.md` so the architect picks up a synthesised recommendation.
+
+Both, one, or neither may be selected. If both, run `arc42-baseline` first (it locks the baseline) and `design-twice` second (it explores within that baseline). Then continue to `/spec:design` — the architect reads whichever artifacts were produced.
 
 ### Step 6 — Wrap up
 

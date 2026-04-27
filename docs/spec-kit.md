@@ -98,6 +98,9 @@ Quality gates per stage are summarised below; the full Definition of Done lives 
 ### 3.4 Design
 - **Goal:** Describe how the system should work conceptually — from user experience down to system architecture.
 - **Combined ownership:** UX (flows, IA), UI (visual, interaction), Architect (components, data flow). Three sub-sections in one artifact, or three linked files for larger features.
+- **Optional pre-design skills:**
+  - **`design-twice`** — explore divergent module shapes when the design has a genuine fork. Produces `design-comparison.md`.
+  - **`arc42-baseline`** — for SaaS-shaped or platform-scope features, drive the Arc42 + 12-Factor questionnaire to lock cross-cutting non-functional and operability decisions before Part C. Produces `arc42-questionnaire.md`, files ADRs for accepted key decisions, and feeds `/spec:design` as canonical input.
 - **Quality gate:** Boundaries clear. Decisions justified. Irreversible architecture choices have ADRs.
 
 ### 3.5 Specification

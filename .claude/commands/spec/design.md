@@ -12,13 +12,16 @@ Run **stage 4 — Design**. This stage has three contributors; sequence them del
 1. Resolve slug; verify `requirements.md` is `complete`. The three design agents read REQ IDs and EARS clauses from `requirements.md` as canonical input — a `skipped` requirements artifact is a hard escalation.
 2. Initialise `specs/<slug>/design.md` from `templates/design-template.md` if it doesn't exist.
 3. **Check for prior `design-twice` synthesis.** If `specs/<slug>/design-comparison.md` exists, read it and pass its recommendation + rejected-alternatives sections to each of the three design subagents below as additional context. The synthesis is the starting point; do not discard it.
-4. **Spawn `ux-designer`** to fill **Part A — UX**: flows, IA, empty/loading/error states, accessibility. **Wait for the agent to return** before continuing.
-5. Once Part A is drafted, **spawn `ui-designer`** to fill **Part B — UI**: screen inventory, components, tokens, microcopy. **Wait for the agent to return** before continuing.
-6. Once Parts A and B are drafted, **spawn `architect`** to fill **Part C — Architecture**: components, data flow, decisions, risks, alternatives. The architect drafts any required ADRs directly using `templates/adr-template.md` (it has `Edit`/`Write`); after this command exits, the user may run `/adr:new` to formalise additional ones if needed. (Slash commands are not invoked from inside subagents.)
-7. The architect also fills the cross-cutting **Requirements coverage** table — every PRD requirement maps to at least one design section.
-8. Run the design quality gate.
-9. Update `workflow-state.md`. Recommend `/spec:specify` next.
+4. **Check for an Arc42 baseline.** If `specs/<slug>/arc42-questionnaire.md` exists with frontmatter `status: answered`, read it and pass its solution-strategy, deployment, crosscutting, and 12-Factor sections to the `architect` subagent as canonical input for Part C. The architect inherits those answers and writes only the feature-specific deltas in `design.md`. If the questionnaire is missing or `draft` and the feature is SaaS-shaped, recommend the user run the `arc42-baseline` skill first before proceeding to Part C.
+5. **Spawn `ux-designer`** to fill **Part A — UX**: flows, IA, empty/loading/error states, accessibility. **Wait for the agent to return** before continuing.
+6. Once Part A is drafted, **spawn `ui-designer`** to fill **Part B — UI**: screen inventory, components, tokens, microcopy. **Wait for the agent to return** before continuing.
+7. Once Parts A and B are drafted, **spawn `architect`** to fill **Part C — Architecture**: components, data flow, decisions, risks, alternatives. The architect drafts any required ADRs directly using `templates/adr-template.md` (it has `Edit`/`Write`); after this command exits, the user may run `/adr:new` to formalise additional ones if needed. (Slash commands are not invoked from inside subagents.)
+8. The architect also fills the cross-cutting **Requirements coverage** table — every PRD requirement maps to at least one design section.
+9. Run the design quality gate.
+10. Update `workflow-state.md`. Recommend `/spec:specify` next.
 
 ## Note
 
 For very small features, all three roles may collapse into a single pass. Don't skip *parts*; do collapse the agents.
+
+For SaaS-shaped or platform-scope features, run the `arc42-baseline` skill **before** this command. It produces `specs/<slug>/arc42-questionnaire.md` with the cross-cutting non-functional and operability decisions already locked, so Part C focuses on the feature-specific deltas instead of re-deriving baseline architecture.
