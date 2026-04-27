@@ -225,12 +225,13 @@ We are building `todo`, a single-binary command-line task manager for terminal-n
 ### REQ-CLI-012 — Graceful handling of corrupt or unreadable data file
 
 - **Pattern:** Unwanted behaviour
-- **Statement:** IF the data file exists but cannot be read or parsed as valid task data, THEN the CLI shall print a human-readable error message identifying the file path and exit with a non-zero exit code without overwriting the file.
+- **Statement:** IF a task-data subcommand (`add`, `list`, `done`, `rm`) is invoked AND the data file exists but cannot be read or parsed as valid task data, THEN the CLI shall print a human-readable error message identifying the file path and exit with a non-zero exit code without overwriting the file.
 - **Acceptance:**
   - Given the data file contains invalid content (e.g., truncated or non-task data)
-  - When the user runs any `todo` subcommand
+  - When the user runs any task-data subcommand (`todo add …`, `todo list`, `todo done <id>`, `todo rm <id>`)
   - Then the CLI prints an error message that includes the data file path and exits with a non-zero code
   - And the data file contents are unchanged after the invocation
+  - And `todo --help` and every `todo <subcommand> --help` still exit with code 0 in the same scenario, because help invocations do not read the data file (consistency with REQ-CLI-006)
 - **Priority:** must
 - **Satisfies:** RESEARCH-CLI-001 (RISK-003; robust error handling), IDEA-CLI-001 (no silent data loss)
 
