@@ -64,17 +64,19 @@ We adopt a **Project Manager Track** as an opt-in sibling to the 11-stage lifecy
 - The track lives at the repo root under **`projects/<project-slug>/`**, parallel to `specs/`, `discovery/`, and `agents/operational/`.
 - A project corresponds to a **client engagement** or **delivery programme** — it is the container for one or more feature deliveries (`specs/<slug>/`), one or more discovery sprints (`discovery/<slug>/`), and the cross-cutting PM artefacts.
 - The track has one agent: **`project-manager`** — scoped to project-level governance, stakeholder management, risk/issue/change tracking, and periodic reporting. It does not do feature implementation, architecture, or testing.
-- The track's lifecycle maps directly to P3.Express:
+- The track's lifecycle maps directly to P3.Express and uses **four management documents** (the P3.Express minimal set):
 
   | Phase | P3.Express mapping | Entry command | Output artifacts |
   |---|---|---|---|
-  | **Initiation** | Transitional — Project Start | `/project:initiate` | `project-charter.md`, `stakeholder-register.md` |
-  | **Planning** | Transitional — Project Planning | `/project:plan` | `project-plan.md`, `risk-register.md` |
-  | **Weekly review** | Periodic — Weekly | `/project:weekly` | appended entry in `weekly-log.md` |
-  | **Change request** | Situational — Change Control | `/project:change` | appended entry in `change-log.md` |
-  | **Issue** | Situational — Issue Management | logged inline in `issue-log.md` by the PM | `issue-log.md` |
-  | **Status report** | Periodic — Monthly / on-demand | `/project:report` | `status-report.md` (replaces prior; one current report) |
-  | **Closure** | Transitional — Project End | `/project:close` | `project-closure.md` |
+  | **Initiation** | Transitional — Group A | `/project:initiate` | `project-description.md`, `deliverables-map.md`, `followup-register.md` (seeded), `health-register.md` (seeded) |
+  | **Weekly review** | Periodic — Groups C+D | `/project:weekly` | appended entry in `weekly-log.md`; updates to `followup-register.md` |
+  | **Change request** | Situational — D01 | `/project:change` | appended entry in `followup-register.md` (type: change-request) |
+  | **Issue / Risk** | Situational — D01 | inline in `/project:weekly` or direct | appended entry in `followup-register.md` (type: issue or risk) |
+  | **Status report** | Periodic — on-demand | `/project:report` | `status-report.md` (replaces prior; one current report) |
+  | **Closure** | Transitional — Group F | `/project:close` | `project-closure.md` |
+  | **Post-project** | Group G (months later) | `/project:post` | appended section in `project-closure.md` |
+
+  The P3.Express design decision: risks, issues, change requests, and lessons all share a **single Follow-Up Register** (`followup-register.md`). There are no separate `risk-register.md`, `issue-log.md`, or `change-log.md` files.
 
 - The track is **opt-in**. Teams using the Spec Kit for internal product development and teams with a brief already established may skip it entirely. No existing workflow is affected.
 - State lives in **`projects/<slug>/project-state.md`**, owned by `/project:*` commands.

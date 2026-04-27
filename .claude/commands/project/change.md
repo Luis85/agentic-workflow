@@ -31,7 +31,7 @@ The user describes a change the client or stakeholder has requested. It may arri
 
 3. Assess **scope delta**: what exactly is being added, changed, or removed from `project-description.md` or `deliverables-map.md`? Quote the relevant sections and state the proposed change.
 
-4. Assess **schedule impact**: how many additional days or sprint-weeks does this add to the critical path? If unknown, estimate the range (e.g., "2–5 sprint-days"). Update `deliverables-map.md` by adding a flagged "PENDING APPROVAL" entry.
+4. Assess **schedule impact**: how many additional days or sprint-weeks does this add to the critical path? If unknown, estimate the range (e.g., "2–5 sprint-days"). Record the estimate in the `followup-register.md` entry's `response` field — do **not** edit `deliverables-map.md` until after approval.
 
 5. Assess **budget impact**: estimated person-days or story points, and whether this falls within any agreed change budget. Mark `TBD` if cost data is unavailable.
 
