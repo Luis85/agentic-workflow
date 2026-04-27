@@ -61,6 +61,16 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │       ├── validation.md                    # phase 5 (facilitator + user-researcher + critic)
 │       ├── chosen-brief.md                  # handoff — input to /spec:idea (0..N per sprint)
 │       └── assets/                          # binary prototype assets (LAZY)
+├── projects/                                # one folder per client engagement (Project Manager Track, opt-in)
+│   └── <project-slug>/
+│       ├── project-state.md                 # state machine, owned by /project:* commands
+│       ├── project-description.md           # P3 Doc 1: scope, objectives, stakeholders, budget
+│       ├── deliverables-map.md              # P3 Doc 2: WBS, milestones, feature links
+│       ├── followup-register.md             # P3 Doc 3: risks + issues + changes + lessons (one register)
+│       ├── health-register.md               # P3 Doc 4: satisfaction scores, peer reviews
+│       ├── weekly-log.md                    # Groups C+D weekly entries (append-only)
+│       ├── status-report.md                 # client-facing RAG snapshot (replaced each /project:report run)
+│       └── project-closure.md              # Group F: handover, satisfaction, lessons, archive
 ├── specs/                                   # one folder per feature
 │   └── <slug>/
 │       ├── workflow-state.md                # state machine, owned by /spec:* commands
@@ -116,6 +126,14 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 | `sales/<deal>/proposal.md` | `proposal-writer` | Current accepted version; revisions go to `revisions/` |
 | `sales/<deal>/revisions/proposal-vN.md` | `proposal-writer` | Created lazily on each negotiation revision (LAZY) |
 | `sales/<deal>/order.md` | `proposal-writer` (human sign-off required) | Written once in Phase 5; links to downstream workflow |
+| `projects/<project>/project-state.md` | `/project:start`, then `/project:*` commands on transition | Project state machine; project-manager-owned |
+| `projects/<project>/project-description.md` | `project-manager` (Initiation) | Living — updated on approved changes |
+| `projects/<project>/deliverables-map.md` | `project-manager` (Initiation + weekly) | Baselined on A08 approval; refined each week |
+| `projects/<project>/followup-register.md` | `project-manager` | Living — append-only; status updated in-place |
+| `projects/<project>/health-register.md` | `project-manager` | Append-only |
+| `projects/<project>/weekly-log.md` | `project-manager` | Append-only |
+| `projects/<project>/status-report.md` | `project-manager` | Replaced each `/project:report` run |
+| `projects/<project>/project-closure.md` | `project-manager` (Closure) | Frozen on client sign-off; G01 evaluations appended |
 | `discovery/<sprint>/discovery-state.md` | `/discovery:start`, then `/discovery:*` commands on transition | Sprint state machine; facilitator-owned |
 | `discovery/<sprint>/<phase>.md` | The phase's owning facilitator + consulted specialists (per `docs/discovery-track.md` §3) | Each phase writes once; later phases never rewrite upstream phase artifacts |
 | `discovery/<sprint>/chosen-brief.md` | `facilitator` (Handoff) | One per surviving concept; mandatory input to `/spec:idea` |
@@ -175,6 +193,18 @@ When a **service provider** needs to win a project before building it, the Sales
 The deal folder lives at `sales/<deal-slug>/` parallel to `discovery/` and `specs/`. Deals that close as `no-go` are preserved as historical context. A deal may spawn one or more feature or discovery workflows after the order is placed.
 
 **Note on confidentiality:** The `sales/` directory may contain commercially sensitive data (client names, pricing, contract terms). Teams must apply appropriate access controls. The kit does not manage access control — that is an infrastructure concern.
+
+## Project Manager Track sub-tree
+
+When a team is delivering software for a client, the Project Manager Track wraps feature deliveries with P3.Express-based governance. The track lives at `projects/<project-slug>/` parallel to `specs/`. State is owned by `/project:*` commands.
+
+Key characteristics:
+- **Four P3.Express documents** are the foundation: `project-description.md` (scope + stakeholders), `deliverables-map.md` (WBS + schedule), `followup-register.md` (risks + issues + changes + lessons — all in one), `health-register.md` (satisfaction + governance).
+- `weekly-log.md` is append-only (internal PM log). `status-report.md` is replaced each `/project:report` run (client-facing).
+- The track is **opt-in**: teams with no client engagement skip it entirely and use `specs/` + `discovery/` directly.
+- The project-manager **links to** but **never writes to** `specs/` or `discovery/` artifacts.
+
+See [`docs/project-track.md`](project-track.md) for the full methodology and [ADR-0007](adr/0008-add-project-manager-track.md) for the rationale.
 
 ## Discovery Track sub-tree
 
