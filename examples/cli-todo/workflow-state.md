@@ -1,7 +1,7 @@
 ---
 feature: cli-todo
 area: CLI
-current_stage: design
+current_stage: specification
 status: active
 last_updated: 2026-04-27
 last_agent: architect
@@ -9,8 +9,8 @@ artifacts:
   idea.md: complete
   research.md: complete
   requirements.md: complete
-  design.md: in-progress
-  spec.md: pending
+  design.md: complete
+  spec.md: in-progress
   tasks.md: pending
   implementation-log.md: pending
   test-plan.md: pending
@@ -32,8 +32,8 @@ artifacts:
 | 1. Idea | `idea.md` | complete |
 | 2. Research | `research.md` | complete |
 | 3. Requirements | `requirements.md` | complete |
-| 4. Design | `design.md` | in-progress |
-| 5. Specification | `spec.md` | pending |
+| 4. Design | `design.md` | complete |
+| 5. Specification | `spec.md` | in-progress |
 | 6. Tasks | `tasks.md` | pending |
 | 7. Implementation | `implementation-log.md` + code | pending |
 | 8. Testing | `test-plan.md`, `test-report.md` | pending |
@@ -227,6 +227,99 @@ Free-form. What does the next agent / human need to know?
                           agent will need a SIGKILL-mid-write test
                           scenario to discharge ADR-CLI-0001's
                           compliance clause.
+```
+
+```
+2026-04-27 (architect):   spec.md (SPECDOC-CLI-001) drafted; design.md
+                          marked complete; spec.md left in-progress
+                          pending human acceptance. Quality gate ticked.
+
+                          What spec.md covers:
+                          - 9 SPEC-CLI-NNN interface entries: one per
+                            subcommand (add, list/list --all, done, rm,
+                            help, bare-todo, unknown-subcommand) plus
+                            two internal interfaces called out by name
+                            — the storage write helper (atomic-rename
+                            contract from ADR-CLI-0001) and the
+                            data-store path resolver (TODO_FILE +
+                            XDG default).
+                          - On-disk JSON encoding for Task and Store
+                            envelope, with cross-field invariants
+                            (no duplicate ids, every id < next_id,
+                            version == 1, next_id never decremented).
+                          - Verbatim output strings (confirmation
+                            lines, empty-list messages, every error
+                            message, all five help blocks) lifted from
+                            design Part B and pinned for byte-exact
+                            tests.
+                          - 21 edge cases (EC-CLI-001..021) including
+                            first-run, missing parent dir, empty/missing
+                            text, unknown id, corrupt store (invalid
+                            JSON, version 2, zero-byte, directory),
+                            SIGKILL-mid-write, cross-filesystem
+                            TODO_FILE, idempotent done, help-when-
+                            corrupt, and next_id overflow boundary.
+                          - 33 test scenarios (TEST-CLI-001..033)
+                            including the ADR-CLI-0001 compliance gate
+                            (TEST-CLI-018: SIGKILL-mid-write) and the
+                            cross-filesystem rename test (TEST-CLI-033).
+                          - State-transition diagram + table, validation
+                            rules at three boundaries (argv / load /
+                            save), stderr-only observability surface,
+                            performance budget (NFR-CLI-001 inherited
+                            verbatim), compatibility note on the
+                            version: 1 + next_id round-trip invariant,
+                            and the ADR-CLI-0001 concurrency note in
+                            plain language (last-writer-wins for the
+                            update-update race; no partial writes).
+                          - Requirements coverage table maps every
+                            REQ-CLI-NNN to its spec items, edge cases,
+                            and tests.
+
+                          Illustrative-not-prescriptive policy applied
+                          throughout: pseudocode for signatures, no
+                          library or package names, JSON named
+                          explicitly (format decision, not a library
+                          choice).
+
+                          One spec-stage clarification recorded that
+                          wasn't in design Part C: empty-string
+                          TODO_FILE (EC-CLI-021) is treated as unset
+                          and falls back to XDG default. Justified by
+                          REQ-CLI-009 statement wording ("set to a
+                          non-empty value"). No new ADR — this is a
+                          clarification of an existing requirement,
+                          not a new architectural choice.
+
+                          No new CLAR entries; no open clarifications.
+
+                          Hand-off to planner (stage 6, tasks): the
+                          spec is ready to decompose into T-CLI-NNN
+                          tasks. Suggested decomposition follows the
+                          9-component architecture from design Part C:
+                          - one task per handler (add, list, done,
+                            rm, help) — each with its own signature,
+                            success path, and error paths;
+                          - two tasks for the storage layer, split as
+                            (a) load + validation and (b) atomic-
+                            rename save (the latter is the single
+                            most load-bearing task in the feature —
+                            ADR-CLI-0001 compliance);
+                          - one task for the path resolver
+                            (TODO_FILE + XDG);
+                          - one task for the dispatcher (argv parsing,
+                            unknown-subcommand error, missing-
+                            argument errors, --help routing);
+                          - one task for the entry point (exit-code
+                            translation, output flushing).
+
+                          The 33 test scenarios in spec.md §6 cover
+                          every requirement and edge case; QA can
+                          derive its test plan directly. TEST-CLI-018
+                          (SIGKILL mid-write) is the compliance gate
+                          for ADR-CLI-0001 and must be in the test
+                          plan regardless of how planner decomposes
+                          the implementation tasks.
 ```
 
 ## Open clarifications

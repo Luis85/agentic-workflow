@@ -41,6 +41,16 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │       ├── audit.md                         # phase 2 (legacy-auditor — processes, use-cases, integrations, data, debt)
 │       ├── synthesis.md                     # phase 3 (legacy-auditor — gaps, constraints, opportunities, migration)
 │       └── stock-taking-inventory.md        # handoff — input to /discovery:start or /spec:idea
+├── sales/                                   # one folder per client deal (pre-project, service-provider opt-in)
+│   └── <deal-slug>/
+│       ├── deal-state.md                    # deal state machine, owned by /sales:* commands
+│       ├── qualification.md                 # phase 1 (sales-qualifier) — BANT/MEDDIC + go/no-go verdict
+│       ├── scope.md                         # phase 2 (scoping-facilitator) — bounded problem + in/out scope
+│       ├── estimation.md                    # phase 3 (estimator) — WBS, PERT, risk register, pricing model
+│       ├── proposal.md                      # phase 4 (proposal-writer) — SOW / client-facing offer
+│       ├── revisions/                       # proposal revision history (LAZY)
+│       │   └── proposal-v2.md
+│       └── order.md                         # phase 5 (proposal-writer) — acceptance record + Project Kickoff Brief
 ├── discovery/                               # one folder per discovery sprint (pre-stage 1, opt-in)
 │   └── <sprint-slug>/
 │       ├── discovery-state.md               # sprint state machine, owned by /discovery:* commands
@@ -99,6 +109,13 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 | `stock-taking/<project>/stock-taking-state.md` | `/stock:start`, then `/stock:*` commands on transition | Engagement state machine; legacy-auditor-owned |
 | `stock-taking/<project>/<phase>.md` | `legacy-auditor` (per `docs/stock-taking-track.md` §3) | Each phase writes once; later phases never rewrite upstream phase artifacts |
 | `stock-taking/<project>/stock-taking-inventory.md` | `legacy-auditor` (Handoff) | Consolidated inventory; mandatory input to `/discovery:start` or `/spec:idea` when a legacy system is in scope |
+| `sales/<deal>/deal-state.md` | `/sales:start`, then `/sales:*` commands on transition | Deal state machine; sales-cycle skill-owned |
+| `sales/<deal>/qualification.md` | `sales-qualifier` | Written once in Phase 1; later phases never rewrite |
+| `sales/<deal>/scope.md` | `scoping-facilitator` | Written once in Phase 2 |
+| `sales/<deal>/estimation.md` | `estimator` | Written once in Phase 3; re-run triggers a revision |
+| `sales/<deal>/proposal.md` | `proposal-writer` | Current accepted version; revisions go to `revisions/` |
+| `sales/<deal>/revisions/proposal-vN.md` | `proposal-writer` | Created lazily on each negotiation revision (LAZY) |
+| `sales/<deal>/order.md` | `proposal-writer` (human sign-off required) | Written once in Phase 5; links to downstream workflow |
 | `discovery/<sprint>/discovery-state.md` | `/discovery:start`, then `/discovery:*` commands on transition | Sprint state machine; facilitator-owned |
 | `discovery/<sprint>/<phase>.md` | The phase's owning facilitator + consulted specialists (per `docs/discovery-track.md` §3) | Each phase writes once; later phases never rewrite upstream phase artifacts |
 | `discovery/<sprint>/chosen-brief.md` | `facilitator` (Handoff) | One per surviving concept; mandatory input to `/spec:idea` |
@@ -150,6 +167,14 @@ Accepted ADRs are immutable. To change a decision, file a new ADR superseding th
 When a team is **building on or replacing an existing system**, the Stock-taking Track produces `stock-taking-inventory.md` first; that inventory is then the input either the Discovery Track's Frame phase or Stage 1's analyst reads. The track lives at `stock-taking/<project-slug>/` parallel to `discovery/` and `specs/`. See [`docs/stock-taking-track.md`](stock-taking-track.md) for the methodology and [ADR-0007](adr/0007-add-stock-taking-track-for-legacy-projects.md) for the rationale.
 
 The engagement slug names the *system or system cluster* being inventoried (not the feature being built): `crm-legacy-audit`, `billing-platform-baseline`. One engagement may produce inventory that feeds multiple Discovery Sprints or multiple feature folders. The Handoff is the *only* link between the stock-taking tree and the downstream trees — before handoff no `discovery/<sprint>/` or `specs/<slug>/` exists for this work; after handoff the inventory is referenced from `chosen-brief.md` or `idea.md` `inputs:` frontmatter.
+
+## Sales Cycle sub-tree
+
+When a **service provider** needs to win a project before building it, the Sales Cycle Track runs first — a 5-phase commercial workflow (Qualify → Scope → Estimate → Propose → Order) that produces `order.md`. The `order.md` contains a Project Kickoff Brief that is the canonical handoff to the delivery workflow. The delivery workflow is entered via `/discovery:start` (exploratory mandates) or `/spec:start` (defined mandates), with `order.md` as the mandatory context input.
+
+The deal folder lives at `sales/<deal-slug>/` parallel to `discovery/` and `specs/`. Deals that close as `no-go` are preserved as historical context. A deal may spawn one or more feature or discovery workflows after the order is placed.
+
+**Note on confidentiality:** The `sales/` directory may contain commercially sensitive data (client names, pricing, contract terms). Teams must apply appropriate access controls. The kit does not manage access control — that is an infrastructure concern.
 
 ## Discovery Track sub-tree
 
