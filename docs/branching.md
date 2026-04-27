@@ -45,6 +45,7 @@ These prefixes match the allowlist in `.claude/settings.json` and the regexes in
 4. **Verify before push.** See [`docs/verify-gate.md`](./verify-gate.md).
 5. **Resolve conflicts via merge, not rebase**, once a PR has open review threads. See [`feedback_parallel_pr_conflicts.md`](../.claude/memory/feedback_parallel_pr_conflicts.md).
 6. **Maintainer (or autonomous‑merge rule) merges**, not the author. See [`feedback_autonomous_merge.md`](../.claude/memory/feedback_autonomous_merge.md).
+7. **Codex opens the PR when it makes the change.** See [`docs/codex-workflow.md`](./codex-workflow.md) for the expected worktree → verify → push → PR → next-step loop.
 
 ## Why `develop` exists in Shape B
 
