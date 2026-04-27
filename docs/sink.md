@@ -65,7 +65,12 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │       ├── traceability.md                  # stage 9 (reviewer) — RTM
 │       ├── release-notes.md                 # stage 10 (release-manager)
 │       └── retrospective.md                 # stage 11 (retrospective)
-├── examples/                                # placeholder for v0.2 worked examples
+├── examples/                                # demonstration artifacts — NOT the template's own workflow (see §Examples sub-tree)
+│   └── <feature-slug>/
+│       ├── workflow-state.md                # mirrors specs/<slug>/workflow-state.md shape
+│       ├── idea.md, research.md, …          # same artifact set as specs/<slug>/
+│       └── adr/                             # project-local ADRs for the example (NOT docs/adr/)
+│           └── NNNN-<slug>.md               # project-local sequence, e.g. ADR-CLI-0001
 └── .claude/
     ├── agents/                              # subagent definitions (specialists)
     ├── commands/                            # slash commands (entry points per stage)
@@ -117,7 +122,7 @@ Accepted ADRs are immutable. To change a decision, file a new ADR superseding th
 
 - **Folders and files:** lowercase, kebab-case. No spaces, no underscores in paths the kit creates (legacy uppercase filenames like `CONTEXT.md`, `AGENTS.md`, `CLAUDE.md`, `UBIQUITOUS_LANGUAGE.md`, `LICENSE` and template files like `*-template.md` are intentional exceptions for visibility/convention).
 - **Feature slugs:** kebab-case, ≤6 words. Stable for the lifetime of the feature.
-- **ADRs:** four-digit zero-padded sequence (`0001`, `0002`, …) across the whole repo. Find the next number with `ls docs/adr/0*.md | tail -1`.
+- **ADRs:** four-digit zero-padded sequence (`0001`, `0002`, …) in `docs/adr/`, global across the template repo. Find the next number with `ls docs/adr/0*.md | tail -1`. **Exception — examples:** each `examples/<slug>/adr/` uses its own local sequence (e.g. `ADR-CLI-0001`) that is independent of and does not conflict with the template's global numbering. The prefix (`CLI`, `AUTH`, …) mirrors the feature's `<AREA>` code.
 - **IDs:** see `docs/traceability.md` (`REQ-<AREA>-NNN`, `SPEC-<AREA>-NNN`, `T-<AREA>-NNN`, `TEST-<AREA>-NNN`).
 
 ## Read order for any subagent starting a stage
@@ -135,6 +140,21 @@ Accepted ADRs are immutable. To change a decision, file a new ADR superseding th
 When a team enters the kit with a **blank page** (no brief), the Discovery Track produces `chosen-brief.md` first; that brief is then the input the analyst reads in Stage 1. The track lives at `discovery/<sprint-slug>/` parallel to `specs/`. See [`docs/discovery-track.md`](discovery-track.md) for the methodology and [ADR-0005](adr/0005-add-discovery-track-before-stage-1.md) for the rationale.
 
 A sprint may emit **0, 1, or N** chosen briefs. Zero is a valid outcome (no-go); the sprint folder is preserved as historical context regardless. The handoff is the *only* link between the discovery and specs trees — before handoff no `specs/<slug>/` exists; after handoff the brief is referenced from `idea.md`'s frontmatter `inputs:`.
+
+## Examples sub-tree
+
+`examples/` is a **demonstration zone** — it shows what a real project that adopted this template would produce. It is structurally outside the template's own workflow:
+
+- **Not active workflow state.** Agents, skills, and the orchestrate skill must not treat `examples/<slug>/workflow-state.md` as a resumable feature. The orchestrate skill scans `specs/`; examples live outside that tree deliberately.
+- **Simulates an adopting project.** Each `examples/<slug>/` mirrors the shape of `specs/<slug>/` exactly, so a reader can see every artifact a real feature produces without running the workflow themselves.
+- **Project-local ADRs.** Each example has its own `examples/<slug>/adr/` directory. The numbering (`ADR-CLI-0001`, `ADR-AUTH-0001`, …) is independent of `docs/adr/` and uses the example's `<AREA>` prefix. This deliberately models what ADR naming looks like inside an adopting project, where the template's global `ADR-0001…0005` would not be inherited.
+- **Read-only for agents.** Agents may read example artifacts for reference (e.g. "what does a complete design.md look like?") but must never write to `examples/` as part of a workflow run.
+
+| Path | Owned by | Mutability |
+|---|---|---|
+| `examples/README.md` | Human | Updated as examples are added |
+| `examples/<slug>/` | Human (example maintainer) | Mirrors `specs/<slug>/` shape; updated as the example progresses |
+| `examples/<slug>/adr/` | Human (example maintainer) | Same immutability rules as `docs/adr/`; project-local sequence |
 
 ## Don't put in the sink
 

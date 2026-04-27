@@ -46,6 +46,8 @@ Always start by reading these (they're the contract you're enforcing):
 ls specs/ 2>/dev/null
 ```
 
+Scan **only `specs/`** — never `examples/`. The `examples/` tree contains demonstration artifacts that simulate what an adopting project would produce; they are not active workflow state and must not be offered as resumable features (see `docs/sink.md` §Examples sub-tree).
+
 For each `specs/<slug>/workflow-state.md` whose `status` is `active`, `paused`, or `blocked` (all three are resumable per the schema), list `slug | status | current_stage | last_updated`. Then **batch one `AskUserQuestion`** asking the user to pick:
 
 - Resume a listed feature (one option per feature, recommended-first by `last_updated`; show the status next to each).
