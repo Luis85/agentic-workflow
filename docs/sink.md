@@ -34,6 +34,13 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │   └── UBIQUITOUS_LANGUAGE.md               # living glossary (LAZY)
 ├── templates/                               # blank artifacts; stages copy + fill
 │   └── *-template.md
+├── stock-taking/                            # one folder per legacy-system engagement (opt-in, brownfield projects)
+│   └── <project-slug>/
+│       ├── stock-taking-state.md            # engagement state machine, owned by /stock:* commands
+│       ├── scope.md                         # phase 1 (legacy-auditor — boundary, stakeholders, source material)
+│       ├── audit.md                         # phase 2 (legacy-auditor — processes, use-cases, integrations, data, debt)
+│       ├── synthesis.md                     # phase 3 (legacy-auditor — gaps, constraints, opportunities, migration)
+│       └── stock-taking-inventory.md        # handoff — input to /discovery:start or /spec:idea
 ├── sales/                                   # one folder per client deal (pre-project, service-provider opt-in)
 │   └── <deal-slug>/
 │       ├── deal-state.md                    # deal state machine, owned by /sales:* commands
@@ -109,6 +116,9 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 | `docs/CONTEXT.md`, `docs/CONTEXT-MAP.md`, `docs/contexts/*.md` | `domain-context` skill | Additive, agent-updated |
 | `docs/UBIQUITOUS_LANGUAGE.md` | `ubiquitous-language` skill | Additive, agent-updated |
 | `templates/*-template.md` | Human | Versioned; updates propagate to new features only |
+| `stock-taking/<project>/stock-taking-state.md` | `/stock:start`, then `/stock:*` commands on transition | Engagement state machine; legacy-auditor-owned |
+| `stock-taking/<project>/<phase>.md` | `legacy-auditor` (per `docs/stock-taking-track.md` §3) | Each phase writes once; later phases never rewrite upstream phase artifacts |
+| `stock-taking/<project>/stock-taking-inventory.md` | `legacy-auditor` (Handoff) | Consolidated inventory; mandatory input to `/discovery:start` or `/spec:idea` when a legacy system is in scope |
 | `sales/<deal>/deal-state.md` | `/sales:start`, then `/sales:*` commands on transition | Deal state machine; sales-cycle skill-owned |
 | `sales/<deal>/qualification.md` | `sales-qualifier` | Written once in Phase 1; later phases never rewrite |
 | `sales/<deal>/scope.md` | `scoping-facilitator` | Written once in Phase 2 |
@@ -170,6 +180,12 @@ Accepted ADRs are immutable. To change a decision, file a new ADR superseding th
 6. `docs/CONTEXT.md` and `docs/UBIQUITOUS_LANGUAGE.md` if present.
 7. Any topically relevant ADRs (skim titles).
 
+## Stock-taking Track sub-tree
+
+When a team is **building on or replacing an existing system**, the Stock-taking Track produces `stock-taking-inventory.md` first; that inventory is then the input either the Discovery Track's Frame phase or Stage 1's analyst reads. The track lives at `stock-taking/<project-slug>/` parallel to `discovery/` and `specs/`. See [`docs/stock-taking-track.md`](stock-taking-track.md) for the methodology and [ADR-0007](adr/0007-add-stock-taking-track-for-legacy-projects.md) for the rationale.
+
+The engagement slug names the *system or system cluster* being inventoried (not the feature being built): `crm-legacy-audit`, `billing-platform-baseline`. One engagement may produce inventory that feeds multiple Discovery Sprints or multiple feature folders. The Handoff is the *only* link between the stock-taking tree and the downstream trees — before handoff no `discovery/<sprint>/` or `specs/<slug>/` exists for this work; after handoff the inventory is referenced from `chosen-brief.md` or `idea.md` `inputs:` frontmatter.
+
 ## Sales Cycle sub-tree
 
 When a **service provider** needs to win a project before building it, the Sales Cycle Track runs first — a 5-phase commercial workflow (Qualify → Scope → Estimate → Propose → Order) that produces `order.md`. The `order.md` contains a Project Kickoff Brief that is the canonical handoff to the delivery workflow. The delivery workflow is entered via `/discovery:start` (exploratory mandates) or `/spec:start` (defined mandates), with `order.md` as the mandatory context input.
@@ -188,7 +204,7 @@ Key characteristics:
 - The track is **opt-in**: teams with no client engagement skip it entirely and use `specs/` + `discovery/` directly.
 - The project-manager **links to** but **never writes to** `specs/` or `discovery/` artifacts.
 
-See [`docs/project-track.md`](project-track.md) for the full methodology and [ADR-0007](adr/0007-add-project-manager-track.md) for the rationale.
+See [`docs/project-track.md`](project-track.md) for the full methodology and [ADR-0007](adr/0008-add-project-manager-track.md) for the rationale.
 
 ## Discovery Track sub-tree
 

@@ -53,4 +53,4 @@ projects/
 
 ## Methodology
 
-Based on **P3.Express** (https://p3.express/), specifically the micro.P3.Express variant for teams of 1–7. See [`docs/project-track.md`](../docs/project-track.md) for the full methodology and [`docs/adr/0007-add-project-manager-track.md`](../docs/adr/0007-add-project-manager-track.md) for the design rationale.
+Based on **P3.Express** (https://p3.express/), specifically the micro.P3.Express variant for teams of 1–7. See [`docs/project-track.md`](../docs/project-track.md) for the full methodology and [`docs/adr/0008-add-project-manager-track.md`](../docs/adr/0008-add-project-manager-track.md) for the design rationale.

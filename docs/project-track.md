@@ -405,4 +405,4 @@ Go directly to `/project:start` → `/project:initiate`. You do not need to run 
 - Manual v2: https://p3.express/manual/v2/
 - micro.P3.Express: https://micro.p3.express/
 - NUPP (underlying principles): https://nupp.guide/
-- ADR-0007: [`docs/adr/0007-add-project-manager-track.md`](adr/0007-add-project-manager-track.md)
+- ADR-0007: [`docs/adr/0008-add-project-manager-track.md`](adr/0008-add-project-manager-track.md)

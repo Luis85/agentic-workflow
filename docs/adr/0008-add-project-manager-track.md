@@ -1,5 +1,5 @@
 ---
-id: ADR-0007
+id: ADR-0008
 title: Add an opt-in Project Manager Track based on P3.Express
 status: accepted
 date: 2026-04-27
@@ -11,7 +11,7 @@ superseded-by: []
 tags: [process, agents, project-management, p3express, service-provider]
 ---
 
-# ADR-0007 — Add an opt-in Project Manager Track based on P3.Express
+# ADR-0008 — Add an opt-in Project Manager Track based on P3.Express
 
 ## Status
 
@@ -87,12 +87,12 @@ We adopt a **Project Manager Track** as an opt-in sibling to the 11-stage lifecy
 
 ```
 /project:start <slug>     — Bootstrap projects/<slug>/ and project-state.md
-/project:initiate         — Charter + stakeholder register
-/project:plan             — Project plan + risk register
-/project:weekly           — Weekly review entry in weekly-log.md
-/project:change           — Log and assess a change request in change-log.md
-/project:report           — Generate/refresh current status-report.md
-/project:close            — Project closure document
+/project:initiate         — Group A: project-description + deliverables-map + followup-register; go/no-go gate
+/project:weekly           — Groups C+D: weekly review entry, RAG status, follow-up register update
+/project:change           — Situational: log and 4-field impact assessment for change requests
+/project:report           — On-demand status report (RAG format, replaces prior)
+/project:close            — Group F: project closure document; human sign-off gate
+/project:post             — Group G: post-project benefit evaluation
 ```
 
 Conversational entry: the **`project-run`** skill (auto-triggers on "let's start a project" / "set up a client engagement").
