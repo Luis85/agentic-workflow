@@ -32,4 +32,4 @@ These files are core entry points for contributors and agents. Broken links redu
 - A repeat run of the markdown link scanner reports zero non-placeholder broken local links.
 
 ## Resolution
-Resolved in branch `fix/doc-review-issues` by correcting real relative paths and converting placeholder example paths to non-clickable code spans.
+Resolved in branch `fix/doc-review-issues` by correcting real relative paths, preserving generated-artifact-relative template links where required, and converting placeholder example paths to non-clickable code spans.
