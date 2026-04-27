@@ -2,7 +2,7 @@
 
 - **Opened:** 2026-04-27
 - **Severity:** P2
-- **Status:** Open
+- **Status:** Resolved
 - **Area:** Documentation integrity
 
 ## Summary
@@ -30,3 +30,6 @@ These files are core entry points for contributors and agents. Broken links redu
 ## Acceptance criteria
 - All links in listed files resolve successfully.
 - A repeat run of the markdown link scanner reports zero non-placeholder broken local links.
+
+## Resolution
+Resolved in branch `fix/doc-review-issues` by correcting real relative paths, preserving generated-artifact-relative template links where required, and converting placeholder example paths to non-clickable code spans.

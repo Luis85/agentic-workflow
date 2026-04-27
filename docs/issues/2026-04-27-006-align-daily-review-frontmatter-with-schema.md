@@ -2,7 +2,7 @@
 
 - **Opened:** 2026-04-27
 - **Severity:** P2
-- **Status:** Open
+- **Status:** Resolved
 - **Area:** Operational review artifacts
 
 ## Summary
@@ -17,3 +17,6 @@ If a GitHub issue exists, set `issue` to its numeric reference (for example `#12
 ## Acceptance criteria
 - `docs/daily-reviews/README.md` and daily review files use the same `issue` field contract.
 - The `2026-04-27` digest uses a value valid under the documented contract.
+
+## Resolution
+Resolved in branch `fix/doc-review-issues` by documenting `issue: null` for local-only reviews and updating the 2026-04-27 digest to use that value.

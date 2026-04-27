@@ -80,8 +80,8 @@ If no `project-state.md` exists: run Phase 0 + Phase 1.
 
 ## References
 
-- Methodology: [`docs/project-track.md`](../../docs/project-track.md)
-- ADR: [`docs/adr/0008-add-project-manager-track.md`](../../docs/adr/0008-add-project-manager-track.md)
-- Agent: [`.claude/agents/project-manager.md`](../../.claude/agents/project-manager.md)
+- Methodology: [`docs/project-track.md`](../../../docs/project-track.md)
+- ADR: [`docs/adr/0008-add-project-manager-track.md`](../../../docs/adr/0008-add-project-manager-track.md)
+- Agent: [`.claude/agents/project-manager.md`](../../../.claude/agents/project-manager.md)
 - Commands: `.claude/commands/project/` (start, initiate, weekly, change, report, close, post)
 - Templates: `templates/project-state-template.md` + `templates/project-description-template.md` + `templates/deliverables-map-template.md` + `templates/followup-register-template.md` + `templates/health-register-template.md`

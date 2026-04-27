@@ -1,6 +1,8 @@
 # Specorator — Quality-Driven, Agentic Development Workflow
 
-**Version:** 0.1 · **Status:** Draft · **Purpose:** Foundation for iteration
+**Version:** 0.2 · **Status:** Foundation + Skills layer · **Purpose:** Foundation for iteration
+
+v0.2 adds the reusable skills layer, operational bots, and branching / verify / worktree guidance on top of the v0.1 lifecycle foundation.
 
 A solution-agnostic, **spec-driven** workflow for building software with humans and AI agents. Treats specifications as the source of truth and code as their artifact. Covers the full SDLC: Product → UX → UI → Engineering → Testing → Quality → Delivery → Operations.
 

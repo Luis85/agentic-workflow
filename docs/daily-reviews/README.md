@@ -21,7 +21,7 @@ Every digest file follows this shape:
 ---
 date: YYYY-MM-DD
 head_sha: <40-char SHA>
-issue: <#NNN>           # the matching review-bot issue
+issue: <#NNN|null>      # the matching review-bot issue, or null for local-only reviews
 finding_count: <N>
 ---
 
@@ -31,7 +31,7 @@ finding_count: <N>
  same finding IDs, the same severity tags>
 ```
 
-The frontmatter lets later tools (e.g. a metrics dashboard) aggregate review counts without parsing prose.
+Use `issue: null` only when the review was archived locally before a GitHub issue existed. The frontmatter lets later tools (e.g. a metrics dashboard) aggregate review counts without parsing prose.
 
 ## Why this is **not** the primary sink
 

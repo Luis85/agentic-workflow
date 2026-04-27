@@ -29,7 +29,7 @@ last-updated: YYYY-MM-DD
 **Description:** [What this is — one paragraph]
 **Acceptance criteria:** [How we know it's done]
 **Milestone:** M1
-**Spec folder:** [specs/feature-slug/workflow-state.md](../../specs/feature-slug/workflow-state.md) — TBD
+**Spec folder:** `specs/feature-slug/workflow-state.md` — TBD
 **Dependencies:** [e.g., "requires access to client's legacy API"]
 
 #### 1.1 [Sub-deliverable]
@@ -62,7 +62,7 @@ last-updated: YYYY-MM-DD
 
 | Sprint slug | Phase | Milestone | Outputs |
 |---|---|---|---|
-| [discovery/sprint-slug](../../discovery/sprint-slug/discovery-state.md) | [e.g., Validation] | M1 | chosen-brief.md |
+| `discovery/sprint-slug/discovery-state.md` | [e.g., Validation] | M1 | chosen-brief.md |
 
 ## Accepted deliverables log
 
