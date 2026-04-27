@@ -52,19 +52,18 @@ The public surface is the CLI plus two internal interfaces called out by name be
   ```
   todo add <text>
   todo add ""                 -> error (empty text)
-  todo add                    -> error (missing argument)
+  todo add                    -> error (empty text — same message as `todo add ""`)
   todo add --help             -> help text, exit 0 (see SPEC-CLI-005)
   ```
   `<text>` is a single positional string argument. Quoting rules are the user's shell's; the binary receives one argv element after `add` and treats it verbatim.
 - **Behaviour:**
-  1. Parse argv. If the first non-flag token after `add` is absent, emit the missing-text error (see Errors) and exit 1.
-  2. If the text argument is the empty string, emit the empty-text error and exit 1.
-  3. Resolve the data-store path (SPEC-CLI-009).
-  4. Load the store (SPEC-CLI-008 read path). If the store does not exist on disk, treat as a fresh empty store with `version: 1`, `next_id: 1`, `tasks: []` — do not error and do not write.
-  5. Construct a new task: `id = store.next_id`, `text = <argv text verbatim>`, `done = false`, `created_at = <current UTC instant in RFC 3339>`.
-  6. Append the task to `store.tasks`. Increment `store.next_id` by 1.
-  7. Persist the store via the atomic-write helper (SPEC-CLI-008 write path).
-  8. Print the success line on stdout: `Added task <id>: <text>` followed by a newline. Exit 0.
+  1. Parse argv. If the first non-flag token after `add` is absent, **or** the text argument is the empty string, emit the empty-text error (see Errors) and exit 1. Both cases collapse to the same observable behaviour: a missing text argument and an empty text argument are indistinguishable from the user's perspective and are reported with the same two-line message. (Aligned with design Part A Flow 6 and Part B microcopy.)
+  2. Resolve the data-store path (SPEC-CLI-009).
+  3. Load the store (SPEC-CLI-008 read path). If the store does not exist on disk, treat as a fresh empty store with `version: 1`, `next_id: 1`, `tasks: []` — do not error and do not write.
+  4. Construct a new task: `id = store.next_id`, `text = <argv text verbatim>`, `done = false`, `created_at = <current UTC instant in RFC 3339>`.
+  5. Append the task to `store.tasks`. Increment `store.next_id` by 1.
+  6. Persist the store via the atomic-write helper (SPEC-CLI-008 write path).
+  7. Print the success line on stdout: `Added task <id>: <text>` followed by a newline. Exit 0.
 - **Pre-conditions:**
   - The data-store path resolves to a writable location (or to a path whose parent directory can be created).
   - The text argument is a non-empty string.
@@ -77,8 +76,7 @@ The public surface is the CLI plus two internal interfaces called out by name be
 - **Errors:**
   | Condition | Channel | Message | Exit |
   |---|---|---|---|
-  | Argument absent (`todo add` with no further tokens) | stderr | `Error: add requires task text. Run 'todo add --help' for usage.` | 1 |
-  | Empty string argument (`todo add ""`) | stderr | `Error: task text cannot be empty. Provide a description after 'todo add'.` newline `Example: todo add "write design doc"` | 1 |
+  | Argument absent (`todo add` with no further tokens) **or** empty string argument (`todo add ""`) | stderr | `Error: task text cannot be empty. Provide a description after 'todo add'.` newline `Example: todo add "write design doc"` | 1 |
   | Data store unreadable or corrupt | stderr | Corrupt-store error (see SPEC-CLI-008) | 1 |
   | Write fails after temp-file creation | stderr | `Error: cannot write data store at <path>: <reason>` | 1 |
 - **Satisfies:** REQ-CLI-001, REQ-CLI-007, REQ-CLI-008, REQ-CLI-009, REQ-CLI-012, REQ-CLI-013.
@@ -294,8 +292,8 @@ This interface is the sole mutation entry point for the on-disk store, per ADR-C
   | Condition | Returned error | Caller's stderr message |
   |---|---|---|
   | File open failure (permissions, is-a-directory) | corrupt-store, `<reason> = <OS reason>` | `Error: cannot read data store at <path>: <reason>\nHint: check the file for corruption or remove it to start fresh.` |
-  | Zero-byte file | corrupt-store, `<reason> = unexpected end of data` | same template |
-  | Invalid JSON | corrupt-store, `<reason> = <parse description>` | same template |
+  | Zero-byte file | corrupt-store, `<reason>` set to a short parse description (e.g., `unexpected end of data`); exact wording is implementation-dependent per the read-path narrative above | same template |
+  | Invalid JSON | corrupt-store, `<reason> = <parse description>`; exact wording is implementation-dependent | same template |
   | Schema validation fails (wrong version, missing field, duplicate id, id ≥ next_id, id ≤ 0) | corrupt-store, `<reason> = <validation description>` | same template |
 - **Errors (save):**
   | Condition | Returned error | Caller's stderr message |
@@ -417,7 +415,6 @@ Example: todo add "write design doc"
 Error: unknown command "<token>". Run 'todo --help' for a list of commands.
 Error: done requires a task ID. Run 'todo done --help' for usage.
 Error: rm requires a task ID. Run 'todo rm --help' for usage.
-Error: add requires task text. Run 'todo add --help' for usage.
 Error: done requires a positive integer ID, got "<token>". Run 'todo done --help' for usage.
 Error: rm requires a positive integer ID, got "<token>". Run 'todo rm --help' for usage.
 Error: list takes no positional arguments. Run 'todo list --help' for usage.
@@ -536,8 +533,7 @@ Validation lives at three boundaries:
 
 | Input | Rejected because | See |
 |---|---|---|
-| `todo add` (no further argv) | `add` requires a non-empty text argument | SPEC-CLI-001, REQ-CLI-013 |
-| `todo add ""` | text is empty | SPEC-CLI-001, REQ-CLI-013 |
+| `todo add` (no further argv) **or** `todo add ""` | text argument missing or empty (collapsed to one observable behaviour) | SPEC-CLI-001, REQ-CLI-013 |
 | `todo done` / `todo rm` (no argv) | id required | SPEC-CLI-003, SPEC-CLI-004 |
 | `todo done abc` / `todo rm 1.5` | not a positive integer | SPEC-CLI-003, SPEC-CLI-004 |
 | `todo done -1` / `todo rm 0` | not a positive integer | SPEC-CLI-003, SPEC-CLI-004 |
@@ -563,12 +559,12 @@ Validation lives at three boundaries:
 | EC-CLI-002 | `todo add` invoked when the parent directory does not exist (first run with XDG default) | Create the parent directory (and any missing ancestors) before the temp-file write. Atomic-write succeeds. Exit 0. |
 | EC-CLI-003 | `TODO_FILE` set to a path whose parent directory does not exist | Same as EC-CLI-002 — parent directory is created during the write step. Exit 0. |
 | EC-CLI-004 | `todo add ""` (empty-string argument) | Empty-text error on stderr; data file unchanged; exit 1. |
-| EC-CLI-005 | `todo add` with no argument at all | Missing-text error on stderr; data file unchanged; exit 1. |
+| EC-CLI-005 | `todo add` with no argument at all | Same observable behaviour as EC-CLI-004: empty-text error on stderr (the two-line `Error: task text cannot be empty…` + `Example: todo add "write design doc"`); data file unchanged; exit 1. |
 | EC-CLI-006 | `todo done <id>` where `<id>` does not exist | Unknown-ID error on stderr; data file unchanged; exit 1. |
 | EC-CLI-007 | `todo rm <id>` where `<id>` does not exist | Unknown-ID error on stderr; data file unchanged; exit 1. |
 | EC-CLI-008 | Data file exists but contains invalid JSON | Corrupt-store error on stderr (with `<path>` and `<reason>`); data file unchanged; exit 1. |
 | EC-CLI-009 | Data file exists but has `"version": 2` (or any value other than `1`) | Corrupt-store error on stderr with reason `unsupported version <n>`; data file unchanged; exit 1. v1 readers must not silently misread an unknown version. |
-| EC-CLI-010 | Data file exists but is zero bytes | Corrupt-store error on stderr with reason `unexpected end of data`; data file unchanged; exit 1. |
+| EC-CLI-010 | Data file exists but is zero bytes | Corrupt-store error on stderr with a short parse-reason indicating premature end of input (e.g., `unexpected end of data`); exact reason wording is implementation-dependent — see SPEC-CLI-008 read-path step 3. Data file unchanged; exit 1. |
 | EC-CLI-011 | Data file path resolves to a directory (not a regular file) | Corrupt-store error on stderr with the OS-level reason; data file unchanged; exit 1. |
 | EC-CLI-012 | SIGKILL arrives while the temp file is being written (mid-rename window) | The file at the target path is left in its pre-mutation state (or, if the rename completed before SIGKILL, the new state — never a partial state). The temp file may be left as an orphan in the parent directory; this is harmless and not cleaned up by v1. |
 | EC-CLI-013 | `TODO_FILE` set to a path on a different filesystem from the default XDG dir | The temp file is placed in the *target's* directory (not the system temp dir or any other location). The rename therefore stays within one filesystem and remains atomic. This is enforced by SPEC-CLI-008 step 3 and is a compliance condition of ADR-CLI-0001. |
@@ -601,7 +597,7 @@ The QA agent will turn these into automated tests. Test types: **unit** (single 
 | TEST-CLI-010 | `todo list` with an empty store prints `No open tasks. Run 'todo add <text>' to create one.` on stdout, exits 0 | e2e | SPEC-CLI-002, EC-CLI-014 |
 | TEST-CLI-011 | `todo list --all` with an empty store prints `No tasks yet. Run 'todo add <text>' to create your first task.` on stdout, exits 0 | e2e | SPEC-CLI-002, EC-CLI-015 |
 | TEST-CLI-012 | `todo add ""` prints the empty-text error on stderr and the example line, exits 1, data store unchanged | e2e | SPEC-CLI-001, REQ-CLI-013, EC-CLI-004 |
-| TEST-CLI-013 | `todo add` with no argument prints the missing-text error on stderr, exits 1, data store unchanged | e2e | SPEC-CLI-001, REQ-CLI-013, EC-CLI-005 |
+| TEST-CLI-013 | `todo add` with no argument prints the same empty-text error as TEST-CLI-012 on stderr (byte-exact two-line message), exits 1, data store unchanged | e2e | SPEC-CLI-001, REQ-CLI-013, EC-CLI-005 |
 | TEST-CLI-014 | `todo done 99` (no such task) prints `Error: no task with ID 99.` on stderr, exits 1, data store byte-for-byte unchanged | e2e | SPEC-CLI-003, REQ-CLI-010, EC-CLI-006 |
 | TEST-CLI-015 | `todo rm 42` (no such task) prints `Error: no task with ID 42.` on stderr, exits 1, data store byte-for-byte unchanged | e2e | SPEC-CLI-004, REQ-CLI-011, EC-CLI-007 |
 | TEST-CLI-016 | `todo done abc` and `todo rm -1` print the invalid-id error on stderr, exit 1, data store unchanged | e2e | SPEC-CLI-003, SPEC-CLI-004 |
@@ -634,9 +630,9 @@ v1 has **no structured logging, no metrics, and no traces.** The complete observ
 | Event | Trigger | Format |
 |---|---|---|
 | Unknown subcommand | SPEC-CLI-007 | One line: `Error: unknown command "<token>". Run 'todo --help' for a list of commands.` |
-| Missing required argument | SPEC-CLI-001 / 003 / 004 | One line: `Error: <subcommand> requires <description>. Run 'todo <subcommand> --help' for usage.` (exact strings in §3.4) |
+| Missing required argument (`done` / `rm`) | SPEC-CLI-003 / 004 | One line: `Error: <subcommand> requires a task ID. Run 'todo <subcommand> --help' for usage.` (exact strings in §3.4) |
 | Invalid id (not a positive integer) | SPEC-CLI-003 / 004 | One line: `Error: <subcommand> requires a positive integer ID, got "<token>". Run 'todo <subcommand> --help' for usage.` |
-| Empty text | SPEC-CLI-001 | Two lines: `Error: task text cannot be empty. Provide a description after 'todo add'.` then `Example: todo add "write design doc"` |
+| Empty or missing text on `add` | SPEC-CLI-001 | Two lines: `Error: task text cannot be empty. Provide a description after 'todo add'.` then `Example: todo add "write design doc"` (`todo add` with no argument and `todo add ""` produce the identical message) |
 | Unknown task id | SPEC-CLI-003 / 004 | One line: `Error: no task with ID <id>.` |
 | Corrupt or unreadable data store | SPEC-CLI-008 (load) | Two lines: `Error: cannot read data store at <path>: <reason>` then `Hint: check the file for corruption or remove it to start fresh.` |
 | Write failure | SPEC-CLI-008 (save) | One line: `Error: cannot write data store at <path>: <reason>` |
