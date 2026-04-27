@@ -24,6 +24,11 @@ When you don't have a brief yet — blank page, multiple candidate ideas, no cle
 - **Conversational:** say "let's run a design sprint", "let's brainstorm new product ideas", or "we have a blank page" and the [`discovery-sprint`](.claude/skills/discovery-sprint/SKILL.md) skill will guide you through Frame → Diverge → Converge → Prototype → Validate → Handoff. The handoff writes `chosen-brief.md` which feeds `/spec:idea`.
 - **Manual:** `/discovery:start`, `/discovery:frame`, `/discovery:diverge`, `/discovery:converge`, `/discovery:prototype`, `/discovery:validate`, `/discovery:handoff`. See [`docs/discovery-track.md`](docs/discovery-track.md) and [ADR-0005](docs/adr/0005-add-discovery-track-before-stage-1.md).
 
+When you are working in a **service-provider context** — delivering for clients, tracking scope/schedule/budget, sending status reports — run the **Project Manager Track** (opt-in, wraps one or more feature deliveries):
+
+- **Conversational:** say "let's start a client project", "set up a service engagement", or "I have a client brief" and the [`project-run`](.claude/skills/project-run/SKILL.md) skill will guide you through Initiation → Execution → Closure. Based on [P3.Express](https://p3.express/).
+- **Manual:** `/project:start`, `/project:initiate`, `/project:weekly`, `/project:change`, `/project:report`, `/project:close`, `/project:post`. See [`docs/project-track.md`](docs/project-track.md) and [ADR-0006](docs/adr/0006-add-project-manager-track.md).
+
 In both modes:
 
 1. State lives in `specs/<feature-slug>/workflow-state.md` — read it to learn where the feature is.
@@ -32,8 +37,8 @@ In both modes:
 
 ## Conventions specific to Claude Code
 
-- Subagents are project-scoped (`.claude/agents/`). They have intentionally narrow tool lists — if a tool seems missing, that's a feature, not a bug. Two classes ship: **lifecycle** agents (one per Stage 1–11) and **discovery** agents (one facilitator + six specialists for the pre-stage track).
-- Skills live in `.claude/skills/` — see [`.claude/skills/README.md`](.claude/skills/README.md). They auto-trigger from natural language and can be invoked explicitly via `/<skill-name>`. The catalog spans two workflow conductors (`orchestrate`, `discovery-sprint`), mattpocock-style practice skills (`grill`, `design-twice`, `tracer-bullet`, `tdd-cycle`), cross-cutting sink skills (`domain-context`, `ubiquitous-language`), and operational skills (`verify`, `new-adr`, `review-fix`).
+- Subagents are project-scoped (`.claude/agents/`). They have intentionally narrow tool lists — if a tool seems missing, that's a feature, not a bug. Three classes ship: **lifecycle** agents (one per Stage 1–11), **discovery** agents (one facilitator + six specialists for the pre-stage track), and one **project-manager** agent for service-provider engagements.
+- Skills live in `.claude/skills/` — see [`.claude/skills/README.md`](.claude/skills/README.md). They auto-trigger from natural language and can be invoked explicitly via `/<skill-name>`. The catalog spans three workflow conductors (`orchestrate`, `discovery-sprint`, `project-run`), mattpocock-style practice skills (`grill`, `design-twice`, `tracer-bullet`, `tdd-cycle`), cross-cutting sink skills (`domain-context`, `ubiquitous-language`), and operational skills (`verify`, `new-adr`, `review-fix`).
 - Operational bots live under `agents/operational/`. Each is a `PROMPT.md` + `README.md` pair; the prompt is the source of truth the scheduled run loads.
 - Permission rules live in `.claude/settings.json`. Pushes to `main` / `develop` are denied by default; `--no-verify` is denied. See `docs/branching.md`.
 - Topic branches live in worktrees under `.worktrees/<slug>/`. See `docs/worktrees.md`.
