@@ -13,9 +13,9 @@ created: YYYY-MM-DD
 updated: YYYY-MM-DD
 ---
 
-# SaaS Architecture Questionnaire — Arc42 + 12-Factor Baseline
+# Architecture Questionnaire — Arc42 + 12-Factor Baseline
 
-> **How to use:** Answer each question as thoroughly as you can. Leave `_TBD_` for items you haven't decided yet — these become open clarifications. The `arc42-baseline` skill drives this fill-in interactively; `/spec:design` reads the result as canonical input for Part C — Architecture.
+> **How to use:** Answer each question as thoroughly as you can. Leave `_TBD_` for items you haven't decided yet — these become open clarifications. Mark sections that don't apply to your project type as `N/A` with a one-line reason. The `arc42-baseline` skill drives this fill-in interactively; `/spec:design` reads the result as canonical input for Part C — Architecture.
 
 ---
 
@@ -27,7 +27,7 @@ updated: YYYY-MM-DD
 
 #### 1.1 Product Name and Purpose
 
-> _What is the name and one-sentence purpose of your SaaS product?_
+> _What is the name and one-sentence purpose of your software system?_
 
 ```
 _TBD_
@@ -59,13 +59,14 @@ _TBD_
 | ----------- | ------------ |
 | _TBD_       | _TBD_        |
 
-#### 1.5 Business Model
+#### 1.5 Business Context
 
-> _Subscription tiers, freemium, usage-based? Multi-tenant or single-tenant? Target number of tenants?_
+> _How is the system monetised or funded? Who operates it? What is the deployment model (SaaS, on-prem, embedded, internal tool)? Expected user/tenant scale?_
 
 ```
-Pricing model: _TBD_
-Tenancy approach: _TBD_
+Deployment model: _TBD_   # SaaS | on-prem | embedded | internal tool | hybrid
+Monetisation / funding: _TBD_
+Tenancy approach: _TBD_   # N/A if single-tenant or non-SaaS
 Expected scale (year 1): _TBD_
 Expected scale (year 2): _TBD_
 ```
@@ -135,20 +136,22 @@ _TBD_
 - _TBD_
 ```
 
-#### 3.4 Geographic Scope
+#### 3.4 Geographic / Deployment Scope
 
-- [ ] Single Region
+- [ ] Single machine / on-premises
+- [ ] Single Region (cloud)
 - [ ] Multi-Region (same country)
 - [ ] Multi-Region (multiple countries)
 - [ ] Global (all major regions)
+- [ ] Embedded / offline (no network dependency)
 
-#### 3.5 Geographic Scope Details
+#### 3.5 Scope Details
 
 ```
-Primary region: _TBD_
-Failover region: _TBD_
+Primary deployment location: _TBD_
+Failover / DR location: _TBD_
 Future expansion: _TBD_
-Data sovereignty notes: _TBD_
+Data sovereignty / residency notes: _TBD_   # N/A for offline or single-site deployments
 ```
 
 ---
@@ -179,11 +182,14 @@ Evolution plan: _TBD_
 
 #### 4.3 Multi-Tenancy Strategy
 
+> _Skip this section (mark N/A) if the system is not multi-tenant._
+
+- [ ] N/A — single-tenant, on-premises, or embedded system
 - [ ] Shared Database, Row-Level Isolation
 - [ ] Schema per Tenant
 - [ ] Database per Tenant
 - [ ] Hybrid (shared for small, dedicated for enterprise)
-- [ ] Single-Tenant Deployments
+- [ ] Single-Tenant Deployments (one instance per customer)
 
 **Details / rationale:**
 
@@ -464,24 +470,24 @@ Scaling trigger:  _TBD_
 
 ## Part II — 12-Factor App Assessment
 
-> The [12-Factor App](https://12factor.net) methodology. For each factor, describe the planned approach and assess readiness.
+> The [12-Factor App](https://12factor.net) methodology. Originally coined for SaaS, but broadly applicable to any server-side or cloud-hosted system. Mark individual factors `N/A` if they genuinely don't apply to your deployment model (e.g. an offline embedded system has no concept of Factor X Dev/Prod parity). For each applicable factor, describe the planned approach and assess readiness.
 
 ### Readiness Summary
 
-| Factor                 | Principle                                                   | Readiness                       |
-| ---------------------- | ----------------------------------------------------------- | ------------------------------- |
-| I. Codebase            | One codebase tracked in revision control, many deploys      | `[ ] Ready [ ] Partial [ ] Gap` |
-| II. Dependencies       | Explicitly declare and isolate dependencies                 | `[ ] Ready [ ] Partial [ ] Gap` |
-| III. Config            | Store config in the environment                             | `[ ] Ready [ ] Partial [ ] Gap` |
-| IV. Backing Services   | Treat backing services as attached resources                | `[ ] Ready [ ] Partial [ ] Gap` |
-| V. Build, Release, Run | Strictly separate build and run stages                      | `[ ] Ready [ ] Partial [ ] Gap` |
-| VI. Processes          | Execute the app as one or more stateless processes          | `[ ] Ready [ ] Partial [ ] Gap` |
-| VII. Port Binding      | Export services via port binding                            | `[ ] Ready [ ] Partial [ ] Gap` |
-| VIII. Concurrency      | Scale out via the process model                             | `[ ] Ready [ ] Partial [ ] Gap` |
-| IX. Disposability      | Maximize robustness with fast startup and graceful shutdown | `[ ] Ready [ ] Partial [ ] Gap` |
-| X. Dev/Prod Parity     | Keep dev, staging, and production as similar as possible    | `[ ] Ready [ ] Partial [ ] Gap` |
-| XI. Logs               | Treat logs as event streams                                 | `[ ] Ready [ ] Partial [ ] Gap` |
-| XII. Admin Processes   | Run admin/management tasks as one-off processes             | `[ ] Ready [ ] Partial [ ] Gap` |
+| Factor                 | Principle                                                   | Readiness                              |
+| ---------------------- | ----------------------------------------------------------- | -------------------------------------- |
+| I. Codebase            | One codebase tracked in revision control, many deploys      | `[ ] Ready [ ] Partial [ ] Gap [ ] N/A` |
+| II. Dependencies       | Explicitly declare and isolate dependencies                 | `[ ] Ready [ ] Partial [ ] Gap [ ] N/A` |
+| III. Config            | Store config in the environment                             | `[ ] Ready [ ] Partial [ ] Gap [ ] N/A` |
+| IV. Backing Services   | Treat backing services as attached resources                | `[ ] Ready [ ] Partial [ ] Gap [ ] N/A` |
+| V. Build, Release, Run | Strictly separate build and run stages                      | `[ ] Ready [ ] Partial [ ] Gap [ ] N/A` |
+| VI. Processes          | Execute the app as one or more stateless processes          | `[ ] Ready [ ] Partial [ ] Gap [ ] N/A` |
+| VII. Port Binding      | Export services via port binding                            | `[ ] Ready [ ] Partial [ ] Gap [ ] N/A` |
+| VIII. Concurrency      | Scale out via the process model                             | `[ ] Ready [ ] Partial [ ] Gap [ ] N/A` |
+| IX. Disposability      | Maximize robustness with fast startup and graceful shutdown | `[ ] Ready [ ] Partial [ ] Gap [ ] N/A` |
+| X. Dev/Prod Parity     | Keep dev, staging, and production as similar as possible    | `[ ] Ready [ ] Partial [ ] Gap [ ] N/A` |
+| XI. Logs               | Treat logs as event streams                                 | `[ ] Ready [ ] Partial [ ] Gap [ ] N/A` |
+| XII. Admin Processes   | Run admin/management tasks as one-off processes             | `[ ] Ready [ ] Partial [ ] Gap [ ] N/A` |
 
 ---
 

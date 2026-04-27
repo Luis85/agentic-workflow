@@ -1,23 +1,24 @@
 ---
 name: arc42-baseline
-description: Drive an Arc42 + 12-Factor questionnaire to baseline architecture and operability decisions before /spec:design. Pre-fills from upstream, grills the user on TBDs, files ADRs for accepted key decisions, and produces specs/<slug>/arc42-questionnaire.md as canonical input for the architect's Part C — Architecture. Use during stage 4 (Design) on SaaS-shaped or platform-scope features, when the user wants an Arc42 baseline, says "fill the questionnaire", "Arc42", "12-factor check", or whenever non-functional and operability decisions need to be locked before design proper.
+description: Drive an Arc42 + 12-Factor questionnaire to baseline architecture and operability decisions before /spec:design. Pre-fills from upstream, grills the user on TBDs, files ADRs for accepted key decisions, and produces specs/<slug>/arc42-questionnaire.md as canonical input for the architect's Part C — Architecture. Applicable to any software project — SaaS, on-premises, embedded, internal tool, or platform. Use during stage 4 (Design) on non-trivial features, when the user wants an Arc42 baseline, says "fill the questionnaire", "Arc42", "12-factor check", or whenever non-functional and operability decisions need to be locked before design proper.
 argument-hint: [feature-slug]
 ---
 
 # Arc42 baseline
 
-A pre-design skill that turns the [Arc42](https://arc42.org) sections plus the [12-Factor App](https://12factor.net) self-assessment into a structured fill-in exercise. Sibling to `design-twice`: where `design-twice` explores divergent module shapes, `arc42-baseline` locks the cross-cutting non-functional and operability decisions a SaaS architecture needs before Part C — Architecture is written.
+A pre-design skill that turns the [Arc42](https://arc42.org) sections plus the [12-Factor App](https://12factor.net) self-assessment into a structured fill-in exercise. Applicable to **any** software system — Arc42 is a general architecture documentation standard, not SaaS-specific. Sibling to `design-twice`: where `design-twice` explores divergent module shapes, `arc42-baseline` locks the cross-cutting non-functional and operability decisions before Part C — Architecture is written.
 
-The artifact is intentionally a **questionnaire**, not free-form prose — every section has a question, every answer becomes either a decision in `design.md`, an ADR in `docs/adr/`, or an open clarification in `workflow-state.md`. Nothing leaves the room as `_TBD_`.
+The artifact is intentionally a **questionnaire**, not free-form prose — every section has a question, every answer becomes either a decision in `design.md`, an ADR in `docs/adr/`, or an open clarification in `workflow-state.md`. Sections that don't apply to the project type are marked `N/A` with a one-line reason, not silently skipped.
 
 ## When to invoke
 
 Invoke when **any** of these is true:
 
-- The feature introduces a new SaaS surface (multi-tenant data, identity, billing, deployment topology).
-- Non-functional concerns (availability, scalability, security, data residency, observability) are load-bearing for the design.
+- The feature introduces or meaningfully changes system architecture (deployment topology, data model, service boundaries, external integrations).
+- Non-functional concerns (availability, scalability, security, performance, maintainability) are load-bearing for the design.
 - The user explicitly asks for an Arc42 baseline, a 12-factor check, or "fill the questionnaire".
 - The architect agent flags that Part C of the design template doesn't cover what the feature actually needs.
+- The project type is anything architecture-significant: SaaS platform, on-premises system, embedded firmware, CLI tool with complex integration, internal back-office tool, or library with public API contracts.
 
 ## When not to invoke
 
@@ -42,10 +43,11 @@ Copy `templates/arc42-questionnaire-template.md` to `specs/<slug>/arc42-question
 
 Use the `grill` skill semantics: one question per turn, always with a recommended answer, in this order. Stop at each section, write the user's answer in, and move on.
 
-1. **§1.5 Business model and tenancy** — single- vs multi-tenant, expected scale, pricing.
-2. **§3.4 / §3.5 Geographic scope and data residency** — drives §2.3 compliance and §4.3 multi-tenancy.
-3. **§4.1 / §4.3 Architectural style and multi-tenancy strategy** — the load-bearing structural decisions.
-4. **§4.2 Technology stack** — only the layers not already pinned by `docs/steering/tech.md`.
+1. **§1.5 Business context** — deployment model (SaaS / on-prem / embedded / internal), expected scale, monetisation. This answer determines which later sections are `N/A`.
+2. **§3.4 / §3.5 Deployment scope** — single-machine, single-region, multi-region, or offline; data residency constraints.
+3. **§4.1 Architectural style** — the load-bearing structural decision.
+4. **§4.3 Multi-tenancy strategy** — only for systems with multiple independent tenants; mark `N/A` and skip if not applicable.
+5. **§4.2 Technology stack** — only the layers not already pinned by `docs/steering/tech.md`.
 5. **§7 Deployment view** — environments, IaC, secrets, rollback.
 6. **§8 Crosscutting** — auth, observability, error handling, data management.
 7. **§10 Quality requirements** — SLOs, performance budgets, scalability targets.

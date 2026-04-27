@@ -118,7 +118,7 @@ For each stage in the agreed sequence, in order:
 
 If Depth is `Standard` and the feature is non-trivial (PRD has ≥3 functional requirements), batch the two pre-design options into a single `AskUserQuestion` (multi-select):
 
-- `Run arc42-baseline first` — recommended when the feature is SaaS-shaped, multi-tenant, or has load-bearing non-functional requirements (availability, scalability, data residency, observability). Produces `specs/<slug>/arc42-questionnaire.md` so the architect inherits cross-cutting decisions instead of re-deriving them in Part C.
+- `Run arc42-baseline first` — recommended for any architecture-significant feature: new service boundaries, external integrations, or non-trivial non-functional requirements (availability, scalability, security, data residency, observability). Applicable to any project type — SaaS, on-premises, embedded, internal tool, or library. Produces `specs/<slug>/arc42-questionnaire.md` so the architect inherits cross-cutting decisions instead of re-deriving them in Part C.
 - `Run design-twice first` — recommended when the module shape is contested or there's a genuine fork (e.g. event vs. CRUD, pull vs. push, monolith vs. split). Produces `specs/<slug>/design-comparison.md` so the architect picks up a synthesised recommendation.
 
 Both, one, or neither may be selected. If both, run `arc42-baseline` first (it locks the baseline) and `design-twice` second (it explores within that baseline). Then continue to `/spec:design` — the architect reads whichever artifacts were produced.
