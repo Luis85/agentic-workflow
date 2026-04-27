@@ -47,10 +47,12 @@ This repo is **process-light by design** for v0.1: no required CI, no PR checks,
 
 ## Two classes of agent
 
-- **Lifecycle agents** (`.claude/agents/`) — one per SDLC role, used to build one feature.
+- **Lifecycle agents** (`.claude/agents/`) — used to build one feature across Stages 1–11. The `orchestrator` routes between them. Two sub-classes:
+  - **Stage 1–11 specialists** — analyst, pm, ux-designer, ui-designer, architect, planner, dev, qa, reviewer, release-manager, sre, retrospective.
+  - **Discovery specialists** *(pre-stage 1, opt-in — see [ADR-0005](docs/adr/0005-add-discovery-track-before-stage-1.md))* — facilitator + product-strategist, user-researcher, game-designer, divergent-thinker, critic, prototyper. Used for ideation / design-sprint / concept-validation work that produces a `chosen-brief.md` before `/spec:idea`. The discovery-track methodology lives at [`docs/discovery-track.md`](docs/discovery-track.md).
 - **Operational agents** (`agents/operational/`) — always-on, scheduled routines that act against the live repo (review-bot, docs-review-bot, plan-recon-bot, dep-triage-bot, actions-bump-bot). Each is a `PROMPT.md` + `README.md`.
 
-Skills (`.claude/skills/`) are reusable how-tos any agent can invoke (`verify`, `new-adr`, `review-fix`).
+Skills (`.claude/skills/`) are reusable how-tos any agent can invoke (`verify`, `new-adr`, `review-fix`). Two workflow-conductor skills (`orchestrate`, `discovery-sprint`) provide the conversational entry points.
 
 ## Tool-specific notes
 

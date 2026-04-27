@@ -1,6 +1,22 @@
 # Slash commands
 
-One command per workflow phase. Subdirectories namespace commands (`spec/specify.md` → `/spec:specify`).
+One command per workflow phase. Subdirectories namespace commands (`spec/specify.md` → `/spec:specify`, `discovery/frame.md` → `/discovery:frame`).
+
+## `/discovery:*` — pre-stage Discovery Track (opt-in)
+
+Run this track when the team has no brief yet — a blank page rather than a defined feature. Output is `chosen-brief.md` which seeds `/spec:idea`. See [`docs/discovery-track.md`](../../docs/discovery-track.md) and [ADR-0005](../../docs/adr/0005-add-discovery-track-before-stage-1.md).
+
+| Command | Phase | Spawns agent |
+|---|---|---|
+| `/discovery:start <sprint-slug>` | bootstrap | — (scaffolds files) |
+| `/discovery:frame` | 1 — Frame | `facilitator` (consults `product-strategist`, `user-researcher`) |
+| `/discovery:diverge` | 2 — Diverge | `facilitator` (consults `divergent-thinker`, `game-designer`) |
+| `/discovery:converge` | 3 — Converge | `facilitator` (consults `critic`, `product-strategist`) |
+| `/discovery:prototype` | 4 — Prototype | `facilitator` (consults `prototyper`, `game-designer`) |
+| `/discovery:validate` | 5 — Validate | `facilitator` (consults `user-researcher`, `critic`) |
+| `/discovery:handoff` | handoff | `facilitator` (consults `product-strategist`) |
+
+Conversational entry: the [`discovery-sprint`](../skills/discovery-sprint/SKILL.md) skill.
 
 ## `/spec:*` — workflow phases
 
@@ -30,6 +46,16 @@ One command per workflow phase. Subdirectories namespace commands (`spec/specify
 ## Usage
 
 ```
+# Optional pre-stage when no brief exists yet:
+/discovery:start q2-retention-discovery
+/discovery:frame
+/discovery:diverge
+/discovery:converge
+/discovery:prototype
+/discovery:validate
+/discovery:handoff       ← writes chosen-brief.md, recommends /spec:start
+
+# Then the lifecycle workflow:
 /spec:start payments-redesign
 /spec:idea
 /spec:research

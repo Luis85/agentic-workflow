@@ -6,6 +6,8 @@ One subagent per SDLC role. Each has:
 - a **narrow tool list** — capability is a permission, not a default;
 - a **steering context** — declares which `docs/steering/*.md` files it loads.
 
+### Lifecycle agents (Stages 1–11)
+
 | Agent | Owns stage(s) | Tool surface |
 |---|---|---|
 | [`orchestrator`](orchestrator.md) | cross-cutting hand-off | Read, Grep |
@@ -21,6 +23,20 @@ One subagent per SDLC role. Each has:
 | [`release-manager`](release-manager.md) | Release | Read, Edit, Write, Bash |
 | [`sre`](sre.md) | Operations | Read, Edit, Write, Bash, Grep |
 | [`retrospective`](retrospective.md) | Learning | Read, Edit, Write, Grep, Bash |
+
+### Discovery agents (pre-Stage 1, opt-in)
+
+The Discovery Track ([`docs/discovery-track.md`](../../docs/discovery-track.md), [ADR-0005](../../docs/adr/0005-add-discovery-track-before-stage-1.md)) is owned by a facilitator who sequences six specialists. Each specialist shadows a recognizable human role; agents *consult* the human specialist when one is in the room and *carry* the role when none is available.
+
+| Agent | Owns | Shadows | Tool surface |
+|---|---|---|---|
+| [`facilitator`](facilitator.md) | Sprint state, gating, all 5 phases + Handoff | Sprint facilitator / Decider proxy | Read, Edit, Write |
+| [`product-strategist`](product-strategist.md) | Frame, Converge (consulted) | PM / Strategist | Read, Edit, Write, WebSearch, WebFetch |
+| [`user-researcher`](user-researcher.md) | Frame, Validate (consulted) | UX Researcher | Read, Edit, Write, WebSearch, WebFetch |
+| [`game-designer`](game-designer.md) | Diverge, Prototype (consulted) | Game / Experience Designer | Read, Edit, Write |
+| [`divergent-thinker`](divergent-thinker.md) | Diverge (consulted) | Ideation lead | Read, Edit, Write |
+| [`critic`](critic.md) | Converge, Validate (consulted) | Devil's-advocate / Decider | Read, Edit, Write |
+| [`prototyper`](prototyper.md) | Prototype (consulted) | UX Designer / Prototyper | Read, Edit, Write |
 
 ## Conventions
 

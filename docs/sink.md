@@ -34,6 +34,16 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │   └── UBIQUITOUS_LANGUAGE.md               # living glossary (LAZY)
 ├── templates/                               # blank artifacts; stages copy + fill
 │   └── *-template.md
+├── discovery/                               # one folder per discovery sprint (pre-stage 1, opt-in)
+│   └── <sprint-slug>/
+│       ├── discovery-state.md               # sprint state machine, owned by /discovery:* commands
+│       ├── frame.md                         # phase 1 (facilitator + product-strategist + user-researcher)
+│       ├── divergence.md                    # phase 2 (facilitator + divergent-thinker + game-designer)
+│       ├── convergence.md                   # phase 3 (facilitator + critic + product-strategist)
+│       ├── prototype.md                     # phase 4 (facilitator + prototyper + game-designer)
+│       ├── validation.md                    # phase 5 (facilitator + user-researcher + critic)
+│       ├── chosen-brief.md                  # handoff — input to /spec:idea (0..N per sprint)
+│       └── assets/                          # binary prototype assets (LAZY)
 ├── specs/                                   # one folder per feature
 │   └── <slug>/
 │       ├── workflow-state.md                # state machine, owned by /spec:* commands
@@ -74,6 +84,9 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 | `docs/CONTEXT.md`, `docs/CONTEXT-MAP.md`, `docs/contexts/*.md` | `domain-context` skill | Additive, agent-updated |
 | `docs/UBIQUITOUS_LANGUAGE.md` | `ubiquitous-language` skill | Additive, agent-updated |
 | `templates/*-template.md` | Human | Versioned; updates propagate to new features only |
+| `discovery/<sprint>/discovery-state.md` | `/discovery:start`, then `/discovery:*` commands on transition | Sprint state machine; facilitator-owned |
+| `discovery/<sprint>/<phase>.md` | The phase's owning facilitator + consulted specialists (per `docs/discovery-track.md` §3) | Each phase writes once; later phases never rewrite upstream phase artifacts |
+| `discovery/<sprint>/chosen-brief.md` | `facilitator` (Handoff) | One per surviving concept; mandatory input to `/spec:idea` |
 | `specs/<slug>/workflow-state.md` | `/spec:start`, then `/spec:*` commands on transition | State machine; orchestrator amends final fields |
 | `specs/<slug>/<artifact>.md` | The stage's owning agent (per `docs/spec-kit.md` §3) | Each stage writes once; later stages **never rewrite** upstream artifacts |
 | `specs/<slug>/arc42-questionnaire.md` | `arc42-baseline` skill | Created lazily on opt-in; canonical input to `design.md` Part C |
@@ -116,6 +129,12 @@ Accepted ADRs are immutable. To change a decision, file a new ADR superseding th
 5. All numerically-earlier `specs/<slug>/<artifact>.md` files in stage order.
 6. `docs/CONTEXT.md` and `docs/UBIQUITOUS_LANGUAGE.md` if present.
 7. Any topically relevant ADRs (skim titles).
+
+## Discovery Track sub-tree
+
+When a team enters the kit with a **blank page** (no brief), the Discovery Track produces `chosen-brief.md` first; that brief is then the input the analyst reads in Stage 1. The track lives at `discovery/<sprint-slug>/` parallel to `specs/`. See [`docs/discovery-track.md`](discovery-track.md) for the methodology and [ADR-0005](adr/0005-add-discovery-track-before-stage-1.md) for the rationale.
+
+A sprint may emit **0, 1, or N** chosen briefs. Zero is a valid outcome (no-go); the sprint folder is preserved as historical context regardless. The handoff is the *only* link between the discovery and specs trees — before handoff no `specs/<slug>/` exists; after handoff the brief is referenced from `idea.md`'s frontmatter `inputs:`.
 
 ## Don't put in the sink
 

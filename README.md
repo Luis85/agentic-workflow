@@ -13,6 +13,7 @@ LLM coding agents are powerful, but they fail predictably when given vague inten
 | Path | Purpose |
 |---|---|
 | [`docs/spec-kit.md`](docs/spec-kit.md) | The full workflow definition (read this first) |
+| [`docs/discovery-track.md`](docs/discovery-track.md) | Pre-stage Discovery Track — ideation, design sprint, concept validation (opt-in, see [ADR-0005](docs/adr/0005-add-discovery-track-before-stage-1.md)) |
 | [`docs/workflow-overview.md`](docs/workflow-overview.md) | One-page visual + cheat sheet |
 | [`docs/quality-framework.md`](docs/quality-framework.md) | Quality dimensions, gates, Definition of Done |
 | [`docs/traceability.md`](docs/traceability.md) | ID scheme: requirement → spec → task → code → test |
@@ -24,7 +25,7 @@ LLM coding agents are powerful, but they fail predictably when given vague inten
 | [`templates/`](templates/) | Blank artifacts for each stage (idea, prd, design, spec, tasks, …) |
 | [`.claude/agents/`](.claude/agents/) | One subagent per SDLC role (PM, UX, architect, dev, QA, SRE, …) |
 | [`.claude/commands/`](.claude/commands/) | Slash commands per workflow phase (`/spec:specify`, `/spec:tasks`, …) |
-| [`.claude/skills/`](.claude/skills/) | Auto-discoverable skill bundles — `orchestrate` (conversational entry), `grill`, `design-twice`, `tracer-bullet`, `tdd-cycle`, `record-decision`, `domain-context`, `ubiquitous-language`, `verify`, `new-adr`, `review-fix` |
+| [`.claude/skills/`](.claude/skills/) | Auto-discoverable skill bundles — `orchestrate` (lifecycle entry), `discovery-sprint` (pre-stage entry), `grill`, `design-twice`, `tracer-bullet`, `tdd-cycle`, `record-decision`, `domain-context`, `ubiquitous-language`, `verify`, `new-adr`, `review-fix` |
 | [`.claude/memory/`](.claude/memory/) | Operational memory: workflow rules + project state, indexed in [`MEMORY.md`](.claude/memory/MEMORY.md) |
 | [`.claude/settings.json`](.claude/settings.json) | Permission baseline (allow/deny) + SessionStart hook |
 | [`agents/operational/`](agents/operational/) | Always-on, scheduled agents (review-bot, docs-review-bot, plan-recon-bot, dep-triage-bot, actions-bump-bot) |
@@ -43,22 +44,25 @@ LLM coding agents are powerful, but they fail predictably when given vague inten
 1. **Clone or fork** this repo as a starting point for your project.
 2. **Adapt the constitution** at `memory/constitution.md` to your project's principles and constraints.
 3. **Fill the steering files** under `docs/steering/` with project-specific context.
-4. **Start a feature** in one of two ways:
+4. **Pick an entry point.** If you have a brief, jump to step 5. If you have a *blank page* (a problem area, an outcome, multiple candidate ideas), run the **Discovery Track** first:
+   - **Conversational:** say "let's run a design sprint" / "let's brainstorm new product ideas" → the [`discovery-sprint`](.claude/skills/discovery-sprint/SKILL.md) skill walks Frame → Diverge → Converge → Prototype → Validate → Handoff.
+   - **Manual:** `/discovery:start <sprint-slug>` … `/discovery:handoff`. See [`docs/discovery-track.md`](docs/discovery-track.md). Output is a `chosen-brief.md` which becomes the input to step 5.
+5. **Start a feature** in one of two ways:
    - **Conversational (recommended in Claude Code):** say "let's start a feature" or run `/orchestrate <one-line goal>`. The [`orchestrate`](.claude/skills/orchestrate/SKILL.md) skill gates with you and dispatches the right stage per turn.
    - **Manual:** create `specs/<feature-slug>/` via `/spec:start <slug>` and walk the stages (`/spec:idea` → `/spec:research` → … → `/spec:retro`).
-5. **State lives in `specs/<feature-slug>/workflow-state.md`** — any agent (or you, in a fresh session) can pick up from there.
+6. **State lives in `specs/<feature-slug>/workflow-state.md`** — any agent (or you, in a fresh session) can pick up from there. Discovery sprints have their own state at `discovery/<sprint-slug>/discovery-state.md`.
 
 If you use Claude Code, the slash commands, subagents, and skills work out of the box. If you use Codex / Cursor / Aider, the artifact templates and `AGENTS.md` are tool-agnostic; the slash commands and skills are Claude-specific but the conventions they enforce (workflow stages, EARS, ADR pattern) carry over.
 
 ## Workflow at a glance
 
 ```
-Idea → Research → Requirements → Design → Specification → Tasks
-                                                            ↓
-            Retrospective ← Release ← Review ← Testing ← Implementation
+[Discovery Track] -.brief.-> Idea → Research → Requirements → Design → Specification → Tasks
+   (opt-in)                                                                              ↓
+                              Retrospective ← Release ← Review ← Testing ← Implementation
 ```
 
-Each arrow is a quality gate. See [`docs/spec-kit.md`](docs/spec-kit.md) for the full definition and [`docs/workflow-overview.md`](docs/workflow-overview.md) for the cheat sheet.
+The Discovery Track is opt-in and runs only when no brief exists yet (Frame → Diverge → Converge → Prototype → Validate → Handoff). Each arrow in the lifecycle is a quality gate. See [`docs/spec-kit.md`](docs/spec-kit.md) for the full definition, [`docs/discovery-track.md`](docs/discovery-track.md) for the pre-stage track, and [`docs/workflow-overview.md`](docs/workflow-overview.md) for the cheat sheet.
 
 ## Principles
 
@@ -76,7 +80,9 @@ Full version in [`memory/constitution.md`](memory/constitution.md).
 
 The template ships **two** agent flavours:
 
-- **Lifecycle agents** (`.claude/agents/`) — one per SDLC role, used while building one feature: analyst, pm, ux-designer, ui-designer, architect, planner, dev, qa, reviewer, release-manager, sre, retrospective, orchestrator.
+- **Lifecycle agents** (`.claude/agents/`) — used while building one feature.
+  - *Stages 1–11:* analyst, pm, ux-designer, ui-designer, architect, planner, dev, qa, reviewer, release-manager, sre, retrospective, orchestrator.
+  - *Discovery Track* (pre-stage 1, opt-in): facilitator + product-strategist, user-researcher, game-designer, divergent-thinker, critic, prototyper. See [ADR-0005](docs/adr/0005-add-discovery-track-before-stage-1.md).
 - **Operational agents** (`agents/operational/`) — always-on routines that run on a schedule against the live repo: `review-bot`, `docs-review-bot`, `plan-recon-bot`, `dep-triage-bot`, `actions-bump-bot`. Each is a `PROMPT.md` + `README.md` pair, conservative by default, idempotent, and silent on quiet days.
 
 Adopt operational agents one at a time after the lifecycle workflow is in routine use.
