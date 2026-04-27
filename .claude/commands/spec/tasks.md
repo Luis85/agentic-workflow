@@ -9,7 +9,7 @@ model: sonnet
 
 Run **stage 6 — Tasks**.
 
-1. Resolve slug; verify `spec.md` is `complete`.
+1. Resolve slug; verify `spec.md` is `complete`. The planner agent reads `spec.md` as its primary source artifact (see `.claude/agents/planner.md`); a `skipped` upstream removes the canonical input for SPEC→T traceability and must escalate.
 2. **Spawn the `planner` subagent.**
 3. The planner produces `specs/<slug>/tasks.md` from `templates/tasks-template.md`:
    - each task ≤ ~½ day (S or M),

@@ -9,14 +9,15 @@ model: sonnet
 
 Run **stage 4 — Design**. This stage has three contributors; sequence them deliberately.
 
-1. Resolve slug; verify `requirements.md` is `complete`.
+1. Resolve slug; verify `requirements.md` is `complete`. The three design agents read REQ IDs and EARS clauses from `requirements.md` as canonical input — a `skipped` requirements artifact is a hard escalation.
 2. Initialise `specs/<slug>/design.md` from `templates/design-template.md` if it doesn't exist.
-3. **Spawn `ux-designer`** to fill **Part A — UX**: flows, IA, empty/loading/error states, accessibility. **Wait for the agent to return** before continuing.
-4. Once Part A is drafted, **spawn `ui-designer`** to fill **Part B — UI**: screen inventory, components, tokens, microcopy. **Wait for the agent to return** before continuing.
-5. Once Parts A and B are drafted, **spawn `architect`** to fill **Part C — Architecture**: components, data flow, decisions, risks, alternatives. The architect drafts any required ADRs directly using `templates/adr-template.md` (it has `Edit`/`Write`); after this command exits, the user may run `/adr:new` to formalise additional ones if needed. (Slash commands are not invoked from inside subagents.)
-6. The architect also fills the cross-cutting **Requirements coverage** table — every PRD requirement maps to at least one design section.
-7. Run the design quality gate.
-8. Update `workflow-state.md`. Recommend `/spec:specify` next.
+3. **Check for prior `design-twice` synthesis.** If `specs/<slug>/design-comparison.md` exists, read it and pass its recommendation + rejected-alternatives sections to each of the three design subagents below as additional context. The synthesis is the starting point; do not discard it.
+4. **Spawn `ux-designer`** to fill **Part A — UX**: flows, IA, empty/loading/error states, accessibility. **Wait for the agent to return** before continuing.
+5. Once Part A is drafted, **spawn `ui-designer`** to fill **Part B — UI**: screen inventory, components, tokens, microcopy. **Wait for the agent to return** before continuing.
+6. Once Parts A and B are drafted, **spawn `architect`** to fill **Part C — Architecture**: components, data flow, decisions, risks, alternatives. The architect drafts any required ADRs directly using `templates/adr-template.md` (it has `Edit`/`Write`); after this command exits, the user may run `/adr:new` to formalise additional ones if needed. (Slash commands are not invoked from inside subagents.)
+7. The architect also fills the cross-cutting **Requirements coverage** table — every PRD requirement maps to at least one design section.
+8. Run the design quality gate.
+9. Update `workflow-state.md`. Recommend `/spec:specify` next.
 
 ## Note
 

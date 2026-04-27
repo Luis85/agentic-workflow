@@ -10,9 +10,11 @@
 
 Skills are the smallest unit of "we always do it this way". Anything you find yourself explaining to an agent more than twice belongs here.
 
+The catalog spans three families: a **workflow conductor** (the conversational entry to spec-kit), **practice skills** (the recurring techniques agents pull in mid-stage, mattpocock-style), and **operational skills** (the deterministic procedures that gate pre-PR and ADR work).
+
 ## Layout
 
-One directory per skill. Each contains a `SKILL.md` with this minimum shape:
+One directory per skill. Each contains a `SKILL.md`. For mattpocock-style skills the body uses YAML frontmatter (`name`, `description`, optional `argument-hint`); for operational skills it follows this minimum shape:
 
 ```markdown
 # <skill-name> — <one-line purpose>
@@ -32,11 +34,67 @@ One directory per skill. Each contains a `SKILL.md` with this minimum shape:
 
 Skills MAY include supporting files (templates, scripts, fixtures) alongside `SKILL.md`. Keep them small — large helpers belong in `scripts/` at the repo root.
 
-## Seeded skills
+## Catalog
 
-- **[`verify/`](./verify/SKILL.md)** — run the project's full pre‑PR gate (format / lint / types / test / build) and report failures actionably.
-- **[`new-adr/`](./new-adr/SKILL.md)** — scaffold a new ADR from `templates/adr-template.md` with the next free number.
-- **[`review-fix/`](./review-fix/SKILL.md)** — turn an automated‑review finding into an isolated worktree + plan, ready for TDD.
+### Workflow conductor
+
+| Skill | Triggers when… | What it does |
+|---|---|---|
+| [`orchestrate/`](orchestrate/SKILL.md) | "start a feature", "kick off", "from scratch", "what's next?", "orchestrate" | Drives the full 11-stage Spec Kit workflow conversationally. Reads `workflow-state.md`, gates with `AskUserQuestion`, dispatches `/spec:*` commands in sequence. |
+
+### Practice skills (used by stage agents)
+
+| Skill | Triggers when… | Used by |
+|---|---|---|
+| [`grill/`](grill/SKILL.md) | "grill me", "interrogate this", any clarification gate | `analyst`, `pm`, `architect`, `/spec:clarify` |
+| [`design-twice/`](design-twice/SKILL.md) | "design it twice", non-trivial design choice | User or orchestrator, *before* `/spec:design` (stage 4); design agents read its synthesis as input |
+| [`tracer-bullet/`](tracer-bullet/SKILL.md) | "vertical slice", "tracer bullet", "smallest possible commits" | `planner` (stage 6) |
+| [`tdd-cycle/`](tdd-cycle/SKILL.md) | "TDD", "red-green-refactor", "test first" | `dev` (stage 7) |
+| [`record-decision/`](record-decision/SKILL.md) | "file an ADR", "record a decision", any irreversible choice | `architect`, all stage agents on flag |
+
+### Cross-cutting sink skills
+
+| Skill | Triggers when… | Output |
+|---|---|---|
+| [`domain-context/`](domain-context/SKILL.md) | new domain concept; context boundary shifts; "context map" | `docs/CONTEXT.md` (lazy) |
+| [`ubiquitous-language/`](ubiquitous-language/SKILL.md) | new term coined; terminology disagreement; "glossary" | `docs/UBIQUITOUS_LANGUAGE.md` (lazy) |
+
+### Operational skills (deterministic procedures)
+
+| Skill | Purpose | Used by |
+|---|---|---|
+| [`verify/`](verify/SKILL.md) | Run the project's full pre‑PR gate (format / lint / types / test / build) and report failures actionably. | `dev`, `qa`, `release-manager`, `sre`, `reviewer` (read‑only Bash usage) |
+| [`new-adr/`](new-adr/SKILL.md) | Scaffold a new ADR from `templates/adr-template.md` with the next free number. | `architect` (no `Bash` — list the next number from a directory listing the user supplies; or hand off to an agent with `Bash`) |
+| [`review-fix/`](review-fix/SKILL.md) | Turn an automated‑review finding into an isolated worktree + plan, ready for TDD. | `dev`, `reviewer` (with caveats — `reviewer` typically lacks worktree authority; hand off to `dev`) |
+
+## How to use
+
+### Natural-language entry (typical)
+
+Just talk. The orchestrate skill triggers on phrases like "let's start a feature", "drive this end-to-end", or "what's the next step?". Practice skills auto-pull when their description matches the session context.
+
+### Explicit invocation
+
+Skills with `user-invocable: true` (default for mattpocock-style skills) can be triggered explicitly via `/<skill-name>`:
+
+- `/orchestrate add user profile editing`
+- `/grill the spec at specs/payments/spec.md`
+- `/design-twice user profile API`
+- `/record-decision adopt event sourcing for billing`
+
+### Inside a slash command or stage agent
+
+Stage agents pull a practice skill into their context by referencing it in their instructions. The agent reads the skill's `SKILL.md` and follows the procedure. Examples: the `planner` agent uses `tracer-bullet` during `/spec:tasks`; the `dev` agent uses `tdd-cycle` during `/spec:implement`; `dev` calls `verify` before opening a PR.
+
+## Markdown sink integration
+
+All skills write to the same sink documented in [`docs/sink.md`](../../docs/sink.md):
+
+- **Workflow-scoped artifacts** — `specs/<slug>/*.md` (managed by `/spec:*` commands).
+- **Cross-cutting artifacts** — `docs/adr/`, `docs/CONTEXT.md`, `docs/UBIQUITOUS_LANGUAGE.md` (lazy, additive).
+- **Steering** — `docs/steering/*.md` (human-curated).
+
+The orchestrate skill never invents new sink locations. Practice and operational skills only write to the locations their `SKILL.md` declares.
 
 ## When to add a new skill
 
@@ -56,14 +114,20 @@ Don't add one when:
 
 A skill never overrides an agent's tool restrictions. If `qa.md` can't `Edit` source files, a skill invoked from `qa` still can't `Edit` source files. Skills are *behavioural* shortcuts, not *permission* shortcuts.
 
-### Tool requirements per seeded skill
+### Tool requirements
 
-Some skills assume tools that not every lifecycle agent has. The table below makes the requirements explicit; agents missing a required tool cannot invoke the skill — they must either request the tool's addition (which needs an ADR) or hand off to an agent that has it.
+Some skills assume tools that not every lifecycle agent has. Operational skills generally require `Bash`; mattpocock-style skills work within whatever tools the invoking agent has. Lifecycle agents `analyst`, `pm`, `ux-designer`, `ui-designer`, `planner`, `orchestrator`, and `retrospective` have **no `Bash`** by default — they can't invoke `verify` or `review-fix` directly and must hand off to an agent that has it (typically `dev`).
 
-| Skill | Requires | Lifecycle agents that can invoke it |
-| --- | --- | --- |
-| [`verify`](./verify/SKILL.md) | `Bash` | `dev`, `qa`, `release-manager`, `sre`, `reviewer` (read‑only Bash usage) |
-| [`new-adr`](./new-adr/SKILL.md) | `Read`, `Write`, `Edit` (and `Bash` to scan for the next number) | `architect` (no `Bash` — list the next number from the directory listing the user supplies; or hand off to an agent with `Bash`) |
-| [`review-fix`](./review-fix/SKILL.md) | `Bash` (worktree creation), `Write` (plan scaffold) | `dev`, `reviewer` (with caveats — `reviewer` typically lacks worktree authority; hand off to `dev`) |
+If you add a new skill that assumes `Bash`, document the requirement in its `SKILL.md` and update the operational-skills table above.
 
-If you add a new skill that assumes `Bash`, document the requirement in its `SKILL.md` and update this table. Lifecycle agents `analyst`, `pm`, `ux-designer`, `ui-designer`, `planner`, `orchestrator`, and `retrospective` have **no `Bash`** by default.
+## Authoring a new skill
+
+For mattpocock-style skills, follow the progressive-disclosure pattern (also see Anthropic's `skill-creator`):
+
+1. Create `.claude/skills/<name>/SKILL.md` with YAML frontmatter (`name`, `description`, optional `argument-hint`).
+2. Keep the body ≤200 lines. Split deeper material into `REFERENCE.md`, `EXAMPLES.md`, `<TOPIC>.md` siblings.
+3. Description format: sentence 1 = capability; sentence 2 = "Use when …" with concrete trigger phrases.
+4. Add a row to this README's catalog.
+5. If the skill writes to disk, document the path in `docs/sink.md`.
+
+For operational skills, keep `SKILL.md` short and procedural — Purpose / How to use / Reporting / Do not — and update the catalog + tool-requirements row above.

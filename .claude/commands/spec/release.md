@@ -9,7 +9,7 @@ model: sonnet
 
 Run **stage 10 — Release**. Irreversible actions (tagging, publishing, deploying) come **after** explicit human authorisation, never before.
 
-1. Resolve slug; verify the review is `Approved` (and any conditions are met).
+1. Resolve slug; verify `review.md` verdict is `Approved` or `Approved with conditions` (per `templates/review-template.md` verdict checkboxes); if `Approved with conditions`, confirm every listed condition has been resolved before continuing. A `Blocked` verdict escalates back to the owning stage.
 2. **Spawn the `release-manager` subagent** for the **prepare** phase. It:
    - writes `specs/<slug>/release-notes.md` (audience: users / stakeholders),
    - updates the project CHANGELOG,
