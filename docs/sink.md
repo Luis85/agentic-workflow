@@ -34,6 +34,13 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │   └── UBIQUITOUS_LANGUAGE.md               # living glossary (LAZY)
 ├── templates/                               # blank artifacts; stages copy + fill
 │   └── *-template.md
+├── stock-taking/                            # one folder per legacy-system engagement (opt-in, brownfield projects)
+│   └── <project-slug>/
+│       ├── stock-taking-state.md            # engagement state machine, owned by /stock:* commands
+│       ├── scope.md                         # phase 1 (legacy-auditor — boundary, stakeholders, source material)
+│       ├── audit.md                         # phase 2 (legacy-auditor — processes, use-cases, integrations, data, debt)
+│       ├── synthesis.md                     # phase 3 (legacy-auditor — gaps, constraints, opportunities, migration)
+│       └── stock-taking-inventory.md        # handoff — input to /discovery:start or /spec:idea
 ├── discovery/                               # one folder per discovery sprint (pre-stage 1, opt-in)
 │   └── <sprint-slug>/
 │       ├── discovery-state.md               # sprint state machine, owned by /discovery:* commands
@@ -89,6 +96,9 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 | `docs/CONTEXT.md`, `docs/CONTEXT-MAP.md`, `docs/contexts/*.md` | `domain-context` skill | Additive, agent-updated |
 | `docs/UBIQUITOUS_LANGUAGE.md` | `ubiquitous-language` skill | Additive, agent-updated |
 | `templates/*-template.md` | Human | Versioned; updates propagate to new features only |
+| `stock-taking/<project>/stock-taking-state.md` | `/stock:start`, then `/stock:*` commands on transition | Engagement state machine; legacy-auditor-owned |
+| `stock-taking/<project>/<phase>.md` | `legacy-auditor` (per `docs/stock-taking-track.md` §3) | Each phase writes once; later phases never rewrite upstream phase artifacts |
+| `stock-taking/<project>/stock-taking-inventory.md` | `legacy-auditor` (Handoff) | Consolidated inventory; mandatory input to `/discovery:start` or `/spec:idea` when a legacy system is in scope |
 | `discovery/<sprint>/discovery-state.md` | `/discovery:start`, then `/discovery:*` commands on transition | Sprint state machine; facilitator-owned |
 | `discovery/<sprint>/<phase>.md` | The phase's owning facilitator + consulted specialists (per `docs/discovery-track.md` §3) | Each phase writes once; later phases never rewrite upstream phase artifacts |
 | `discovery/<sprint>/chosen-brief.md` | `facilitator` (Handoff) | One per surviving concept; mandatory input to `/spec:idea` |
@@ -134,6 +144,12 @@ Accepted ADRs are immutable. To change a decision, file a new ADR superseding th
 5. All numerically-earlier `specs/<slug>/<artifact>.md` files in stage order.
 6. `docs/CONTEXT.md` and `docs/UBIQUITOUS_LANGUAGE.md` if present.
 7. Any topically relevant ADRs (skim titles).
+
+## Stock-taking Track sub-tree
+
+When a team is **building on or replacing an existing system**, the Stock-taking Track produces `stock-taking-inventory.md` first; that inventory is then the input either the Discovery Track's Frame phase or Stage 1's analyst reads. The track lives at `stock-taking/<project-slug>/` parallel to `discovery/` and `specs/`. See [`docs/stock-taking-track.md`](stock-taking-track.md) for the methodology and [ADR-0006](adr/0006-add-stock-taking-track-for-legacy-projects.md) for the rationale.
+
+The engagement slug names the *system or system cluster* being inventoried (not the feature being built): `crm-legacy-audit`, `billing-platform-baseline`. One engagement may produce inventory that feeds multiple Discovery Sprints or multiple feature folders. The Handoff is the *only* link between the stock-taking tree and the downstream trees — before handoff no `discovery/<sprint>/` or `specs/<slug>/` exists for this work; after handoff the inventory is referenced from `chosen-brief.md` or `idea.md` `inputs:` frontmatter.
 
 ## Discovery Track sub-tree
 

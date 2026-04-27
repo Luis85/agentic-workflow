@@ -19,6 +19,11 @@ You have two equivalent entry points for the **lifecycle workflow** (Stages 1–
 - **Conversational (recommended):** say "let's start a feature" or "drive this end-to-end" and the [`orchestrate`](.claude/skills/orchestrate/SKILL.md) skill will guide you. It gates with `AskUserQuestion` and dispatches the right `/spec:*` command per stage.
 - **Manual:** drive the slash commands yourself in stage order: `/spec:start`, `/spec:idea`, `/spec:research`, `/spec:requirements`, `/spec:design`, `/spec:specify`, `/spec:tasks`, `/spec:implement`, `/spec:test`, `/spec:review`, `/spec:release`, `/spec:retro`. Optional gates: `/spec:clarify`, `/spec:analyze`.
 
+When you are **building on or replacing an existing system** and need to understand what's already there before planning anything — run the **Stock-taking Track first** (pre-Discovery and pre-Stage 1, opt-in for legacy/brownfield projects):
+
+- **Conversational:** say "we're building on a legacy system", "let's inventory what we have", or "stock-taking" and the [`stock-taking`](.claude/skills/stock-taking/SKILL.md) skill will guide you through Scope → Audit → Synthesize → Handoff. The handoff writes `stock-taking-inventory.md` which feeds the Discovery Track or `/spec:idea`.
+- **Manual:** `/stock:start`, `/stock:scope`, `/stock:audit`, `/stock:synthesize`, `/stock:handoff`. See [`docs/stock-taking-track.md`](docs/stock-taking-track.md) and [ADR-0006](docs/adr/0006-add-stock-taking-track-for-legacy-projects.md).
+
 When you don't have a brief yet — blank page, multiple candidate ideas, no clear winner — run the **Discovery Track first** (pre-Stage 1, opt-in):
 
 - **Conversational:** say "let's run a design sprint", "let's brainstorm new product ideas", or "we have a blank page" and the [`discovery-sprint`](.claude/skills/discovery-sprint/SKILL.md) skill will guide you through Frame → Diverge → Converge → Prototype → Validate → Handoff. The handoff writes `chosen-brief.md` which feeds `/spec:idea`.
@@ -32,8 +37,8 @@ In both modes:
 
 ## Conventions specific to Claude Code
 
-- Subagents are project-scoped (`.claude/agents/`). They have intentionally narrow tool lists — if a tool seems missing, that's a feature, not a bug. Two classes ship: **lifecycle** agents (one per Stage 1–11) and **discovery** agents (one facilitator + six specialists for the pre-stage track).
-- Skills live in `.claude/skills/` — see [`.claude/skills/README.md`](.claude/skills/README.md). They auto-trigger from natural language and can be invoked explicitly via `/<skill-name>`. The catalog spans two workflow conductors (`orchestrate`, `discovery-sprint`), mattpocock-style practice skills (`grill`, `design-twice`, `tracer-bullet`, `tdd-cycle`), cross-cutting sink skills (`domain-context`, `ubiquitous-language`), and operational skills (`verify`, `new-adr`, `review-fix`).
+- Subagents are project-scoped (`.claude/agents/`). They have intentionally narrow tool lists — if a tool seems missing, that's a feature, not a bug. Three classes ship: **lifecycle** agents (one per Stage 1–11), **discovery** agents (one facilitator + six specialists for the Discovery Track), and **stock-taking** agents (one `legacy-auditor` for brownfield inventory work).
+- Skills live in `.claude/skills/` — see [`.claude/skills/README.md`](.claude/skills/README.md). They auto-trigger from natural language and can be invoked explicitly via `/<skill-name>`. The catalog spans three workflow conductors (`orchestrate`, `discovery-sprint`, `stock-taking`), mattpocock-style practice skills (`grill`, `design-twice`, `tracer-bullet`, `tdd-cycle`), cross-cutting sink skills (`domain-context`, `ubiquitous-language`), and operational skills (`verify`, `new-adr`, `review-fix`).
 - Operational bots live under `agents/operational/`. Each is a `PROMPT.md` + `README.md` pair; the prompt is the source of truth the scheduled run loads.
 - Permission rules live in `.claude/settings.json`. Pushes to `main` / `develop` are denied by default; `--no-verify` is denied. See `docs/branching.md`.
 - Topic branches live in worktrees under `.worktrees/<slug>/`. See `docs/worktrees.md`.

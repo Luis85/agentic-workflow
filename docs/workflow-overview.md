@@ -1,6 +1,11 @@
 # Workflow Overview — One-Page Cheat Sheet
 
 ```
+[Stock-taking Track — pre-Discovery or pre-Stage 1, opt-in for legacy/brownfield projects, see docs/stock-taking-track.md]
+   Scope → Audit → Synthesize → Handoff (stock-taking-inventory.md)
+   legacy-auditor                                                                │
+                                                  (inventory feeds /discovery:start or /spec:idea)
+                                                                                ▼
 [Discovery Track — pre-stage 1, opt-in, see docs/discovery-track.md]
    Frame → Diverge → Converge → Prototype → Validate → Handoff (chosen-brief.md)
    facilitator + product-strategist, user-researcher, game-designer,
@@ -72,6 +77,10 @@ Plus body sections (Skips, Blocks, Hand-off notes, Open clarifications). Canonic
 ## Slash commands
 
 ```
+# Pre-everything Stock-taking Track (opt-in, for legacy/brownfield projects):
+/stock:start <project>      /stock:audit               /stock:handoff
+/stock:scope                /stock:synthesize
+
 # Pre-stage Discovery Track (opt-in, when no brief exists yet):
 /discovery:start <sprint>   /discovery:converge        /discovery:validate
 /discovery:frame            /discovery:prototype       /discovery:handoff
