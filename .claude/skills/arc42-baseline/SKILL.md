@@ -59,7 +59,7 @@ When a question is fully answered upstream, **state the answer** and confirm wit
 
 ### Step 3 — File ADRs for §9.1 Key decisions
 
-For each row in §9.1 with status `proposed`, apply the `record-decision` criteria. If it qualifies (irreversible, real trade-off, future-reader-surprising), file the ADR:
+For each row in §9.1 with status `proposed`, apply the `record-decision` criteria (see `.claude/skills/record-decision/SKILL.md` for the three qualifying criteria: irreversible, real trade-off, future-reader-surprising). If it qualifies, file the ADR:
 
 1. Find the next free `NNNN` under `docs/adr/`.
 2. Copy `templates/adr-template.md` to `docs/adr/NNNN-<imperative-slug>.md` and fill it in.

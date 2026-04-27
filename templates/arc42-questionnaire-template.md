@@ -253,7 +253,11 @@ Event bus / broker: _TBD_
 1. _TBD_
 ```
 
-#### 6.3 Tenant Provisioning
+#### 6.3 Tenant / Instance Provisioning
+
+> _Skip this section (mark N/A) if the system is not multi-tenant._
+
+- [ ] N/A — single-tenant, on-premises, or embedded system
 
 ```
 1. _TBD_
@@ -315,7 +319,7 @@ Configuration management: _TBD_
 ```
 Authentication: _TBD_
 Authorization:  _TBD_
-Tenant isolation: _TBD_
+Tenant isolation: _TBD_   # N/A if single-tenant or non-SaaS
 API keys: _TBD_
 ```
 
@@ -379,7 +383,7 @@ Audit logging: _TBD_
 
 #### 9.3 ADR Process
 
-> _Defaults: lightweight ADR template at `templates/adr-template.md`, files under `docs/adr/NNNN-<slug>.md`, reviewed at design gate. Override only if your project differs._
+> _Defaults: lightweight ADR template at `templates/adr-template.md`, files under `docs/adr/NNNN-<slug>.md`, reviewed at design gate. Override only if your project differs. If using kit defaults, write `N/A — kit defaults apply` for all three fields below and link to `docs/sink.md`._
 
 ```
 Format: _TBD_
