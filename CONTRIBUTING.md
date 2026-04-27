@@ -9,7 +9,7 @@ Read these in order:
 1. [`README.md`](./README.md) — what this repo is and where everything lives.
 2. [`AGENTS.md`](./AGENTS.md) — operating rules every agent (and human) follows.
 3. [`memory/constitution.md`](./memory/constitution.md) — governing principles. Override only with an ADR.
-4. [`docs/spec-kit.md`](./docs/spec-kit.md) — the full workflow definition.
+4. [`docs/specorator.md`](./docs/specorator.md) — the full workflow definition.
 5. [`.claude/memory/MEMORY.md`](./.claude/memory/MEMORY.md) — operational memory (workflow rules + project state).
 
 ## How the contribution workflow works

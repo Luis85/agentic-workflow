@@ -32,7 +32,7 @@ For each behavior, draft a slice that:
 
 Sort slices by:
 
-1. **TDD discipline first** (per `docs/spec-kit.md` §3.6) — test tasks for a requirement come before implementation tasks for the same requirement.
+1. **TDD discipline first** (per `docs/specorator.md` §3.6) — test tasks for a requirement come before implementation tasks for the same requirement.
 2. **Dependency-respecting** — no slice unblocked before its dependencies.
 3. **Risk-first when ties** — the slice with the most uncertainty goes first so we learn early.
 4. **Smallest first within a risk tier** — a 2-hour slice before a half-day slice.
@@ -50,7 +50,7 @@ Write `specs/<slug>/tasks.md` from `templates/tasks-template.md`. For each slice
 - Test approach (RED test or characterization test).
 - Risk level (L/M/H — high if anything is unknown).
 - Blocked by (list of slice IDs).
-- Owner (agent role from spec-kit).
+- Owner (agent role from specorator).
 
 Include a **dependency graph** at the top of `tasks.md` (mermaid `flowchart` or simple ASCII).
 
@@ -65,6 +65,6 @@ End with a **Definition of done** section: the user-visible behaviors that prove
 
 ## Rules
 
-- Refer to behaviors and contracts. Avoid file paths and line numbers in the task description (per the `docs/spec-kit.md` discipline).
+- Refer to behaviors and contracts. Avoid file paths and line numbers in the task description (per the `docs/specorator.md` discipline).
 - Use vocabulary from `docs/UBIQUITOUS_LANGUAGE.md` exactly. If you need a new term, coin it via the `ubiquitous-language` skill before writing the task.
 - This skill produces `tasks.md`. The `dev` agent during `/spec:implement` is the one that walks the list with `tdd-cycle`.

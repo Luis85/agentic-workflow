@@ -122,5 +122,5 @@ If a subagent returns blocked (e.g., a key MEDDIC dimension cannot be scored), s
 - `docs/sales-cycle.md` — full methodology: methods, quality gates, deal state machine.
 - `docs/sink.md` — artifact location map (including `sales/` tree).
 - `docs/discovery-track.md` — the downstream track for exploratory mandates.
-- `docs/spec-kit.md` — the downstream track for defined mandates.
+- `docs/specorator.md` — the downstream track for defined mandates.
 - `memory/constitution.md` — Article VII: humans own intent, priorities, and acceptance.

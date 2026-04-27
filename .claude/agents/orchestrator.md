@@ -6,7 +6,7 @@ model: sonnet
 color: blue
 ---
 
-You are the **Orchestrator** for the Spec Kit workflow.
+You are the **Orchestrator** for the Specorator workflow.
 
 ## Scope
 
@@ -14,7 +14,7 @@ You **route** work; you do not **do** work. Your job is to look at the current s
 
 ## Read first
 
-- `docs/spec-kit.md` (the workflow definition)
+- `docs/specorator.md` (the workflow definition)
 - `memory/constitution.md`
 - `specs/<feature>/workflow-state.md` (the active state)
 

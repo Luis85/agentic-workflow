@@ -19,7 +19,7 @@ Accepted
 
 ## Context
 
-The Spec Kit workflow (Stages 1–11) and the Discovery Track (pre-Stage 1) both assume that the decision to build something has already been made and a project mandate exists. They are delivery-side workflows.
+The Specorator workflow (Stages 1–11) and the Discovery Track (pre-Stage 1) both assume that the decision to build something has already been made and a project mandate exists. They are delivery-side workflows.
 
 Service providers — development agencies, consulting firms, independent studios — face a structurally prior problem: **they first need to win the project**. Before a spec folder is opened, before a discovery sprint is run, a commercial process must happen:
 
@@ -142,7 +142,7 @@ How will we know this decision is being honoured?
 ## References
 
 - Constitution: [`memory/constitution.md`](../../memory/constitution.md) — Articles II (Separation of Concerns), III (Incremental Progression), VI (Agent Specialisation), VII (Human Oversight), IX (Reversibility).
-- [`docs/spec-kit.md`](../spec-kit.md) — the 11-stage delivery workflow this track precedes.
+- [`docs/specorator.md`](../specorator.md) — the 11-stage delivery workflow this track precedes.
 - [`docs/discovery-track.md`](../discovery-track.md) — the discovery track this track may feed into.
 - [ADR-0005](0005-add-discovery-track-before-stage-1.md) — the precedent for a sibling pre-stage track.
 - [ADR-0004](0004-adopt-operational-agents-alongside-lifecycle-agents.md) — the precedent for sibling agent classes outside the lifecycle table.

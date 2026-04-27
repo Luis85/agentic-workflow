@@ -2,7 +2,7 @@
 
 **Version:** 0.1 · **Status:** Draft · **Stability:** Opt-in · **ADR:** [ADR-0005](adr/0005-add-discovery-track-before-stage-1.md)
 
-A pre-workflow track for teams arriving at the Spec Kit with a **blank page** rather than a brief. Produces a vetted, prototype-validated concept that feeds `/spec:idea` as input.
+A pre-workflow track for teams arriving at the Specorator with a **blank page** rather than a brief. Produces a vetted, prototype-validated concept that feeds `/spec:idea` as input.
 
 > If you already have a brief, **skip this track** and go straight to `/spec:start` + `/spec:idea`.
 
@@ -21,7 +21,7 @@ A pre-workflow track for teams arriving at the Spec Kit with a **blank page** ra
 
 ## 1. Why a Discovery Track
 
-The Spec Kit's eleven stages assume a brief exists. The **Discovery Track** is what produces that brief.
+The Specorator's eleven stages assume a brief exists. The **Discovery Track** is what produces that brief.
 
 It applies when:
 
@@ -240,7 +240,7 @@ A sprint exits Phase 5 with one of three terminal states:
 - **No-go** — every candidate failed validation; the sprint records what was learned and closes. This is a successful sprint outcome.
 - **Pivot** — the validation surfaced a different opportunity than what was framed. The sprint either re-runs Phase 1 with the new framing or closes and a fresh sprint is opened.
 
-The Handoff phase is **not optional** when the outcome is Go. A "soft handoff" (one channel message saying "we picked X, build it") is exactly the loss-of-context the Spec Kit exists to prevent.
+The Handoff phase is **not optional** when the outcome is Go. A "soft handoff" (one channel message saying "we picked X, build it") is exactly the loss-of-context the Specorator exists to prevent.
 
 ---
 

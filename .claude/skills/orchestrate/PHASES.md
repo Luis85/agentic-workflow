@@ -64,7 +64,7 @@ The slash commands are defined in `.claude/commands/spec/` and own the agent inv
 - **Pre-flight check:** confirm `review.md` verdict is `Approved` or `Approved with conditions` (per the verdict checkboxes in `templates/review-template.md`). If the verdict is `Blocked`, return to Stage 9 (Review) — do not dispatch `/spec:release`.
 
 ### Stage 11 — Learning (`/spec:retro`)
-- **Mandatory:** runs even on clean ships (per `docs/spec-kit.md` §3.11).
+- **Mandatory:** runs even on clean ships (per `docs/specorator.md` §3.11).
 - **Initial:** dispatch as-is.
 
 ## Cross-stage helpers

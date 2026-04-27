@@ -19,7 +19,7 @@ Accepted
 
 ## Context
 
-The Spec Kit defined in [`docs/spec-kit.md`](../spec-kit.md) starts at **Stage 1 — Idea**, whose owning agent (`analyst`) reads a brief and structures it into `idea.md`. The brief itself is assumed to exist: there is no stage in the kit for *generating* a brief, *choosing between candidate concepts*, or *de-risking the riskiest assumption* before a feature folder is opened.
+The Specorator defined in [`docs/specorator.md`](../specorator.md) starts at **Stage 1 — Idea**, whose owning agent (`analyst`) reads a brief and structures it into `idea.md`. The brief itself is assumed to exist: there is no stage in the kit for *generating* a brief, *choosing between candidate concepts*, or *de-risking the riskiest assumption* before a feature folder is opened.
 
 In practice, teams that adopt this kit are arriving with two different shapes of upstream work:
 
@@ -28,7 +28,7 @@ In practice, teams that adopt this kit are arriving with two different shapes of
 
 Existing literature treats these as two distinct activities:
 
-- The **Double Diamond** (Design Council, 2005) splits a project into two diamonds — *Discover / Define* and *Develop / Deliver* — with divergent then convergent thinking in each. The Spec Kit today only models the second diamond. ([Design Council — Framework for Innovation](https://www.designcouncil.org.uk/our-resources/framework-for-innovation/))
+- The **Double Diamond** (Design Council, 2005) splits a project into two diamonds — *Discover / Define* and *Develop / Deliver* — with divergent then convergent thinking in each. The Specorator today only models the second diamond. ([Design Council — Framework for Innovation](https://www.designcouncil.org.uk/our-resources/framework-for-innovation/))
 - The **Google Design Sprint** (Knapp et al., 2016; AJ&Smart's 4-day "2.0" variant, 2018) is a timeboxed first-diamond ritual: Map → Sketch → Decide → Prototype → Test, ending with evidence about whether a concept is worth pursuing. ([GV — The Design Sprint](https://www.gv.com/sprint/), [AJ&Smart — Design Sprint 2.0](https://ajsmart.com/design-sprint-2-0/))
 - **Continuous Discovery** (Torres, *Continuous Discovery Habits*, 2021) and the **Opportunity Solution Tree** model the activity of converting an outcome into opportunities into solutions into experiments — a portfolio activity that is structurally upstream of "feature." ([Product Talk — Opportunity Solution Trees](https://www.producttalk.org/opportunity-solution-trees/))
 - Game design adds a complementary lens: **MDA** (Hunicke, LeBlanc, Zubek, 2004) — Mechanics, Dynamics, Aesthetics — and **Schell's 100 Lenses** (Schell, *The Art of Game Design*, 2008) frame ideation around what experience the user actually has, which is exactly the gap that JTBD-only framing leaves. ([MDA paper](https://users.cs.northwestern.edu/~hunicke/MDA.pdf), [Schell — Art of Game Design](https://schellgames.com/art-of-game-design))
@@ -136,7 +136,7 @@ How will we know this decision is being honoured?
 ## References
 
 - Constitution: [`memory/constitution.md`](../../memory/constitution.md) — Articles II (Separation of Concerns), III (Incremental Progression), VI (Agent Specialisation), VII (Human Oversight).
-- [`docs/spec-kit.md`](../spec-kit.md) — the 11-stage workflow this track precedes.
+- [`docs/specorator.md`](../specorator.md) — the 11-stage workflow this track precedes.
 - [`docs/discovery-track.md`](../discovery-track.md) — the full methodology, phase definitions, and source list.
 - [ADR-0002](0002-adopt-spec-driven-development.md) — the meta-decision that artifacts precede code; this ADR extends it: discovery precedes artifacts.
 - [ADR-0004](0004-adopt-operational-agents-alongside-lifecycle-agents.md) — the precedent for sibling agent classes outside the lifecycle table.

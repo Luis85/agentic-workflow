@@ -42,7 +42,7 @@ The Discovery Track ([`docs/discovery-track.md`](../../docs/discovery-track.md),
 
 - **Frontmatter** uses Claude Code's standard fields: `name`, `description`, `tools`, `model`, optionally `color`.
 - **`description`** is written in the imperative — Claude reads it to decide *when* to spawn this agent.
-- **Body** is the system prompt. Keep it focused; rely on linked docs (`docs/spec-kit.md`, `docs/quality-framework.md`, the relevant template) for detail rather than restating.
+- **Body** is the system prompt. Keep it focused; rely on linked docs (`docs/specorator.md`, `docs/quality-framework.md`, the relevant template) for detail rather than restating.
 - **No agent edits another agent's outputs across stages.** Within a single stage, agents may collaborate on a shared artifact when explicitly sequenced — stage 4 (`/spec:design`) is the canonical example: `ux-designer` (Part A) → `ui-designer` (Part B) → `architect` (Part C) all extend the same `design.md`, each in their named section. Outside such explicit collaborations, if you need a sibling artifact updated, raise a clarification or hand back to the orchestrator.
 
 ## Tool restrictions are deliberate

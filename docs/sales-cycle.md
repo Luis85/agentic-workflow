@@ -22,7 +22,7 @@ A pre-delivery track for **service providers** (development agencies, consulting
 
 ## 1. Why a Sales Cycle Track
 
-The Spec Kit's eleven stages and the Discovery Track both assume a project mandate exists. The **Sales Cycle Track** is what produces that mandate for a service provider.
+The Specorator's eleven stages and the Discovery Track both assume a project mandate exists. The **Sales Cycle Track** is what produces that mandate for a service provider.
 
 It applies when:
 

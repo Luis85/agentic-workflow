@@ -42,13 +42,13 @@ The CLI todo space is mature. The tools below represent the main prior-art arche
 | dstask | Go; YAML-per-task; git-based sync; single binary | Single binary; git sync is elegant; priorities and tags | git dependency raises setup bar; per-file YAML means many small files; over-engineered for v1 | https://github.com/naggie/dstask |
 | devtodo | C; per-directory XML `.todo` file; hierarchical | Directory-scoped lists are novel | XML is verbose; project appears unmaintained; C build chain is a barrier | https://debaday.debian.net/2008/08/31/devtodo-a-remindertask-program-aimed-at-developers/ |
 
-**Gap this example fills:** none of the above are simultaneously (a) tiny enough to read source + spec in one sitting, (b) written in a language that is approachable to the broadest engineer audience, and (c) designed to serve as a didactic spec-kit walkthrough.
+**Gap this example fills:** none of the above are simultaneously (a) tiny enough to read source + spec in one sitting, (b) written in a language that is approachable to the broadest engineer audience, and (c) designed to serve as a didactic specorator walkthrough.
 
 ---
 
 ## User needs
 
-No primary research (interviews, surveys, analytics) was conducted for this example — it is a spec-kit demonstration, not a product being shipped to real users. The need is treated as stipulated by the problem statement in `IDEA-CLI-001`.
+No primary research (interviews, surveys, analytics) was conducted for this example — it is a specorator demonstration, not a product being shipped to real users. The need is treated as stipulated by the problem statement in `IDEA-CLI-001`.
 
 **Assumptions that must hold for the stipulated need to be real:**
 
@@ -58,7 +58,7 @@ No primary research (interviews, surveys, analytics) was conducted for this exam
 
 **How to validate (for a real product):** run 3–5 contextual interviews with solo engineers; observe their current "quick capture" habit; confirm the drop-off point with existing tools.
 
-**Didactic user (secondary):** spec-kit contributors reading the worked example. Their need is explicit and observable: they want a small-but-realistic artifact they can study. This need is definitionally satisfied by keeping the implementation minimal.
+**Didactic user (secondary):** specorator contributors reading the worked example. Their need is explicit and observable: they want a small-but-realistic artifact they can study. This need is definitionally satisfied by keeping the implementation minimal.
 
 ---
 
@@ -131,7 +131,7 @@ Three options: plain text, JSON, SQLite.
 
 ### Q2 — Implementation language
 
-Evaluated against single-binary distribution AND didactic clarity for spec-kit readers:
+Evaluated against single-binary distribution AND didactic clarity for specorator readers:
 
 | Language | Single binary | Install path | Source readability (mixed audience) | Cross-platform path handling |
 |---|---|---|---|---|
@@ -180,7 +180,7 @@ Three options:
 - **Pre-built binaries on GitHub Releases:** Broadest reach; no toolchain requirement. Adds a CI/CD step (GitHub Actions matrix build). For a worked example, this is realistic and demonstrates a real release flow.
 - **Homebrew formula:** Adds Homebrew tap maintenance overhead. Not warranted for v1 of an example.
 
-**Recommended:** `go install` as the primary path (lowest friction for the target reader audience), with a note that pre-built binaries via GitHub Releases are the realistic v1 distribution for end users. This keeps the example honest about what a real release looks like without requiring the spec-kit to maintain a tap.
+**Recommended:** `go install` as the primary path (lowest friction for the target reader audience), with a note that pre-built binaries via GitHub Releases are the realistic v1 distribution for end users. This keeps the example honest about what a real release looks like without requiring the specorator to maintain a tap.
 
 ### ID scheme
 
@@ -195,7 +195,7 @@ Sequential integers (1, 2, 3…) are the right choice for a local single-user to
 | RISK-001 | **Example bloat** — scope creeps to include due dates, priorities, or search before v1 is stable, making the worked example too large to read in one sitting | high | med | Hold the v1 scope to five commands (add/list/done/rm/help). Any additional feature must be gated by a separate "v2 example" decision. The pm stage should enforce this gate explicitly. |
 | RISK-002 | **Language alienation** — readers unfamiliar with Go find the source opaque, undermining the didactic goal | med | low | Go's syntax is intentionally simple. Mitigate further by keeping the implementation in a single file or two files maximum, with inline comments that cross-reference requirement IDs. Avoid Go-isms (goroutines, channels, complex interfaces) entirely in v1. |
 | RISK-003 | **Data corruption on concurrent writes** — two simultaneous invocations produce a truncated or interleaved JSON file | med | low | Atomic-rename write pattern (temp file + rename) prevents partial writes. Document the last-writer-wins caveat in the spec. |
-| RISK-004 | **Pulled-into-real-product trap** — a contributor forks the example and uses it as a production codebase, inheriting its deliberate simplifications (no auth, no backup, last-writer-wins) | med | low | Add a prominent notice in `README.md` and `spec.md` header: "This is a spec-kit demonstration. It omits production concerns deliberately." The spec's out-of-scope list is the contractual boundary. |
+| RISK-004 | **Pulled-into-real-product trap** — a contributor forks the example and uses it as a production codebase, inheriting its deliberate simplifications (no auth, no backup, last-writer-wins) | med | low | Add a prominent notice in `README.md` and `spec.md` header: "This is a specorator demonstration. It omits production concerns deliberately." The spec's out-of-scope list is the contractual boundary. |
 | RISK-005 | **Windows path handling edge cases** — the chosen XDG helper or temp-file rename behaves unexpectedly on Windows | low | med | Test on Windows in CI (e.g., a Windows runner) as part of the pre-built binary build. If the example does not run CI, document "Linux/macOS only" clearly. |
 | RISK-006 | **Migration cost** — if the JSON schema changes between example iterations, existing users' data files become unreadable | low | low | Include a `version` field in the JSON root object from day one. Document migration strategy (re-read old format, write new) in a follow-up example if needed. |
 
@@ -208,7 +208,7 @@ Sequential integers (1, 2, 3…) are the right choice for a local single-user to
 **Rationale:**
 
 - Go produces a genuine single static binary without extra flags, satisfying the constraint in `IDEA-CLI-001` cleanly.
-- Go source is readable by a broad engineer audience (Python, Java, JS background) without requiring familiarity with a complex type system or borrow checker. A spec-kit reader can map `requirements.md` → source code in one pass.
+- Go source is readable by a broad engineer audience (Python, Java, JS background) without requiring familiarity with a complex type system or borrow checker. A specorator reader can map `requirements.md` → source code in one pass.
 - JSON over a temp-file atomic rename gives adequate durability for a local single-user tool, is human-inspectable, and can be read/written with Go's stdlib alone (no third-party driver).
 - XDG data dir (`~/.local/share/todo/tasks.json`) is principled, cross-platform via a small XDG helper library (selected at implementation time), and teaches readers a real cross-platform pattern.
 - `go install` is the honest minimum distribution path for this audience; the example can note that a real release would add a GitHub Actions matrix build for pre-built binaries.

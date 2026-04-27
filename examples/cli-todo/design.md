@@ -23,7 +23,7 @@ updated: 2026-04-27
 
 ## Context
 
-`todo` is a single-binary command-line task manager for terminal-native engineers who need to capture, track, and close short-lived tasks without leaving their shell. PRD-CLI-001 defines five subcommands (`add`, `list`, `done`, `rm`, and `--help` coverage on all of them), local data persistence with no network dependency, and a strict non-interactive interface. The tool doubles as the primary worked example for the spec-kit: every artifact from idea through retrospective must remain small enough that a contributor can read the complete spec alongside the source code in a single sitting.
+`todo` is a single-binary command-line task manager for terminal-native engineers who need to capture, track, and close short-lived tasks without leaving their shell. PRD-CLI-001 defines five subcommands (`add`, `list`, `done`, `rm`, and `--help` coverage on all of them), local data persistence with no network dependency, and a strict non-interactive interface. The tool doubles as the primary worked example for the specorator: every artifact from idea through retrospective must remain small enough that a contributor can read the complete spec alongside the source code in a single sitting.
 
 ## Goals (design-level)
 
@@ -31,7 +31,7 @@ updated: 2026-04-27
 - **D2** — Every command follows a single, predictable invocation shape (`todo <subcommand> [argument]`) so there is nothing novel to learn between subcommands.
 - **D3** — Every output string — success, empty, and error — communicates exactly what happened and, where applicable, what to do next; no terse codes, no silent exits.
 - **D4** — The interaction design is pipe-friendly and script-safe: success output goes to stdout, error output goes to stderr, and exit codes are reliable.
-- **D5** — The design artifact itself is co-readable with the PRD in one sitting, serving the didactic goal for spec-kit contributors (Morgan persona).
+- **D5** — The design artifact itself is co-readable with the PRD in one sitting, serving the didactic goal for specorator contributors (Morgan persona).
 
 ## Non-goals
 
@@ -870,7 +870,7 @@ Carried forward from RESEARCH-CLI-001 plus architecture-level additions.
 | RISK-001 | Example bloat — features creep beyond v1, making the worked example too large to read alongside the spec in one sitting | Architecture is intentionally small: 9 components, one data entity plus an envelope, two data flows. Any new component in v1 requires explicit reconsideration. |
 | RISK-002 | Language alienation — readers unfamiliar with the chosen language find the source opaque | The architecture deliberately maps one component to one obvious source unit (one handler per file, one storage helper). The shape is recognisable to anyone who has read a CLI tool, regardless of language background. |
 | RISK-003 | Data corruption on concurrent writes — two simultaneous invocations produce a truncated or interleaved file | Atomic temp-file rename prevents the partial-write failure mode. The update-update race is documented as last-writer-wins (ADR-CLI-0001); test plan covers the SIGKILL-mid-write scenario. |
-| RISK-004 | Pulled-into-real-product trap — a contributor forks the example and ships it as a production tool, inheriting deliberate simplifications | Architecture documents the no-lockfile decision, the no-network posture, and the no-observability posture explicitly. README and spec headers carry the "spec-kit demonstration, not a production tool" notice. |
+| RISK-004 | Pulled-into-real-product trap — a contributor forks the example and ships it as a production tool, inheriting deliberate simplifications | Architecture documents the no-lockfile decision, the no-network posture, and the no-observability posture explicitly. README and spec headers carry the "specorator demonstration, not a production tool" notice. |
 | RISK-CLI-ARCH-001 | Cross-filesystem temp file — `TODO_FILE` points into a different filesystem than the system temp dir, and the rename silently becomes non-atomic | The atomic-write helper places the temp file in the *target's* directory, not the system temp dir. Documented in ADR-CLI-0001 and enforced by the storage layer's contract. |
 | RISK-CLI-ARCH-002 | Parent directory missing on first run — XDG data dir or a `TODO_FILE` parent does not exist, and the first write fails | Path resolver creates the parent directory (with permissions inherited from the user's umask) before any write. First-run scenario is in the test plan. |
 

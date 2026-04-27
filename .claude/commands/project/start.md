@@ -26,4 +26,4 @@ Bootstrap a new client engagement. Read [`docs/project-track.md`](../../../docs/
 
 - Don't create the four management documents yet — those are created by `/project:initiate`.
 - Don't push or commit — leave that to the user.
-- Don't start a project when the user already has a spec in flight with no client — recommend staying in the Spec Kit instead.
+- Don't start a project when the user already has a spec in flight with no client — recommend staying in the Specorator instead.

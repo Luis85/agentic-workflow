@@ -16,7 +16,7 @@ updated: 2026-04-27
 
 ## Summary
 
-We are building `todo`, a single-binary command-line task manager for terminal-native engineers who need to capture, list, and close short-lived tasks without leaving their shell. The tool is also the primary worked example for the spec-kit: every artifact from idea through retrospective is kept purposefully small so a contributor can read the spec alongside the source in a single sitting. The project is timely because no existing CLI todo manager is simultaneously small enough to be a readable example, distributed as a true single binary, and designed to serve as a didactic walkthrough of the full spec-kit workflow.
+We are building `todo`, a single-binary command-line task manager for terminal-native engineers who need to capture, list, and close short-lived tasks without leaving their shell. The tool is also the primary worked example for the specorator: every artifact from idea through retrospective is kept purposefully small so a contributor can read the spec alongside the source in a single sitting. The project is timely because no existing CLI todo manager is simultaneously small enough to be a readable example, distributed as a true single binary, and designed to serve as a didactic walkthrough of the full specorator workflow.
 
 ## Goals
 
@@ -46,7 +46,7 @@ We are building `todo`, a single-binary command-line task manager for terminal-n
 | Persona | Need | Why it matters |
 |---|---|---|
 | **Alex — Terminal-native engineer** | Capture and close short-lived tasks without leaving the shell; no accounts, no browser, no cloud | Represents the primary functional user; drives all five command requirements and the data persistence story |
-| **Morgan — Spec-kit contributor** | A small, realistic worked artifact to study the full spec-kit workflow from idea to retrospective | Represents the secondary user from IDEA-CLI-001; drives the didactic constraints (minimal deps, readable source, inline requirement cross-references) |
+| **Morgan — Spec-kit contributor** | A small, realistic worked artifact to study the full specorator workflow from idea to retrospective | Represents the secondary user from IDEA-CLI-001; drives the didactic constraints (minimal deps, readable source, inline requirement cross-references) |
 
 ## Jobs to be done
 
@@ -54,7 +54,7 @@ We are building `todo`, a single-binary command-line task manager for terminal-n
 - When I sit down to work, I want to list my open tasks in one command, so I can choose what to tackle next without switching tools.
 - When I finish a task, I want to mark it done by ID, so I have a clear record of what I completed without manually editing a file.
 - When a task is no longer relevant, I want to remove it by ID, so my list stays clean without accumulating stale entries.
-- When I am learning the spec-kit, I want to trace every requirement in this PRD to a line of source code, so I can understand how the workflow produces a real implementation.
+- When I am learning the specorator, I want to trace every requirement in this PRD to a line of source code, so I can understand how the workflow produces a real implementation.
 
 ## Functional requirements (EARS)
 
@@ -269,7 +269,7 @@ We are building `todo`, a single-binary command-line task manager for terminal-n
 
 - **North star:** A new user with the binary installed can complete a full `todo add` → `todo list` → `todo done` cycle in under 2 minutes, guided by `--help` output alone, with no prior documentation. (Target: verifiable in a usability pass with 3 participants.)
 - **Supporting:**
-  - A spec-kit contributor can map every REQ-CLI-NNN entry in this document to its corresponding code location in one pass through the source. (Target: verified during `/spec:review` traceability check.)
+  - A specorator contributor can map every REQ-CLI-NNN entry in this document to its corresponding code location in one pass through the source. (Target: verified during `/spec:review` traceability check.)
   - All 13 functional requirements have a corresponding automated test that fails when the requirement is violated. (Target: 100% requirement-to-test coverage at `/spec:test` completion.)
 - **Counter-metric:** Total source lines of code (excluding tests and generated files) stays at or below 500. Exceeding this threshold is a signal that scope has crept and must be explicitly reviewed. (Aligns with NFR-CLI-005.)
 
@@ -280,7 +280,7 @@ What must be true to ship the worked example as a complete stage-3 artifact.
 - [ ] All `must` requirements (REQ-CLI-001 through REQ-CLI-013 except REQ-CLI-003 which is `should`) pass their acceptance criteria.
 - [ ] All NFRs met or explicitly waived with a recorded ADR.
 - [ ] Test plan executed; no critical bugs open (severity 1 or 2 per the quality framework).
-- [ ] Documentation updated: `README.md` carries a notice that this is a spec-kit example, not a production tool.
+- [ ] Documentation updated: `README.md` carries a notice that this is a specorator example, not a production tool.
 - [ ] Traceability matrix (`traceability.md`) is complete: every REQ-CLI-NNN links to at least one code location and one test.
 - [ ] Retrospective (`retrospective.md`) filed — never skipped per the constitution.
 

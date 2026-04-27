@@ -15,7 +15,7 @@ Accepted
 
 ## Context
 
-LLM coding agents are fast but fail predictably when given vague intent. They confabulate requirements, drift from design, and produce plausible-but-wrong code. Several mature patterns address this — GitHub Spec Kit, Amazon Kiro, BMAD-METHOD — and converge on the same insight: **treat specifications as the source of truth and code as their artifact**.
+LLM coding agents are fast but fail predictably when given vague intent. They confabulate requirements, drift from design, and produce plausible-but-wrong code. Several mature patterns address this — GitHub Specorator, Amazon Kiro, BMAD-METHOD — and converge on the same insight: **treat specifications as the source of truth and code as their artifact**.
 
 Alternatives considered:
 
@@ -47,14 +47,14 @@ Per-feature work product lives at `specs/<feature-slug>/`. State is tracked in `
 - Pros: rich role separation, sharded artifacts.
 - Cons: heavy for small teams, persona explosion duplicates concerns.
 
-### Option C — GitHub Spec Kit flow (constitution → specify → plan → tasks → implement)
+### Option C — GitHub Specorator flow (constitution → specify → plan → tasks → implement)
 
 - Pros: production-grade tool support, slash-command UX.
 - Cons: doesn't natively cover UX/UI, testing, release, retrospective.
 
 ### Option D — Eleven-stage hybrid (chosen)
 
-- Pros: full SDLC coverage; explicit testing, review, release, retro stages; compatible with Spec Kit / Kiro / BMAD conventions; agent-friendly because each stage has narrow scope.
+- Pros: full SDLC coverage; explicit testing, review, release, retro stages; compatible with Specorator / Kiro / BMAD conventions; agent-friendly because each stage has narrow scope.
 - Cons: more stages than strictly necessary for trivial work — mitigated by explicit "skip" support in `workflow-state.md`.
 
 ## Consequences
@@ -82,6 +82,6 @@ Per-feature work product lives at `specs/<feature-slug>/`. State is tracked in `
 
 ## References
 
-- [GitHub Spec Kit](https://github.com/github/spec-kit)
+- [GitHub Specorator](https://github.com/github/specorator)
 - [Amazon Kiro — Specs](https://kiro.dev/docs/specs/)
 - [BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD)

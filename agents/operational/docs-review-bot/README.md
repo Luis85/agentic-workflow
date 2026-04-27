@@ -33,5 +33,5 @@ On a young repo (< 6 months) the bot mostly finds dead links from rapid renames.
 
 ## See also
 
-- [`docs/spec-kit.md`](../../../docs/spec-kit.md) — the source of truth for what each doc *should* say.
+- [`docs/specorator.md`](../../../docs/specorator.md) — the source of truth for what each doc *should* say.
 - [`feedback_docs_with_pr.md`](../../../.claude/memory/feedback_docs_with_pr.md) — the rule that prevents most drift in the first place.

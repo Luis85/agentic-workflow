@@ -13,7 +13,7 @@ Bootstrap a new P5 Express portfolio. Read [`docs/portfolio-track.md`](../../../
 
 - `$1` — portfolio slug (kebab-case, ≤ 6 words, required). Name the **portfolio scope**, not a specific project.
   - Good: `platform-portfolio`, `client-services-q1`, `internal-tools-portfolio`
-  - Bad: `auth-feature`, `payments-redesign` (those are Spec Kit feature slugs)
+  - Bad: `auth-feature`, `payments-redesign` (those are Specorator feature slugs)
 
 ## Procedure
 

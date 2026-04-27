@@ -2,7 +2,7 @@
 
 **Version:** 0.1 · **Status:** Draft · **Opt-in:** Yes — skip if delivering internal product work without contract boundaries
 
-A lightweight project governance layer that wraps Spec Kit feature deliveries when the team works in a **service-provider context** (delivering for clients). Based on [P3.Express](https://p3.express/) by Nader K. Rad and Frank Turley (Creative Commons licence, freely available at https://p3.express/manual/v2/).
+A lightweight project governance layer that wraps Specorator feature deliveries when the team works in a **service-provider context** (delivering for clients). Based on [P3.Express](https://p3.express/) by Nader K. Rad and Frank Turley (Creative Commons licence, freely available at https://p3.express/manual/v2/).
 
 For teams of 1–7 people, the **micro.P3.Express** variant applies automatically — it uses a weekly rather than monthly cadence and collapses the monthly B/E groups into the weekly rhythm. See §5 for details.
 
@@ -11,7 +11,7 @@ For teams of 1–7 people, the **micro.P3.Express** variant applies automaticall
 ## Table of contents
 
 1. [When to use this track](#1-when-to-use-this-track)
-2. [Relationship to the Spec Kit and Discovery Track](#2-relationship-to-the-spec-kit-and-discovery-track)
+2. [Relationship to the Specorator and Discovery Track](#2-relationship-to-the-specorator-and-discovery-track)
 3. [Directory layout](#3-directory-layout)
 4. [Project lifecycle and state machine](#4-project-lifecycle-and-state-machine)
 5. [P3.Express process map](#5-p3express-process-map)
@@ -41,7 +41,7 @@ Run the Project Manager Track when **any** of these conditions apply:
 
 ---
 
-## 2. Relationship to the Spec Kit and Discovery Track
+## 2. Relationship to the Specorator and Discovery Track
 
 ```
               ┌─────────────────────────────────────────────────────┐
@@ -62,7 +62,7 @@ Run the Project Manager Track when **any** of these conditions apply:
 ```
 
 - The **project-manager** operates at the project envelope: scope, stakeholders, budget, risk/issue/change, periodic reporting.
-- Feature work is still built via the Spec Kit. The PM links to feature folders but never edits their artifacts.
+- Feature work is still built via the Specorator. The PM links to feature folders but never edits their artifacts.
 - Discovery sprints are still run via the Discovery Track. The PM logs them in the deliverables map as project phases.
 - The PM does **not replace** the `pm` agent (Stage 3) — that agent produces feature requirements. The project manager produces project governance documents.
 

@@ -50,4 +50,4 @@ Run this command 3–6 months after `/project:close`, and optionally once a year
 
 - Don't invent benefit metrics — mark as `TBD — awaiting data from <owner>` if unavailable.
 - Don't rewrite or erase the original closure document — append only.
-- Don't confuse post-project benefit tracking with project retrospective (Stage 11 of the Spec Kit) — they are complementary: Stage 11 retrospectives evaluate the delivery process; G01 evaluates the delivered value.
+- Don't confuse post-project benefit tracking with project retrospective (Stage 11 of the Specorator) — they are complementary: Stage 11 retrospectives evaluate the delivery process; G01 evaluates the delivered value.

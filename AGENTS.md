@@ -16,7 +16,7 @@ Before doing any non-trivial work, read:
 
 1. **`memory/constitution.md`** — governing principles. Override only with explicit human approval.
 2. **`.claude/memory/MEMORY.md`** — operational memory: workflow rules + project state, indexed.
-3. **`docs/spec-kit.md`** — the full workflow definition.
+3. **`docs/specorator.md`** — the full workflow definition.
 4. **`docs/steering/`** — scoped context (product, tech, ux, quality, operations). Load only what's relevant to your task.
 5. **The current feature's `specs/<feature>/workflow-state.md`** — tells you which stage is active and what's already produced.
 

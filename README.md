@@ -1,6 +1,8 @@
-# Spec Kit — Agentic Development Workflow
+# Specorator — Agentic Development Workflow
 
-**Build software the right way with AI.** Spec Kit is a ready-to-use workflow template that keeps humans in charge of *what* to build while AI agents handle the heavy lifting of *how*.
+![Version](https://img.shields.io/badge/version-v0.2-blue) ![License](https://img.shields.io/badge/license-MIT-green)
+
+**Build software the right way with AI.** Specorator is a ready-to-use workflow template that keeps humans in charge of *what* to build while AI agents handle the heavy lifting of *how*.
 
 > **Status:** v0.2 — Foundation + Skills layer. Intentionally generic and starting-point-y — fork it, adapt it, make it yours.
 
@@ -8,7 +10,7 @@
 
 ## What is this?
 
-Most AI coding tools jump straight to writing code — often the wrong code. Spec Kit flips that: **specs first, code second**.
+Most AI coding tools jump straight to writing code — often the wrong code. Specorator flips that: **specs first, code second**.
 
 Every feature follows a structured journey — understand the problem, research the options, write clear requirements, design a solution, *then* build it. AI agents (powered by Claude) assist at every step while staying in their lane. You remain in charge of intent, priorities, and sign-off.
 
@@ -261,7 +263,7 @@ The artifact format (Markdown files in `specs/<feature>/`) and the ID scheme (`R
 
 | Path | What it is |
 |---|---|
-| [`docs/spec-kit.md`](docs/spec-kit.md) | Full workflow definition — read this before any non-trivial work |
+| [`docs/specorator.md`](docs/specorator.md) | Full workflow definition — read this before any non-trivial work |
 | [`docs/discovery-track.md`](docs/discovery-track.md) | Discovery Track detail and phase-by-phase guide |
 | [`docs/workflow-overview.md`](docs/workflow-overview.md) | One-page visual + cheat sheet + slash command list |
 | [`docs/quality-framework.md`](docs/quality-framework.md) | Quality dimensions, gates, and Definition of Done per stage |

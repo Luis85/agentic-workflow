@@ -12,7 +12,7 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 ├── memory/
 │   └── constitution.md                      # principles loaded ahead of every workflow command
 ├── docs/
-│   ├── spec-kit.md                          # workflow definition (read first)
+│   ├── specorator.md                          # workflow definition (read first)
 │   ├── workflow-overview.md                 # one-page cheat sheet
 │   ├── quality-framework.md                 # quality dimensions, gates, DoD
 │   ├── traceability.md                      # ID scheme REQ → SPEC → T → code → TEST
@@ -117,8 +117,8 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 | Path | Owner | Mutability |
 |---|---|---|
 | `memory/constitution.md` | Human (amended by ADR) | Append-only after amendments |
-| `docs/spec-kit.md`, `docs/quality-framework.md`, `docs/traceability.md`, `docs/ears-notation.md` | Human | Versioned (v0.1, v0.2…) |
-| `docs/sink.md` | Human | Versioned alongside spec-kit |
+| `docs/specorator.md`, `docs/quality-framework.md`, `docs/traceability.md`, `docs/ears-notation.md` | Human | Versioned (v0.1, v0.2…) |
+| `docs/sink.md` | Human | Versioned alongside specorator |
 | `docs/steering/*` | Human | Updated as project evolves |
 | `docs/adr/NNNN-*.md` | Architect / any agent that flags | **Immutable from creation** per ADR-0001: only YAML `status` (proposed → accepted → deprecated → superseded) and `supersedes` / `superseded-by` pointers may change. Body (Context, Decision, Alternatives, Consequences) is frozen on creation. To revise rationale, supersede via new ADR. |
 | `docs/CONTEXT.md`, `docs/CONTEXT-MAP.md`, `docs/contexts/*.md` | `domain-context` skill | Additive, agent-updated |
@@ -146,7 +146,7 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 | `discovery/<sprint>/<phase>.md` | The phase's owning facilitator + consulted specialists (per `docs/discovery-track.md` §3) | Each phase writes once; later phases never rewrite upstream phase artifacts |
 | `discovery/<sprint>/chosen-brief.md` | `facilitator` (Handoff) | One per surviving concept; mandatory input to `/spec:idea` |
 | `specs/<slug>/workflow-state.md` | `/spec:start`, then `/spec:*` commands on transition | State machine; orchestrator amends final fields |
-| `specs/<slug>/<artifact>.md` | The stage's owning agent (per `docs/spec-kit.md` §3) | Each stage writes once; later stages **never rewrite** upstream artifacts |
+| `specs/<slug>/<artifact>.md` | The stage's owning agent (per `docs/specorator.md` §3) | Each stage writes once; later stages **never rewrite** upstream artifacts |
 | `portfolio/<slug>/portfolio-state.md` | `/portfolio:start`, then `/portfolio:*` commands on each cycle | Cycle state machine; portfolio-manager-owned |
 | `portfolio/<slug>/portfolio-definition.md` | `/portfolio:start` (created), Z cycle Z2 (status updates) | Ongoing; X and Y cycles read but do not rewrite |
 | `portfolio/<slug>/portfolio-roadmap.md` | X cycle (X2, X3) | Updated in place each X run; previous exec summaries appended |
@@ -188,7 +188,7 @@ Accepted ADRs are immutable. To change a decision, file a new ADR superseding th
 
 1. `memory/constitution.md`.
 2. The relevant `docs/steering/*.md` (matched by glob to the stage role).
-3. `docs/spec-kit.md` §3.<stage> — the gate criteria for this stage.
+3. `docs/specorator.md` §3.<stage> — the gate criteria for this stage.
 4. `specs/<slug>/workflow-state.md` — confirm upstream stages are complete.
 5. All numerically-earlier `specs/<slug>/<artifact>.md` files in stage order.
 6. `docs/CONTEXT.md` and `docs/UBIQUITOUS_LANGUAGE.md` if present.
@@ -228,7 +228,7 @@ A sprint may emit **0, 1, or N** chosen briefs. Zero is a valid outcome (no-go);
 
 ## Portfolio Track sub-tree
 
-When a team needs to manage **multiple parallel features** or operates as a **service provider**, the Portfolio Track adds a management layer above the Spec Kit. It lives at `portfolio/<portfolio-slug>/` parallel to `specs/` and `discovery/`. See [`docs/portfolio-track.md`](portfolio-track.md) for the methodology and [ADR-0009](adr/0009-add-portfolio-manager-role.md) for the rationale.
+When a team needs to manage **multiple parallel features** or operates as a **service provider**, the Portfolio Track adds a management layer above the Specorator. It lives at `portfolio/<portfolio-slug>/` parallel to `specs/` and `discovery/`. See [`docs/portfolio-track.md`](portfolio-track.md) for the methodology and [ADR-0009](adr/0009-add-portfolio-manager-role.md) for the rationale.
 
 A portfolio is bootstrapped with `/portfolio:start <slug>`. The three cycle commands populate the five management documents. The portfolio track is **read-only on the `specs/` side** — it never modifies spec artifacts.
 
@@ -253,7 +253,7 @@ A portfolio is bootstrapped with `/portfolio:start <slug>`. The three cycle comm
 - **Long log dumps, raw command output, secrets.** Summaries only.
 - **Files specific to a single subagent's scratch work.** Return a summary instead.
 - **Speculative future work.** That's a follow-up workflow, not a sink artifact.
-- **Implementation file paths or line numbers** in spec/PRD/plan markdown. Per the spec-kit discipline, those describe behaviors and contracts, not locations.
+- **Implementation file paths or line numbers** in spec/PRD/plan markdown. Per the specorator discipline, those describe behaviors and contracts, not locations.
 
 ## Cross-cutting writes from skills
 

@@ -1,4 +1,4 @@
-# Spec Kit — Quality-Driven, Agentic Development Workflow
+# Specorator — Quality-Driven, Agentic Development Workflow
 
 **Version:** 0.1 · **Status:** Draft · **Purpose:** Foundation for iteration
 

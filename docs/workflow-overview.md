@@ -27,7 +27,7 @@
 
 | Question | Answer lives in |
 |---|---|
-| What's this stage for? | [`docs/spec-kit.md` §3](spec-kit.md#3-stages-artifacts-and-quality-gates) |
+| What's this stage for? | [`docs/specorator.md` §3](specorator.md#3-stages-artifacts-and-quality-gates) |
 | Who owns it? | [`.claude/agents/<role>.md`](../.claude/agents/) |
 | What's the input? | The previous stage's artifact in `specs/<feature>/` |
 | What's the output? | The matching `templates/<stage>-template.md` |
