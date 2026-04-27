@@ -63,4 +63,5 @@ The default `.claude/settings.json` allows the worktree subcommands by name. The
 
 - [`feedback_worktrees_required.md`](../.claude/memory/feedback_worktrees_required.md) — the rule itself.
 - [`docs/branching.md`](./branching.md) — what "integration branch" means.
+- [`docs/codex-workflow.md`](./codex-workflow.md) — Codex's expected end-to-end worktree and PR loop.
 - [`.gitignore`](../.gitignore) — confirm `.worktrees/` is ignored before relying on it.
