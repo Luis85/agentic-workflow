@@ -40,7 +40,8 @@ See [`memory/constitution.md`](../memory/constitution.md) for the full version. 
 
 ```mermaid
 flowchart LR
-    A[1. Idea] --> B[2. Research]
+    Z[Discovery Track] -.brief.-> A[1. Idea]
+    A --> B[2. Research]
     B --> C[3. Requirements]
     C --> D[4. Design]
     D --> E[5. Specification]
@@ -60,6 +61,10 @@ flowchart LR
 
 - **`/spec:clarify`** — interrogates the active artifact for under-specification. Run before declaring a stage done.
 - **`/spec:analyze`** — cross-artifact consistency and coverage check. Catches drift between requirements, design, spec, and tasks.
+
+**Optional pre-stage** (run *before* Stage 1 when no brief exists yet):
+
+- **Discovery Track** — a 5-phase ideation + design-sprint mini-workflow (Frame → Diverge → Converge → Prototype → Validate → Handoff) for teams arriving with a blank page rather than a brief. Produces `chosen-brief.md` which seeds Stage 1. Defined in [`docs/discovery-track.md`](discovery-track.md); rationale in [ADR-0005](adr/0005-add-discovery-track-before-stage-1.md). **Skip when a brief already exists.**
 
 ---
 
@@ -278,3 +283,23 @@ The workflow is iterative, not waterfall:
 - Metrics and maturity model
 - CI quality gates
 - Worked end-to-end examples in [`examples/`](../examples/)
+
+---
+
+## Appendix — Discovery Track (pre-Stage 1)
+
+The 11-stage workflow above assumes a brief exists. When it doesn't, the **Discovery Track** runs first — a 5-phase, multi-specialist sprint (Frame → Diverge → Converge → Prototype → Validate → Handoff) modelled on the Google Design Sprint, Double Diamond, MDA, JTBD, and Riskiest Assumption Test. It produces `chosen-brief.md` which becomes the input to Stage 1.
+
+| # | Phase | Owner | Consulted | Slash command | Artifact |
+|---|---|---|---|---|---|
+| — | Bootstrap | — | — | `/discovery:start <slug>` | `discovery-state.md` |
+| 1 | Frame | facilitator | product-strategist, user-researcher | `/discovery:frame` | `frame.md` |
+| 2 | Diverge | facilitator | divergent-thinker, game-designer | `/discovery:diverge` | `divergence.md` |
+| 3 | Converge | facilitator | critic, product-strategist | `/discovery:converge` | `convergence.md` |
+| 4 | Prototype | facilitator | prototyper, game-designer | `/discovery:prototype` | `prototype.md` |
+| 5 | Validate | facilitator | user-researcher, critic | `/discovery:validate` | `validation.md` |
+| H | Handoff | facilitator | product-strategist | `/discovery:handoff` | `chosen-brief.md` (0..N) |
+
+Sprint outcomes: `go` → ≥ 1 chosen brief → `/spec:start` + `/spec:idea`. `no-go` → sprint successfully killed bad candidates; close. `pivot` → re-frame and re-run.
+
+Conversational entry: the [`discovery-sprint`](../.claude/skills/discovery-sprint/SKILL.md) skill (parallel to `orchestrate`). Full methodology and method library in [`docs/discovery-track.md`](discovery-track.md). Rationale in [ADR-0005](adr/0005-add-discovery-track-before-stage-1.md).

@@ -36,11 +36,12 @@ Skills MAY include supporting files (templates, scripts, fixtures) alongside `SK
 
 ## Catalog
 
-### Workflow conductor
+### Workflow conductors
 
 | Skill | Triggers when… | What it does |
 |---|---|---|
 | [`orchestrate/`](orchestrate/SKILL.md) | "start a feature", "kick off", "from scratch", "what's next?", "orchestrate" | Drives the full 11-stage Spec Kit workflow conversationally. Reads `workflow-state.md`, gates with `AskUserQuestion`, dispatches `/spec:*` commands in sequence. |
+| [`discovery-sprint/`](discovery-sprint/SKILL.md) | "design sprint", "ideation", "brainstorm new product ideas", "blank page", "discovery sprint" | Drives the 5-phase Discovery Track (Frame → Diverge → Converge → Prototype → Validate → Handoff) conversationally. Dispatches the `facilitator` and 6 specialist consults. Output: `chosen-brief.md` that feeds `/spec:idea`. **Skip when a brief already exists — go to `orchestrate`.** |
 
 ### Practice skills (used by stage agents)
 

@@ -10,6 +10,7 @@ Records of architecturally significant decisions. Format follows Michael Nygard'
 | [0002](0002-adopt-spec-driven-development.md) | Adopt spec-driven development | Accepted |
 | [0003](0003-adopt-ears-for-functional-requirements.md) | Adopt EARS for functional requirements | Accepted |
 | [0004](0004-adopt-operational-agents-alongside-lifecycle-agents.md) | Adopt operational agents alongside lifecycle agents | Accepted |
+| [0005](0005-add-discovery-track-before-stage-1.md) | Add a Discovery Track that precedes Stage 1 (Idea) | Accepted |
 
 ## Conventions
 

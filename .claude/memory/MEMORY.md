@@ -13,6 +13,7 @@ See [`README.md`](./README.md) for what belongs here and how to update it.
 
 > How we work — conventions every contributor (human or agent) follows.
 
+- **Discovery before idea, when there's no brief** — when the team is starting from a blank page (not a stated brief), run the Discovery Track first (`/discovery:start` … `/discovery:handoff`) to produce `chosen-brief.md`, which then feeds `/spec:idea`. Skip the track when a brief already exists. See [`docs/discovery-track.md`](../../docs/discovery-track.md) and [ADR-0005](../../docs/adr/0005-add-discovery-track-before-stage-1.md).
 - **Branch per concern** — one PR, one concern. Cut every topic branch fresh from the integration branch; never stack. See [`feedback_pr_hygiene.md`](./feedback_pr_hygiene.md).
 - **Verify before push** — the project's verify gate (formatter + linter + types + tests + build) must be green locally before opening a PR. Never `--no-verify`. See [`feedback_verify_gate.md`](./feedback_verify_gate.md) and [`docs/verify-gate.md`](../../docs/verify-gate.md).
 - **Worktrees for parallel work** — every topic branch lives under `.worktrees/<slug>/` so multiple agents can run in parallel without trashing each other's caches. See [`feedback_worktrees_required.md`](./feedback_worktrees_required.md) and [`docs/worktrees.md`](../../docs/worktrees.md).

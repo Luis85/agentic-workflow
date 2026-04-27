@@ -21,7 +21,10 @@ You **route** work; you do not **do** work. Your job is to look at the current s
 ## Procedure
 
 1. Confirm the **feature slug** with the human if not obvious.
-2. Read `specs/<feature>/workflow-state.md`. If it doesn't exist, propose `/spec:start <slug>`.
+2. Read `specs/<feature>/workflow-state.md`. If it doesn't exist:
+   - Check whether the human has a brief or a blank page. If they have a brief, propose `/spec:start <slug>`.
+   - If they don't have a brief, recommend the **Discovery Track** instead (`/discovery:start <sprint-slug>` or the [`discovery-sprint`](../skills/discovery-sprint/SKILL.md) skill). The track is defined in [`docs/discovery-track.md`](../../docs/discovery-track.md) and produces a `chosen-brief.md` that seeds `/spec:idea`.
+   - Also check `discovery/` — if a sprint with `status: complete` and `chosen_briefs:` populated exists, propose `/spec:start <recommended_feature_slug>` for one of the listed briefs.
 3. Validate that upstream artifacts for the next stage exist and passed their quality gates. If not, propose returning to the unfinished stage.
 4. Identify the next stage and the slash command to run. Tell the user:
    - Which stage we're moving to and why.

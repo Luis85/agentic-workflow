@@ -1,6 +1,12 @@
 # Workflow Overview — One-Page Cheat Sheet
 
 ```
+[Discovery Track — pre-stage 1, opt-in, see docs/discovery-track.md]
+   Frame → Diverge → Converge → Prototype → Validate → Handoff (chosen-brief.md)
+   facilitator + product-strategist, user-researcher, game-designer,
+                  divergent-thinker, critic, prototyper                         │
+                                                                          (chosen-brief.md feeds /spec:idea)
+                                                                                ▼
 ┌──────────┐   ┌──────────┐   ┌──────────────┐   ┌──────────┐   ┌─────────────┐   ┌────────┐
 │ 1. Idea  │ → │ 2. Resrch│ → │ 3. Requirts  │ → │ 4. Design│ → │ 5. Specify  │ → │ 6.Tasks│
 │ analyst  │   │ analyst  │   │ pm           │   │ ux/ui/ar │   │ architect   │   │ planner│
@@ -66,6 +72,12 @@ Plus body sections (Skips, Blocks, Hand-off notes, Open clarifications). Canonic
 ## Slash commands
 
 ```
+# Pre-stage Discovery Track (opt-in, when no brief exists yet):
+/discovery:start <sprint>   /discovery:converge        /discovery:validate
+/discovery:frame            /discovery:prototype       /discovery:handoff
+/discovery:diverge
+
+# Lifecycle:
 /spec:start <slug>          /spec:tasks                /spec:retro
 /spec:idea                  /spec:implement [task-id]  /spec:clarify
 /spec:research              /spec:test                 /spec:analyze

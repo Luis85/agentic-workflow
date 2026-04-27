@@ -55,7 +55,9 @@ For each `specs/<slug>/workflow-state.md` whose `status` is `active`, `paused`, 
 
 ### Step 2 — Clarify scope (single `AskUserQuestion` call, ≤4 questions)
 
-If starting fresh, batch into one call:
+If the user is starting fresh **and you can't tell whether they have a brief**, first detect the blank-page case. Before calling the scope question, check `discovery/` for a `chosen-brief.md` they could feed in. If neither a brief nor a clear feature description exists in their prompt, recommend the [`discovery-sprint`](../discovery-sprint/SKILL.md) skill instead and exit. The Discovery Track produces a `chosen-brief.md` which then becomes the input to `/spec:idea`. See [`docs/discovery-track.md`](../../../docs/discovery-track.md).
+
+When a brief or chosen-brief exists, batch into one call:
 
 1. **Feature slug** — kebab-case, ≤6 words. Derive from `$ARGUMENTS` if a goal was given; offer it as the recommended option.
 2. **Area code** — uppercase, used for ID prefixes (`REQ-<AREA>-NNN`). Derive from slug.
