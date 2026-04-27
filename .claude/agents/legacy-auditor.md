@@ -26,7 +26,7 @@ You **do not** write requirements (that is the `pm`), design decisions (that is 
 
 - [`memory/constitution.md`](../../memory/constitution.md) — Articles II, III, VI, VII apply directly.
 - [`docs/stock-taking-track.md`](../../docs/stock-taking-track.md) — phase-by-phase methodology and quality gates.
-- [`docs/adr/0006-add-stock-taking-track-for-legacy-projects.md`](../../docs/adr/0006-add-stock-taking-track-for-legacy-projects.md) — the why of this track.
+- [`docs/adr/0007-add-stock-taking-track-for-legacy-projects.md`](../../docs/adr/0007-add-stock-taking-track-for-legacy-projects.md) — the why of this track.
 - The active `stock-taking/<project>/stock-taking-state.md`.
 - All earlier phase artifacts for this engagement (when resuming mid-engagement).
 

@@ -147,7 +147,7 @@ Accepted ADRs are immutable. To change a decision, file a new ADR superseding th
 
 ## Stock-taking Track sub-tree
 
-When a team is **building on or replacing an existing system**, the Stock-taking Track produces `stock-taking-inventory.md` first; that inventory is then the input either the Discovery Track's Frame phase or Stage 1's analyst reads. The track lives at `stock-taking/<project-slug>/` parallel to `discovery/` and `specs/`. See [`docs/stock-taking-track.md`](stock-taking-track.md) for the methodology and [ADR-0006](adr/0006-add-stock-taking-track-for-legacy-projects.md) for the rationale.
+When a team is **building on or replacing an existing system**, the Stock-taking Track produces `stock-taking-inventory.md` first; that inventory is then the input either the Discovery Track's Frame phase or Stage 1's analyst reads. The track lives at `stock-taking/<project-slug>/` parallel to `discovery/` and `specs/`. See [`docs/stock-taking-track.md`](stock-taking-track.md) for the methodology and [ADR-0007](adr/0007-add-stock-taking-track-for-legacy-projects.md) for the rationale.
 
 The engagement slug names the *system or system cluster* being inventoried (not the feature being built): `crm-legacy-audit`, `billing-platform-baseline`. One engagement may produce inventory that feeds multiple Discovery Sprints or multiple feature folders. The Handoff is the *only* link between the stock-taking tree and the downstream trees — before handoff no `discovery/<sprint>/` or `specs/<slug>/` exists for this work; after handoff the inventory is referenced from `chosen-brief.md` or `idea.md` `inputs:` frontmatter.
 

@@ -17,7 +17,7 @@ This is a **pre-workflow** entry. The output is a `stock-taking-inventory.md` th
 Always start by reading these (they are the contract you are enforcing):
 
 - [`docs/stock-taking-track.md`](../../../docs/stock-taking-track.md) — the 3-phase definition + method library.
-- [`docs/adr/0006-add-stock-taking-track-for-legacy-projects.md`](../../../docs/adr/0006-add-stock-taking-track-for-legacy-projects.md) — the why.
+- [`docs/adr/0007-add-stock-taking-track-for-legacy-projects.md`](../../../docs/adr/0007-add-stock-taking-track-for-legacy-projects.md) — the why.
 - [`memory/constitution.md`](../../../memory/constitution.md) — Articles II, III, VI, VII apply.
 - The active `stock-taking/<project>/stock-taking-state.md` (if resuming).
 
@@ -101,6 +101,6 @@ If the `legacy-auditor` returns "blocked — needs human input" (e.g. access to 
 ## References
 
 - [`docs/stock-taking-track.md`](../../../docs/stock-taking-track.md) — full methodology.
-- [`docs/adr/0006-add-stock-taking-track-for-legacy-projects.md`](../../../docs/adr/0006-add-stock-taking-track-for-legacy-projects.md).
+- [`docs/adr/0007-add-stock-taking-track-for-legacy-projects.md`](../../../docs/adr/0007-add-stock-taking-track-for-legacy-projects.md).
 - [`docs/sink.md`](../../../docs/sink.md) — `stock-taking/` sink layout.
 - [`.claude/agents/legacy-auditor.md`](../../agents/legacy-auditor.md) — the agent this skill dispatches.

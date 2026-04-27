@@ -1,6 +1,6 @@
 # Stock-taking Track — Legacy System Inventory
 
-**Version:** 0.1 · **Status:** Draft · **Stability:** Opt-in · **ADR:** [ADR-0006](adr/0006-add-stock-taking-track-for-legacy-projects.md)
+**Version:** 0.1 · **Status:** Draft · **Stability:** Opt-in · **ADR:** [ADR-0007](adr/0007-add-stock-taking-track-for-legacy-projects.md)
 
 A pre-workflow track for teams building on top of, alongside, or as a replacement for existing systems. Produces a structured inventory of what already exists that feeds either the Discovery Track or Stage 1 of the Spec Kit.
 

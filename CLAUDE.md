@@ -22,7 +22,7 @@ You have two equivalent entry points for the **lifecycle workflow** (Stages 1–
 When you are **building on or replacing an existing system** and need to understand what's already there before planning anything — run the **Stock-taking Track first** (pre-Discovery and pre-Stage 1, opt-in for legacy/brownfield projects):
 
 - **Conversational:** say "we're building on a legacy system", "let's inventory what we have", or "stock-taking" and the [`stock-taking`](.claude/skills/stock-taking/SKILL.md) skill will guide you through Scope → Audit → Synthesize → Handoff. The handoff writes `stock-taking-inventory.md` which feeds the Discovery Track or `/spec:idea`.
-- **Manual:** `/stock:start`, `/stock:scope`, `/stock:audit`, `/stock:synthesize`, `/stock:handoff`. See [`docs/stock-taking-track.md`](docs/stock-taking-track.md) and [ADR-0006](docs/adr/0006-add-stock-taking-track-for-legacy-projects.md).
+- **Manual:** `/stock:start`, `/stock:scope`, `/stock:audit`, `/stock:synthesize`, `/stock:handoff`. See [`docs/stock-taking-track.md`](docs/stock-taking-track.md) and [ADR-0007](docs/adr/0007-add-stock-taking-track-for-legacy-projects.md).
 
 When you don't have a brief yet — blank page, multiple candidate ideas, no clear winner — run the **Discovery Track first** (pre-Stage 1, opt-in):
 

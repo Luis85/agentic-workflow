@@ -1,5 +1,5 @@
 ---
-id: ADR-0006
+id: ADR-0007
 title: Add a Stock-taking Track for projects that build on existing systems
 status: accepted
 date: 2026-04-27
@@ -11,7 +11,7 @@ superseded-by: []
 tags: [process, agents, legacy, inventory, stock-taking]
 ---
 
-# ADR-0006 — Add a Stock-taking Track for projects that build on existing systems
+# ADR-0007 — Add a Stock-taking Track for projects that build on existing systems
 
 ## Status
 
