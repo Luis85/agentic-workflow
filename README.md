@@ -280,6 +280,7 @@ The artifact format (Markdown files in `specs/<feature>/`) and the ID scheme (`R
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | How to improve this template |
 | [`AGENTS.md`](AGENTS.md) | Cross-tool root context (Codex, Cursor, Aider, Copilot all read this) |
 | [`CLAUDE.md`](CLAUDE.md) | Claude Code entry point — imports `AGENTS.md` |
+| [`.codex/`](.codex/) | Codex-specific instructions and workflow playbooks |
 | [`examples/`](examples/) | Demonstration artifacts — what a project using this template produces. Each `examples/<slug>/` mirrors `specs/<slug>/` shape. Not part of the template's own workflow; agents must not treat these as active features. (`cli-todo`: stages 1–3 complete, stage 4 in-progress) |
 
 ---
