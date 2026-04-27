@@ -133,7 +133,7 @@ Evaluated against single-binary distribution AND didactic clarity for spec-kit r
 
 | Language | Single binary | Install path | Source readability (mixed audience) | Cross-platform path handling |
 |---|---|---|---|---|
-| Go | Yes (static by default) | `go install` / pre-built release | High — approachable to most engineers | `os.UserHomeDir`, `os.UserDataDir` (1.23+) |
+| Go | Yes (static by default) | `go install` / pre-built release | High — approachable to most engineers | `os.UserHomeDir` + `adrg/xdg` (stdlib has no `UserDataDir`; `os.UserConfigDir` is config-only) |
 | Rust | Yes (with flags) | `cargo install` / pre-built release | Medium — borrow checker surprises newcomers | `dirs` crate |
 | Python | No (requires runtime) | `pipx install` | Very high | `pathlib` + `platformdirs` |
 | Node | No (requires runtime; pkg/nexe for bundles) | `npm install -g` | High | `os.homedir`, `xdg` package |
