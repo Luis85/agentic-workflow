@@ -13,7 +13,7 @@ This repo snapshot has no configured git remote and no GitHub auth token/CLI ava
 2. `docs/issues/2026-04-27-002-fix-adr-reference-number-mismatches.md`
 3. `docs/issues/2026-04-27-003-replace-hardcoded-example-link-to-nonexistent-feature-path.md`
 4. `docs/issues/2026-04-27-004-align-project-initiation-doc-count-language.md`
-5. `docs/issues/2026-04-27-005-reconcile-repo-version-labels-between-readme-and-spec-kit.md`
+5. `docs/issues/2026-04-27-005-reconcile-repo-version-labels-between-readme-and-specorator.md`
 6. `docs/issues/2026-04-27-006-align-daily-review-frontmatter-with-schema.md`
 
 ## CLI command template

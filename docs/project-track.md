@@ -156,7 +156,7 @@ Bad slugs: `new-website`, `redesign`, `the-big-project`.
 
 ### `/project:initiate` — Group A: Project Initiation
 
-Produces the three founding documents and gates on human approval (A08).
+Produces the four foundational documents and gates on human approval (A08).
 
 **Procedure:**
 1. Facilitate role-appointment check: confirm sponsor name and PM are recorded.
@@ -391,7 +391,7 @@ In `deliverables-map.md`, reference feature folders:
 ```markdown
 | Deliverable | Spec folder | Milestone | Status |
 |---|---|---|---|
-| Authentication module | [specs/auth-redesign](../../specs/auth-redesign/workflow-state.md) | M1 — 2026-05-15 | In progress |
+| Authentication module | `specs/auth-redesign/workflow-state.md` | M1 — 2026-05-15 | In progress |
 ```
 
 The `project-manager` reads `workflow-state.md` from each linked spec to report feature status in `/project:weekly`. It never writes to those files.
@@ -405,4 +405,4 @@ Go directly to `/project:start` → `/project:initiate`. You do not need to run 
 - Manual v2: https://p3.express/manual/v2/
 - micro.P3.Express: https://micro.p3.express/
 - NUPP (underlying principles): https://nupp.guide/
-- ADR-0007: [`docs/adr/0008-add-project-manager-track.md`](adr/0008-add-project-manager-track.md)
+- ADR-0008: [`docs/adr/0008-add-project-manager-track.md`](adr/0008-add-project-manager-track.md)

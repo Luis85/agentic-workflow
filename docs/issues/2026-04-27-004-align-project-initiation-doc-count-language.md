@@ -2,7 +2,7 @@
 
 - **Opened:** 2026-04-27
 - **Severity:** P2
-- **Status:** Open
+- **Status:** Resolved
 - **Area:** Process documentation consistency
 
 ## Summary
@@ -27,3 +27,6 @@ If `health-register.md` is intentionally seeded outside initiation, remove it fr
 ## Acceptance criteria
 - The `/project:initiate` section uses one consistent deliverable count.
 - The text and outputs list match exactly.
+
+## Resolution
+Resolved in branch `fix/doc-review-issues` by updating `/project:initiate` to say it produces four foundational documents, matching the output list.

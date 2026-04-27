@@ -2,7 +2,7 @@
 
 - **Opened:** 2026-04-27
 - **Severity:** P2
-- **Status:** Open
+- **Status:** Resolved
 - **Area:** Traceability and governance docs
 
 ## Summary
@@ -25,3 +25,6 @@ ADR IDs are immutable governance anchors. Label/path mismatch breaks traceabilit
 ## Acceptance criteria
 - No remaining ADR label/path ID mismatches in markdown docs.
 - Spot-check in affected files confirms consistent numbering.
+
+## Resolution
+Resolved in branch `fix/doc-review-issues` by changing project-manager-track references that point to ADR-0008 so their visible labels also read `ADR-0008`.

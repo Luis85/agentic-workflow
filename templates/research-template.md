@@ -71,8 +71,8 @@ Which alternative do we recommend taking into Requirements, and why? What still 
 
 ## Sources
 
-- [Title](URL)
-- [Title](URL)
+- Title — URL
+- Title — URL
 
 ---
 

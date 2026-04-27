@@ -218,7 +218,7 @@ Key characteristics:
 - The track is **opt-in**: teams with no client engagement skip it entirely and use `specs/` + `discovery/` directly.
 - The project-manager **links to** but **never writes to** `specs/` or `discovery/` artifacts.
 
-See [`docs/project-track.md`](project-track.md) for the full methodology and [ADR-0007](adr/0008-add-project-manager-track.md) for the rationale.
+See [`docs/project-track.md`](project-track.md) for the full methodology and [ADR-0008](adr/0008-add-project-manager-track.md) for the rationale.
 
 ## Discovery Track sub-tree
 

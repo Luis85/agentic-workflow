@@ -2,7 +2,7 @@
 
 - **Opened:** 2026-04-27
 - **Severity:** P2
-- **Status:** Open
+- **Status:** Resolved
 - **Area:** Documentation examples
 
 ## Summary
@@ -19,3 +19,6 @@ Readers may interpret this as a real, expected file path and spend time debuggin
 ## Acceptance criteria
 - `docs/project-track.md` contains no links to missing local files.
 - The example remains understandable for first-time users.
+
+## Resolution
+Resolved in branch `fix/doc-review-issues` by rendering the illustrative `specs/auth-redesign/workflow-state.md` path as a code span instead of a live link.
