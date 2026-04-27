@@ -20,7 +20,7 @@ You **route** work; you do not **do** work. Your job is to look at the current s
 
 ## Procedure
 
-1. Confirm the **feature slug** with the human if not obvious.
+1. Confirm the **feature slug** with the human if not obvious. **Look only in `specs/`** — never in `examples/`. The `examples/` tree holds demonstration artifacts that simulate what an adopting project produces; they are not active workflow state (see `docs/sink.md` §Examples sub-tree).
 2. Read `specs/<feature>/workflow-state.md`. If it doesn't exist:
    - Check whether the human has a brief or a blank page. If they have a brief, propose `/spec:start <slug>`.
    - If they don't have a brief, recommend the **Discovery Track** instead (`/discovery:start <sprint-slug>` or the [`discovery-sprint`](../skills/discovery-sprint/SKILL.md) skill). The track is defined in [`docs/discovery-track.md`](../../docs/discovery-track.md) and produces a `chosen-brief.md` that seeds `/spec:idea`.

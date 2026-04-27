@@ -1,5 +1,5 @@
 ---
-id: ADR-0006
+id: ADR-0007
 title: Add an opt-in Project Manager Track based on P3.Express
 status: accepted
 date: 2026-04-27
@@ -11,7 +11,7 @@ superseded-by: []
 tags: [process, agents, project-management, p3express, service-provider]
 ---
 
-# ADR-0006 — Add an opt-in Project Manager Track based on P3.Express
+# ADR-0007 — Add an opt-in Project Manager Track based on P3.Express
 
 ## Status
 

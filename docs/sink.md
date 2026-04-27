@@ -34,6 +34,16 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │   └── UBIQUITOUS_LANGUAGE.md               # living glossary (LAZY)
 ├── templates/                               # blank artifacts; stages copy + fill
 │   └── *-template.md
+├── sales/                                   # one folder per client deal (pre-project, service-provider opt-in)
+│   └── <deal-slug>/
+│       ├── deal-state.md                    # deal state machine, owned by /sales:* commands
+│       ├── qualification.md                 # phase 1 (sales-qualifier) — BANT/MEDDIC + go/no-go verdict
+│       ├── scope.md                         # phase 2 (scoping-facilitator) — bounded problem + in/out scope
+│       ├── estimation.md                    # phase 3 (estimator) — WBS, PERT, risk register, pricing model
+│       ├── proposal.md                      # phase 4 (proposal-writer) — SOW / client-facing offer
+│       ├── revisions/                       # proposal revision history (LAZY)
+│       │   └── proposal-v2.md
+│       └── order.md                         # phase 5 (proposal-writer) — acceptance record + Project Kickoff Brief
 ├── discovery/                               # one folder per discovery sprint (pre-stage 1, opt-in)
 │   └── <sprint-slug>/
 │       ├── discovery-state.md               # sprint state machine, owned by /discovery:* commands
@@ -75,7 +85,12 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │       ├── traceability.md                  # stage 9 (reviewer) — RTM
 │       ├── release-notes.md                 # stage 10 (release-manager)
 │       └── retrospective.md                 # stage 11 (retrospective)
-├── examples/                                # placeholder for v0.2 worked examples
+├── examples/                                # demonstration artifacts — NOT the template's own workflow (see §Examples sub-tree)
+│   └── <feature-slug>/
+│       ├── workflow-state.md                # mirrors specs/<slug>/workflow-state.md shape
+│       ├── idea.md, research.md, …          # same artifact set as specs/<slug>/
+│       └── adr/                             # project-local ADRs for the example (NOT docs/adr/)
+│           └── NNNN-<slug>.md               # project-local sequence, e.g. ADR-CLI-0001
 └── .claude/
     ├── agents/                              # subagent definitions (specialists)
     ├── commands/                            # slash commands (entry points per stage)
@@ -94,6 +109,13 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 | `docs/CONTEXT.md`, `docs/CONTEXT-MAP.md`, `docs/contexts/*.md` | `domain-context` skill | Additive, agent-updated |
 | `docs/UBIQUITOUS_LANGUAGE.md` | `ubiquitous-language` skill | Additive, agent-updated |
 | `templates/*-template.md` | Human | Versioned; updates propagate to new features only |
+| `sales/<deal>/deal-state.md` | `/sales:start`, then `/sales:*` commands on transition | Deal state machine; sales-cycle skill-owned |
+| `sales/<deal>/qualification.md` | `sales-qualifier` | Written once in Phase 1; later phases never rewrite |
+| `sales/<deal>/scope.md` | `scoping-facilitator` | Written once in Phase 2 |
+| `sales/<deal>/estimation.md` | `estimator` | Written once in Phase 3; re-run triggers a revision |
+| `sales/<deal>/proposal.md` | `proposal-writer` | Current accepted version; revisions go to `revisions/` |
+| `sales/<deal>/revisions/proposal-vN.md` | `proposal-writer` | Created lazily on each negotiation revision (LAZY) |
+| `sales/<deal>/order.md` | `proposal-writer` (human sign-off required) | Written once in Phase 5; links to downstream workflow |
 | `projects/<project>/project-state.md` | `/project:start`, then `/project:*` commands on transition | Project state machine; project-manager-owned |
 | `projects/<project>/project-description.md` | `project-manager` (Initiation) | Living — updated on approved changes |
 | `projects/<project>/deliverables-map.md` | `project-manager` (Initiation + weekly) | Baselined on A08 approval; refined each week |
@@ -135,7 +157,7 @@ Accepted ADRs are immutable. To change a decision, file a new ADR superseding th
 
 - **Folders and files:** lowercase, kebab-case. No spaces, no underscores in paths the kit creates (legacy uppercase filenames like `CONTEXT.md`, `AGENTS.md`, `CLAUDE.md`, `UBIQUITOUS_LANGUAGE.md`, `LICENSE` and template files like `*-template.md` are intentional exceptions for visibility/convention).
 - **Feature slugs:** kebab-case, ≤6 words. Stable for the lifetime of the feature.
-- **ADRs:** four-digit zero-padded sequence (`0001`, `0002`, …) across the whole repo. Find the next number with `ls docs/adr/0*.md | tail -1`.
+- **ADRs:** four-digit zero-padded sequence (`0001`, `0002`, …) in `docs/adr/`, global across the template repo. Find the next number with `ls docs/adr/0*.md | tail -1`. **Exception — examples:** each `examples/<slug>/adr/` uses its own local sequence (e.g. `ADR-CLI-0001`) that is independent of and does not conflict with the template's global numbering. The prefix (`CLI`, `AUTH`, …) mirrors the feature's `<AREA>` code.
 - **IDs:** see `docs/traceability.md` (`REQ-<AREA>-NNN`, `SPEC-<AREA>-NNN`, `T-<AREA>-NNN`, `TEST-<AREA>-NNN`).
 
 ## Read order for any subagent starting a stage
@@ -148,6 +170,14 @@ Accepted ADRs are immutable. To change a decision, file a new ADR superseding th
 6. `docs/CONTEXT.md` and `docs/UBIQUITOUS_LANGUAGE.md` if present.
 7. Any topically relevant ADRs (skim titles).
 
+## Sales Cycle sub-tree
+
+When a **service provider** needs to win a project before building it, the Sales Cycle Track runs first — a 5-phase commercial workflow (Qualify → Scope → Estimate → Propose → Order) that produces `order.md`. The `order.md` contains a Project Kickoff Brief that is the canonical handoff to the delivery workflow. The delivery workflow is entered via `/discovery:start` (exploratory mandates) or `/spec:start` (defined mandates), with `order.md` as the mandatory context input.
+
+The deal folder lives at `sales/<deal-slug>/` parallel to `discovery/` and `specs/`. Deals that close as `no-go` are preserved as historical context. A deal may spawn one or more feature or discovery workflows after the order is placed.
+
+**Note on confidentiality:** The `sales/` directory may contain commercially sensitive data (client names, pricing, contract terms). Teams must apply appropriate access controls. The kit does not manage access control — that is an infrastructure concern.
+
 ## Project Manager Track sub-tree
 
 When a team is delivering software for a client, the Project Manager Track wraps feature deliveries with P3.Express-based governance. The track lives at `projects/<project-slug>/` parallel to `specs/`. State is owned by `/project:*` commands.
@@ -158,13 +188,28 @@ Key characteristics:
 - The track is **opt-in**: teams with no client engagement skip it entirely and use `specs/` + `discovery/` directly.
 - The project-manager **links to** but **never writes to** `specs/` or `discovery/` artifacts.
 
-See [`docs/project-track.md`](project-track.md) for the full methodology and [ADR-0006](adr/0006-add-project-manager-track.md) for the rationale.
+See [`docs/project-track.md`](project-track.md) for the full methodology and [ADR-0007](adr/0007-add-project-manager-track.md) for the rationale.
 
 ## Discovery Track sub-tree
 
 When a team enters the kit with a **blank page** (no brief), the Discovery Track produces `chosen-brief.md` first; that brief is then the input the analyst reads in Stage 1. The track lives at `discovery/<sprint-slug>/` parallel to `specs/`. See [`docs/discovery-track.md`](discovery-track.md) for the methodology and [ADR-0005](adr/0005-add-discovery-track-before-stage-1.md) for the rationale.
 
 A sprint may emit **0, 1, or N** chosen briefs. Zero is a valid outcome (no-go); the sprint folder is preserved as historical context regardless. The handoff is the *only* link between the discovery and specs trees — before handoff no `specs/<slug>/` exists; after handoff the brief is referenced from `idea.md`'s frontmatter `inputs:`.
+
+## Examples sub-tree
+
+`examples/` is a **demonstration zone** — it shows what a real project that adopted this template would produce. It is structurally outside the template's own workflow:
+
+- **Not active workflow state.** Agents, skills, and the orchestrate skill must not treat `examples/<slug>/workflow-state.md` as a resumable feature. The orchestrate skill scans `specs/`; examples live outside that tree deliberately.
+- **Simulates an adopting project.** Each `examples/<slug>/` mirrors the shape of `specs/<slug>/` exactly, so a reader can see every artifact a real feature produces without running the workflow themselves.
+- **Project-local ADRs.** Each example has its own `examples/<slug>/adr/` directory. The numbering (`ADR-CLI-0001`, `ADR-AUTH-0001`, …) is independent of `docs/adr/` and uses the example's `<AREA>` prefix. This deliberately models what ADR naming looks like inside an adopting project, where the template's global `ADR-0001…0005` would not be inherited.
+- **Read-only for agents.** Agents may read example artifacts for reference (e.g. "what does a complete design.md look like?") but must never write to `examples/` as part of a workflow run.
+
+| Path | Owned by | Mutability |
+|---|---|---|
+| `examples/README.md` | Human | Updated as examples are added |
+| `examples/<slug>/` | Human (example maintainer) | Mirrors `specs/<slug>/` shape; updated as the example progresses |
+| `examples/<slug>/adr/` | Human (example maintainer) | Same immutability rules as `docs/adr/`; project-local sequence |
 
 ## Don't put in the sink
 
