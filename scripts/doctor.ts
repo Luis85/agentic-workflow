@@ -1,16 +1,6 @@
 import { SpawnSyncReturns, spawnSync } from "node:child_process";
-import fs from "node:fs";
-import path from "node:path";
+import { CheckResult, dependencyReadinessCheck, workflowReadinessChecks } from "./lib/doctor.js";
 import { repoRoot } from "./lib/repo.js";
-
-type CheckStatus = "pass" | "warn" | "fail";
-
-type CheckResult = {
-  name: string;
-  status: CheckStatus;
-  detail: string;
-  hint?: string;
-};
 
 type Check = {
   run(): CheckResult;
@@ -29,6 +19,7 @@ const checks: Check[] = [
   checkGitStatus(),
   checkWorktrees(),
   checkDependencies(),
+  ...workflowReadinessChecks(repoRoot).map(checkStaticResult),
   checkTask("ADR index", "npm", ["run", "check:adr-index"]),
   checkTask("command inventories", "npm", ["run", "check:commands"]),
   checkTask("verify gate", "npm", ["run", "verify"]),
@@ -120,21 +111,15 @@ function checkWorktrees(): Check {
 function checkDependencies(): Check {
   return {
     run() {
-      const packageJson = JSON.parse(fs.readFileSync(path.join(repoRoot, "package.json"), "utf8"));
-      const dependencyCount = ["dependencies", "devDependencies", "optionalDependencies"]
-        .flatMap((key) => Object.keys(packageJson[key] || {}))
-        .length;
-      if (dependencyCount === 0) return { name: "dependencies", status: "pass", detail: "no external packages" };
+      return dependencyReadinessCheck(repoRoot);
+    },
+  };
+}
 
-      const nodeModules = path.join(repoRoot, "node_modules");
-      if (fs.existsSync(nodeModules)) return { name: "dependencies", status: "pass", detail: "node_modules present" };
-
-      return {
-        name: "dependencies",
-        status: "warn",
-        detail: "node_modules missing",
-        hint: "run npm install or npm ci",
-      };
+function checkStaticResult(result: CheckResult): Check {
+  return {
+    run() {
+      return result;
     },
   };
 }
