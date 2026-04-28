@@ -128,9 +128,9 @@ function validateCurrentStageArtifact(rel, currentStage, workflowStatus, artifac
 
   const currentArtifacts = stageArtifacts.find(([stage]) => stage === currentStage)?.[1] || [];
   if (workflowStatus === "active") {
-    const hasActiveArtifact = currentArtifacts.some((artifact) => artifacts[artifact] === "in-progress");
-    if (!hasActiveArtifact) {
-      errors.push(`${rel} status is active, but no ${currentStage} artifact is in-progress`);
+    const hasOpenArtifact = currentArtifacts.some((artifact) => ["pending", "in-progress"].includes(artifacts[artifact]));
+    if (!hasOpenArtifact) {
+      errors.push(`${rel} status is active, but no ${currentStage} artifact is pending or in-progress`);
     }
   }
 
@@ -145,10 +145,15 @@ function validateCurrentStageArtifact(rel, currentStage, workflowStatus, artifac
 function validateDoneState(rel, workflowStatus, artifacts) {
   if (workflowStatus !== "done") return;
   for (const artifact of canonicalArtifacts) {
-    if (artifacts[artifact] !== "complete") {
+    if (!isDoneArtifactStatus(artifact, artifacts[artifact])) {
       errors.push(`${rel} status is done, but ${artifact} is ${artifacts[artifact]}`);
     }
   }
+}
+
+function isDoneArtifactStatus(artifact, status) {
+  if (artifact === "retrospective.md") return status === "complete";
+  return status === "complete" || status === "skipped";
 }
 
 function validateStageProgress(rel, body, data) {
