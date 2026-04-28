@@ -19,7 +19,7 @@ The slash commands are defined in `.claude/commands/spec/` and own the agent inv
 
 ### Stage 3 — Requirements (`/spec:requirements`)
 - **Initial:** dispatch as-is. The pm reads `research.md` recommendation as the starting point.
-- **Suggested skills:** `grill` (for non-functional requirement discovery), `ubiquitous-language` (whenever a new domain term lands in EARS clauses).
+- **Suggested skills:** `grill` (for non-functional requirement discovery), `new-glossary-entry` via `/glossary:new "<term>"` (whenever a new domain term lands in EARS clauses; per ADR-0010, supersedes the deprecated `ubiquitous-language` skill).
 - **Mandatory:** every functional requirement uses EARS notation per `docs/ears-notation.md`.
 - **Optional gate:** offer `/spec:clarify` after this stage if the user enabled it in Step 2.
 
