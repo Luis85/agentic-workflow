@@ -19,7 +19,8 @@ A solution-agnostic, **spec-driven** workflow for building software with humans 
 9. [Usage guidelines](#9-usage-guidelines)
 10. [Future extensions](#10-future-extensions)
 11. [Quality Assurance Track](#11-quality-assurance-track)
-12. [Improving Specorator itself](#12-improving-specorator-itself)
+12. [Roadmap Management Track](#12-roadmap-management-track)
+13. [Improving Specorator itself](#13-improving-specorator-itself)
 
 ---
 
@@ -91,6 +92,7 @@ flowchart LR
 **Optional companion track** (run alongside projects, portfolios, releases, or features when quality-system readiness matters):
 
 - **Quality Assurance Track** — an ISO 9001-aligned evidence workflow for checking project execution health and delivery readiness. Produces `quality-plan.md`, checklists, `quality-review.md`, and `improvement-plan.md`. Defined in [`docs/quality-assurance-track.md`](quality-assurance-track.md). **Use for internal readiness, quality drift review, release readiness, supplier assurance, or audit preparation.**
+- **Roadmap Management Track** — an outcome-led product/project planning workflow for roadmaps, delivery confidence, stakeholder alignment, and team communication. Produces `roadmap-board.md`, `delivery-plan.md`, `stakeholder-map.md`, `communication-log.md`, and `decision-log.md` under `roadmaps/<slug>/`. Defined in [`docs/roadmap-management-track.md`](roadmap-management-track.md). **Use when product direction, project delivery constraints, stakeholder expectations, and team communication need one maintained source of truth.**
 
 ---
 
@@ -260,6 +262,11 @@ The `orchestrator` agent (or a human) reads `workflow-state.md` and:
 | `/quality:check <slug>` | Execute checklists and record evidence, gaps, and risks |
 | `/quality:review <slug>` | Summarize readiness, nonconformities, and risks |
 | `/quality:improve <slug>` | Convert findings into corrective actions and improvement follow-up |
+| `/roadmap:start <slug>` | Start a product/project roadmap workspace |
+| `/roadmap:shape <slug>` | Build or refresh the outcome roadmap and delivery plan |
+| `/roadmap:align <slug>` | Map stakeholders and prepare team communication |
+| `/roadmap:communicate <slug> [audience]` | Produce and log a focused roadmap update |
+| `/roadmap:review <slug>` | Review roadmap confidence, dependencies, risks, and communication needs |
 | `/specorator:update "<idea>"` | Classify and guide a template improvement |
 | `/specorator:add-script "<purpose>"` | Add or change a repository script/check/fixer |
 | `/specorator:add-tooling "<purpose>"` | Add developer tooling, CI, generated tooling, or operational automation |
@@ -344,7 +351,23 @@ Use it before release, during project health reviews, before client handoff, for
 
 ---
 
-## 12. Improving Specorator itself
+## 12. Roadmap Management Track
+
+The Roadmap Management Track creates an outcome-led product/project roadmap that is useful for both product management and project management. It connects desired customer/business outcomes to delivery confidence, dependencies, risks, stakeholder alignment, and team communication.
+
+| Phase | Command | Artifact |
+|---|---|---|
+| Start | `/roadmap:start <slug>` | `roadmap-state.md`, `roadmap-strategy.md` |
+| Shape | `/roadmap:shape <slug>` | `roadmap-board.md`, `delivery-plan.md` |
+| Align | `/roadmap:align <slug>` | `stakeholder-map.md`, planned `communication-log.md` entries |
+| Communicate | `/roadmap:communicate <slug> [audience]` | `communication-log.md`, `decision-log.md` |
+| Review | `/roadmap:review <slug>` | refreshed roadmap artifacts and next review state |
+
+Use it when a team needs a maintained roadmap that explains what is Now / Next / Later, why it matters, what is committed, what is uncertain, who needs to decide, and how the team and stakeholders should be updated. The full method lives in [`docs/roadmap-management-track.md`](roadmap-management-track.md).
+
+---
+
+## 13. Improving Specorator itself
 
 Specorator can be used to improve the template while a human is actively using it. Treat those requests as template improvements, not downstream product work. Examples include adding a quality drift review check, introducing a new operational routine, adding slash commands, or updating the workflow method.
 

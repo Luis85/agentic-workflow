@@ -38,6 +38,10 @@ One command per workflow phase. Subdirectories namespace commands (`spec/specify
 /quality:check    /quality:improve  /quality:plan
 /quality:review   /quality:start
 
+# roadmap:
+/roadmap:align        /roadmap:communicate  /roadmap:review
+/roadmap:shape        /roadmap:start
+
 # Sales Cycle Track:
 /sales:estimate  /sales:order     /sales:propose
 /sales:qualify   /sales:scope     /sales:start

@@ -272,6 +272,18 @@ This files a permanent Architecture Decision Record (ADR) in `docs/adr/`.
 
 The Quality Assurance Track creates ISO 9001-aligned plans, checklists, readiness reviews, and corrective actions. It supports readiness and evidence gathering; it does not grant certification.
 
+### I want to manage a product or project roadmap
+
+```
+/roadmap:start product-roadmap
+/roadmap:shape product-roadmap
+/roadmap:align product-roadmap
+/roadmap:communicate product-roadmap delivery-team
+/roadmap:review product-roadmap
+```
+
+The Roadmap Management Track keeps product outcomes, project delivery confidence, stakeholder alignment, and team communication in one maintained roadmap workspace under `roadmaps/<slug>/`.
+
 ### I want to improve Specorator itself
 
 Use the Specorator improvement commands when the template should evolve while you are using it:
@@ -361,6 +373,10 @@ Each arrow is a quality gate. See [`docs/workflow-overview.md`](docs/workflow-ov
 /quality:check    /quality:improve  /quality:plan
 /quality:review   /quality:start
 
+# roadmap:
+/roadmap:align        /roadmap:communicate  /roadmap:review
+/roadmap:shape        /roadmap:start
+
 # Sales Cycle Track:
 /sales:estimate  /sales:order     /sales:propose
 /sales:qualify   /sales:scope     /sales:start
@@ -408,6 +424,7 @@ The artifact format (Markdown files in `specs/<feature>/`) and the ID scheme (`R
 | [`docs/specorator.md`](docs/specorator.md) | Full workflow definition — read this before any non-trivial work |
 | [`docs/project-scaffolding-track.md`](docs/project-scaffolding-track.md) | Source-led onboarding detail for turning collected docs into starter artifacts |
 | [`docs/discovery-track.md`](docs/discovery-track.md) | Discovery Track detail and phase-by-phase guide |
+| [`docs/roadmap-management-track.md`](docs/roadmap-management-track.md) | Product/project roadmap management, stakeholder alignment, and team communication workflow |
 | [`docs/quality-assurance-track.md`](docs/quality-assurance-track.md) | ISO 9001-aligned quality assurance review workflow |
 | [`docs/workflow-overview.md`](docs/workflow-overview.md) | One-page visual + cheat sheet + slash command list |
 | [`docs/quality-framework.md`](docs/quality-framework.md) | Quality dimensions, gates, and Definition of Done per stage |

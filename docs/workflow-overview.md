@@ -6,6 +6,7 @@ flowchart TD
     stock["Stock-taking Track<br/>Scope -> Audit -> Synthesize -> Handoff<br/>Owner: legacy-auditor<br/>Output: stock-taking-inventory.md"]
     discovery["Discovery Track<br/>Frame -> Diverge -> Converge -> Prototype -> Validate -> Handoff<br/>Owners: facilitator + discovery specialists<br/>Output: chosen-brief.md"]
     quality["Quality Assurance Track<br/>Start -> Plan -> Check -> Review -> Improve<br/>Owner: quality-assurance skill<br/>Output: quality review + improvement plan"]
+    roadmap["Roadmap Management Track<br/>Start -> Shape -> Align -> Communicate -> Review<br/>Owner: roadmap-manager<br/>Output: roadmap + delivery + comms artifacts"]
 
     idea["1. Idea<br/>analyst"]
     research["2. Research<br/>analyst"]
@@ -35,6 +36,8 @@ flowchart TD
     release --> retro
     quality -.->|checks execution health and readiness| review
     quality -.->|corrective actions feed learning| retro
+    roadmap -.->|outcomes and stakeholder alignment inform priorities| requirements
+    roadmap -.->|delivery confidence and dependencies inform planning| tasks
 ```
 
 ## At each stage
@@ -82,6 +85,8 @@ Use `/scaffold:start <slug> <source>` before the other tracks when a fresh templ
 
 Use `/quality:start <slug> [scope]` when a project, portfolio, feature, release, supplier, or internal process needs an ISO 9001-aligned quality assurance review.
 
+Use `/roadmap:start <slug>` when product direction, project delivery confidence, stakeholder expectations, and team communication need a shared roadmap artifact.
+
 ## State file (`specs/<feature>/workflow-state.md`)
 
 ```yaml
@@ -128,6 +133,10 @@ Plus body sections (Skips, Blocks, Hand-off notes, Open clarifications). Canonic
 # Quality Assurance Track:
 /quality:check    /quality:improve  /quality:plan
 /quality:review   /quality:start
+
+# roadmap:
+/roadmap:align        /roadmap:communicate  /roadmap:review
+/roadmap:shape        /roadmap:start
 
 # Sales Cycle Track:
 /sales:estimate  /sales:order     /sales:propose
