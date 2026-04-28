@@ -1,27 +1,31 @@
 # How to adapt steering for your own stack
 
-> 🚧 **Planned recipe — not written yet.** This stub is a placeholder so the entry in [`docs/how-to/README.md`](./README.md) resolves; the steps below will be filled in.
+**Goal:** rewrite `docs/steering/*.md` so every stage agent reads accurate context about your product, stack, UX, quality bar, and operational constraints.
 
-**Goal:** rewrite `docs/steering/*.md` so every agent in your project has accurate context about your product, tech stack, UX expectations, quality bar, and operational constraints.
-
-**When to use:** you have just forked the template **or** your stack has changed materially since the steering files were last written.
+**When to use:** you just forked the template, **or** your stack / product / quality bar shifted enough that the existing steering files would mislead an agent.
 
 **Prerequisites:**
 
-- _TBD_
+- Cloned repo on disk.
+- A clear picture of the product, stack, and operational reality.
+- Working tree on a topic branch.
 
 ## Steps
 
-1. _TBD_
+1. List the steering files — `ls docs/steering/`. Open [`docs/steering/README.md`](../steering/README.md) to see what each file is for.
+2. Open `docs/steering/product.md`. Replace placeholder content with one paragraph on what the product does and who it serves.
+3. Open `docs/steering/tech.md`. List language, framework, datastore, build system, deploy target, and any non-obvious tooling. Note anything that would surprise a new contributor.
+4. Open `docs/steering/ux.md`. Describe the design system, accessibility floor, and target devices. Skip if you have no UI.
+5. Open `docs/steering/quality.md`. Capture test expectations, lint rules, code-coverage floor, and review expectations.
+6. Open `docs/steering/operations.md` (or the project's equivalent). Note observability stack, on-call expectations, deploy cadence, and post-incident review rules.
+7. Commit each file with a focused message — `docs(steering): adapt tech.md to <stack>`.
 
 ## Verify
 
-_TBD_
+`git log --oneline docs/steering/` shows your edit commits, and an agent run on a tiny feature (e.g. `/spec:requirements`) cites your stack instead of the placeholder text.
 
 ## Related
 
-- Reference — [`docs/steering/`](../steering/) — the steering files an agent reads.
+- Reference — [`docs/steering/`](../steering/) — the files an agent reads.
 - How-to — [`fork-and-personalize.md`](./fork-and-personalize.md) — first-time personalization.
 - Explanation — [`docs/specorator.md`](../specorator.md) — how steering plugs into stage agents.
-
-> Want this written sooner? Open a PR — copy [`_template.md`](./_template.md) and fill it in.
