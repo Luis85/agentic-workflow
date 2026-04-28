@@ -101,7 +101,7 @@ function validateDailyReview(rel: string, data: Record<string, unknown>): void {
 }
 
 function isTrackState(rel: string): boolean {
-  return /(^|\/)(discovery-state|stock-taking-state|project-state|portfolio-state|deal-state)\.md$/.test(rel);
+  return /(^|\/)(discovery-state|stock-taking-state|scaffolding-state|project-state|portfolio-state|deal-state)\.md$/.test(rel);
 }
 
 function validateTrackState(rel: string, data: Record<string, unknown>): void {

@@ -2,6 +2,7 @@
 
 ```mermaid
 flowchart TD
+    scaffold["Project Scaffolding Track<br/>Intake -> Extract -> Assemble -> Handoff<br/>Owner: project-scaffolder<br/>Output: starter-pack.md + handoff.md"]
     stock["Stock-taking Track<br/>Scope -> Audit -> Synthesize -> Handoff<br/>Owner: legacy-auditor<br/>Output: stock-taking-inventory.md"]
     discovery["Discovery Track<br/>Frame -> Diverge -> Converge -> Prototype -> Validate -> Handoff<br/>Owners: facilitator + discovery specialists<br/>Output: chosen-brief.md"]
 
@@ -17,6 +18,8 @@ flowchart TD
     release["10. Release<br/>release-manager"]
     retro["11. Retrospective<br/>retrospective"]
 
+    scaffold -->|source-led starter pack routes next track| discovery
+    scaffold -->|may route to stock-taking| stock
     stock -->|inventory feeds /discovery:start or /spec:idea| discovery
     discovery -->|chosen-brief.md feeds /spec:idea| idea
     idea --> research
@@ -72,6 +75,8 @@ flowchart LR
 
 Optional gates `/spec:clarify` and `/spec:analyze` may be inserted between any two stages.
 
+Use `/scaffold:start <slug> <source>` before the other tracks when a fresh template install should be seeded from existing folders or Markdown files.
+
 ## State file (`specs/<feature>/workflow-state.md`)
 
 ```yaml
@@ -118,6 +123,10 @@ Plus body sections (Skips, Blocks, Hand-off notes, Open clarifications). Canonic
 # Sales Cycle Track:
 /sales:estimate  /sales:order     /sales:propose
 /sales:qualify   /sales:scope     /sales:start
+
+# Project Scaffolding Track:
+/scaffold:assemble  /scaffold:extract   /scaffold:handoff
+/scaffold:intake    /scaffold:start
 
 # Lifecycle:
 /spec:analyze       /spec:clarify       /spec:design

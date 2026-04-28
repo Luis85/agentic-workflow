@@ -67,11 +67,12 @@ If you spot a gap in the spec, escalate — don't silently invent a requirement.
 Your job is to set up the workflow, gate between stages, and make sure quality holds.
 
 1. Fork or clone this repo as your project's starting point.
-2. Adapt `memory/constitution.md` to your team's principles.
-3. Fill `docs/steering/` — at minimum `tech.md` and `quality.md` — so agents have the right context.
-4. Use `/adr:new "<title>"` any time an irreversible architectural decision is made.
-5. Gate each stage: check `specs/<feature>/workflow-state.md` and confirm the quality gate passed before the next stage starts.
-6. Activate operational bots in `agents/operational/` one at a time as the team gets comfortable — `review-bot` and `dep-triage-bot` are good starting points.
+2. If you already have meeting notes, briefs, or Markdown docs, start with `/scaffold:start <project-slug> <source-path>` to produce a reviewable starter pack.
+3. Adapt `memory/constitution.md` to your team's principles.
+4. Fill `docs/steering/` — at minimum `tech.md` and `quality.md` — so agents have the right context.
+5. Use `/adr:new "<title>"` any time an irreversible architectural decision is made.
+6. Gate each stage: check `specs/<feature>/workflow-state.md` and confirm the quality gate passed before the next stage starts.
+7. Activate operational bots in `agents/operational/` one at a time as the team gets comfortable — `review-bot` and `dep-triage-bot` are good starting points.
 
 You own acceptance at each stage. Agents surface decisions; you make them.
 
@@ -92,7 +93,21 @@ Tip: even alone, don't skip the Retrospective at the end. It's where the process
 
 ## How it works
 
-The workflow has two tracks:
+The workflow has source-led onboarding plus two core delivery tracks:
+
+**Project Scaffolding Track** *(optional — use this when you have collected docs but no canonical artifacts yet)*
+
+```mermaid
+flowchart LR
+    intake["Intake"]
+    extract["Extract"]
+    assemble["Assemble"]
+    handoff["Handoff"]
+
+    intake --> extract --> assemble --> handoff
+```
+
+Inventory existing folders or Markdown files, extract evidence-backed context, assemble draft steering and workflow seeds, then route to Discovery, Specorator, Project Manager Track, or Stock-taking.
 
 **Discovery Track** *(optional — use this when you don't have a clear brief yet)*
 
@@ -219,6 +234,14 @@ Then walk the stages in order, or just say **"drive this end-to-end"** and the `
 
 Or say **"let's brainstorm new product ideas"** and the `discovery-sprint` skill walks you through Frame → Diverge → Converge → Prototype → Validate → Handoff. The output feeds `/spec:idea`.
 
+### I have collected docs from before adopting this template
+
+```
+/scaffold:start my-project path/to/source-docs
+```
+
+Or say **"scaffold this project from these docs"** and the `project-scaffolding` skill walks you through Intake → Extract → Assemble → Handoff. The output is a reviewable starter pack, not accepted requirements.
+
 ### I want to resume a feature in progress
 
 Check the state file to see where things stand:
@@ -257,6 +280,7 @@ Add a new term with `/glossary:new "<term>"`. See [ADR-0010](docs/adr/0010-shard
 
 ```mermaid
 flowchart TD
+    scaffold["Project Scaffolding Track<br/>Intake -> Extract -> Assemble -> Handoff"]
     discovery["Discovery Track<br/>Frame -> Diverge -> Converge -> Prototype -> Validate -> Handoff"]
     idea["1. Idea<br/>analyst"]
     research["2. Research<br/>analyst"]
@@ -270,6 +294,8 @@ flowchart TD
     release["10. Release<br/>release-manager"]
     retro["11. Retrospective<br/>retrospective"]
 
+    scaffold -->|starter pack routes| discovery
+    scaffold -->|idea seed feeds| idea
     discovery -->|brief feeds| idea
     idea --> research --> requirements --> design --> specification --> tasks
     tasks --> implementation --> testing --> review --> release --> retro
@@ -310,6 +336,10 @@ Each arrow is a quality gate. See [`docs/workflow-overview.md`](docs/workflow-ov
 /sales:estimate  /sales:order     /sales:propose
 /sales:qualify   /sales:scope     /sales:start
 
+# Project Scaffolding Track:
+/scaffold:assemble  /scaffold:extract   /scaffold:handoff
+/scaffold:intake    /scaffold:start
+
 # Lifecycle:
 /spec:analyze       /spec:clarify       /spec:design
 /spec:idea          /spec:implement     /spec:release
@@ -343,6 +373,7 @@ The artifact format (Markdown files in `specs/<feature>/`) and the ID scheme (`R
 | Path | What it is |
 |---|---|
 | [`docs/specorator.md`](docs/specorator.md) | Full workflow definition — read this before any non-trivial work |
+| [`docs/project-scaffolding-track.md`](docs/project-scaffolding-track.md) | Source-led onboarding detail for turning collected docs into starter artifacts |
 | [`docs/discovery-track.md`](docs/discovery-track.md) | Discovery Track detail and phase-by-phase guide |
 | [`docs/workflow-overview.md`](docs/workflow-overview.md) | One-page visual + cheat sheet + slash command list |
 | [`docs/quality-framework.md`](docs/quality-framework.md) | Quality dimensions, gates, and Definition of Done per stage |

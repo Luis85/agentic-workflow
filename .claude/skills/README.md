@@ -41,6 +41,7 @@ Skills MAY include supporting files (templates, scripts, fixtures) alongside `SK
 | Skill | Triggers when… | What it does |
 |---|---|---|
 | [`orchestrate/`](orchestrate/SKILL.md) | "start a feature", "kick off", "from scratch", "what's next?", "orchestrate" | Drives the full 11-stage Specorator workflow conversationally. Reads `workflow-state.md`, gates with `AskUserQuestion`, dispatches `/spec:*` commands in sequence. |
+| [`project-scaffolding/`](project-scaffolding/SKILL.md) | "scaffold this project", "seed from docs", "fresh install with existing documentation", "guided setup" | Drives the source-led Project Scaffolding Track. Inventories provided folders or Markdown files, extracts evidence-backed context, assembles a starter pack, and routes to the right downstream track. |
 | [`discovery-sprint/`](discovery-sprint/SKILL.md) | "design sprint", "ideation", "brainstorm new product ideas", "blank page", "discovery sprint" | Drives the 5-phase Discovery Track (Frame → Diverge → Converge → Prototype → Validate → Handoff) conversationally. Dispatches the `facilitator` and 6 specialist consults. Output: `chosen-brief.md` that feeds `/spec:idea`. **Skip when a brief already exists — go to `orchestrate`.** |
 
 ### Practice skills (used by stage agents)

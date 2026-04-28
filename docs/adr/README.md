@@ -17,6 +17,7 @@ Records of architecturally significant decisions. Format follows Michael Nygard'
 | [0008](0008-add-project-manager-track.md) | Add an opt-in Project Manager Track based on P3.Express | Accepted |
 | [0009](0009-add-portfolio-manager-role.md) | Add opt-in Portfolio Manager role and P5 Express portfolio track | Accepted |
 | [0010](0010-shard-glossary-into-one-file-per-term.md) | Shard the glossary into one file per term under docs/glossary/ | Proposed |
+| [0011](0011-add-project-scaffolding-track.md) | Add a Project Scaffolding Track for source-led template adoption | Proposed |
 <!-- END GENERATED: adr-index -->
 
 ## Conventions

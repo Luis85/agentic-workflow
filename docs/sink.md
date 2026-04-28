@@ -36,6 +36,14 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │   └── UBIQUITOUS_LANGUAGE.md               # deprecated by ADR-0010; kept for forks on earlier template versions (LAZY)
 ├── templates/                               # blank artifacts; stages copy + fill
 │   └── *-template.md
+├── scaffolding/                             # one folder per source-led project onboarding engagement
+│   └── <project-slug>/
+│       ├── scaffolding-state.md             # engagement state machine, owned by /scaffold:* commands
+│       ├── intake.md                        # phase 1 — source pointers, adoption context, desired outputs
+│       ├── source-inventory.md              # phase 1 — source reliability and coverage map
+│       ├── extraction.md                    # phase 2 — evidence-backed distilled facts
+│       ├── starter-pack.md                  # phase 3 — draft steering/spec/discovery/project starter content
+│       └── handoff.md                       # handoff — promotion checklist and next-track recommendation
 ├── stock-taking/                            # one folder per legacy-system engagement (opt-in, brownfield projects)
 │   └── <project-slug>/
 │       ├── stock-taking-state.md            # engagement state machine, owned by /stock:* commands
@@ -131,6 +139,12 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 | `docs/glossary/<slug>.md` | `new-glossary-entry` skill | Additive, agent-updated; refine in place with dated note. Renames create a new file with the old slug in `aliases:`; deprecated entries remain as historical record |
 | `docs/UBIQUITOUS_LANGUAGE.md` | `ubiquitous-language` skill (**deprecated by [ADR-0010](adr/0010-shard-glossary-into-one-file-per-term.md)**) | Frozen for new content; kept readable for projects on earlier template versions |
 | `templates/*-template.md` | Human | Versioned; updates propagate to new features only |
+| `scaffolding/<project>/scaffolding-state.md` | `/scaffold:start`, then `/scaffold:*` commands on transition | Engagement state machine; project-scaffolder-owned |
+| `scaffolding/<project>/intake.md` | `project-scaffolder` | Written once in Phase 1; records source pointers, adoption context, desired outputs |
+| `scaffolding/<project>/source-inventory.md` | `project-scaffolder` | Written once in Phase 1; rates source reliability and coverage |
+| `scaffolding/<project>/extraction.md` | `project-scaffolder` | Written once in Phase 2; evidence-backed facts and ambiguities |
+| `scaffolding/<project>/starter-pack.md` | `project-scaffolder` | Written once in Phase 3; reviewable draft content, not canonical promotion |
+| `scaffolding/<project>/handoff.md` | `project-scaffolder` | Written once in Handoff; promotion checklist and next-track recommendation |
 | `stock-taking/<project>/stock-taking-state.md` | `/stock:start`, then `/stock:*` commands on transition | Engagement state machine; legacy-auditor-owned |
 | `stock-taking/<project>/<phase>.md` | `legacy-auditor` (per `docs/stock-taking-track.md` §3) | Each phase writes once; later phases never rewrite upstream phase artifacts |
 | `stock-taking/<project>/stock-taking-inventory.md` | `legacy-auditor` (Handoff) | Consolidated inventory; mandatory input to `/discovery:start` or `/spec:idea` when a legacy system is in scope |
@@ -202,6 +216,12 @@ Accepted ADRs are immutable. To change a decision, file a new ADR superseding th
 5. All numerically-earlier `specs/<slug>/<artifact>.md` files in stage order.
 6. `docs/CONTEXT.md` and `docs/glossary/*.md` (per [ADR-0010](adr/0010-shard-glossary-into-one-file-per-term.md); legacy `docs/UBIQUITOUS_LANGUAGE.md` if present on older forks).
 7. Any topically relevant ADRs (skim titles).
+
+## Project Scaffolding Track sub-tree
+
+When a team is adopting the template with **existing source material** but no canonical artifacts yet, the Project Scaffolding Track produces a starter pack first. It lives at `scaffolding/<project-slug>/` parallel to `discovery/`, `stock-taking/`, `projects/`, and `specs/`. See [`docs/project-scaffolding-track.md`](project-scaffolding-track.md) for the methodology and [ADR-0011](adr/0011-add-project-scaffolding-track.md) for the rationale.
+
+The engagement slug names the adopting project or initiative, not a single feature. The Handoff is the only link between scaffolding and downstream trees: after handoff, `starter-pack.md` and `handoff.md` are referenced from the downstream artifact's `inputs:` frontmatter. Scaffolding drafts must not be treated as accepted requirements or steering until a human reviews and promotes them.
 
 ## Stock-taking Track sub-tree
 
