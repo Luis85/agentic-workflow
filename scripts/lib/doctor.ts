@@ -34,6 +34,7 @@ const workflowContracts: WorkflowContract[] = [
     name: "pages workflow",
     filePath: ".github/workflows/pages.yml",
     requiredMarkers: [
+      "actions/checkout",
       "actions/configure-pages",
       "actions/upload-pages-artifact",
       "actions/deploy-pages",

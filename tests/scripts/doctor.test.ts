@@ -68,6 +68,7 @@ test("workflowReadinessChecks validates verify and Pages workflow contracts", ()
       path.join(workflowDir, "pages.yml"),
       [
         "steps:",
+        "  - uses: actions/checkout@v6",
         "  - uses: actions/configure-pages@v6",
         "  - uses: actions/upload-pages-artifact@v5",
         "    with:",
@@ -109,6 +110,45 @@ test("workflowReadinessChecks reports missing workflow contract markers", () => 
     );
     assert.equal(results[1].status, "fail");
     assert.equal(results[1].detail, ".github/workflows/pages.yml missing");
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("workflowReadinessChecks requires checkout before uploading Pages artifacts", () => {
+  const root = tempRepo();
+  try {
+    const workflowDir = path.join(root, ".github", "workflows");
+    fs.mkdirSync(workflowDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(workflowDir, "verify.yml"),
+      [
+        "steps:",
+        "  - uses: actions/checkout@v6",
+        "  - uses: actions/setup-node@v6",
+        "    with:",
+        "      cache: npm",
+        "  - run: npm ci",
+        "  - run: npm run verify",
+      ].join("\n"),
+      "utf8",
+    );
+    fs.writeFileSync(
+      path.join(workflowDir, "pages.yml"),
+      [
+        "steps:",
+        "  - uses: actions/configure-pages@v6",
+        "  - uses: actions/upload-pages-artifact@v5",
+        "    with:",
+        "      path: sites",
+        "  - uses: actions/deploy-pages@v5",
+      ].join("\n"),
+      "utf8",
+    );
+
+    const results = workflowReadinessChecks(root);
+    assert.equal(results[1].status, "fail");
+    assert.equal(results[1].detail, ".github/workflows/pages.yml missing actions/checkout");
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
