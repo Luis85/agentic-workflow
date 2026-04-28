@@ -222,6 +222,10 @@ The root `README.md` is the public repository entry point and is exempt from thi
 | `portfolio/<slug>/portfolio-log.md` | Z cycle (Z3) | **Append-only** — never edit previous entries |
 | `sites/index.html`, `sites/**/*` | `product-page` skill / `product-page-designer` | Living public product page; updated with product positioning and user-visible changes |
 | `.github/workflows/pages.yml` | `product-page` skill / `product-page-designer` | GitHub Pages deployment workflow when Pages is the selected host |
+| `.github/workflows/verify.yml` | Repo maintainers | Composite verify gate — see [`verify-gate.md`](verify-gate.md) |
+| `.github/workflows/actionlint.yml` | Repo maintainers | Workflow YAML lint — see [`security-ci.md`](security-ci.md) |
+| `.github/workflows/zizmor.yml` | Repo maintainers | Workflow security scan — see [`security-ci.md`](security-ci.md) |
+| `.github/workflows/gitleaks.yml` | Repo maintainers | Secret scan — see [`security-ci.md`](security-ci.md) |
 | `specs/<slug>/arc42-questionnaire.md` | `arc42-baseline` skill | Created lazily on opt-in; canonical input to `design.md` Part C |
 | `specs/<slug>/design-alt-*.md`, `design-comparison.md` | `design-twice` skill | Created lazily on opt-in |
 | `.claude/skills/<name>/SKILL.md` | Skill author | Versioned in repo |
