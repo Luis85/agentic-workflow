@@ -54,6 +54,20 @@ npm run quality:metrics -- --json
 
 Metric interpretation guidance lives in `docs/quality-metrics.md`. The stage score is stage-aware: future lifecycle evidence is not treated as a defect while a workflow is still in progress.
 
+## Roadmap Evidence
+
+Summarize the linked `specs/`, `projects/`, `portfolio/`, `discovery/`, and `quality/` artifacts named in a roadmap strategy:
+
+```bash
+npm run roadmap:evidence -- <roadmap-slug>
+```
+
+Use JSON when another agent or tool needs to consume the evidence report:
+
+```bash
+npm run roadmap:evidence -- <roadmap-slug> --json
+```
+
 ## TypeScript and Tests
 
 Repository scripts are TypeScript files executed with `tsx`.

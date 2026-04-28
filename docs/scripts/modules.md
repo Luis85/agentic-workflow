@@ -34,5 +34,6 @@
 - [lib/tasks](lib/tasks/README.md)
 - [lib/workflow-schema](lib/workflow-schema/README.md)
 - [quality-metrics](quality-metrics/README.md)
+- [roadmap-evidence](roadmap-evidence/README.md)
 - [test-scripts](test-scripts/README.md)
 - [verify](verify/README.md)
