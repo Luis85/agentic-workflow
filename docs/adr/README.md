@@ -4,14 +4,20 @@ Records of architecturally significant decisions. Format follows Michael Nygard'
 
 ## Index
 
+<!-- BEGIN GENERATED: adr-index -->
 | # | Title | Status |
 |---|---|---|
 | [0001](0001-record-architecture-decisions.md) | Record architecture decisions | Accepted |
-| [0002](0002-adopt-spec-driven-development.md) | Adopt spec-driven development | Accepted |
-| [0003](0003-adopt-ears-for-functional-requirements.md) | Adopt EARS for functional requirements | Accepted |
+| [0002](0002-adopt-spec-driven-development.md) | Adopt spec-driven development as the workflow spine | Accepted |
+| [0003](0003-adopt-ears-for-functional-requirements.md) | Adopt EARS notation for functional requirements | Accepted |
 | [0004](0004-adopt-operational-agents-alongside-lifecycle-agents.md) | Adopt operational agents alongside lifecycle agents | Accepted |
 | [0005](0005-add-discovery-track-before-stage-1.md) | Add a Discovery Track that precedes Stage 1 (Idea) | Accepted |
-| [0010](0010-shard-glossary-into-one-file-per-term.md) | Shard the glossary into one file per term under `docs/glossary/` | Proposed |
+| [0006](0006-add-sales-cycle-track-before-discovery.md) | Add a Sales Cycle Track that precedes the Discovery Track and Stage 1 | Accepted |
+| [0007](0007-add-stock-taking-track-for-legacy-projects.md) | Add a Stock-taking Track for projects that build on existing systems | Accepted |
+| [0008](0008-add-project-manager-track.md) | Add an opt-in Project Manager Track based on P3.Express | Accepted |
+| [0009](0009-add-portfolio-manager-role.md) | Add opt-in Portfolio Manager role and P5 Express portfolio track | Accepted |
+| [0010](0010-shard-glossary-into-one-file-per-term.md) | Shard the glossary into one file per term under docs/glossary/ | Proposed |
+<!-- END GENERATED: adr-index -->
 
 ## Conventions
 

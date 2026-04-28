@@ -33,7 +33,7 @@ Synonyms, near-misses, and common misuses. One line each:
 
 ## See also
 
-- [related-term](./related-term.md) — one-line rationale for the link.
+- `related-term` — one-line rationale for the link.
 - [`docs/<doc>.md`](../<doc>.md) — external reference.
 
 ---

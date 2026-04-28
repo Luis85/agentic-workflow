@@ -18,7 +18,7 @@ A structured ideation mini-sprint — Frame → Diverge → Converge → Prototy
 
 The Discovery Track is the **opt-in pre-Stage-1 track** introduced by [ADR-0005](../adr/0005-add-discovery-track-before-stage-1.md). It exists because Article II of [`memory/constitution.md`](../../memory/constitution.md) — Separation of Concerns — forbids writing code from a vague brief. When you have a problem but no clear solution, running discovery first is how you produce a brief crisp enough to enter Stage 1 cleanly.
 
-The track is sequenced by the `discovery-facilitator` agent and a set of consulted specialists (`product-strategist`, `user-researcher`, `divergent-thinker`, `critic`, `prototyper`, `game-designer`). State lives at `discovery/<sprint-slug>/discovery-state.md`. The sprint may emit **0, 1, or N** chosen briefs — zero is a valid no-go outcome.
+The track is sequenced by the `facilitator` agent and a set of consulted specialists (`product-strategist`, `user-researcher`, `divergent-thinker`, `critic`, `prototyper`, `game-designer`). State lives at `discovery/<sprint-slug>/discovery-state.md`. The sprint may emit **0, 1, or N** chosen briefs — zero is a valid no-go outcome.
 
 ## Examples
 

@@ -21,7 +21,7 @@ Concretely:
 1. **Branch.** Cut a fresh topic branch off the integration branch. Use one of the standard prefixes — see [`docs/branching.md`](./docs/branching.md).
 2. **Worktree.** Put the branch in `.worktrees/<slug>/`. See [`docs/worktrees.md`](./docs/worktrees.md).
 3. **Stage.** Walk the appropriate workflow stages for the change you're making. A typo fix doesn't need `/spec:research`; a new agent role does.
-4. **Verify.** Run the project's verify gate green before pushing. See [`docs/verify-gate.md`](./docs/verify-gate.md).
+4. **Verify.** Run `npm run verify` green before pushing. See [`docs/verify-gate.md`](./docs/verify-gate.md).
 5. **PR.** One concern per PR; never stack. See [`feedback_pr_hygiene.md`](./.claude/memory/feedback_pr_hygiene.md).
 6. **Review.** Address feedback with follow‑up commits, not rebases. See [`feedback_pr_workflow.md`](./.claude/memory/feedback_pr_workflow.md).
 7. **Merge.** Maintainer merges (or autonomous‑merge per [`feedback_autonomous_merge.md`](./.claude/memory/feedback_autonomous_merge.md)).
@@ -35,6 +35,7 @@ Concretely:
 | **Tighten an existing template.** | PR under `docs(templates): …`. Describe what was missing and why the template now catches it. |
 | **Add a new template / slash command / agent role.** | Open an ADR first. The constitution makes new roles ADR‑gated. |
 | **Add a new operational bot.** | Add `agents/operational/<name>/PROMPT.md` and `README.md`. Must follow the eight‑section common shape (see `agents/operational/README.md`). |
+| **Regenerate generated docs.** | Run `npm run fix` for all generated surfaces, or `npm run fix:adr-index` / `npm run fix:commands` / `npm run fix:script-docs` for one surface, review the generated output, then run `npm run verify`. |
 | **Replace a stage in the workflow.** | ADR. Stages map 1:1 to quality gates and IDs; replacing one is a constitutional‑level change. |
 | **Tweak `.claude/settings.json` defaults.** | PR. Loosening a deny rule needs an ADR; tightening one does not. |
 

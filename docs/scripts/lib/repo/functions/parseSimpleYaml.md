@@ -1,0 +1,29 @@
+[**agentic-workflow**](../../../README.md)
+
+***
+
+[agentic-workflow](../../../modules.md) / [lib/repo](../README.md) / parseSimpleYaml
+
+# Function: parseSimpleYaml()
+
+> **parseSimpleYaml**(`raw`): `Record`\<`string`, `unknown`\>
+
+Parse the small YAML subset used by repository state files.
+
+This parser intentionally supports only the structures needed by local
+checks: scalar keys, one-level nested maps, inline arrays, quoted strings,
+integers, and null markers.
+
+## Parameters
+
+### raw
+
+`string`
+
+Raw frontmatter without delimiter lines.
+
+## Returns
+
+`Record`\<`string`, `unknown`\>
+
+Parsed YAML data.

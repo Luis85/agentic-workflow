@@ -28,6 +28,17 @@ The exact command differs per language:
 
 The composite name (`verify`) is the contract. Whatever lives behind it is the project's choice.
 
+## This template repo
+
+This repository implements its own verify gate with Node/npm:
+
+```bash
+npm install
+npm run verify
+```
+
+The check scripts are read-only and live in `scripts/`. `npm run verify` uses a small Node runner that stops on the first failing check and prints the exact `npm run check:*` command to rerun while iterating. The template repo currently checks Markdown links, ADR index drift, command inventory drift, TypeDoc-generated script documentation drift, frontmatter conventions, lifecycle workflow-state consistency, and traceability ID references. Local repair helpers are intentionally separate: `npm run fix` runs all generated-block repairs, `npm run fix:adr-index` regenerates the ADR index, `npm run fix:commands` regenerates command inventories, and `npm run fix:script-docs` regenerates `docs/scripts/` from JSDoc blocks.
+
 ## Reporting
 
 When an agent runs verify, it reports:
