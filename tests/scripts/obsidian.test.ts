@@ -104,3 +104,19 @@ test("fixObsidianFrontmatter rewrites only valid frontmatter blocks", () => {
     changed: false,
   });
 });
+
+test("fixObsidianFrontmatter preserves CRLF when no metadata changes", () => {
+  const text = "---\r\ntitle: Example\r\n---\r\n# Body\r\n";
+
+  assert.deepEqual(fixObsidianFrontmatter(text), {
+    text,
+    changed: false,
+  });
+});
+
+test("fixObsidianFrontmatter preserves CRLF when repairing metadata", () => {
+  assert.deepEqual(fixObsidianFrontmatter("---\r\nlink: [[Note]]\r\n---\r\n# Body\r\n"), {
+    text: "---\r\nlink: \"[[Note]]\"\r\n---\r\n# Body\r\n",
+    changed: true,
+  });
+});

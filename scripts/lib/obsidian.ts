@@ -160,20 +160,16 @@ export function obsidianDiagnosticsForFrontmatter(filePath: string, raw: string)
  * @returns {ObsidianFixResult} Fixed text and whether it changed.
  */
 export function fixObsidianFrontmatter(text: string): ObsidianFixResult {
-  const frontmatter = extractFrontmatter(text);
-  if (!frontmatter) return { text, changed: false };
+  const match = text.match(/^---(\r?\n)([\s\S]*?)(\r?\n)---(\r?\n)/);
+  if (!match) return { text, changed: false };
 
-  const normalized = text.replace(/\r\n/g, "\n");
-  const start = 4;
-  const end = normalized.indexOf("\n---\n", start);
-  if (end === -1) return { text, changed: false };
-
-  const raw = normalized.slice(start, end);
-  const fixedRaw = fixObsidianFrontmatterBlock(raw);
-  if (fixedRaw === raw && normalized === text) return { text, changed: false };
+  const [, eol, raw, closingEol, afterCloseEol] = match;
+  const normalizedRaw = raw.replace(/\r\n/g, "\n");
+  const fixedRaw = fixObsidianFrontmatterBlock(normalizedRaw);
+  if (fixedRaw === normalizedRaw) return { text, changed: false };
 
   return {
-    text: `---\n${fixedRaw}\n---\n${normalized.slice(end + 5)}`,
+    text: `---${eol}${fixedRaw.replace(/\n/g, eol)}${closingEol}---${afterCloseEol}${text.slice(match[0].length)}`,
     changed: true,
   };
 }
