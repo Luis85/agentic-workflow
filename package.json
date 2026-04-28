@@ -10,6 +10,7 @@
     "check:commands": "node scripts/check-command-docs.js",
     "check:frontmatter": "node scripts/check-frontmatter.js",
     "check:specs": "node scripts/check-spec-state.js",
+    "check:traceability": "node scripts/check-traceability.js",
     "fix": "node scripts/fix-generated.js",
     "fix:adr-index": "node scripts/fix-adr-index.js",
     "fix:commands": "node scripts/fix-command-docs.js"

@@ -21,6 +21,7 @@ npm run verify
 | `npm run check:commands` | Confirm generated slash-command inventories are current. |
 | `npm run check:frontmatter` | Validate required frontmatter on state files, ADRs, and review artifacts. |
 | `npm run check:specs` | Validate lifecycle `workflow-state.md` files and their artifact maps. |
+| `npm run check:traceability` | Validate lifecycle artifact IDs and local traceability references. |
 
 ## Generated Repairs
 

@@ -24,6 +24,11 @@ export const checkTasks = [
     label: "Spec workflow state",
     script: "scripts/check-spec-state.js",
   },
+  {
+    name: "check:traceability",
+    label: "Traceability IDs",
+    script: "scripts/check-traceability.js",
+  },
 ];
 
 export const fixTasks = [
