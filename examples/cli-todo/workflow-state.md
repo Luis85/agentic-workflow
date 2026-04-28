@@ -1,24 +1,24 @@
 ---
 feature: cli-todo
 area: CLI
-current_stage: specification
-status: active
-last_updated: 2026-04-27
-last_agent: architect
+current_stage: learning
+status: done
+last_updated: 2026-04-29
+last_agent: codex
 artifacts:
   idea.md: complete
   research.md: complete
   requirements.md: complete
   design.md: complete
-  spec.md: in-progress
-  tasks.md: pending
-  implementation-log.md: pending
-  test-plan.md: pending
-  test-report.md: pending
-  review.md: pending
-  traceability.md: pending
-  release-notes.md: pending
-  retrospective.md: pending
+  spec.md: complete
+  tasks.md: complete
+  implementation-log.md: complete
+  test-plan.md: complete
+  test-report.md: complete
+  review.md: complete
+  traceability.md: complete
+  release-notes.md: complete
+  retrospective.md: complete
 ---
 
 # Workflow state — cli-todo
@@ -33,13 +33,13 @@ artifacts:
 | 2. Research | `research.md` | complete |
 | 3. Requirements | `requirements.md` | complete |
 | 4. Design | `design.md` | complete |
-| 5. Specification | `spec.md` | in-progress |
-| 6. Tasks | `tasks.md` | pending |
-| 7. Implementation | `implementation-log.md` + code | pending |
-| 8. Testing | `test-plan.md`, `test-report.md` | pending |
-| 9. Review | `review.md`, `traceability.md` | pending |
-| 10. Release | `release-notes.md` | pending |
-| 11. Learning | `retrospective.md` | pending |
+| 5. Specification | `spec.md` | complete |
+| 6. Tasks | `tasks.md` | complete |
+| 7. Implementation | `implementation-log.md` + code | complete |
+| 8. Testing | `test-plan.md`, `test-report.md` | complete |
+| 9. Review | `review.md`, `traceability.md` | complete |
+| 10. Release | `release-notes.md` | complete |
+| 11. Learning | `retrospective.md` | complete |
 
 > **Statuses:** `pending` | `in-progress` | `complete` | `skipped` | `blocked`. Use the bare enum value in frontmatter; document skip reasons in **Skips** below and blockers in **Blocks**.
 
@@ -320,6 +320,17 @@ Free-form. What does the next agent / human need to know?
                           for ADR-CLI-0001 and must be in the test
                           plan regardless of how planner decomposes
                           the implementation tasks.
+```
+
+```
+2026-04-29 (codex):       Completed the worked example through Stage 11.
+                          Added tasks, implementation log, test plan,
+                          test report, review, traceability matrix,
+                          release notes, and retrospective. The example
+                          is intentionally artifact-only: code paths in
+                          implementation and RTM artifacts are illustrative
+                          anchors for readers, not runnable files in this
+                          repository.
 ```
 
 ## Open clarifications
