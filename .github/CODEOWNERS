@@ -1,0 +1,28 @@
+# CODEOWNERS — declare default reviewers for paths in this repo.
+#
+# GitHub auto-assigns the matching owner as a reviewer whenever a PR touches
+# a path covered by a rule below. Replace the @placeholder owners with real
+# GitHub handles or team handles when you fork this template.
+#
+# Syntax: <path glob> <space-separated owners>
+# Patterns are evaluated bottom-to-top; the last match wins.
+# Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-customizations/about-code-owners
+
+# Default — every PR gets at least one reviewer.
+*                                     @placeholder-owner
+
+# User-facing documentation surface.
+# Owns the Diátaxis hub, tutorials, how-to recipes, reference and explanation
+# files, and the playbooks. Renames or removals here MUST update docs/README.md
+# in the same PR (see CONTRIBUTING.md).
+/docs/                                @placeholder-docs-owner
+/docs/README.md                       @placeholder-docs-owner
+/docs/tutorials/                      @placeholder-docs-owner
+/docs/how-to/                         @placeholder-docs-owner
+
+# Top-level docs that ship to readers (README, CLAUDE/AGENTS root context).
+/README.md                            @placeholder-docs-owner
+/CONTRIBUTING.md                      @placeholder-docs-owner
+
+# Operational bots — own their own prompts and READMEs.
+/agents/operational/                  @placeholder-ops-owner

@@ -169,6 +169,19 @@ Claude guides you through the rest — asking the right questions, running the r
 
 ---
 
+## Documentation
+
+The full user guide lives in [`docs/`](docs/README.md), organized by what you need:
+
+- **Learning** → [tutorials](docs/README.md#-tutorials)
+- **Doing** → [how-to recipes](docs/README.md#-how-to-guides)
+- **Looking up** → [reference](docs/README.md#-reference)
+- **Understanding** → [explanation](docs/README.md#-explanation)
+
+If you are completely new to the project, the [first-feature tutorial](docs/tutorials/first-feature.md) walks the entire workflow on a tiny example in 60–90 minutes.
+
+---
+
 ## Common starting points
 
 ### I know what I want to build

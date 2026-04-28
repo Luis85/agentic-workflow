@@ -37,6 +37,14 @@ Concretely:
 | **Add a new operational bot.** | Add `agents/operational/<name>/PROMPT.md` and `README.md`. Must follow the eight‑section common shape (see `agents/operational/README.md`). |
 | **Replace a stage in the workflow.** | ADR. Stages map 1:1 to quality gates and IDs; replacing one is a constitutional‑level change. |
 | **Tweak `.claude/settings.json` defaults.** | PR. Loosening a deny rule needs an ADR; tightening one does not. |
+| **Add, rename, or remove a file under `docs/`.** | PR **must** also update [`docs/README.md`](./docs/README.md) so the Diátaxis hub stays accurate. The hub is the index of record; orphaned files are not allowed to ship. |
+
+## Documentation rules
+
+The user-facing documentation lives in `docs/` and is organised by [Diátaxis](https://diataxis.fr/) — Tutorial, How-to, Reference, Explanation. Two rules:
+
+1. **The hub is canonical.** Any PR that adds, renames, or removes a file directly under `docs/` (excluding `archive/`, `daily-reviews/`, `postmortems/`, and other operational sub-collections) must update [`docs/README.md`](./docs/README.md) in the same PR. The `docs-review-bot` flags PRs that touch `docs/` without touching the hub.
+2. **Recipes use the template.** A new How-to guide starts from [`docs/how-to/_template.md`](./docs/how-to/_template.md). Keep every section other than `## Steps` to two sentences; *why*-content goes in Explanation, not in the recipe.
 
 ## What is **not** welcome
 

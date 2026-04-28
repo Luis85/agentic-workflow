@@ -42,6 +42,8 @@ Use the canonical four‑tier scale from [`agents/operational/README.md`](../REA
 4. **Orphaned TODOs:** `TODO` / `FIXME` markers in docs older than 30 days.
 5. **Dead links:** local relative paths to nonexistent files; broken anchor headings (`#section` that no longer exists in the target).
 6. **Cross‑doc contradictions:** two docs stating different facts about the same subject.
+7. **Diátaxis hub drift (`[MAJOR]`):** the most recent commit touches a file directly under `docs/` (excluding `docs/archive/`, `docs/daily-reviews/`, `docs/postmortems/`, `docs/issues/`, `docs/plans/`, `docs/superpowers/`) **without** also touching [`docs/README.md`](../../../docs/README.md). The hub is the index of record; the rule is in [`CONTRIBUTING.md`](../../../CONTRIBUTING.md). Flag any add / rename / remove that lands without a hub update.
+8. **Tutorial drift (`[BLOCKER]`):** the most recent commit adds, removes, or renames a `/spec:*` slash command (file under `.claude/commands/spec/`), or changes the artifact a stage produces (the per-stage subagent under `.claude/agents/`). The first-feature tutorial at [`docs/tutorials/first-feature.md`](../../../docs/tutorials/first-feature.md) makes load-bearing assumptions about command names and per-stage outputs. Flag the tutorial for re-run from a clean clone of `main`; if the tutorial has not been re-validated within 90 days of the change, escalate to `[BLOCKER]`.
 
 ## Process
 
