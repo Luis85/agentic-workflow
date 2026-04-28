@@ -107,6 +107,18 @@ export type QualityTrend = {
   summary: string[];
 };
 
+export type QualityMetricsSnapshot =
+  | {
+      path: string;
+      metrics: QualityMetrics;
+      error?: never;
+    }
+  | {
+      path: string;
+      metrics?: never;
+      error: string;
+    };
+
 type IdRegistry = {
   reqs: Set<string>;
   specsByReq: Map<string, Set<string>>;
@@ -118,6 +130,7 @@ type IdRegistry = {
 const linkFieldPattern = /^-\s+\*\*(Satisfies|Requirement):\*\*\s+(.+)$/gim;
 const checklistItemPattern = /^\s*-\s+\[[ xX-]\]\s+QA-[A-Z][A-Z0-9]*-\d{3}\b/gm;
 const checklistGapPattern = /^\s*-\s+Status:\s+(gap|nonconformity)\b/gim;
+const qualityMetricsSnapshotFilePattern = /^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z\.json$/;
 
 /**
  * Collect deterministic quality KPIs for workflow deliverables and repository
@@ -349,6 +362,25 @@ export function renderQualityTrend(trend: QualityTrend | null): string {
 }
 
 /**
+ * Render an unreadable quality trend baseline as Markdown.
+ *
+ * @param snapshot - Snapshot load result with an error.
+ * @returns Markdown trend section.
+ */
+export function renderQualityTrendError(snapshot: QualityMetricsSnapshot): string {
+  return [
+    "## Quality trend",
+    "",
+    `The saved baseline snapshot could not be read: ${snapshot.path}`,
+    "",
+    `Reason: ${snapshot.error ?? "Unknown snapshot read error."}`,
+    "",
+    "Fix or remove the snapshot, then rerun `npm run quality:metrics -- --compare`.",
+    "",
+  ].join("\n");
+}
+
+/**
  * Save a quality metrics snapshot under `quality/metrics/<scope>/`.
  *
  * @param metrics - Metrics to persist.
@@ -367,20 +399,28 @@ export function saveQualityMetricsSnapshot(metrics: QualityMetrics): string {
  * @param metrics - Current metrics whose scope selects the snapshot directory.
  * @returns Previous metrics plus path, or null when no baseline exists.
  */
-export function latestQualityMetricsSnapshot(metrics: QualityMetrics): { path: string; metrics: QualityMetrics } | null {
+export function latestQualityMetricsSnapshot(metrics: QualityMetrics): QualityMetricsSnapshot | null {
   const directory = path.dirname(qualityMetricsSnapshotPath(metrics));
   if (!fs.existsSync(directory)) return null;
   const snapshots = fs
     .readdirSync(directory, { withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name.endsWith(".json"))
+    .filter((entry) => entry.isFile() && qualityMetricsSnapshotFilePattern.test(entry.name))
     .map((entry) => path.join(directory, entry.name))
     .sort((a, b) => a.localeCompare(b));
   const latest = snapshots.at(-1);
   if (!latest) return null;
-  return {
-    path: relativeToRoot(latest),
-    metrics: JSON.parse(readText(latest)) as QualityMetrics,
-  };
+  const snapshotPath = relativeToRoot(latest);
+  try {
+    return {
+      path: snapshotPath,
+      metrics: JSON.parse(readText(latest)) as QualityMetrics,
+    };
+  } catch (error) {
+    return {
+      path: snapshotPath,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
 }
 
 /**

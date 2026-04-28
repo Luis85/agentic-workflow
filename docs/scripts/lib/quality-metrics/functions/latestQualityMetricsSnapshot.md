@@ -6,7 +6,7 @@
 
 # Function: latestQualityMetricsSnapshot()
 
-> **latestQualityMetricsSnapshot**(`metrics`): \{ `metrics`: [`QualityMetrics`](../type-aliases/QualityMetrics.md); `path`: `string`; \} \| `null`
+> **latestQualityMetricsSnapshot**(`metrics`): [`QualityMetricsSnapshot`](../type-aliases/QualityMetricsSnapshot.md) \| `null`
 
 Load the latest saved quality metrics snapshot for the current scope.
 
@@ -20,6 +20,6 @@ Current metrics whose scope selects the snapshot directory.
 
 ## Returns
 
-\{ `metrics`: [`QualityMetrics`](../type-aliases/QualityMetrics.md); `path`: `string`; \} \| `null`
+[`QualityMetricsSnapshot`](../type-aliases/QualityMetricsSnapshot.md) \| `null`
 
 Previous metrics plus path, or null when no baseline exists.

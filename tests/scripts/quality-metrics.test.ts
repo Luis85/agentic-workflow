@@ -1,15 +1,19 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
 import {
   assessMaturity,
   compareQualityMetrics,
   collectQualityMetrics,
   completeCanonicalArtifacts,
   expectedArtifactsForStage,
+  latestQualityMetricsSnapshot,
   markdownTableCells,
   qualityMetricsSnapshotPath,
   renderQualityMetrics,
   renderQualityTrend,
+  renderQualityTrendError,
   rtmLinksFromRow,
   stageTraceabilityCoverage,
   traceabilityExpectation,
@@ -134,6 +138,50 @@ test("qualityMetricsSnapshotPath uses a filesystem-safe scoped timestamp", () =>
     qualityMetricsSnapshotPath(metrics).replace(/\\/g, "/"),
     /quality\/metrics\/feature-quality-metrics-reporting\/2026-04-02T03-04-05-678Z\.json$/,
   );
+});
+
+test("latestQualityMetricsSnapshot ignores non-snapshot JSON files", () => {
+  const metrics = collectQualityMetrics({ feature: "quality-metrics-reporting" });
+  metrics.scope = "feature:trend-filter-test";
+  metrics.generatedAt = "2026-04-02T03:04:05.678Z";
+  const snapshotPath = qualityMetricsSnapshotPath(metrics);
+  const snapshotDirectory = path.dirname(snapshotPath);
+  fs.rmSync(snapshotDirectory, { recursive: true, force: true });
+  fs.mkdirSync(snapshotDirectory, { recursive: true });
+
+  try {
+    fs.writeFileSync(path.join(snapshotDirectory, "zzzz-manual-export.json"), JSON.stringify({ generatedAt: "2099" }));
+    fs.writeFileSync(snapshotPath, `${JSON.stringify(metrics)}\n`);
+
+    const snapshot = latestQualityMetricsSnapshot(metrics);
+    assert.equal(snapshot?.path.replace(/\\/g, "/").endsWith("2026-04-02T03-04-05-678Z.json"), true);
+    assert.equal(snapshot?.metrics?.generatedAt, "2026-04-02T03:04:05.678Z");
+  } finally {
+    fs.rmSync(snapshotDirectory, { recursive: true, force: true });
+  }
+});
+
+test("latestQualityMetricsSnapshot reports malformed latest snapshots without throwing", () => {
+  const metrics = collectQualityMetrics({ feature: "quality-metrics-reporting" });
+  metrics.scope = "feature:trend-malformed-test";
+  metrics.generatedAt = "2026-04-02T03:04:05.678Z";
+  const snapshotPath = qualityMetricsSnapshotPath(metrics);
+  const snapshotDirectory = path.dirname(snapshotPath);
+  const malformedPath = path.join(snapshotDirectory, "2026-04-03T03-04-05-678Z.json");
+  fs.rmSync(snapshotDirectory, { recursive: true, force: true });
+  fs.mkdirSync(snapshotDirectory, { recursive: true });
+
+  try {
+    fs.writeFileSync(snapshotPath, `${JSON.stringify(metrics)}\n`);
+    fs.writeFileSync(malformedPath, "{");
+
+    const snapshot = latestQualityMetricsSnapshot(metrics);
+    assert.equal(snapshot?.path.replace(/\\/g, "/").endsWith("2026-04-03T03-04-05-678Z.json"), true);
+    assert.match(snapshot?.error ?? "", /JSON/);
+    assert.match(renderQualityTrendError(snapshot!), /could not be read/);
+  } finally {
+    fs.rmSync(snapshotDirectory, { recursive: true, force: true });
+  }
 });
 
 test("rtmLinksFromRow preserves blank interior cells", () => {
