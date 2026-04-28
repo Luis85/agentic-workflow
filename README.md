@@ -92,18 +92,38 @@ The workflow has two tracks:
 
 **Discovery Track** *(optional — use this when you don't have a clear brief yet)*
 
-```
-Frame → Diverge → Converge → Prototype → Validate → Handoff
+```mermaid
+flowchart LR
+    frame["Frame"]
+    diverge["Diverge"]
+    converge["Converge"]
+    prototype["Prototype"]
+    validate["Validate"]
+    handoff["Handoff"]
+
+    frame --> diverge --> converge --> prototype --> validate --> handoff
 ```
 
 Explore ideas, narrow them down, prototype the most promising one, validate assumptions, then produce a brief that feeds the next track.
 
 **Lifecycle Track** *(11 stages — use this when you have a brief)*
 
-```
-Idea → Research → Requirements → Design → Specification → Tasks
-                                                              ↓
-Retro ← Release ← Review  ←  Testing  ←  Implementation  ←──┘
+```mermaid
+flowchart LR
+    idea["Idea"]
+    research["Research"]
+    requirements["Requirements"]
+    design["Design"]
+    specification["Specification"]
+    tasks["Tasks"]
+    implementation["Implementation"]
+    testing["Testing"]
+    review["Review"]
+    release["Release"]
+    retro["Retro"]
+
+    idea --> research --> requirements --> design --> specification --> tasks
+    tasks --> implementation --> testing --> review --> release --> retro
 ```
 
 Each stage has **one owner** (a specialist AI agent), **one output** (a Markdown file in `specs/<feature>/`), and **one quality gate** before the next stage can begin. No stage is skipped; quality gates are non-negotiable.
@@ -207,20 +227,24 @@ New to this kind of workflow? Here's the jargon decoded:
 
 ## Workflow at a glance
 
-```
-                        [Discovery Track — opt-in]
-         Frame → Diverge → Converge → Prototype → Validate → Handoff
-                                                                 │
-                                                           (brief feeds ↓)
-┌──────────┐  ┌──────────┐  ┌──────────────┐  ┌──────────┐  ┌─────────────┐  ┌────────┐
-│ 1. Idea  │→ │2. Research│→ │3. Requirements│→ │ 4. Design│→ │5. Specification│→│6. Tasks│
-│ analyst  │  │ analyst  │  │ pm           │  │ux/ui/arch│  │ architect   │  │planner │
-└──────────┘  └──────────┘  └──────────────┘  └──────────┘  └─────────────┘  └────────┘
-                                                                                    │
-┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────────┐          │
-│11. Retro │← │10.Release│← │ 9. Review│← │ 8. Testing│← │7.Implementation│◄───────┘
-│ retro    │  │ rel-mgr  │  │ reviewer │  │ qa       │  │ dev          │
-└──────────┘  └──────────┘  └──────────┘  └──────────┘  └──────────────┘
+```mermaid
+flowchart TD
+    discovery["Discovery Track<br/>Frame -> Diverge -> Converge -> Prototype -> Validate -> Handoff"]
+    idea["1. Idea<br/>analyst"]
+    research["2. Research<br/>analyst"]
+    requirements["3. Requirements<br/>pm"]
+    design["4. Design<br/>ux / ui / architect"]
+    specification["5. Specification<br/>architect"]
+    tasks["6. Tasks<br/>planner"]
+    implementation["7. Implementation<br/>dev"]
+    testing["8. Testing<br/>qa"]
+    review["9. Review<br/>reviewer"]
+    release["10. Release<br/>release-manager"]
+    retro["11. Retrospective<br/>retrospective"]
+
+    discovery -->|brief feeds| idea
+    idea --> research --> requirements --> design --> specification --> tasks
+    tasks --> implementation --> testing --> review --> release --> retro
 ```
 
 Each arrow is a quality gate. See [`docs/workflow-overview.md`](docs/workflow-overview.md) for the full cheat sheet and slash command reference.

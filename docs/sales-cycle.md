@@ -357,20 +357,29 @@ When starting a delivery workflow that originates from a sales deal:
 
 ## 8. Deal state machine
 
-```
-lead
-  └─ qualifying          (sales-qualifier running)
-       ├─ no-go          (close — record reason; preserve artifacts)
-       └─ go
-            └─ scoping   (scoping-facilitator running)
-                 └─ estimating  (estimator running)
-                      └─ proposing  (proposal-writer running)
-                           ├─ no-go     (close — record reason)
-                           ├─ on-hold   (suspend — record condition)
-                           └─ negotiating
-                                ├─ no-go
-                                ├─ on-hold
-                                └─ ordered   (delivery handoff triggered)
+```mermaid
+flowchart TD
+    lead["lead"]
+    qualifying["qualifying<br/>sales-qualifier running"]
+    scoping["scoping<br/>scoping-facilitator running"]
+    estimating["estimating<br/>estimator running"]
+    proposing["proposing<br/>proposal-writer running"]
+    negotiating["negotiating"]
+    no_go["no-go<br/>close, record reason, preserve artifacts"]
+    on_hold["on-hold<br/>suspend, record condition"]
+    ordered["ordered<br/>delivery handoff triggered"]
+
+    lead --> qualifying
+    qualifying -->|go| scoping
+    qualifying -->|no-go| no_go
+    scoping --> estimating
+    estimating --> proposing
+    proposing --> negotiating
+    proposing -->|no-go| no_go
+    proposing -->|on-hold| on_hold
+    negotiating -->|accepted| ordered
+    negotiating -->|no-go| no_go
+    negotiating -->|on-hold| on_hold
 ```
 
 ### deal-state.md YAML frontmatter schema

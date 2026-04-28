@@ -43,22 +43,15 @@ Run the Project Manager Track when **any** of these conditions apply:
 
 ## 2. Relationship to the Specorator and Discovery Track
 
-```
-              ┌─────────────────────────────────────────────────────┐
-              │              PROJECT MANAGER TRACK                   │
-              │  projects/<slug>/                                    │
-              │  Project Description · Deliverables Map ·           │
-              │  Follow-Up Register · Health Register · weekly-log  │
-              │                              (project-manager agent) │
-              └──────────────────┬──────────────────────────────────┘
-                                 │ links to (never rewrites)
-          ┌──────────────────────┴──────────────────────────┐
-          │                                                 │
-  ┌───────▼──────────────┐                  ┌──────────────▼──────────────┐
-  │   DISCOVERY TRACK    │                  │   SPEC KIT (Stages 1–11)    │
-  │   discovery/<slug>/  │──chosen brief──▶ │   specs/<slug>/             │
-  │   Frame→...→Handoff  │                  │   Idea→Research→...→Retro   │
-  └──────────────────────┘                  └─────────────────────────────┘
+```mermaid
+flowchart TD
+    pm["Project Manager Track<br/>projects/&lt;slug&gt;<br/>Project Description + Deliverables Map + Follow-Up Register + Health Register + weekly-log<br/>Owner: project-manager"]
+    discovery["Discovery Track<br/>discovery/&lt;slug&gt;<br/>Frame -> ... -> Handoff"]
+    spec["Specorator Lifecycle<br/>specs/&lt;slug&gt;<br/>Idea -> Research -> ... -> Retro"]
+
+    pm -->|links to, never rewrites| discovery
+    pm -->|links to, never rewrites| spec
+    discovery -->|chosen brief| spec
 ```
 
 - The **project-manager** operates at the project envelope: scope, stakeholders, budget, risk/issue/change, periodic reporting.
@@ -89,33 +82,23 @@ Feature folders (`specs/`) and discovery folders (`discovery/`) remain at the re
 
 ## 4. Project lifecycle and state machine
 
-```
-              ┌─────────────┐
-/project:start│  scaffolded │
-              └──────┬──────┘
-                     │ /project:initiate
-              ┌──────▼──────┐
-              │  initiating │  project-description + deliverables-map + followup-register
-              └──────┬──────┘
-                     │ go/no-go: human sponsor approves (A08)
-              ┌──────▼──────┐
-              │  executing  │◀─────────────────────────────────────┐
-              └──────┬──────┘                                      │
-  /project:weekly    │  (recurring — every week)                   │
-  /project:report    │  (on demand)                                │
-  changes/issues ────┤  (on demand → followup-register)            │
-                     │                                             │
-              ┌──────▼──────┐                                      │
-              │  closing    │  project-closure.md drafted          │
-              └──────┬──────┘                                      │
-                     │ client sign-off (human)                     │
-              ┌──────▼──────┐
-              │   closed    │
-              └─────────────┘
-                     │ (post-project, months later)
-              ┌──────▼──────┐
-              │ post-project│  /project:post — benefit evaluation
-              └─────────────┘
+```mermaid
+flowchart TD
+    scaffolded["scaffolded"]
+    initiating["initiating<br/>project-description + deliverables-map + followup-register + health-register"]
+    executing["executing"]
+    closing["closing<br/>project-closure.md drafted"]
+    closed["closed"]
+    post["post-project<br/>benefit evaluation"]
+
+    scaffolded -->|/project:initiate| initiating
+    initiating -->|go/no-go approved by sponsor| executing
+    executing -->|/project:weekly recurring| executing
+    executing -->|/project:report on demand| executing
+    executing -->|changes and issues update followup-register| executing
+    executing -->|/project:close| closing
+    closing -->|client sign-off| closed
+    closed -->|/project:post after 3-6 months| post
 ```
 
 `project-state.md` records: current phase, linked feature folders, sponsor name, go/no-go history, and open blocking items.
