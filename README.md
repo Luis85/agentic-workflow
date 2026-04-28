@@ -169,6 +169,19 @@ Claude guides you through the rest — asking the right questions, running the r
 
 ---
 
+## Repository checks
+
+This template includes a small Node/npm integrity suite for local use and CI:
+
+```bash
+npm install
+npm run verify
+```
+
+`verify` is read-only. For deterministic local repairs, use `npm run fix:adr-index` to regenerate the ADR index and `npm run fix:commands` to regenerate command inventories, then run `npm run verify` again.
+
+---
+
 ## Common starting points
 
 ### I know what I want to build
@@ -253,20 +266,41 @@ Each arrow is a quality gate. See [`docs/workflow-overview.md`](docs/workflow-ov
 
 ## Slash commands reference
 
+<!-- BEGIN GENERATED: slash-commands -->
 ```
-# Discovery Track (when you don't have a brief yet):
-/discovery:start <sprint>    /discovery:converge      /discovery:validate
-/discovery:frame             /discovery:prototype     /discovery:handoff
-/discovery:diverge
+# Decisions:
+/adr:new
 
-# Lifecycle (Stages 1–11):
-/spec:start <slug>           /spec:tasks              /spec:retro
-/spec:idea                   /spec:implement [task]   /spec:clarify
-/spec:research               /spec:test               /spec:analyze
-/spec:requirements           /spec:review             /adr:new "<title>"
-/spec:design                 /spec:release
-/spec:specify
+# Discovery Track:
+/discovery:converge   /discovery:diverge    /discovery:frame
+/discovery:handoff    /discovery:prototype  /discovery:start
+/discovery:validate
+
+# Portfolio Track:
+/portfolio:start  /portfolio:x      /portfolio:y
+/portfolio:z
+
+# Project Manager Track:
+/project:change    /project:close     /project:initiate
+/project:post      /project:report    /project:start
+/project:weekly
+
+# Sales Cycle Track:
+/sales:estimate  /sales:order     /sales:propose
+/sales:qualify   /sales:scope     /sales:start
+
+# Lifecycle:
+/spec:analyze       /spec:clarify       /spec:design
+/spec:idea          /spec:implement     /spec:release
+/spec:requirements  /spec:research      /spec:retro
+/spec:review        /spec:specify       /spec:start
+/spec:tasks         /spec:test
+
+# Stock-taking Track:
+/stock-taking:audit       /stock-taking:handoff     /stock-taking:scope
+/stock-taking:start       /stock-taking:synthesize
 ```
+<!-- END GENERATED: slash-commands -->
 
 You can also trigger everything conversationally — the `orchestrate` and `discovery-sprint` skills listen for natural language and dispatch the right command.
 

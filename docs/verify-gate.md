@@ -28,6 +28,17 @@ The exact command differs per language:
 
 The composite name (`verify`) is the contract. Whatever lives behind it is the project's choice.
 
+## This template repo
+
+This repository implements its own verify gate with Node/npm:
+
+```bash
+npm install
+npm run verify
+```
+
+The check scripts are read-only and live in `scripts/`. Local repair helpers are intentionally separate: `npm run fix:adr-index` regenerates the ADR index and `npm run fix:commands` regenerates command inventories.
+
 ## Reporting
 
 When an agent runs verify, it reports:
