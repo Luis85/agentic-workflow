@@ -26,7 +26,7 @@ After Pocock's `grill-me`. This is the interview primitive every clarification g
 
 - One question per turn. Never batch.
 - Always state your recommended answer. The user should be able to say "yes do that" and move on.
-- Read upstream artifacts (`docs/CONTEXT.md`, `docs/UBIQUITOUS_LANGUAGE.md`, the relevant `specs/<slug>/*.md`) before each question — many ambiguities are already settled there.
+- Read upstream artifacts (`docs/CONTEXT.md`, `docs/glossary/*.md` — per [ADR-0010](../../../docs/adr/0010-shard-glossary-into-one-file-per-term.md); legacy `docs/UBIQUITOUS_LANGUAGE.md` if present, the relevant `specs/<slug>/*.md`) before each question — many ambiguities are already settled there.
 - Use `AskUserQuestion` only when free-text or multi-option is needed. Otherwise plain conversational questions are fine.
 - Don't ask "what do you want?" — propose a default and ask the user to confirm or redirect.
 - Don't grill past the artifact's purpose. A PRD is grilled on requirements, not on implementation.

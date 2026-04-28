@@ -41,6 +41,7 @@ Before doing any non-trivial work, read:
 - File names are kebab-case. Per-feature work lives under `specs/<feature-slug>/`.
 - IDs are stable: `REQ-<AREA>-NNN`, `T-<AREA>-NNN`, `TEST-<AREA>-NNN`, `ADR-NNNN`.
 - ADR bodies are immutable. To change a decision, supersede it; the predecessor's `status` and `superseded-by` pointers are the only fields that may be updated.
+- Glossary terms live one-per-file under `docs/glossary/<slug>.md`. Define a term with `/glossary:new "<term>"`. The directory listing is the index — no `README.md` index to maintain. See [ADR-0010](docs/adr/0010-shard-glossary-into-one-file-per-term.md). The legacy `docs/UBIQUITOUS_LANGUAGE.md` single-file model is deprecated.
 - Commit messages: imperative mood, reference IDs (`feat(auth): add T-AUTH-014 password reset`).
 
 ## When the harness gets in your way
