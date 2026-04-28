@@ -15,8 +15,11 @@ entry_point: true
 ## Type Aliases
 
 - [ObsidianDiagnosticCode](type-aliases/ObsidianDiagnosticCode.md)
+- [ObsidianFixResult](type-aliases/ObsidianFixResult.md)
 
 ## Functions
 
+- [fixObsidianFrontmatter](functions/fixObsidianFrontmatter.md)
+- [fixObsidianFrontmatterBlock](functions/fixObsidianFrontmatterBlock.md)
 - [obsidianDiagnosticsForFile](functions/obsidianDiagnosticsForFile.md)
 - [obsidianDiagnosticsForFrontmatter](functions/obsidianDiagnosticsForFrontmatter.md)

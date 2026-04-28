@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { obsidianDiagnosticsForFrontmatter } from "../../scripts/lib/obsidian.js";
+import { fixObsidianFrontmatter, fixObsidianFrontmatterBlock, obsidianDiagnosticsForFrontmatter } from "../../scripts/lib/obsidian.js";
 
 test("obsidian frontmatter accepts readable repository YAML", () => {
   assert.deepEqual(
@@ -70,4 +70,53 @@ test("obsidian frontmatter rejects JSON-style metadata", () => {
       message: "frontmatter must use readable YAML properties, not JSON-style metadata",
     },
   ]);
+});
+
+test("fixObsidianFrontmatterBlock quotes scalar wikilinks and preserves comments", () => {
+  assert.equal(
+    fixObsidianFrontmatterBlock(
+      [
+        "title: Example",
+        "related: [[Some Note]] # human context",
+        "aliases: [trace, [[Already list-safe]]]",
+        "nested:",
+        "  link: [[Nested Note]]",
+      ].join("\n"),
+    ),
+    [
+      "title: Example",
+      "related: \"[[Some Note]]\" # human context",
+      "aliases: [trace, [[Already list-safe]]]",
+      "nested:",
+      "  link: [[Nested Note]]",
+    ].join("\n"),
+  );
+});
+
+test("fixObsidianFrontmatter rewrites only valid frontmatter blocks", () => {
+  assert.deepEqual(fixObsidianFrontmatter("---\nlink: [[Note]]\n---\n# Body\n"), {
+    text: "---\nlink: \"[[Note]]\"\n---\n# Body\n",
+    changed: true,
+  });
+
+  assert.deepEqual(fixObsidianFrontmatter("# Body\nlink: [[Note]]\n"), {
+    text: "# Body\nlink: [[Note]]\n",
+    changed: false,
+  });
+});
+
+test("fixObsidianFrontmatter preserves CRLF when no metadata changes", () => {
+  const text = "---\r\ntitle: Example\r\n---\r\n# Body\r\n";
+
+  assert.deepEqual(fixObsidianFrontmatter(text), {
+    text,
+    changed: false,
+  });
+});
+
+test("fixObsidianFrontmatter preserves CRLF when repairing metadata", () => {
+  assert.deepEqual(fixObsidianFrontmatter("---\r\nlink: [[Note]]\r\n---\r\n# Body\r\n"), {
+    text: "---\r\nlink: \"[[Note]]\"\r\n---\r\n# Body\r\n",
+    changed: true,
+  });
 });
