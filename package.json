@@ -4,11 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "verify": "npm run check:links && npm run check:adr-index && npm run check:commands && npm run check:frontmatter",
+    "verify": "node scripts/verify.js",
     "check:links": "node scripts/check-markdown-links.js",
     "check:adr-index": "node scripts/check-adr-index.js",
     "check:commands": "node scripts/check-command-docs.js",
     "check:frontmatter": "node scripts/check-frontmatter.js",
+    "fix": "node scripts/fix-generated.js",
     "fix:adr-index": "node scripts/fix-adr-index.js",
     "fix:commands": "node scripts/fix-command-docs.js"
   },
