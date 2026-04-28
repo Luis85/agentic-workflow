@@ -38,6 +38,14 @@ Concretely:
 | **Regenerate generated docs.** | Run `npm run fix` for all generated surfaces, or `npm run fix:adr-index` / `npm run fix:commands` / `npm run fix:script-docs` for one surface, review the generated output, then run `npm run verify`. |
 | **Replace a stage in the workflow.** | ADR. Stages map 1:1 to quality gates and IDs; replacing one is a constitutional‑level change. |
 | **Tweak `.claude/settings.json` defaults.** | PR. Loosening a deny rule needs an ADR; tightening one does not. |
+| **Add, rename, or remove a file under `docs/`.** | PR **must** also update [`docs/README.md`](./docs/README.md) so the Diátaxis hub stays accurate. The hub is the index of record; orphaned files are not allowed to ship. |
+
+## Documentation rules
+
+The user-facing documentation lives in `docs/` and is organised by [Diátaxis](https://diataxis.fr/) — Tutorial, How-to, Reference, Explanation. Two rules:
+
+1. **The hub is canonical.** Any PR that adds, renames, or removes a file anywhere under `docs/` — including `docs/how-to/`, `docs/tutorials/`, and `docs/adr/` — must update [`docs/README.md`](./docs/README.md) in the same PR. Excluded sub-collections (which grow on their own internal indices, not the hub): `archive/`, `daily-reviews/`, `postmortems/`, `issues/`, `plans/`, `superpowers/`, `steering/`, `scripts/` (regenerable TypeDoc), `glossary/` (one-file-per-term per [ADR-0010](./docs/adr/0010-shard-glossary-into-one-file-per-term.md)). The `docs-review-bot` flags PRs that touch `docs/` without touching the hub.
+2. **Recipes use the template.** A new How-to guide starts from [`docs/how-to/_template.md`](./docs/how-to/_template.md). Keep every section other than `## Steps` to two sentences; *why*-content goes in Explanation, not in the recipe.
 
 ## What is **not** welcome
 
