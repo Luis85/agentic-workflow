@@ -309,5 +309,6 @@ These skills append to cross-workflow files:
 - `product-page` → `sites/index.html`, supporting `sites/` assets, and optionally `.github/workflows/pages.yml`.
 - `domain-context` → `docs/CONTEXT.md` (or `CONTEXT-MAP.md` + `contexts/<name>.md`).
 - `new-glossary-entry` → `docs/glossary/<slug>.md` (via `/glossary:new`). Per [ADR-0010](adr/0010-shard-glossary-into-one-file-per-term.md), supersedes the deprecated `ubiquitous-language` → `docs/UBIQUITOUS_LANGUAGE.md` flow.
+- `specorator-improvement` → the affected template surfaces: `scripts/`, `tests/scripts/`, `package.json`, `.github/workflows/`, `.claude/commands/`, `.claude/skills/`, `.claude/agents/`, `templates/`, `docs/`, and the owning `specs/<slug>/` artifacts.
 
 When any of these write, the active feature's `workflow-state.md` gets a dated one-line entry appended to the `## Hand-off notes` free-form section so the workflow has a paper trail. The frontmatter schema (per `templates/workflow-state-template.md`) is fixed — agents do not add new frontmatter keys.
