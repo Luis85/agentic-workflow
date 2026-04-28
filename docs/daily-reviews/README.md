@@ -1,3 +1,9 @@
+---
+title: "docs/daily-reviews/"
+folder: "docs/daily-reviews"
+description: "Entry point for optional daily review archives produced outside the read-only bot."
+entry_point: true
+---
 # `docs/daily-reviews/`
 
 An **optional, project‑implemented** Markdown archive pattern for [`review-bot`](../../agents/operational/review-bot/PROMPT.md) findings. The `review-bot` routine itself is purely read‑only — it never commits files or opens PRs. If a project wants a git‑browseable archive in addition to GitHub issues, it must run a **separate** scheduled job (or a person commits by hand) that copies the issue body into `docs/daily-reviews/YYYY-MM-DD.md`.

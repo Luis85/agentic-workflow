@@ -1,3 +1,9 @@
+---
+title: "Steering Files"
+folder: "docs/steering"
+description: "Entry point for persistent steering context loaded by agents on demand."
+entry_point: true
+---
 # Steering Files
 
 Persistent, scoped context loaded by agents on demand. Inspired by Kiro's `.kiro/steering/` pattern.

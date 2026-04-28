@@ -1,3 +1,9 @@
+---
+title: "dep-triage-bot — operator notes"
+folder: "agents/operational/dep-triage-bot"
+description: "Operator entry point for dependency triage scheduling, scope, and outputs."
+entry_point: true
+---
 # dep-triage-bot — operator notes
 
 Companion to [`PROMPT.md`](./PROMPT.md).

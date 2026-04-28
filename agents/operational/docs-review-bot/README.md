@@ -1,3 +1,9 @@
+---
+title: "docs-review-bot — operator notes"
+folder: "agents/operational/docs-review-bot"
+description: "Operator entry point for documentation review scheduling, scope, and outputs."
+entry_point: true
+---
 # docs-review-bot — operator notes
 
 Companion to [`PROMPT.md`](./PROMPT.md). The prompt is loaded by the routine; this file explains scheduling and observation.

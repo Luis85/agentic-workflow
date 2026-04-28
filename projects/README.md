@@ -1,3 +1,9 @@
+---
+title: "projects/"
+folder: "projects"
+description: "Entry point for client engagement folders managed by the Project Manager Track."
+entry_point: true
+---
 # projects/
 
 One folder per client engagement. Used by the **Project Manager Track** (opt-in, service-provider context).

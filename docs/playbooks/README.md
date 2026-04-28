@@ -1,3 +1,9 @@
+---
+title: "Playbooks"
+folder: "docs/playbooks"
+description: "Entry point for operational runbooks used by SRE agents and on-call humans."
+entry_point: true
+---
 # Playbooks
 
 Operational runbooks. Used by the `sre` agent and on-call humans.

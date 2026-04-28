@@ -1,3 +1,9 @@
+---
+title: "Architecture Decision Records (ADRs)"
+folder: "docs/adr"
+description: "Entry point for Architecture Decision Record policy and the ADR index."
+entry_point: true
+---
 # Architecture Decision Records (ADRs)
 
 Records of architecturally significant decisions. Format follows Michael Nygard's lightweight template (see [`templates/adr-template.md`](../../templates/adr-template.md)).

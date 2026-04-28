@@ -1,3 +1,9 @@
+---
+title: "Codex"
+folder: ".codex"
+description: "Entry point for Codex-specific delivery mechanics layered on the shared repository rules."
+entry_point: true
+---
 # Codex
 
 Codex-specific operating context lives here. `AGENTS.md` remains the shared source of truth for every AI coding agent; this folder holds the extra delivery mechanics that help Codex work cleanly in this repository.

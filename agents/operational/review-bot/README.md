@@ -1,3 +1,9 @@
+---
+title: "review-bot — operator notes"
+folder: "agents/operational/review-bot"
+description: "Operator entry point for daily review scheduling, scope, and outputs."
+entry_point: true
+---
 # review-bot — operator notes
 
 This is the operator‑facing companion to [`PROMPT.md`](./PROMPT.md). The prompt is what the routine loads; this file explains how to schedule and observe it.

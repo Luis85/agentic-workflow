@@ -1,3 +1,9 @@
+---
+title: "Specorator documentation"
+folder: "docs"
+description: "Entry point for user-facing documentation organized by Diataxis reading mode."
+entry_point: true
+---
 # Specorator documentation
 
 This is the user-facing index for `docs/`. It is organised by [Diátaxis](https://diataxis.fr/) — the four quadrants describe **what kind of doc** something is, not what subject it covers.
@@ -51,6 +57,7 @@ Look-it-up, normative. Authoritative; not narrative.
 - [`ears-notation.md`](./ears-notation.md) — the requirement-syntax catalogue.
 - [`traceability.md`](./traceability.md) — the ID scheme and the requirement → spec → task → code → test chain.
 - [`sink.md`](./sink.md) — catalog of every artifact: where it lives, who owns it. *Regenerable index — don't edit by hand.*
+- [`sink.md#readme-entry-points`](./sink.md#readme-entry-points) — folder `README.md` entry-point and frontmatter convention.
 - [`quality-framework.md`](./quality-framework.md) — quality dimensions, gates, and Definition of Done per stage.
 - [`glossary/`](./glossary/) — plain-English glossary, one file per term (per [ADR-0010](./adr/0010-shard-glossary-into-one-file-per-term.md)). The directory listing is the index; add a term with `/glossary:new "<term>"`.
 - [`scripts/`](./scripts/) — generated TypeDoc API reference for the Node integrity scripts under `scripts/`. *Regenerable — `npm run fix:script-docs` rebuilds it from JSDoc.*

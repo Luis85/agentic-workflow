@@ -1,3 +1,9 @@
+---
+title: "Templates"
+folder: "templates"
+description: "Entry point for blank workflow artifacts copied into feature folders."
+entry_point: true
+---
 # Templates
 
 Blank artifacts for each workflow stage. Copy into `specs/<feature>/<artifact>.md` when starting a stage.

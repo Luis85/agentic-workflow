@@ -1,3 +1,9 @@
+---
+title: "Postmortems"
+folder: "docs/postmortems"
+description: "Entry point for blameless incident write-ups and retention expectations."
+entry_point: true
+---
 # Postmortems
 
 Blameless incident write-ups. The `sre` agent files one within 5 working days of every Sev-1/Sev-2 incident.

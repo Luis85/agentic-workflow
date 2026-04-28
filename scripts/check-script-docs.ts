@@ -33,6 +33,7 @@ try {
     process.exit(result.status || 1);
   }
 
+  addReadmeFrontmatter(generatedDir);
   compareGeneratedDocs();
   failIfErrors(errors, "check:script-docs");
 } finally {
@@ -100,4 +101,46 @@ function spawnNpm(args: string[], options: SpawnSyncOptions) {
     return spawnSync(process.execPath, [process.env.npm_execpath, ...args], options);
   }
   return spawnSync(process.platform === "win32" ? "npm.cmd" : "npm", args, options);
+}
+
+function addReadmeFrontmatter(root: string): void {
+  for (const filePath of walkMarkdownFiles(root).filter((file) => path.basename(file) === "README.md")) {
+    const text = readText(filePath);
+    const body = stripFrontmatter(text).trimStart();
+    const rel = toPosix(path.relative(root, filePath));
+    const folder = path.dirname(path.join("docs/scripts", rel)) === "." ? "." : toPosix(path.dirname(path.join("docs/scripts", rel)));
+    const title = titleFromMarkdown(body, path.basename(path.dirname(filePath)) || "Repository Scripts");
+    const description = descriptionForGeneratedReadme(folder, title);
+    const frontmatter = [
+      "---",
+      `title: ${JSON.stringify(title)}`,
+      `folder: ${JSON.stringify(folder)}`,
+      `description: ${JSON.stringify(description)}`,
+      "entry_point: true",
+      "---",
+      "",
+    ].join("\n");
+
+    fs.writeFileSync(filePath, `${frontmatter}${body.replace(/\r\n/g, "\n")}`, "utf8");
+  }
+}
+
+function stripFrontmatter(text: string): string {
+  const normalized = text.replace(/\r\n/g, "\n");
+  if (!normalized.startsWith("---\n")) return text;
+  const end = normalized.indexOf("\n---\n", 4);
+  return end === -1 ? text : normalized.slice(end + 5);
+}
+
+function titleFromMarkdown(text: string, fallback: string): string {
+  const heading = text.split("\n").find((line) => line.startsWith("# "));
+  return heading ? heading.replace(/^#\s+/, "").replace(/`/g, "").trim() : fallback;
+}
+
+function descriptionForGeneratedReadme(folder: string, title: string): string {
+  if (folder === "docs/scripts") return "Entry point for generated TypeDoc reference for repository scripts.";
+  if (folder.startsWith("docs/scripts/lib/")) {
+    return `Entry point for generated API reference for the ${title} script helper module.`;
+  }
+  return `Entry point for generated API reference for the ${title} script.`;
 }

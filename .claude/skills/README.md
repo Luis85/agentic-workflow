@@ -1,3 +1,9 @@
+---
+title: ".claude/skills/"
+folder: ".claude/skills"
+description: "Entry point for reusable workflow skills and their invocation boundaries."
+entry_point: true
+---
 # `.claude/skills/`
 
 **Skills** are reusable how‑tos that any agent can invoke. They live next to agents and commands but answer a different question:

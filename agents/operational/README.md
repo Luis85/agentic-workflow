@@ -1,3 +1,9 @@
+---
+title: "Operational agents"
+folder: "agents/operational"
+description: "Entry point for scheduled operational agent routines and their common contract."
+entry_point: true
+---
 # Operational agents
 
 The thirteen subagents in [`.claude/agents/`](../../.claude/agents/) cover the **lifecycle** of building one feature: idea → research → requirements → … → retrospective.

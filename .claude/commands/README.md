@@ -1,3 +1,9 @@
+---
+title: "Slash commands"
+folder: ".claude/commands"
+description: "Entry point for slash-command namespaces and workflow command inventory."
+entry_point: true
+---
 # Slash commands
 
 One command per workflow phase. Subdirectories namespace commands (`spec/specify.md` → `/spec:specify`, `discovery/frame.md` → `/discovery:frame`).
