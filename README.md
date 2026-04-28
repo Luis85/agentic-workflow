@@ -1,9 +1,3 @@
----
-title: "Specorator — Agentic Development Workflow"
-folder: "."
-description: "Repository entry point for the Specorator agentic development workflow template."
-entry_point: true
----
 # Specorator — Agentic Development Workflow
 
 ![Version](https://img.shields.io/badge/version-v0.2-blue) ![License](https://img.shields.io/badge/license-MIT-green)
