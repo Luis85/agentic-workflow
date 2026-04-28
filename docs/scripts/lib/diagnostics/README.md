@@ -1,3 +1,9 @@
+---
+title: "lib/diagnostics"
+folder: "docs/scripts/lib/diagnostics"
+description: "Entry point for generated API reference for the lib/diagnostics script helper module."
+entry_point: true
+---
 [**agentic-workflow**](../../README.md)
 
 ***
