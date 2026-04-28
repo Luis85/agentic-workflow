@@ -102,6 +102,11 @@ export const checkTasks = [
  */
 export const fixTasks = [
   {
+    name: "fix:obsidian",
+    label: "Obsidian Markdown compatibility",
+    script: "scripts/fix-obsidian.ts",
+  },
+  {
     name: "fix:adr-index",
     label: "ADR index",
     script: "scripts/fix-adr-index.ts",

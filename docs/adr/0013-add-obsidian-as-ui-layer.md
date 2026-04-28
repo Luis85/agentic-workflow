@@ -40,6 +40,7 @@ The layer includes:
 - committed Canvas layouts under `docs/obsidian/canvas/`
 - `.gitignore` rules for `.obsidian/` and `.trash/`
 - a read-only `check:obsidian-assets` verification script
+- ADR-0014 for the deferred shard pattern needed before Bases can show log-shaped registers
 
 Obsidian is a UI layer only. Slash commands, agents, scripts, and Markdown artifacts remain the workflow control plane.
 
@@ -92,6 +93,7 @@ Obsidian is a UI layer only. Slash commands, agents, scripts, and Markdown artif
 - [Obsidian Canvas](https://obsidian.md/help/plugins/canvas)
 - [Obsidian 1.9.0 changelog](https://obsidian.md/changelog/2025-05-21-desktop-v1.9.0/)
 - [ADR-0010](0010-shard-glossary-into-one-file-per-term.md)
+- [ADR-0014](0014-shard-log-shaped-artifacts-for-bases.md)
 - [Obsidian UI layer design PR](https://github.com/Luis85/agentic-workflow/pull/73)
 
 ---

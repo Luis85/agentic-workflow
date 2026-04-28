@@ -25,6 +25,7 @@
     "check:traceability": "tsx scripts/check-traceability.ts",
     "docs:scripts": "typedoc --options typedoc.json",
     "fix": "tsx scripts/fix-generated.ts",
+    "fix:obsidian": "tsx scripts/fix-obsidian.ts",
     "fix:adr-index": "tsx scripts/fix-adr-index.ts",
     "fix:commands": "tsx scripts/fix-command-docs.ts",
     "fix:script-docs": "tsx scripts/fix-script-docs.ts"

@@ -70,7 +70,7 @@
       "y": 40,
       "width": 360,
       "height": 220,
-      "text": "## Bases\n- [[docs/obsidian/bases/specs.base|Specs]]\n- [[docs/obsidian/bases/adrs.base|ADRs]]\n- [[docs/obsidian/bases/glossary.base|Glossary]]\n- [[docs/obsidian/bases/project-followups.base|Project followups]]"
+      "text": "## Bases\n- [[docs/obsidian/bases/specs.base|Specs]]\n- [[docs/obsidian/bases/adrs.base|ADRs]]\n- [[docs/obsidian/bases/glossary.base|Glossary]]\n\nLog-shaped dashboards wait for [[docs/adr/0014-shard-log-shaped-artifacts-for-bases.md|ADR-0014]]."
     },
     {
       "id": "tracks",

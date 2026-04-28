@@ -39,8 +39,7 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │   │   ├── bases/                           # committed .base query definitions
 │   │   │   ├── specs.base
 │   │   │   ├── adrs.base
-│   │   │   ├── glossary.base
-│   │   │   └── project-followups.base
+│   │   │   └── glossary.base
 │   │   └── canvas/                          # committed JSON Canvas layouts
 │   │       ├── home.canvas
 │   │       └── lifecycle.canvas

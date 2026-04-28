@@ -159,6 +159,7 @@ npm run fix
 Use narrower repair commands when you only want one generated surface:
 
 ```bash
+npm run fix:obsidian
 npm run fix:adr-index
 npm run fix:commands
 npm run fix:script-docs

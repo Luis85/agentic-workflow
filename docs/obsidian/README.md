@@ -25,7 +25,6 @@ Obsidian stores user-specific workspace state in `.obsidian/` and deleted files 
 | `bases/specs.base` | Shows lifecycle state files under `specs/`. |
 | `bases/adrs.base` | Shows ADR records under `docs/adr/`. |
 | `bases/glossary.base` | Shows glossary entries under `docs/glossary/`. |
-| `bases/project-followups.base` | Shows Project Manager Track follow-up registers when projects exist. |
 | `canvas/home.canvas` | Landing hub for primary repository navigation. |
 | `canvas/lifecycle.canvas` | Visual map of the lifecycle and optional companion tracks. |
 
@@ -44,12 +43,13 @@ Record this checklist in the implementation PR before merge:
 - [ ] Bases and Canvas core plugins enabled.
 - [ ] `home.canvas` opened without errors.
 - [ ] `lifecycle.canvas` opened without errors.
-- [ ] `specs.base`, `adrs.base`, `glossary.base`, and `project-followups.base` opened.
+- [ ] `specs.base`, `adrs.base`, and `glossary.base` opened.
 - [ ] At least one Base rendered rows when matching artifacts existed, or showed an empty view when none existed.
 - [ ] Time from clone to first rendered dashboard: not yet recorded.
 
 ## References
 
 - [ADR-0013](../adr/0013-add-obsidian-as-ui-layer.md)
+- [ADR-0014](../adr/0014-shard-log-shaped-artifacts-for-bases.md)
 - [Obsidian Bases syntax](https://obsidian.md/help/bases/syntax)
 - [Obsidian Canvas](https://obsidian.md/help/plugins/canvas)
