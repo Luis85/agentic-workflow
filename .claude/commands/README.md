@@ -32,6 +32,10 @@ One command per workflow phase. Subdirectories namespace commands (`spec/specify
 /sales:estimate  /sales:order     /sales:propose
 /sales:qualify   /sales:scope     /sales:start
 
+# Project Scaffolding Track:
+/scaffold:assemble  /scaffold:extract   /scaffold:handoff
+/scaffold:intake    /scaffold:start
+
 # Lifecycle:
 /spec:analyze       /spec:clarify       /spec:design
 /spec:idea          /spec:implement     /spec:release

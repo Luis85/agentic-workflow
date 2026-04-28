@@ -42,6 +42,7 @@ See [`memory/constitution.md`](../memory/constitution.md) for the full version. 
 
 ```mermaid
 flowchart LR
+    scaffold["Project Scaffolding Track"]
     discovery["Discovery Track"]
     idea["1. Idea"]
     research["2. Research"]
@@ -55,6 +56,8 @@ flowchart LR
     release["10. Release"]
     learning["11. Learning"]
 
+    scaffold -.->|starter pack| discovery
+    scaffold -.->|idea seed| idea
     discovery -.->|brief| idea
     idea --> research
     research --> requirements
@@ -80,6 +83,7 @@ flowchart LR
 
 **Optional pre-stage** (run *before* Stage 1 when no brief exists yet):
 
+- **Project Scaffolding Track** — a source-led onboarding workflow for teams adopting the template with existing folders or Markdown files. Produces `starter-pack.md` and `handoff.md`, then routes to Discovery, Stage 1, Project Manager Track, or Stock-taking. Defined in [`docs/project-scaffolding-track.md`](project-scaffolding-track.md); rationale in [ADR-0011](adr/0011-add-project-scaffolding-track.md). **Use when source material exists but no canonical artifacts exist yet.**
 - **Discovery Track** — a 5-phase ideation + design-sprint mini-workflow (Frame → Diverge → Converge → Prototype → Validate → Handoff) for teams arriving with a blank page rather than a brief. Produces `chosen-brief.md` which seeds Stage 1. Defined in [`docs/discovery-track.md`](discovery-track.md); rationale in [ADR-0005](adr/0005-add-discovery-track-before-stage-1.md). **Skip when a brief already exists.**
 
 ---
@@ -173,6 +177,7 @@ Each stage is owned by a dedicated agent defined in [`.claude/agents/`](../.clau
 | 11 — Learning | `retrospective` | `.claude/agents/retrospective.md` |
 | Cross-cutting role (post-release ops, incident response, day-2) | `sre` | `.claude/agents/sre.md` |
 | Cross-cutting role (stage routing & hand-off) | `orchestrator` | `.claude/agents/orchestrator.md` |
+| Pre-workflow — source-led template adoption | `project-scaffolder` | `.claude/agents/project-scaffolder.md` |
 
 ### Agent rules
 
@@ -243,6 +248,7 @@ The `orchestrator` agent (or a human) reads `workflow-state.md` and:
 | `/spec:clarify` | Optional gate — interrogate active artifact |
 | `/spec:analyze` | Optional gate — cross-artifact consistency check |
 | `/adr:new "<title>"` | File a new architecture decision |
+| `/scaffold:start <slug> <source>` | Start source-led project scaffolding |
 
 ---
 
@@ -304,6 +310,20 @@ The workflow is iterative, not waterfall:
 - Worked end-to-end examples in [`examples/`](../examples/)
 
 ---
+
+## Appendix — Project Scaffolding Track (pre-workflow)
+
+When a team arrives with existing documentation but no canonical template artifacts, the **Project Scaffolding Track** runs before Discovery or Stage 1. It turns source folders and Markdown files into evidence-backed starter drafts.
+
+| # | Phase | Owner | Slash command | Artifact |
+|---|---|---|---|---|
+| — | Bootstrap | — | `/scaffold:start <slug> <source>` | `scaffolding-state.md` |
+| 1 | Intake | project-scaffolder | `/scaffold:intake` | `intake.md`, `source-inventory.md` |
+| 2 | Extract | project-scaffolder | `/scaffold:extract` | `extraction.md` |
+| 3 | Assemble | project-scaffolder | `/scaffold:assemble` | `starter-pack.md` |
+| H | Handoff | project-scaffolder | `/scaffold:handoff` | `handoff.md` |
+
+Handoff outcomes: `discovery` → `/discovery:start`; `spec` → `/spec:start` + `/spec:idea`; `project` → `/project:start` + `/project:initiate`; `stock-taking` → `/stock-taking:start`; `none` → preserve the evidence trail and close. Full methodology lives at [`docs/project-scaffolding-track.md`](project-scaffolding-track.md).
 
 ## Appendix — Discovery Track (pre-Stage 1)
 

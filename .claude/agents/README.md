@@ -44,6 +44,12 @@ The Discovery Track ([`docs/discovery-track.md`](../../docs/discovery-track.md),
 | [`critic`](critic.md) | Converge, Validate (consulted) | Devil's-advocate / Decider | Read, Edit, Write |
 | [`prototyper`](prototyper.md) | Prototype (consulted) | UX Designer / Prototyper | Read, Edit, Write |
 
+### Source-led onboarding agents (pre-workflow, opt-in)
+
+| Agent | Owns | Shadows | Tool surface |
+|---|---|---|---|
+| [`project-scaffolder`](project-scaffolder.md) | Project Scaffolding Track artifacts under `scaffolding/<project>/` | Business analyst / technical writer / onboarding facilitator | Read, Edit, Write |
+
 ## Conventions
 
 - **Frontmatter** uses Claude Code's standard fields: `name`, `description`, `tools`, `model`, optionally `color`.
