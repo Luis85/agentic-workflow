@@ -33,4 +33,5 @@ jobs:
         shell: bash
         env:
           ACTIONLINT_BIN: ${{ steps.download.outputs.executable }}
-        run: "$ACTIONLINT_BIN" -color
+        run: |
+          "$ACTIONLINT_BIN" -color
