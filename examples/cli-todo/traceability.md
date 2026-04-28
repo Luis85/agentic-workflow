@@ -33,7 +33,7 @@ generated: 2026-04-29 00:00
 | REQ-CLI-011 | SPEC-CLI-004 | T-CLI-007, T-CLI-008 | `internal/cli/rm.go` | TEST-CLI-015 | pass |
 | REQ-CLI-012 | SPEC-CLI-005, SPEC-CLI-008 | T-CLI-002, T-CLI-003, T-CLI-004 | `internal/cli/help.go`, `internal/storage/load.go` | TEST-CLI-023, TEST-CLI-024, TEST-CLI-025, TEST-CLI-026, TEST-CLI-027 | pass |
 | REQ-CLI-013 | SPEC-CLI-001 | T-CLI-007, T-CLI-008 | `internal/cli/add.go` | TEST-CLI-012, TEST-CLI-013 | pass |
-| NFR-CLI-001 | SPECDOC-CLI-001 | T-CLI-008 | `tests/integration/performance_test.go` | TEST-CLI-031 | pass |
+| NFR-CLI-001 | SPECDOC-CLI-001 | T-CLI-007 | `tests/integration/performance_test.go` | TEST-CLI-031 | pass |
 | NFR-CLI-002 | SPEC-CLI-008 | T-CLI-005, T-CLI-006 | `internal/storage/save.go` | TEST-CLI-018, TEST-CLI-033 | pass |
 | NFR-CLI-003 | PRD-CLI-001 | T-CLI-009 | `README.md` scope note | TEST-CLI-019, TEST-CLI-020 | pass |
 | NFR-CLI-004 | DESIGN-CLI-001 | T-CLI-009 | no network code path | TEST-CLI-029 | pass |

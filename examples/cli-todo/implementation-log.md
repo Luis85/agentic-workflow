@@ -28,14 +28,14 @@ This worked example records implementation evidence as if the tiny CLI were buil
 
 | Task | Result | Illustrative code anchors |
 |---|---|---|
-| T-CLI-001 | Dispatcher and help behavior implemented. | `cmd/todo/main.go`, `internal/cli/dispatch.go`, `internal/cli/help.go` |
-| T-CLI-002 | Dispatcher and help tests added. | `tests/e2e/help_test.go`, `tests/e2e/dispatch_test.go` |
-| T-CLI-003 | Path resolution and storage read validation implemented. | `internal/storage/path.go`, `internal/storage/load.go`, `internal/storage/model.go` |
-| T-CLI-004 | Storage/path tests added. | `tests/integration/storage_load_test.go`, `tests/e2e/path_test.go` |
-| T-CLI-005 | Atomic save implemented. | `internal/storage/save.go` |
-| T-CLI-006 | Atomic-write tests added. | `tests/integration/atomic_write_test.go` |
-| T-CLI-007 | Task command handlers implemented. | `internal/cli/add.go`, `internal/cli/list.go`, `internal/cli/done.go`, `internal/cli/rm.go` |
-| T-CLI-008 | Command behavior tests added. | `tests/e2e/commands_test.go`, `tests/integration/performance_test.go` |
+| T-CLI-001 | Dispatcher and help tests added. | `tests/e2e/help_test.go`, `tests/e2e/dispatch_test.go` |
+| T-CLI-002 | Dispatcher and help behavior implemented. | `cmd/todo/main.go`, `internal/cli/dispatch.go`, `internal/cli/help.go` |
+| T-CLI-003 | Storage/path tests added. | `tests/integration/storage_load_test.go`, `tests/e2e/path_test.go` |
+| T-CLI-004 | Path resolution and storage read validation implemented. | `internal/storage/path.go`, `internal/storage/load.go`, `internal/storage/model.go` |
+| T-CLI-005 | Atomic-write tests added. | `tests/integration/atomic_write_test.go` |
+| T-CLI-006 | Atomic save implemented. | `internal/storage/save.go` |
+| T-CLI-007 | Command behavior tests added. | `tests/e2e/commands_test.go`, `tests/integration/performance_test.go` |
+| T-CLI-008 | Task command handlers implemented. | `internal/cli/add.go`, `internal/cli/list.go`, `internal/cli/done.go`, `internal/cli/rm.go` |
 | T-CLI-009 | Review and release artifacts completed. | `review.md`, `traceability.md`, `release-notes.md`, `retrospective.md` |
 
 ## Validation run
