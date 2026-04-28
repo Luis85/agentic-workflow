@@ -17,6 +17,7 @@
     "check:workflow-docs": "tsx scripts/check-workflow-docs.ts",
     "check:frontmatter": "tsx scripts/check-frontmatter.ts",
     "check:specs": "tsx scripts/check-spec-state.ts",
+    "check:roadmaps": "tsx scripts/check-roadmaps.ts",
     "check:traceability": "tsx scripts/check-traceability.ts",
     "docs:scripts": "typedoc --options typedoc.json",
     "fix": "tsx scripts/fix-generated.ts",
