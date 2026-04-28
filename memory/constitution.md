@@ -38,13 +38,16 @@ Idea ≠ Research ≠ Requirements ≠ Design ≠ Specification
 
 Every artifact links to its inputs.
 
-```
-Requirement (REQ-X-NNN)
-  → Spec (SPEC-X-NNN)
-    → Task (T-X-NNN)
-      → Code (file:line)
-        → Test (TEST-X-NNN)
-          → Review finding (R-X-NNN)
+```mermaid
+flowchart TD
+    requirement["Requirement<br/>REQ-X-NNN"]
+    spec["Spec<br/>SPEC-X-NNN"]
+    task["Task<br/>T-X-NNN"]
+    code["Code<br/>file:line"]
+    test["Test<br/>TEST-X-NNN"]
+    finding["Review finding<br/>R-X-NNN"]
+
+    requirement --> spec --> task --> code --> test --> finding
 ```
 
 The traceability matrix in `specs/<feature>/traceability.md` is regenerable from the artifacts (document-level frontmatter plus marked-up per-item entries in body — see `docs/traceability.md`). No requirement may exist without a downstream chain by the time `/spec:review` runs.

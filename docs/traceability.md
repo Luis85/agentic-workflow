@@ -2,13 +2,16 @@
 
 Every artifact links back to its inputs. The chain:
 
-```
-Requirement (REQ-X-NNN)
-  └── Spec item (SPEC-X-NNN)
-        └── Task (T-X-NNN)
-              └── Code (file:line, commit SHA)
-                    └── Test (TEST-X-NNN)
-                          └── Review finding (R-X-NNN, optional)
+```mermaid
+flowchart TD
+    requirement["Requirement<br/>REQ-X-NNN"]
+    spec["Spec item<br/>SPEC-X-NNN"]
+    task["Task<br/>T-X-NNN"]
+    code["Code<br/>file:line, commit SHA"]
+    test["Test<br/>TEST-X-NNN"]
+    finding["Review finding<br/>R-X-NNN, optional"]
+
+    requirement --> spec --> task --> code --> test --> finding
 ```
 
 ## ID scheme
