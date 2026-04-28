@@ -8,7 +8,7 @@ owner: dev
 inputs:
   - TASKS-V04-001
 created: 2026-04-28
-updated: 2026-04-29
+updated: 2026-04-30
 ---
 
 # Implementation log - Version 0.4
@@ -19,6 +19,8 @@ updated: 2026-04-29
 - Kept full lifecycle artifact progress visible while excluding future-stage evidence from the stage score.
 - Rendered test and EARS coverage as `not expected yet` when the workflow has not reached the relevant stage.
 - Added regression tests for stage-aware artifact and traceability expectations.
+- Added optional `--save` and `--compare` trend snapshots under `quality/metrics/<scope>/`.
+- Added trend deltas for score, maturity, blockers, clarifications, frontmatter gaps, and QA checklist gaps.
 
 ## Task T-V04-007 - Metrics interpretation
 

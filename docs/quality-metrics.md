@@ -26,6 +26,18 @@ Use JSON for tooling:
 npm run quality:metrics -- --json
 ```
 
+Persist a timestamped baseline snapshot:
+
+```bash
+npm run quality:metrics -- --save
+```
+
+Compare the current report with the latest saved baseline for the same scope:
+
+```bash
+npm run quality:metrics -- --compare
+```
+
 ## Metric interpretation
 
 | Metric | Meaning | Use it for | Do not use it for | Typical action |
@@ -42,6 +54,22 @@ npm run quality:metrics -- --json
 | Blocks | Explicit blockers in workflow state. | Escalation and planning. | Treating absence of blockers as proof of readiness. | Resolve, owner, or escalate the blocker. |
 | Clarifications | Open questions in workflow state. | Human decision queue. | Deferring unanswered scope or requirement gaps. | Answer or convert to a tracked requirement/risk. |
 | QA checklist gaps | `gap` and `nonconformity` statuses under `quality/`. | QA readiness and corrective-action planning. | ISO certification claims. | Assign owners, due dates, and effectiveness checks. |
+
+## Trend snapshots
+
+`--save` writes the current machine-readable report under `quality/metrics/<scope>/<timestamp>.json`. Scope is repository-wide by default, or feature-specific when `--feature <slug>` is present.
+
+`--compare` reads the latest saved snapshot for the same scope and adds a trend section with deltas for:
+
+- overall workflow score,
+- maturity level,
+- workflow states scanned,
+- active blockers,
+- open clarifications,
+- Markdown frontmatter gaps,
+- QA checklist gaps or nonconformities.
+
+Use trends to spot drift or improvement between reviews. Do not treat a single delta as root-cause evidence; inspect the underlying workflow rows and attention signals before acting.
 
 ## Stage-aware scoring
 
@@ -66,7 +94,7 @@ The maturity assessment is an adoption guide. It uses observable repository evid
 | 2 | Managed | Stage-aware score is at least 80% and required metadata is complete. | Close blockers and clarifications, then strengthen traceability. |
 | 3 | Traceable | Stage-aware requirement-chain coverage is at least 80%. | Drive completed workflows through testing and review evidence. |
 | 4 | Verified | Completed workflows include downstream test evidence. | Add QA reviews and corrective-action evidence. |
-| 5 | Improving | Quality reviews exist and open QA checklist gaps are cleared. | Use trend snapshots or periodic reviews to watch drift. |
+| 5 | Improving | Quality reviews exist and open QA checklist gaps are cleared. | Use `--save` and `--compare` trend snapshots or periodic reviews to watch drift. |
 
 The maturity level should always be read with its evidence and gaps. A repository can have a high maturity level and still have open clarifications or active work that needs attention.
 

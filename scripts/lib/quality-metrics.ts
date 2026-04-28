@@ -8,6 +8,7 @@ import {
   relativeToRoot,
   repoRoot,
   walkFiles,
+  writeText,
 } from "./repo.js";
 import {
   canonicalArtifacts,
@@ -89,6 +90,35 @@ export type QualityMetrics = {
 
 export type WorkflowArtifacts = Record<string, string>;
 
+export type QualityTrendDelta = {
+  metric: string;
+  previous: number;
+  current: number;
+  delta: number;
+  unit: "count" | "level" | "percent";
+};
+
+export type QualityTrend = {
+  baselinePath?: string;
+  baselineGeneratedAt?: string;
+  currentGeneratedAt: string;
+  scope: string;
+  deltas: QualityTrendDelta[];
+  summary: string[];
+};
+
+export type QualityMetricsSnapshot =
+  | {
+      path: string;
+      metrics: QualityMetrics;
+      error?: never;
+    }
+  | {
+      path: string;
+      metrics?: never;
+      error: string;
+    };
+
 type IdRegistry = {
   reqs: Set<string>;
   specsByReq: Map<string, Set<string>>;
@@ -100,6 +130,7 @@ type IdRegistry = {
 const linkFieldPattern = /^-\s+\*\*(Satisfies|Requirement):\*\*\s+(.+)$/gim;
 const checklistItemPattern = /^\s*-\s+\[[ xX-]\]\s+QA-[A-Z][A-Z0-9]*-\d{3}\b/gm;
 const checklistGapPattern = /^\s*-\s+Status:\s+(gap|nonconformity)\b/gim;
+const qualityMetricsSnapshotFilePattern = /^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z\.json$/;
 
 /**
  * Collect deterministic quality KPIs for workflow deliverables and repository
@@ -249,6 +280,161 @@ export function renderQualityMetrics(metrics: QualityMetrics): string {
   return `${lines.join("\n")}\n`;
 }
 
+/**
+ * Compare the current quality metrics snapshot with an earlier snapshot.
+ *
+ * @param current - Current metrics.
+ * @param previous - Previous metrics for the same scope.
+ * @param baselinePath - Optional path to the previous snapshot.
+ * @returns Trend deltas and human-readable summary.
+ */
+export function compareQualityMetrics(
+  current: QualityMetrics,
+  previous: QualityMetrics,
+  baselinePath?: string,
+): QualityTrend {
+  const deltas: QualityTrendDelta[] = [
+    qualityDelta("Overall workflow score", previous.summary.overallScore, current.summary.overallScore, "percent"),
+    qualityDelta("Maturity level", previous.summary.maturity.level, current.summary.maturity.level, "level"),
+    qualityDelta("Workflow states scanned", previous.summary.workflowCount, current.summary.workflowCount, "count"),
+    qualityDelta("Open blockers", previous.signals.activeBlockers.length, current.signals.activeBlockers.length, "count"),
+    qualityDelta(
+      "Open clarifications",
+      previous.signals.openClarifications.length,
+      current.signals.openClarifications.length,
+      "count",
+    ),
+    qualityDelta(
+      "Markdown missing required frontmatter",
+      previous.signals.missingFrontmatter.length,
+      current.signals.missingFrontmatter.length,
+      "count",
+    ),
+    qualityDelta("QA checklist gaps/nonconformities", previous.summary.checklistGaps, current.summary.checklistGaps, "count"),
+  ];
+
+  return {
+    baselinePath,
+    baselineGeneratedAt: previous.generatedAt,
+    currentGeneratedAt: current.generatedAt,
+    scope: current.scope,
+    deltas,
+    summary: summarizeTrend(deltas),
+  };
+}
+
+/**
+ * Render quality trend deltas as Markdown.
+ *
+ * @param trend - Trend comparison returned by {@link compareQualityMetrics}.
+ * @returns Markdown trend section.
+ */
+export function renderQualityTrend(trend: QualityTrend | null): string {
+  if (!trend) {
+    return [
+      "## Quality trend",
+      "",
+      "No saved baseline snapshot was found for this scope.",
+      "",
+      "Run `npm run quality:metrics -- --save` to create the first baseline.",
+      "",
+    ].join("\n");
+  }
+
+  const lines = [
+    "## Quality trend",
+    "",
+    `Baseline: ${trend.baselineGeneratedAt ?? "unknown"}${trend.baselinePath ? ` (${trend.baselinePath})` : ""}`,
+    `Current: ${trend.currentGeneratedAt}`,
+    "",
+    "| Metric | Previous | Current | Delta |",
+    "|---|---:|---:|---:|",
+  ];
+
+  for (const delta of trend.deltas) {
+    lines.push(
+      `| ${delta.metric} | ${formatTrendValue(delta.previous, delta.unit)} | ${formatTrendValue(delta.current, delta.unit)} | ${formatTrendDelta(delta)} |`,
+    );
+  }
+
+  lines.push("", "### Summary", "", ...renderList(trend.summary), "");
+  return lines.join("\n");
+}
+
+/**
+ * Render an unreadable quality trend baseline as Markdown.
+ *
+ * @param snapshot - Snapshot load result with an error.
+ * @returns Markdown trend section.
+ */
+export function renderQualityTrendError(snapshot: QualityMetricsSnapshot): string {
+  return [
+    "## Quality trend",
+    "",
+    `The saved baseline snapshot could not be read: ${snapshot.path}`,
+    "",
+    `Reason: ${snapshot.error ?? "Unknown snapshot read error."}`,
+    "",
+    "Fix or remove the snapshot, then rerun `npm run quality:metrics -- --compare`.",
+    "",
+  ].join("\n");
+}
+
+/**
+ * Save a quality metrics snapshot under `quality/metrics/<scope>/`.
+ *
+ * @param metrics - Metrics to persist.
+ * @returns Repository-relative path to the saved snapshot.
+ */
+export function saveQualityMetricsSnapshot(metrics: QualityMetrics): string {
+  const absolutePath = qualityMetricsSnapshotPath(metrics);
+  fs.mkdirSync(path.dirname(absolutePath), { recursive: true });
+  writeText(absolutePath, `${JSON.stringify(metrics, null, 2)}\n`);
+  return relativeToRoot(absolutePath);
+}
+
+/**
+ * Load the latest saved quality metrics snapshot for the current scope.
+ *
+ * @param metrics - Current metrics whose scope selects the snapshot directory.
+ * @returns Previous metrics plus path, or null when no baseline exists.
+ */
+export function latestQualityMetricsSnapshot(metrics: QualityMetrics): QualityMetricsSnapshot | null {
+  const directory = path.dirname(qualityMetricsSnapshotPath(metrics));
+  if (!fs.existsSync(directory)) return null;
+  const snapshots = fs
+    .readdirSync(directory, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && qualityMetricsSnapshotFilePattern.test(entry.name))
+    .map((entry) => path.join(directory, entry.name))
+    .sort((a, b) => a.localeCompare(b));
+  const latest = snapshots.at(-1);
+  if (!latest) return null;
+  const snapshotPath = relativeToRoot(latest);
+  try {
+    return {
+      path: snapshotPath,
+      metrics: JSON.parse(readText(latest)) as QualityMetrics,
+    };
+  } catch (error) {
+    return {
+      path: snapshotPath,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
+/**
+ * Return the deterministic snapshot path for quality metrics.
+ *
+ * @param metrics - Metrics whose scope and timestamp determine the path.
+ * @returns Absolute snapshot path.
+ */
+export function qualityMetricsSnapshotPath(metrics: QualityMetrics): string {
+  const scope = slugifyScope(metrics.scope);
+  const timestamp = metrics.generatedAt.replace(/[:.]/g, "-");
+  return path.join(repoRoot, "quality", "metrics", scope, `${timestamp}.json`);
+}
+
 export type MaturityInput = {
   workflows: WorkflowMetric[];
   workflowStateFiles?: string[];
@@ -383,6 +569,42 @@ function maturityResult(level: number, evidence: string[], gaps: string[], nextS
     gaps: gaps.length === 0 ? ["No maturity gaps detected for this level."] : gaps,
     nextStep: nextStep ?? definition.nextStep,
   };
+}
+
+function qualityDelta(
+  metric: string,
+  previous: number,
+  current: number,
+  unit: QualityTrendDelta["unit"],
+): QualityTrendDelta {
+  return {
+    metric,
+    previous,
+    current,
+    delta: current - previous,
+    unit,
+  };
+}
+
+function summarizeTrend(deltas: QualityTrendDelta[]): string[] {
+  const changed = deltas.filter((delta) => Math.abs(delta.delta) > 0.0001);
+  if (changed.length === 0) return ["No tracked KPI changed since the baseline snapshot."];
+  return changed.map((delta) => `${delta.metric} changed by ${formatTrendDelta(delta)}.`);
+}
+
+function formatTrendValue(value: number, unit: QualityTrendDelta["unit"]): string {
+  if (unit === "percent") return formatPercent(value);
+  return String(Math.round(value * 10) / 10);
+}
+
+function formatTrendDelta(delta: QualityTrendDelta): string {
+  const sign = delta.delta > 0 ? "+" : "";
+  if (delta.unit === "percent") return `${sign}${formatPercent(delta.delta)}`;
+  return `${sign}${Math.round(delta.delta * 10) / 10}`;
+}
+
+function slugifyScope(scope: string): string {
+  return scope.replace(/[^A-Za-z0-9._-]+/g, "-").replace(/^-|-$/g, "") || "repository";
 }
 
 function workflowStateFiles(): string[] {
