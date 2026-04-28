@@ -222,8 +222,9 @@ function validateScalarWikilink(errors: Diagnostic[], filePath: string, lineNumb
 function validateListItemWikilink(errors: Diagnostic[], filePath: string, lineNumber: number, trimmedLine: string): void {
   const match = trimmedLine.match(/^-\s+(.+)$/);
   if (!match) return;
-  const value = match[1].trim();
-  if (!value.includes("[[") || !hasBareWikilink(value)) return;
+  const { value } = splitInlineComment(match[1]);
+  const trimmedValue = value.trim();
+  if (!trimmedValue.includes("[[") || !hasBareWikilink(trimmedValue)) return;
 
   errors.push(
     obsidianDiagnostic(
@@ -293,7 +294,7 @@ function hasBareWikilink(value: string): boolean {
   for (let index = 0; index < value.length; index += 1) {
     const char = value[index];
     const previous = value[index - 1];
-    if ((char === "\"" || char === "'") && previous !== "\\") {
+    if (isYamlQuoteBoundary(value, index) && previous !== "\\") {
       quote = quote === char ? null : quote || char;
       continue;
     }
@@ -309,7 +310,7 @@ function quoteBareWikilinks(value: string): string {
   for (let index = 0; index < value.length; index += 1) {
     const char = value[index];
     const previous = value[index - 1];
-    if ((char === "\"" || char === "'") && previous !== "\\") {
+    if (isYamlQuoteBoundary(value, index) && previous !== "\\") {
       quote = quote === char ? null : quote || char;
       result += char;
       continue;
@@ -329,6 +330,20 @@ function quoteBareWikilinks(value: string): string {
   }
 
   return result;
+}
+
+function isYamlQuoteBoundary(value: string, index: number): boolean {
+  const char = value[index];
+  if (char === "\"") return true;
+  if (char !== "'") return false;
+
+  const previous = value[index - 1];
+  const next = value[index + 1];
+  return !isWordChar(previous) || !isWordChar(next);
+}
+
+function isWordChar(char: string | undefined): boolean {
+  return char !== undefined && /[A-Za-z0-9_]/.test(char);
 }
 
 function obsidianDiagnostic(code: ObsidianDiagnosticCode, filePath: string, line: number, message: string): Diagnostic {
