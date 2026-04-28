@@ -2,6 +2,21 @@ import fs from "node:fs";
 import path from "node:path";
 import { extractFrontmatter, parseSimpleYaml, readText, repoRoot } from "./repo.js";
 
+/**
+ * ADR metadata used by generated index checks.
+ *
+ * @typedef {object} AdrRecord
+ * @property {string} number - Four-digit ADR number from the filename.
+ * @property {string} fileName - Markdown filename below `docs/adr`.
+ * @property {unknown} title - Title from frontmatter, heading text, or filename fallback.
+ * @property {unknown} status - Normalized status from frontmatter, body text, or fallback.
+ */
+
+/**
+ * Read ADR metadata from `docs/adr`.
+ *
+ * @returns {AdrRecord[]} ADR records sorted by filename.
+ */
 export function getAdrs() {
   const dir = path.join(repoRoot, "docs/adr");
   return fs
@@ -20,6 +35,11 @@ export function getAdrs() {
     });
 }
 
+/**
+ * Render the generated ADR index table used by `docs/adr/README.md`.
+ *
+ * @returns {string} Markdown table containing ADR number, title, and status.
+ */
 export function renderAdrIndex() {
   const rows = [
     "| # | Title | Status |",
@@ -43,6 +63,12 @@ function statusFromBody(text) {
   return firstLine || null;
 }
 
+/**
+ * Convert an ADR status string to title case for stable generated output.
+ *
+ * @param {unknown} value - Raw status value from frontmatter or body text.
+ * @returns {unknown} Title-cased status string, or the original falsy value.
+ */
 export function normalizeStatus(value) {
   if (!value) return value;
   return String(value)

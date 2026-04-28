@@ -2,6 +2,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+/**
+ * Absolute filesystem path to the repository root.
+ *
+ * Script helpers resolve all checked and generated paths from this directory so
+ * commands behave the same regardless of the caller's current working directory.
+ */
 export const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 
 const ignoredDirs = new Set([
@@ -14,22 +20,62 @@ const ignoredDirs = new Set([
   "coverage",
 ]);
 
+/**
+ * Parsed frontmatter from a Markdown document.
+ *
+ * @typedef {object} FrontmatterBlock
+ * @property {string} raw - YAML text between delimiter lines.
+ * @property {string} body - Markdown content after the frontmatter block.
+ */
+
+/**
+ * Convert a platform-specific path to a slash-delimited path for Markdown output.
+ *
+ * @param {string} filePath - Path using the current operating system separator.
+ * @returns {string} The same path using `/` separators.
+ */
 export function toPosix(filePath) {
   return filePath.split(path.sep).join("/");
 }
 
+/**
+ * Format an absolute repository path as a stable path relative to the repo root.
+ *
+ * @param {string} filePath - Absolute or repository-root-relative path.
+ * @returns {string} POSIX-style path relative to {@link repoRoot}.
+ */
 export function relativeToRoot(filePath) {
   return toPosix(path.relative(repoRoot, filePath));
 }
 
+/**
+ * Read a UTF-8 text file.
+ *
+ * @param {string} filePath - File path to read.
+ * @returns {string} File contents.
+ */
 export function readText(filePath) {
   return fs.readFileSync(filePath, "utf8");
 }
 
+/**
+ * Write a UTF-8 text file.
+ *
+ * @param {string} filePath - File path to write.
+ * @param {string} text - Complete replacement contents.
+ */
 export function writeText(filePath, text) {
   fs.writeFileSync(filePath, text, "utf8");
 }
 
+/**
+ * Recursively list files below a repository directory while skipping generated
+ * and dependency folders.
+ *
+ * @param {string} startDir - Directory to walk, relative to {@link repoRoot}.
+ * @param {(filePath: string) => boolean} [predicate] - Optional file filter.
+ * @returns {string[]} Absolute file paths sorted by repository-relative path.
+ */
 export function walkFiles(startDir, predicate = () => true) {
   const results = [];
   const root = path.join(repoRoot, startDir);
@@ -50,10 +96,21 @@ export function walkFiles(startDir, predicate = () => true) {
   return results.sort((a, b) => relativeToRoot(a).localeCompare(relativeToRoot(b)));
 }
 
+/**
+ * List all Markdown files tracked by repository checks.
+ *
+ * @returns {string[]} Absolute paths to Markdown files.
+ */
 export function markdownFiles() {
   return walkFiles(".", (file) => file.endsWith(".md"));
 }
 
+/**
+ * Print accumulated validation errors and terminate the current Node process.
+ *
+ * @param {string[]} errors - Human-readable validation errors.
+ * @param {string} heading - Check name shown before the result.
+ */
 export function failIfErrors(errors, heading) {
   if (errors.length === 0) {
     console.log(`${heading}: ok`);
@@ -65,6 +122,12 @@ export function failIfErrors(errors, heading) {
   process.exit(1);
 }
 
+/**
+ * Extract YAML frontmatter from a Markdown document.
+ *
+ * @param {string} text - Markdown document contents.
+ * @returns {FrontmatterBlock | null} Frontmatter and body, or null when no frontmatter block exists.
+ */
 export function extractFrontmatter(text) {
   if (!text.startsWith("---\n") && !text.startsWith("---\r\n")) return null;
   const normalized = text.replace(/\r\n/g, "\n");
@@ -76,6 +139,16 @@ export function extractFrontmatter(text) {
   };
 }
 
+/**
+ * Parse the small YAML subset used by repository state files.
+ *
+ * This parser intentionally supports only the structures needed by local
+ * checks: scalar keys, one-level nested maps, inline arrays, quoted strings,
+ * integers, and null markers.
+ *
+ * @param {string} raw - Raw frontmatter without delimiter lines.
+ * @returns {Record<string, unknown>} Parsed YAML data.
+ */
 export function parseSimpleYaml(raw) {
   const data = {};
   const lines = raw.split("\n");
@@ -132,6 +205,15 @@ function parseYamlScalar(value) {
   return value.replace(/^["']|["']$/g, "");
 }
 
+/**
+ * Replace a named generated Markdown block.
+ *
+ * @param {string} text - Source document containing generated block markers.
+ * @param {string} name - Marker name from `BEGIN GENERATED: <name>`.
+ * @param {string} content - Generated content to place between markers.
+ * @returns {string} Updated document contents.
+ * @throws {Error} When the named block markers are missing.
+ */
 export function replaceGeneratedBlock(text, name, content) {
   const begin = `<!-- BEGIN GENERATED: ${name} -->`;
   const end = `<!-- END GENERATED: ${name} -->`;

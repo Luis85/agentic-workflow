@@ -1,5 +1,17 @@
 import { spawnSync } from "node:child_process";
 
+/**
+ * Run a list of Node-backed repository tasks in sequence.
+ *
+ * Each task is executed with the current Node binary. The runner prints a
+ * concise reproduce command when a task fails, which keeps `npm run verify`
+ * output actionable.
+ *
+ * @param {{ name: string, label: string, script: string }[]} tasks - Tasks to execute.
+ * @param {{ heading?: string, stopOnFailure?: boolean }} [options] - Runner behavior.
+ * @param {string} [options.heading="runner"] - Prefix for progress messages.
+ * @param {boolean} [options.stopOnFailure=true] - Exit immediately when a task fails.
+ */
 export function runNodeTasks(tasks, options = {}) {
   const { heading = "runner", stopOnFailure = true } = options;
   const startedAt = Date.now();

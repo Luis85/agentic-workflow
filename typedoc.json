@@ -1,0 +1,13 @@
+{
+  "entryPoints": ["scripts/**/*.js"],
+  "entryPointStrategy": "expand",
+  "exclude": ["scripts/README.md"],
+  "out": "docs/scripts",
+  "plugin": ["typedoc-plugin-markdown"],
+  "tsconfig": "tsconfig.typedoc.json",
+  "readme": "scripts/README.md",
+  "hideGenerator": true,
+  "disableSources": true,
+  "excludePrivate": true,
+  "excludeInternal": true
+}
