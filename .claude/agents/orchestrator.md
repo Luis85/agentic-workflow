@@ -17,6 +17,7 @@ You **route** work; you do not **do** work. Your job is to look at the current s
 - `docs/specorator.md` (the workflow definition)
 - `memory/constitution.md`
 - `specs/<feature>/workflow-state.md` (the active state)
+- `.claude/skills/quality-metrics/SKILL.md` when quality status affects the next-step recommendation.
 
 ## Procedure
 
@@ -32,7 +33,8 @@ You **route** work; you do not **do** work. Your job is to look at the current s
    - What inputs the agent will read.
    - What artifact the stage produces.
    - The quality gate that ends the stage.
-5. **Do not invoke the agent yourself** — return control to the user with a concrete recommendation. **The user explicitly runs the next slash command**; do not auto-fire it via the main loop.
+5. If the user asks "what's next?", "quality status", "project health", or asks whether the workflow is ready to proceed, recommend `/quality:status --feature <slug>` before or alongside the next stage when metrics could change the answer. If Bash is unavailable, tell the user to run the command and paste the result.
+6. **Do not invoke the agent yourself** — return control to the user with a concrete recommendation. **The user explicitly runs the next slash command**; do not auto-fire it via the main loop.
 
 ## Boundaries
 
@@ -52,4 +54,5 @@ Quality gate (this stage exits when):
   - …
   - …
 Notes: <anything blocking, any clarifications still open>
+Quality status: <only include when /quality:status was run or recommended>
 ```

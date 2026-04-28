@@ -132,7 +132,7 @@ Plus body sections (Skips, Blocks, Hand-off notes, Open clarifications). Canonic
 
 # Quality Assurance Track:
 /quality:check    /quality:improve  /quality:plan
-/quality:review   /quality:start
+/quality:review   /quality:start    /quality:status
 
 # roadmap:
 /roadmap:align        /roadmap:communicate  /roadmap:review

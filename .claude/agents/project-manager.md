@@ -27,6 +27,7 @@ You do **not**:
 3. `projects/<slug>/project-state.md` — current project phase, linked features, blocking items.
 4. Any earlier `projects/<slug>/` artifacts in phase order.
 5. For weekly reviews: each linked `specs/<slug>/workflow-state.md`.
+6. For KPI evidence: ask the user to run `/quality:status --json` or `/quality:status --feature <slug> --json` for linked features when status, readiness, or quality trend affects project reporting. You do not have Bash.
 
 ## The four P3.Express documents you maintain
 
@@ -77,6 +78,8 @@ Append a dated benefits-evaluation section to `project-closure.md`:
 ## Status report (`/project:report`)
 
 Produce `status-report.md` from live data only — never invent RAG status. Read every linked `workflow-state.md` before writing. Replace the prior report on each run.
+
+When quality KPIs are available, include a concise quality-status section with score, maturity, blockers, clarifications, QA gaps, and trend deltas. If no KPI snapshot was provided, say `Quality KPI snapshot: not provided` rather than inventing one.
 
 ## Boundaries
 

@@ -1,7 +1,7 @@
 ---
 name: quality-metrics
-description: Present deterministic quality KPIs for workflow deliverables, documentation, traceability, QA checklists, blockers, and clarifications. Use when the user asks for current quality status, project KPIs, workflow deliverable health, quality metrics, or an information-system quality report.
-argument-hint: "[--feature <slug>] [--json]"
+description: Present deterministic quality KPIs for workflow deliverables, documentation, traceability, QA checklists, blockers, clarifications, maturity, and trend snapshots. Use when the user asks for current quality status, project KPIs, workflow deliverable health, quality metrics, quality trend, or an information-system quality report.
+argument-hint: "[--feature <slug>] [--json] [--compare] [--save]"
 ---
 
 # Quality Metrics
@@ -35,6 +35,12 @@ npm run quality:metrics -- --save
 npm run quality:metrics -- --compare
 ```
 
+The slash-command entry point is:
+
+```bash
+/quality:status [--feature <feature-slug>] [--compare] [--save] [--json]
+```
+
 ## What It Measures
 
 - Workflow deliverable completion from `specs/*/workflow-state.md` and `examples/*/workflow-state.md`.
@@ -62,6 +68,15 @@ Summarize:
 - whether the result is a deterministic KPI snapshot or a full QA readiness review.
 
 Use `docs/quality-metrics.md` when explaining what a metric means, what action it supports, and what it must not be used to infer.
+
+## Agent Hooks
+
+- `orchestrator`: use `/quality:status` or this skill when the user asks "what's next?" and quality status would affect the recommendation.
+- `qa`: run feature-scoped metrics before finalizing `test-plan.md` or `test-report.md`; include blockers, clarifications, and traceability/test gaps as testing risks.
+- `reviewer`: run feature-scoped JSON metrics as deterministic evidence before writing the review verdict; do not let a high score replace review judgment.
+- `release-manager`: run `--feature <slug> --compare` before release readiness when a saved baseline exists; otherwise run `--feature <slug>` and disclose that no trend baseline exists.
+- `retrospective`: run `--feature <slug> --save` after learning-stage conclusions so future work can compare quality drift.
+- `project-manager`, `portfolio-manager`, and `roadmap-manager`: prefer `--json` when folding quality status into reports or dashboards.
 
 ## Do Not
 

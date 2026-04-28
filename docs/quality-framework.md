@@ -28,7 +28,22 @@ Use the deterministic metrics script when a user asks for current project qualit
 npm run quality:metrics
 ```
 
+Claude users can invoke the same report through the workflow command:
+
+```bash
+/quality:status [--feature <feature-slug>] [--compare] [--save]
+```
+
 The report summarizes stage-aware workflow health, evidence-backed maturity, lifecycle deliverable progress, artifact presence, required frontmatter coverage, requirement downstream coverage, test coverage, EARS usage, QA checklist gaps, blockers, and open clarifications. Scope to one feature with `npm run quality:metrics -- --feature <feature-slug>`, emit machine-readable output with `npm run quality:metrics -- --json`, persist a baseline with `npm run quality:metrics -- --save`, or compare against the latest saved baseline with `npm run quality:metrics -- --compare`.
+
+Agent handoffs should treat the KPI snapshot as deterministic evidence:
+
+- `orchestrator` recommends it when next-step readiness is unclear.
+- `qa` uses feature-scoped gaps as test-plan and test-report inputs.
+- `reviewer` uses JSON metrics as evidence before writing a verdict.
+- `release-manager` uses feature-scoped comparison as release-readiness context.
+- `retrospective` saves the post-learning baseline for future trend comparison.
+- project, roadmap, and portfolio agents consume JSON snapshots in status reports when supplied.
 
 Interpret metric meaning, decision use, and misuse warnings with [`docs/quality-metrics.md`](quality-metrics.md).
 

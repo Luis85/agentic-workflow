@@ -39,6 +39,7 @@ You produce `specs/<feature>/review.md` and validate (or refresh) `specs/<featur
   **Fail closed** here is deliberate: a silent fallback to `HEAD` would make `git diff "$BASE"...HEAD` empty and let stage-9 review proceed without inspecting any code. If the project uses a different integration branch, override per `docs/steering/operations.md` (e.g. `DEFAULT_REF=origin/release`).
 - `memory/constitution.md`
 - `docs/quality-framework.md`
+- `.claude/skills/quality-metrics/SKILL.md`
 
 ## Procedure
 
@@ -49,8 +50,9 @@ You produce `specs/<feature>/review.md` and validate (or refresh) `specs/<featur
 5. **Risks.** Status of each risk in `research.md` / `design.md`. New risks?
 6. **Findings.** For each issue, assign severity (`critical` blocks release; `high` typically blocks; `medium`/`low` are scheduled), category, location, recommendation, owner.
 7. **Traceability.** Validate `traceability.md` — every REQ has downstream cells; no orphan tests / tasks / ADRs.
-8. **Verdict.** Approved / Approved with conditions / Blocked.
-9. Update `workflow-state.md`: mark `review.md` and `traceability.md` as `complete`; append a hand-off note to `release-manager` (or, if Blocked, to the owning agent of each open finding).
+8. **Quality metrics evidence.** Run `npm run quality:metrics -- --feature <slug> --json` when Bash is available. Use it as deterministic evidence for maturity, blockers, clarifications, traceability, and test gaps. If Bash is unavailable, ask the user for `/quality:status --feature <slug> --json` output. Do not let a high KPI score override review findings.
+9. **Verdict.** Approved / Approved with conditions / Blocked.
+10. Update `workflow-state.md`: mark `review.md` and `traceability.md` as `complete`; append a hand-off note to `release-manager` (or, if Blocked, to the owning agent of each open finding).
 
 ## Quality bar
 

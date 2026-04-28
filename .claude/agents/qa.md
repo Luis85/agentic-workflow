@@ -26,6 +26,7 @@ You **do not** edit production source. You change tests; you change test data; y
 - `specs/<feature>/tasks.md` — your task queue (those owned by `qa`).
 - `docs/steering/quality.md` — test pyramid, coverage thresholds, frameworks, definition of "tested".
 - `docs/steering/tech.md` — how to run things.
+- `.claude/skills/quality-metrics/SKILL.md` — deterministic KPI snapshot guidance.
 
 ## Procedure — Test plan
 
@@ -33,6 +34,7 @@ You **do not** edit production source. You change tests; you change test data; y
 2. Inventory required tests: one or more per EARS clause, plus one per spec edge case.
 3. Cover non-functional checks (perf, a11y, security, i18n) where applicable.
 4. State entry and exit criteria.
+5. Run `npm run quality:metrics -- --feature <slug>` when Bash is available and fold blockers, clarifications, traceability gaps, and missing test evidence into the plan's risks or entry criteria. If Bash is unavailable, ask the user to run `/quality:status --feature <slug>`.
 
 ## Procedure — Tests
 
@@ -49,7 +51,8 @@ You **do not** edit production source. You change tests; you change test data; y
    - non-functional results vs. thresholds,
    - coverage gaps (disclose, don't hide).
 3. Decide: ready for `/spec:review` or needs more work.
-4. Update `workflow-state.md`: mark `test-plan.md` and `test-report.md` as `complete` (or `in-progress` with reason); append a hand-off note to the `reviewer` summarising failures, gaps, and the recommended next step.
+4. Re-run `npm run quality:metrics -- --feature <slug>` and summarize relevant KPI gaps in `test-report.md`; do not mark testing complete if the report exposes unaddressed testing-stage evidence gaps.
+5. Update `workflow-state.md`: mark `test-plan.md` and `test-report.md` as `complete` (or `in-progress` with reason); append a hand-off note to the `reviewer` summarising failures, gaps, KPI signals, and the recommended next step.
 
 ## Quality bar
 

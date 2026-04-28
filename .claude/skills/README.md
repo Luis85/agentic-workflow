@@ -80,7 +80,7 @@ Skills MAY include supporting files (templates, scripts, fixtures) alongside `SK
 | [`verify/`](verify/SKILL.md) | Run the project's full pre‑PR gate (format / lint / types / test / build) and report failures actionably. | `dev`, `qa`, `release-manager`, `sre`, `reviewer` (read‑only Bash usage) |
 | [`new-adr/`](new-adr/SKILL.md) | Scaffold a new ADR from `templates/adr-template.md` with the next free number. | `architect` (no `Bash` — list the next number from a directory listing the user supplies; or hand off to an agent with `Bash`) |
 | [`review-fix/`](review-fix/SKILL.md) | Turn an automated‑review finding into an isolated worktree + plan, ready for TDD. | `dev`, `reviewer` (with caveats — `reviewer` typically lacks worktree authority; hand off to `dev`) |
-| [`quality-metrics/`](quality-metrics/SKILL.md) | Present deterministic project quality KPIs from workflow deliverables, traceability, docs, and QA checklists. | `qa`, `reviewer`, `release-manager`, `orchestrator` when Bash is available or via handoff |
+| [`quality-metrics/`](quality-metrics/SKILL.md) | Present deterministic project quality KPIs from workflow deliverables, traceability, docs, QA checklists, maturity, and trend snapshots. | `/quality:status`; `qa`, `reviewer`, `release-manager`, `retrospective`, `orchestrator`; project/portfolio/roadmap agents via JSON handoff |
 
 ## How to use
 

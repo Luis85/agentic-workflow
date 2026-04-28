@@ -53,6 +53,7 @@ artifacts:
 - 2026-04-28 (codex): Started T-V04-005/T-V04-007 by making quality metrics stage-aware and adding metric interpretation guidance.
 - 2026-04-29 (codex): Extended T-V04-008 with evidence-backed maturity assessment in the quality metrics report and documentation.
 - 2026-04-30 (codex): Extended T-V04-005 with optional quality metrics trend snapshots via `--save` and `--compare`.
+- 2026-04-30 (codex): Added `/quality:status` and agent prompt hooks so quality metrics are visible at orchestration, QA, review, release, retrospective, project, roadmap, and portfolio handoffs.
 
 ## Open clarifications
 

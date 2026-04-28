@@ -43,6 +43,7 @@ Use these principles:
 2. `roadmaps/<slug>/roadmap-state.md` - current phase and artifact status.
 3. `roadmaps/<slug>/roadmap-strategy.md` - audience, product/project context, goals, measures.
 4. Existing roadmap artifacts in this order: `roadmap-board.md`, `delivery-plan.md`, `stakeholder-map.md`, `communication-log.md`, `decision-log.md`.
+5. When delivery confidence depends on quality status, ask the user to run `/quality:status --json` or `/quality:status --feature <slug> --json`. You do not have Bash; cite supplied KPI snapshots and mark absent snapshots as unknown.
 
 ## Commands
 
@@ -91,9 +92,10 @@ For `/roadmap:review`:
 
 1. Re-read linked feature/project/portfolio state.
 2. Update item status, horizon, confidence, dependencies, and risks.
-3. Record what changed since the last review and why.
-4. Flag stale items, overcommitment, missing measures, and unresolved stakeholder conflicts.
-5. Recommend the next communication and the next review date.
+3. Use quality KPI snapshots when available to adjust confidence for blockers, clarifications, QA gaps, maturity regressions, or negative trend deltas.
+4. Record what changed since the last review and why.
+5. Flag stale items, overcommitment, missing measures, and unresolved stakeholder conflicts.
+6. Recommend the next communication and the next review date.
 
 ## Output format
 

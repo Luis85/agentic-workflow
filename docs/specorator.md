@@ -262,6 +262,7 @@ The `orchestrator` agent (or a human) reads `workflow-state.md` and:
 | `/quality:check <slug>` | Execute checklists and record evidence, gaps, and risks |
 | `/quality:review <slug>` | Summarize readiness, nonconformities, and risks |
 | `/quality:improve <slug>` | Convert findings into corrective actions and improvement follow-up |
+| `/quality:status [--feature <slug>] [--compare] [--save]` | Report deterministic quality KPIs, maturity, attention signals, and trend deltas |
 | `/roadmap:start <slug>` | Start a product/project roadmap workspace |
 | `/roadmap:shape <slug>` | Build or refresh the outcome roadmap and delivery plan |
 | `/roadmap:align <slug>` | Map stakeholders and prepare team communication |

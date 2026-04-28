@@ -36,7 +36,7 @@ One command per workflow phase. Subdirectories namespace commands (`spec/specify
 
 # Quality Assurance Track:
 /quality:check    /quality:improve  /quality:plan
-/quality:review   /quality:start
+/quality:review   /quality:start    /quality:status
 
 # roadmap:
 /roadmap:align        /roadmap:communicate  /roadmap:review
