@@ -29,6 +29,7 @@ Before doing any non-trivial work, read:
 - **EARS for requirements.** Functional requirements use EARS notation (see `docs/ears-notation.md`) so they map 1:1 to tests.
 - **ADRs for irreversible decisions.** Anything architecturally load-bearing gets an ADR in `docs/adr/`. Use the template in `templates/adr-template.md`.
 - **Update workflow state.** When you finish or hand off a stage, update `specs/<feature>/workflow-state.md` so the next agent can resume.
+- **Keep a product page alive.** Every new project or product should get a public product page with a directly accessible `sites/index.html`. Prefer GitHub Pages via GitHub Actions when available, and update the page in the same PR as user-visible product or positioning changes.
 - **Escalate ambiguity.** Don't guess. Either ask the human or open a `clarifications` block in the active artifact.
 - **Branch per concern; verify before push.** Topic branches live in `.worktrees/<slug>/`; one concern per PR; `verify` green locally before opening a PR. Never `--no-verify`. See `docs/branching.md`, `docs/worktrees.md`, `docs/verify-gate.md`.
 - **Codex opens the PR.** For non-trivial repo changes, Codex creates its own worktree, commits, pushes, opens the pull request, reports the PR URL/status, and asks the human for the next step. See `.codex/README.md`.

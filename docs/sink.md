@@ -106,6 +106,10 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │       ├── idea.md, research.md, …          # same artifact set as specs/<slug>/
 │       └── adr/                             # project-local ADRs for the example (NOT docs/adr/)
 │           └── NNNN-<slug>.md               # project-local sequence, e.g. ADR-CLI-0001
+├── sites/                                   # public product page (directly openable static entrypoint)
+│   ├── index.html
+│   ├── styles.css                           # optional
+│   └── assets/                              # optional visuals and media
 └── .claude/
     ├── agents/                              # subagent definitions (specialists)
     ├── commands/                            # slash commands (entry points per stage)
@@ -153,6 +157,8 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 | `portfolio/<slug>/portfolio-progress.md` | Y cycle (Y4) | Replaced each Y run; history in git |
 | `portfolio/<slug>/portfolio-improvements.md` | Y cycle (Y3, Y4) | Replaced each Y run; history in git |
 | `portfolio/<slug>/portfolio-log.md` | Z cycle (Z3) | **Append-only** — never edit previous entries |
+| `sites/index.html`, `sites/**/*` | `product-page` skill / `product-page-designer` | Living public product page; updated with product positioning and user-visible changes |
+| `.github/workflows/pages.yml` | `product-page` skill / `product-page-designer` | GitHub Pages deployment workflow when Pages is the selected host |
 | `specs/<slug>/arc42-questionnaire.md` | `arc42-baseline` skill | Created lazily on opt-in; canonical input to `design.md` Part C |
 | `specs/<slug>/design-alt-*.md`, `design-comparison.md` | `design-twice` skill | Created lazily on opt-in |
 | `.claude/skills/<name>/SKILL.md` | Skill author | Versioned in repo |
@@ -260,6 +266,7 @@ A portfolio is bootstrapped with `/portfolio:start <slug>`. The three cycle comm
 These skills append to cross-workflow files:
 
 - `record-decision` → `docs/adr/NNNN-<slug>.md` (via `/adr:new`).
+- `product-page` → `sites/index.html`, supporting `sites/` assets, and optionally `.github/workflows/pages.yml`.
 - `domain-context` → `docs/CONTEXT.md` (or `CONTEXT-MAP.md` + `contexts/<name>.md`).
 - `ubiquitous-language` → `docs/UBIQUITOUS_LANGUAGE.md`.
 

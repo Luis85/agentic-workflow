@@ -8,6 +8,8 @@
 
 Product page: <https://luis85.github.io/agentic-workflow/>
 
+The page source lives in [`sites/index.html`](sites/index.html). The `product-page` skill and `product-page-designer` agent keep that page current when a project starts, positioning changes, or user-visible releases would make the page stale.
+
 ---
 
 ## What is this?
@@ -284,6 +286,9 @@ Each arrow is a quality gate. See [`docs/workflow-overview.md`](docs/workflow-ov
 /portfolio:start  /portfolio:x      /portfolio:y
 /portfolio:z
 
+# Product:
+/product:page
+
 # Project Manager Track:
 /project:change    /project:close     /project:initiate
 /project:post      /project:report    /project:start
@@ -340,6 +345,7 @@ The artifact format (Markdown files in `specs/<feature>/`) and the ID scheme (`R
 | [`.claude/skills/`](.claude/skills/) | Reusable skill bundles (`orchestrate`, `grill`, `tdd-cycle`, `verify`, …) |
 | [`agents/operational/`](agents/operational/) | Scheduled bots: review-bot, dep-triage-bot, plan-recon-bot, and more |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | How to improve this template |
+| [`sites/index.html`](sites/index.html) | Public product page source, deployable through GitHub Pages |
 | [`AGENTS.md`](AGENTS.md) | Cross-tool root context (Codex, Cursor, Aider, Copilot all read this) |
 | [`CLAUDE.md`](CLAUDE.md) | Claude Code entry point — imports `AGENTS.md` |
 | [`.codex/`](.codex/) | Codex-specific instructions and workflow playbooks |
