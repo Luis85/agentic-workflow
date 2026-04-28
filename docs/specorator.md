@@ -18,6 +18,7 @@ A solution-agnostic, **spec-driven** workflow for building software with humans 
 8. [Iteration model](#8-iteration-model)
 9. [Usage guidelines](#9-usage-guidelines)
 10. [Future extensions](#10-future-extensions)
+11. [Improving Specorator itself](#11-improving-specorator-itself)
 
 ---
 
@@ -249,6 +250,10 @@ The `orchestrator` agent (or a human) reads `workflow-state.md` and:
 | `/spec:analyze` | Optional gate — cross-artifact consistency check |
 | `/adr:new "<title>"` | File a new architecture decision |
 | `/scaffold:start <slug> <source>` | Start source-led project scaffolding |
+| `/specorator:update "<idea>"` | Classify and guide a template improvement |
+| `/specorator:add-script "<purpose>"` | Add or change a repository script/check/fixer |
+| `/specorator:add-tooling "<purpose>"` | Add developer tooling, CI, generated tooling, or operational automation |
+| `/specorator:add-workflow "<purpose>"` | Add or change a workflow, track, command sequence, or handoff |
 
 ---
 
@@ -308,6 +313,34 @@ The workflow is iterative, not waterfall:
 - Metrics and maturity model
 - CI quality gates
 - Worked end-to-end examples in [`examples/`](../examples/)
+
+---
+
+## 11. Improving Specorator itself
+
+Specorator can be used to improve the template while a human is actively using it. Treat those requests as template improvements, not downstream product work. Examples include adding a quality drift review check, introducing a new operational routine, adding slash commands, or updating the workflow method.
+
+Use the `/specorator:*` commands when the improvement changes the workflow kit itself:
+
+| Command | Use when |
+|---|---|
+| `/specorator:update "<idea>"` | The idea is mixed or needs classification first. |
+| `/specorator:add-script "<purpose>"` | The change adds or updates a TypeScript repository script, check, fixer, or generated script documentation. |
+| `/specorator:add-tooling "<purpose>"` | The change adds CI, scheduled automation, dependencies, generated tooling, operational agents, or local developer tooling. |
+| `/specorator:add-workflow "<purpose>"` | The change adds or updates stages, tracks, commands, skills, agents, templates, state transitions, or handoffs. |
+
+All four commands invoke the [`specorator-improvement`](../.claude/skills/specorator-improvement/SKILL.md) skill. The skill applies a single improvement loop:
+
+1. Frame the problem, user scenario, non-goals, and expected automation or artifact.
+2. Trace the work to a lifecycle artifact, task, issue, or ADR.
+3. Classify the affected surfaces: scripts, tooling, workflow, docs, agents, skills, templates, state/schema, product page, or operations.
+4. Design the change before editing implementation files.
+5. Patch all owned surfaces in the same branch.
+6. Repair generated references with the narrow `npm run fix:*` command.
+7. Run targeted checks and `npm run verify`.
+8. Commit, push, and open a PR through the topic-branch workflow.
+
+For quality drift review automation, prefer a staged path: add a read-only check first, add a deterministic fixer only for mechanical drift, document human resolution for judgment calls, wire the check into `npm run verify` after false positives are controlled, and add scheduled or bot automation only after local and PR behavior is stable.
 
 ---
 
