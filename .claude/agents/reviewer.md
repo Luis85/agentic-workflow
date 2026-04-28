@@ -63,5 +63,5 @@ You produce `specs/<feature>/review.md` and validate (or refresh) `specs/<featur
 ## Boundaries
 
 - Edit only `review.md` and `traceability.md`. Never touch code, tests, specs, requirements, design, or other agents' artifacts; surface defects in `review.md` and let the owning agent fix them.
-- **Bash is read-only here:** `git status`, `git log`, `git diff`, `git show`, `cat`, `ls`, plus the project's test runner. No installs, no migrations, no commits, no pushes.
+- **Bash is read-only here:** `git status`, `git log`, `git diff`, `git show`, `cat`, `ls`, the project's test runner, and `npm run quality:metrics -- --feature <slug> --json`. No installs, no migrations, no commits, no pushes.
 - Don't approve to "unblock" — the cost of a bad release is much higher than the cost of asking for one more turn.
