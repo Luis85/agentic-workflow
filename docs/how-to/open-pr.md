@@ -17,7 +17,23 @@
 3. Run the verify gate — `npm run verify`. It must exit 0 before you push. See [`run-verify-gate.md`](./run-verify-gate.md). Never `--no-verify`.
 4. Push — `git push -u origin HEAD`. The `-u` sets upstream so future pushes are bare `git push`. The deny list in [`.claude/settings.json`](../../.claude/settings.json) blocks pushes to `main` / `develop`; topic branches are allowed.
 5. Open the PR. Two equivalent options:
-   - **`gh` CLI** — `gh pr create --base main --title "<imperative summary>" --body "$(cat <<'EOF'\n## Summary\n- bullet 1\n- bullet 2\n\n## Test plan\n- [ ] verify gate green\n- [ ] <other checks>\nEOF\n)"`. Replace `main` with `develop` if your project uses Shape B in [`docs/branching.md`](../branching.md).
+   - **`gh` CLI** — write the PR body to a scratch file first, then pass it via `--body-file`. Replace `main` with `develop` if your project uses Shape B in [`docs/branching.md`](../branching.md).
+
+     ```bash
+     cat > /tmp/pr-body.md <<'EOF'
+     ## Summary
+     - bullet 1
+     - bullet 2
+
+     ## Test plan
+     - [ ] verify gate green
+     - [ ] <other checks>
+     EOF
+
+     gh pr create --base main \
+       --title "<imperative summary>" \
+       --body-file /tmp/pr-body.md
+     ```
    - **Browser** — open the URL `git push` printed.
 6. Confirm the PR uses the right base branch. For a fork, the base remote is the upstream repo, not your fork.
 7. If the PR depends on another open PR, do *not* stack — close it, rebase the topic branch off the merged integration branch once the upstream PR lands, and re-push. See [`docs/branching.md`](../branching.md) and `feedback_pr_hygiene.md`.
