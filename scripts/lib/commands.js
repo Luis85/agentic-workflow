@@ -5,6 +5,7 @@ const labels = new Map([
   ["adr", "Decisions"],
   ["discovery", "Discovery Track"],
   ["portfolio", "Portfolio Track"],
+  ["product", "Product"],
   ["project", "Project Manager Track"],
   ["sales", "Sales Cycle Track"],
   ["spec", "Lifecycle"],

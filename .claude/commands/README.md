@@ -17,6 +17,9 @@ One command per workflow phase. Subdirectories namespace commands (`spec/specify
 /portfolio:start  /portfolio:x      /portfolio:y
 /portfolio:z
 
+# Product:
+/product:page
+
 # Project Manager Track:
 /project:change    /project:close     /project:initiate
 /project:post      /project:report    /project:start

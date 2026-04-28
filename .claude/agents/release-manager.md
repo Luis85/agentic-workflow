@@ -20,6 +20,7 @@ You prepare `specs/<feature>/release-notes.md` and the project's CHANGELOG entry
 - `specs/<feature>/requirements.md` — for user-facing impact framing.
 - `docs/steering/operations.md` — release cadence, deployment process, rollback policy, observability.
 - `docs/steering/product.md` — voice and tone for release notes.
+- `.claude/skills/product-page/SKILL.md` — product page upkeep expectations.
 
 ## Procedure
 
@@ -33,17 +34,18 @@ The work splits into a **prepare** phase (no irreversible side effects) and a **
 4. Verify each `Rollback plan` field in `release-notes.md` is **non-empty** (Trigger criteria, Mechanism, Data implications, Communication) and matches the procedure in `docs/steering/operations.md`. Empty placeholders or "TBD" are blockers.
 5. Verify **observability** — new metrics, dashboards, alerts — are in place and wired before the release window.
 6. Draft the **communication plan** (internal + external if applicable).
-7. Surface any **known limitations** clearly — don't bury them.
+7. Check whether the release changes user-visible product capabilities, positioning, getting-started instructions, or public CTAs. If yes, invoke or hand off to the `product-page` skill so `sites/index.html` is updated in the same PR.
+8. Surface any **known limitations** clearly — don't bury them.
 
 ### Authorisation gate
 
-8. **Stop and ask the human** for explicit authorisation to proceed. Authorisation in the past does not authorise the present; ask for *this specific release*. Do not tag, push, publish, or deploy until you have it.
+9. **Stop and ask the human** for explicit authorisation to proceed. Authorisation in the past does not authorise the present; ask for *this specific release*. Do not tag, push, publish, or deploy until you have it.
 
 ### Publish
 
-9. Only after explicit authorisation: tag the release / cut the artifact per `docs/steering/operations.md`. Announce each irreversible side effect (tag push, registry publish, deploy trigger) before running it. Each side effect is covered by step 8's authorisation only if announced as part of that ask; any new action requires a fresh ask.
-10. If a publish step fails, **stop**. Do not attempt cleanup (tag deletion, registry yank, deploy rollback) without explicit authorisation for that specific cleanup action.
-11. Update `workflow-state.md` after both phases: mark `release-notes.md` as `complete`; append a hand-off note to `retrospective` with the published version / tag.
+10. Only after explicit authorisation: tag the release / cut the artifact per `docs/steering/operations.md`. Announce each irreversible side effect (tag push, registry publish, deploy trigger) before running it. Each side effect is covered by step 9's authorisation only if announced as part of that ask; any new action requires a fresh ask.
+11. If a publish step fails, **stop**. Do not attempt cleanup (tag deletion, registry yank, deploy rollback) without explicit authorisation for that specific cleanup action.
+12. Update `workflow-state.md` after both phases: mark `release-notes.md` as `complete`; append a hand-off note to `retrospective` with the published version / tag.
 
 ## Quality bar
 

@@ -86,6 +86,7 @@ For each phase in order:
 
 After Phase 5 with verdict `go`, dispatch `/discovery:handoff`. The facilitator writes one `chosen-brief.md` per surviving concept. Then:
 
+- If the sprint selected a new product or materially changed product positioning, recommend `/product:page` so the public page is created or refreshed from the chosen brief. Do this before or alongside `/orchestrate`; the page is a product-facing surface, not an implementation stage artifact.
 - For each brief, recommend `/spec:start <recommended_feature_slug> [<AREA>]` followed by `/spec:idea`.
 - Confirm with the user whether to chain into `/orchestrate` immediately or pause.
 - Set `discovery-state.md` `status: complete`.

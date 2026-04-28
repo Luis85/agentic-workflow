@@ -104,6 +104,9 @@ Plus body sections (Skips, Blocks, Hand-off notes, Open clarifications). Canonic
 /portfolio:start  /portfolio:x      /portfolio:y
 /portfolio:z
 
+# Product:
+/product:page
+
 # Project Manager Track:
 /project:change    /project:close     /project:initiate
 /project:post      /project:report    /project:start

@@ -58,6 +58,7 @@ Skills MAY include supporting files (templates, scripts, fixtures) alongside `SK
 
 | Skill | Triggers when… | Output |
 |---|---|---|
+| [`product-page/`](product-page/SKILL.md) | "product page", "landing page", "homepage", "website", "GitHub Pages", or a new project/product start | `sites/index.html` + `sites/` assets; optional `.github/workflows/pages.yml` |
 | [`domain-context/`](domain-context/SKILL.md) | new domain concept; context boundary shifts; "context map" | `docs/CONTEXT.md` (lazy) |
 | [`ubiquitous-language/`](ubiquitous-language/SKILL.md) | new term coined; terminology disagreement; "glossary" | `docs/UBIQUITOUS_LANGUAGE.md` (lazy) |
 
@@ -93,6 +94,7 @@ Stage agents pull a practice skill into their context by referencing it in their
 All skills write to the same sink documented in [`docs/sink.md`](../../docs/sink.md):
 
 - **Workflow-scoped artifacts** — `specs/<slug>/*.md` (managed by `/spec:*` commands).
+- **Product page** — `sites/index.html` and supporting `sites/` assets (managed by `product-page`).
 - **Cross-cutting artifacts** — `docs/adr/`, `docs/CONTEXT.md`, `docs/UBIQUITOUS_LANGUAGE.md` (lazy, additive).
 - **Steering** — `docs/steering/*.md` (human-curated).
 

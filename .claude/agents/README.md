@@ -24,6 +24,12 @@ One subagent per SDLC role. Each has:
 | [`sre`](sre.md) | Operations | Read, Edit, Write, Bash, Grep |
 | [`retrospective`](retrospective.md) | Learning | Read, Edit, Write, Grep, Bash |
 
+### Product-facing agents
+
+| Agent | Owns | Tool surface |
+|---|---|---|
+| [`product-page-designer`](product-page-designer.md) | Public product page in `sites/index.html`, supporting `sites/` assets, and GitHub Pages workflow when Pages is the chosen host | Read, Edit, Write, Bash, Grep |
+
 ### Discovery agents (pre-Stage 1, opt-in)
 
 The Discovery Track ([`docs/discovery-track.md`](../../docs/discovery-track.md), [ADR-0005](../../docs/adr/0005-add-discovery-track-before-stage-1.md)) is owned by a facilitator who sequences six specialists. Each specialist shadows a recognizable human role; agents *consult* the human specialist when one is in the room and *carry* the role when none is available.
