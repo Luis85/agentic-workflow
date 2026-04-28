@@ -266,6 +266,19 @@ Then say **"continue the [feature-name] feature"** in Claude Code — any agent 
 
 This files a permanent Architecture Decision Record (ADR) in `docs/adr/`.
 
+### I want to improve Specorator itself
+
+Use the Specorator improvement commands when the template should evolve while you are using it:
+
+```
+/specorator:update "automate quality drift review"
+/specorator:add-script "quality drift review check"
+/specorator:add-tooling "nightly template health review"
+/specorator:add-workflow "guided template improvement workflow"
+```
+
+These commands route through the `specorator-improvement` skill so scripts, tooling, workflows, docs, generated references, verification, branch hygiene, and PR delivery stay aligned.
+
 ---
 
 ## Plain-English glossary
@@ -352,6 +365,10 @@ Each arrow is a quality gate. See [`docs/workflow-overview.md`](docs/workflow-ov
 /spec:requirements  /spec:research      /spec:retro
 /spec:review        /spec:specify       /spec:start
 /spec:tasks         /spec:test
+
+# Specorator Improvements:
+/specorator:add-script    /specorator:add-tooling   /specorator:add-workflow
+/specorator:update
 
 # Stock-taking Track:
 /stock-taking:audit       /stock-taking:handoff     /stock-taking:scope

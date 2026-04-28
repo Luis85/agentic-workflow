@@ -49,6 +49,10 @@ One command per workflow phase. Subdirectories namespace commands (`spec/specify
 /spec:review        /spec:specify       /spec:start
 /spec:tasks         /spec:test
 
+# Specorator Improvements:
+/specorator:add-script    /specorator:add-tooling   /specorator:add-workflow
+/specorator:update
+
 # Stock-taking Track:
 /stock-taking:audit       /stock-taking:handoff     /stock-taking:scope
 /stock-taking:start       /stock-taking:synthesize
