@@ -451,7 +451,7 @@ Full version in [`memory/constitution.md`](memory/constitution.md).
 | v0.1 | Done | Workflow definition, templates, agents, slash commands |
 | v0.2 | Done | Skills layer, operational bots, branching / verify / worktrees guides |
 | v0.3 | Planned | [Worked end-to-end examples, artifact validation](specs/version-0-3-plan/tasks.md) |
-| v0.4 | Planned | CI quality gates, metrics, maturity model |
+| v0.4 | Planned | [CI quality gates, metrics, maturity model](specs/version-0-4-plan/tasks.md) |
 
 ---
 
