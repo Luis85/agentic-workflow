@@ -1,27 +1,30 @@
 # How to trace a failing test back to a requirement
 
-> 🚧 **Planned recipe — not written yet.** This stub is a placeholder so the entry in [`docs/how-to/README.md`](./README.md) resolves; the steps below will be filled in.
+**Goal:** start from a failing `TEST-<AREA>-NNN`, walk the chain back through code, task, spec, and requirement, and identify which layer the defect lives in before fixing it.
 
-**Goal:** start from a failing `TEST-<AREA>-NNN` and walk the chain back through code, task, spec, and requirement to identify where the defect actually lives, before you fix it.
-
-**When to use:** a test in `specs/<slug>/test-report.md` is red and you do not know whether the defect is in the test, the code, or the spec upstream.
+**When to use:** a test in `specs/<slug>/test-report.md` is red and you do not yet know whether the bug is in the test, the code, or the requirement upstream.
 
 **Prerequisites:**
 
-- _TBD_
+- A reproducible failing test with a `TEST-<AREA>-NNN` ID.
+- The feature's `specs/<slug>/` directory accessible.
+- The traceability matrix at `specs/<slug>/traceability.md` is up to date.
 
 ## Steps
 
-1. _TBD_
+1. Open `specs/<slug>/test-report.md`. Copy the failing `TEST-<AREA>-NNN` ID and its assertion text.
+2. Open `specs/<slug>/traceability.md`. Find the row whose Test column contains your ID. Note the linked `T-<AREA>-NNN` (task) and `REQ-<AREA>-NNN` (requirement).
+3. Open the test source. Re-read the assertion. Ask: does it actually verify the requirement, or does it test something close-but-different? If close-but-different, the defect is in the **test** — fix the test.
+4. Open the code under test. Step through the assertion mentally. Does the code do what the test expects? If no, the defect is in the **code** — fix the code, leave the test.
+5. Open the originating `REQ-<AREA>-NNN` in `requirements.md`. Does the requirement actually say what the test is checking? If no, the defect is in the **requirement** — escalate per [Article IV](../../memory/constitution.md): update `requirements.md` first, then re-spec, re-task, re-implement, re-test.
+6. Document your finding in the test report's `Notes:` field for the failure, with a one-liner naming the layer.
 
 ## Verify
 
-_TBD_
+`grep "<TEST-ID>" specs/<slug>/test-report.md` shows your finding line, and `git diff` shows the fix at exactly one layer (test, code, or requirement chain) — not all three.
 
 ## Related
 
 - Reference — [`docs/traceability.md`](../traceability.md) — the chain of IDs.
 - Reference — [`docs/quality-framework.md`](../quality-framework.md) — gates per stage.
 - Explanation — [`memory/constitution.md`](../../memory/constitution.md) — Article IV on resolving defects at the earliest stage.
-
-> Want this written sooner? Open a PR — copy [`_template.md`](./_template.md) and fill it in.

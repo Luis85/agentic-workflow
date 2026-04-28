@@ -8,29 +8,33 @@ For the full doc map by Diátaxis quadrant — Tutorials / How-to / Reference / 
 
 ## Available recipes
 
-These five are the MVP set. Each is short, runnable, and links out for the *why*.
+All recipes below are runnable and link out for the *why*. The first five are the original MVP set; the next nine were promoted from stubs as the workflow surface stabilised.
+
+**Onboarding and configuration**
 
 - [How to fork and personalize the template](./fork-and-personalize.md) — turn a fresh clone into your own project.
+- [How to adapt steering for your own stack](./adapt-steering.md) — rewrite `docs/steering/*.md` so agents read your real context.
+- [How to customize agent permissions](./customize-agent-permissions.md) — change a tool list at the per-agent or project level.
+- [How to migrate an existing project to Specorator](./migrate-to-specorator.md) — overlay the workflow on a brownfield codebase.
+
+**Day-to-day workflow tasks**
+
 - [How to resume a paused feature](./resume-paused-feature.md) — pick up an in-progress feature at the right stage.
-- [How to file a new Architecture Decision Record](./add-adr.md) — capture an irreversible decision in `docs/adr/`.
+- [How to skip the Discovery Track on a simple feature](./skip-discovery.md) — go straight to `/spec:idea` and document the skip.
 - [How to write a requirement in EARS notation](./write-ears-requirement.md) — produce one functional requirement, ready for testing.
-- [How to run the verify gate](./run-verify-gate.md) — green formatter / linter / types / tests / build before pushing.
+- [How to file a new Architecture Decision Record](./add-adr.md) — capture an irreversible decision in `docs/adr/`.
+- [How to run the verify gate](./run-verify-gate.md) — `npm run verify` green before pushing.
 
-## Planned recipes
+**Quality and release**
 
-These are scaffolds with the goal, when-to-use, and links written, but no steps yet. Each is a one-PR job — copy [`_template.md`](./_template.md), fill it in, replace the stub.
+- [How to trace a failing test back to a requirement](./trace-failing-test.md) — walk the chain to find which layer the defect lives in.
+- [How to run a retrospective](./run-retrospective.md) — Stage 11, mandatory before marking a feature complete.
+- [How to authorize a destructive release action](./authorize-destructive-release.md) — scope, approve, log, execute.
 
-- [How to skip the Discovery Track on a simple feature](./skip-discovery.md) — 🚧 planned.
-- [How to customize agent permissions](./customize-agent-permissions.md) — 🚧 planned.
-- [How to adapt steering for your own stack](./adapt-steering.md) — 🚧 planned.
-- [How to trace a failing test back to a requirement](./trace-failing-test.md) — 🚧 planned.
-- [How to switch from Claude Code to Codex / Cursor / Aider](./switch-ai-tool.md) — 🚧 planned.
-- [How to run a retrospective](./run-retrospective.md) — 🚧 planned.
-- [How to authorize a destructive release action](./authorize-destructive-release.md) — 🚧 planned.
-- [How to bootstrap a new operational bot](./bootstrap-operational-bot.md) — 🚧 planned.
-- [How to migrate an existing project to Specorator](./migrate-to-specorator.md) — 🚧 planned.
+**Tooling and extensibility**
 
-Stubs older than 90 days without traction get promoted to GitHub issues; if the planned list still exceeds five at the next docs review, unfilled stubs are dropped.
+- [How to switch from Claude Code to Codex / Cursor / Aider](./switch-ai-tool.md) — continue a feature in a different AI tool.
+- [How to bootstrap a new operational bot](./bootstrap-operational-bot.md) — scheduled bot under `agents/operational/`.
 
 ## Operational runbooks
 
