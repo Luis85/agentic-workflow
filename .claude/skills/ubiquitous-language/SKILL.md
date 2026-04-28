@@ -1,8 +1,19 @@
 ---
 name: ubiquitous-language
-description: Maintain a living glossary at docs/UBIQUITOUS_LANGUAGE.md — the canonical vocabulary every agent and human uses when talking about the system. Flags ambiguities, picks opinionated canonical terms, and lazily creates the file on first need. Use when a new domain term is coined or refined, when stage agents disagree on terminology, when the user mentions "glossary", "DDD", "ubiquitous language", or whenever a requirement uses fuzzy language that needs sharpening.
-argument-hint: [optional new term to add or refine]
+description: "[Deprecated by ADR-0010] Legacy single-file glossary at docs/UBIQUITOUS_LANGUAGE.md. New terms go in docs/glossary/<slug>.md via /glossary:new (handled by the new-glossary-entry skill). This skill is retained only so that forks of earlier template versions still resolve their references; it should not auto-trigger for new work."
+argument-hint: "[deprecated — use /glossary:new instead]"
 ---
+
+> **⚠️ Deprecated by [ADR-0010](../../../docs/adr/0010-shard-glossary-into-one-file-per-term.md).**
+>
+> New glossary terms go in `docs/glossary/<slug>.md` via `/glossary:new "<term>"` (handled by the [`new-glossary-entry`](../new-glossary-entry/SKILL.md) skill). Refining existing per-term entries also goes through that skill — see its "How to use" §2 for the in-place refinement flow.
+>
+> This skill is **retained but not auto-triggered for new work**. It exists so that:
+>
+> 1. Projects forked from earlier template versions that already have a populated `docs/UBIQUITOUS_LANGUAGE.md` can still read these procedures if they choose not to migrate.
+> 2. Cross-references from older artifacts to this skill keep resolving.
+>
+> If you arrived here from a `/ubiquitous-language` invocation, prefer `/glossary:new` instead. To migrate an existing `UBIQUITOUS_LANGUAGE.md` to the per-file model, copy each table row into a new `docs/glossary/<slug>.md` derived from `templates/glossary-entry-template.md`, then mark the original file with a deprecation banner.
 
 # Ubiquitous language
 

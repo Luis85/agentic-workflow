@@ -66,5 +66,5 @@ End with a **Definition of done** section: the user-visible behaviors that prove
 ## Rules
 
 - Refer to behaviors and contracts. Avoid file paths and line numbers in the task description (per the `docs/specorator.md` discipline).
-- Use vocabulary from `docs/UBIQUITOUS_LANGUAGE.md` exactly. If you need a new term, coin it via the `ubiquitous-language` skill before writing the task.
+- Use vocabulary from `docs/glossary/<slug>.md` exactly. If you need a new term, coin it via `/glossary:new "<term>"` (the [`new-glossary-entry`](../new-glossary-entry/SKILL.md) skill) before writing the task. Per [ADR-0010](../../../docs/adr/0010-shard-glossary-into-one-file-per-term.md), the legacy `ubiquitous-language` flow is deprecated.
 - This skill produces `tasks.md`. The `dev` agent during `/spec:implement` is the one that walks the list with `tdd-cycle`.

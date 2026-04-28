@@ -100,6 +100,9 @@ Plus body sections (Skips, Blocks, Hand-off notes, Open clarifications). Canonic
 /discovery:handoff    /discovery:prototype  /discovery:start
 /discovery:validate
 
+# glossary:
+/glossary:new
+
 # Portfolio Track:
 /portfolio:start  /portfolio:x      /portfolio:y
 /portfolio:z

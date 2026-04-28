@@ -16,6 +16,7 @@ Records of architecturally significant decisions. Format follows Michael Nygard'
 | [0007](0007-add-stock-taking-track-for-legacy-projects.md) | Add a Stock-taking Track for projects that build on existing systems | Accepted |
 | [0008](0008-add-project-manager-track.md) | Add an opt-in Project Manager Track based on P3.Express | Accepted |
 | [0009](0009-add-portfolio-manager-role.md) | Add opt-in Portfolio Manager role and P5 Express portfolio track | Accepted |
+| [0010](0010-shard-glossary-into-one-file-per-term.md) | Shard the glossary into one file per term under docs/glossary/ | Proposed |
 <!-- END GENERATED: adr-index -->
 
 ## Conventions

@@ -13,6 +13,9 @@ One command per workflow phase. Subdirectories namespace commands (`spec/specify
 /discovery:handoff    /discovery:prototype  /discovery:start
 /discovery:validate
 
+# glossary:
+/glossary:new
+
 # Portfolio Track:
 /portfolio:start  /portfolio:x      /portfolio:y
 /portfolio:z
