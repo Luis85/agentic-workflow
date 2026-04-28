@@ -19,6 +19,11 @@ export const checkTasks = [
     label: "Frontmatter conventions",
     script: "scripts/check-frontmatter.js",
   },
+  {
+    name: "check:specs",
+    label: "Spec workflow state",
+    script: "scripts/check-spec-state.js",
+  },
 ];
 
 export const fixTasks = [
