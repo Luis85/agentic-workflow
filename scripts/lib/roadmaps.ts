@@ -117,7 +117,8 @@ export function collectRoadmapEvidence(slug: string): RoadmapEvidenceReport {
 export function linkedArtifactPathsFromStrategy(text: string): string[] {
   const paths = new Set<string>();
   for (const match of text.matchAll(/`((?:specs|projects|portfolio|discovery|quality)\/[^`]+\.md)`/g)) {
-    paths.add(match[1].replace(/\\/g, "/"));
+    const safePath = safeRepositoryArtifactPath(match[1]);
+    if (safePath) paths.add(safePath);
   }
   return [...paths].sort();
 }
@@ -129,13 +130,24 @@ export function linkedArtifactPathsFromStrategy(text: string): string[] {
  * @returns Summary for the artifact.
  */
 export function summarizeEvidenceArtifact(artifactPath: string): RoadmapEvidenceArtifact {
-  const absolutePath = path.join(repoRoot, artifactPath);
-  if (!fs.existsSync(absolutePath)) {
+  const safePath = safeRepositoryArtifactPath(artifactPath);
+  if (!safePath) {
     return {
       path: artifactPath,
       exists: false,
-      kind: evidenceKind(artifactPath),
+      kind: "invalid-artifact",
       title: path.basename(artifactPath),
+      summary: "Rejected unsafe linked artifact path.",
+    };
+  }
+
+  const absolutePath = path.join(repoRoot, safePath);
+  if (!fs.existsSync(absolutePath)) {
+    return {
+      path: safePath,
+      exists: false,
+      kind: evidenceKind(safePath),
+      title: path.basename(safePath),
       summary: "Missing linked artifact.",
     };
   }
@@ -143,10 +155,10 @@ export function summarizeEvidenceArtifact(artifactPath: string): RoadmapEvidence
   const text = readText(absolutePath);
   const frontmatter = extractFrontmatter(text);
   const data = frontmatter ? parseSimpleYaml(frontmatter.raw) : {};
-  const title = firstHeading(text) || String(data.title || path.basename(artifactPath));
-  const kind = evidenceKind(artifactPath);
+  const title = firstHeading(text) || String(data.title || path.basename(safePath));
+  const kind = evidenceKind(safePath);
 
-  if (artifactPath.endsWith("workflow-state.md")) {
+  if (safePath.endsWith("workflow-state.md")) {
     const artifacts = data.artifacts && typeof data.artifacts === "object" ? (data.artifacts as Record<string, unknown>) : {};
     const complete = Object.values(artifacts).filter((status) => status === "complete" || status === "skipped").length;
     const total = Object.keys(artifacts).length;
@@ -154,7 +166,7 @@ export function summarizeEvidenceArtifact(artifactPath: string): RoadmapEvidence
     const status = String(data.status || "unknown");
     const lastUpdated = String(data.last_updated || "unknown");
     return {
-      path: artifactPath,
+      path: safePath,
       exists: true,
       kind,
       title,
@@ -175,7 +187,7 @@ export function summarizeEvidenceArtifact(artifactPath: string): RoadmapEvidence
   ].filter(Boolean);
 
   return {
-    path: artifactPath,
+    path: safePath,
     exists: true,
     kind,
     title,
@@ -373,6 +385,16 @@ function validateRoadmapStateSections(rel: string, body: string): Diagnostic[] {
 
 function diagnostic(pathName: string, code: string, message: string): Diagnostic {
   return { path: pathName, code, message };
+}
+
+function safeRepositoryArtifactPath(artifactPath: string): string | null {
+  const normalized = artifactPath.replace(/\\/g, "/");
+  if (!/^(specs|projects|portfolio|discovery|quality)\//.test(normalized)) return null;
+  if (path.posix.isAbsolute(normalized) || normalized.split("/").includes("..")) return null;
+  const absolutePath = path.resolve(repoRoot, ...normalized.split("/"));
+  const relative = path.relative(repoRoot, absolutePath);
+  if (relative.startsWith("..") || path.isAbsolute(relative)) return null;
+  return normalized;
 }
 
 function evidenceKind(artifactPath: string): string {

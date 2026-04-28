@@ -72,9 +72,18 @@ test("roadmap evidence extracts linked artifact paths from strategy markdown", (
 | project | \`projects/client/deliverables-map.md\` | delivery |
 | ignored | \`templates/roadmap-state-template.md\` | template |
 | duplicate | \`specs/auth/workflow-state.md\` | duplicate |
+| traversal | \`specs/../../../../tmp/secret.md\` | unsafe |
 `);
 
   assert.deepEqual(paths, ["projects/client/deliverables-map.md", "specs/auth/workflow-state.md"]);
+});
+
+test("roadmap evidence rejects path traversal before filesystem reads", () => {
+  const artifact = summarizeEvidenceArtifact("specs/../../../../tmp/secret.md");
+
+  assert.equal(artifact.exists, false);
+  assert.equal(artifact.kind, "invalid-artifact");
+  assert.equal(artifact.summary, "Rejected unsafe linked artifact path.");
 });
 
 test("roadmap evidence summarizes missing linked artifacts", () => {
