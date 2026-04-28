@@ -64,7 +64,7 @@ reproduce: npm run typecheck
 
 ## What verify is **not**
 
-- It is **not** a security audit. Run those separately (typically as a scheduled job or CI gate, not on every push).
+- It is **not** a security audit. Security-oriented gates (`actionlint`, `zizmor`, `gitleaks`) live in their own GitHub Actions workflows — see [`docs/security-ci.md`](security-ci.md).
 - It is **not** a benchmark suite. Performance regressions need a different feedback loop.
 - It is **not** a substitute for review. Verify catches what tools can catch; review catches what tools can't.
 
