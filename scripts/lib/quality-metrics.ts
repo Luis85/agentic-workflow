@@ -20,6 +20,15 @@ export type QualityMetricOptions = {
   feature?: string;
 };
 
+export type MaturityAssessment = {
+  level: number;
+  name: string;
+  summary: string;
+  evidence: string[];
+  gaps: string[];
+  nextStep: string;
+};
+
 export type WorkflowMetric = {
   feature: string;
   area: string;
@@ -68,6 +77,7 @@ export type QualityMetrics = {
     checklistItems: number;
     checklistGaps: number;
     overallScore: number;
+    maturity: MaturityAssessment;
   };
   workflows: WorkflowMetric[];
   signals: {
@@ -99,7 +109,14 @@ const checklistGapPattern = /^\s*-\s+Status:\s+(gap|nonconformity)\b/gim;
  * @returns Repository-level and per-workflow quality metrics.
  */
 export function collectQualityMetrics(options: QualityMetricOptions = {}): QualityMetrics {
-  const workflows = workflowStateFiles()
+  const workflowStatePaths = workflowStateFiles();
+  const scopedWorkflowStatePaths = workflowStatePaths.filter(
+    (statePath) => !options.feature || path.basename(path.dirname(statePath)) === options.feature,
+  );
+  const unreadableWorkflowStates = scopedWorkflowStatePaths
+    .filter((statePath) => !extractFrontmatter(readText(statePath)))
+    .map(relativeToRoot);
+  const workflows = workflowStatePaths
     .map(readWorkflowMetric)
     .filter((metric): metric is WorkflowMetric => Boolean(metric))
     .filter((metric) => !options.feature || metric.feature === options.feature);
@@ -122,6 +139,14 @@ export function collectQualityMetrics(options: QualityMetricOptions = {}): Quali
   const openClarifications = workflows
     .filter((workflow) => workflow.openClarifications > 0)
     .map((workflow) => `${workflow.feature} (${workflow.path})`);
+  const maturity = assessMaturity({
+    workflows,
+    workflowStateFiles: scopedWorkflowStatePaths.map(relativeToRoot),
+    unreadableWorkflowStates,
+    missingFrontmatter,
+    checklistGaps,
+    qualityReviews: qualityReviewCount(),
+  });
 
   return {
     generatedAt: new Date().toISOString(),
@@ -135,6 +160,7 @@ export function collectQualityMetrics(options: QualityMetricOptions = {}): Quali
       checklistItems,
       checklistGaps,
       overallScore: average(workflows.map((workflow) => workflow.stageScore)),
+      maturity,
     },
     workflows,
     signals: {
@@ -168,6 +194,20 @@ export function renderQualityMetrics(metrics: QualityMetrics): string {
     `| Quality reviews found | ${metrics.summary.qualityReviews} |`,
     `| QA checklist items | ${metrics.summary.checklistItems} |`,
     `| QA checklist gaps/nonconformities | ${metrics.summary.checklistGaps} |`,
+    "",
+    "## Maturity assessment",
+    "",
+    `Level ${metrics.summary.maturity.level} - ${metrics.summary.maturity.name}: ${metrics.summary.maturity.summary}`,
+    "",
+    "### Evidence",
+    "",
+    ...renderList(metrics.summary.maturity.evidence),
+    "",
+    "### Gaps",
+    "",
+    ...renderList(metrics.summary.maturity.gaps),
+    "",
+    `Next step: ${metrics.summary.maturity.nextStep}`,
     "",
     "## Workflow deliverables",
     "",
@@ -207,6 +247,142 @@ export function renderQualityMetrics(metrics: QualityMetrics): string {
   }
 
   return `${lines.join("\n")}\n`;
+}
+
+export type MaturityInput = {
+  workflows: WorkflowMetric[];
+  workflowStateFiles?: string[];
+  unreadableWorkflowStates?: string[];
+  missingFrontmatter: string[];
+  checklistGaps: number;
+  qualityReviews: number;
+};
+
+const maturityLevels = [
+  {
+    level: 0,
+    name: "Uninstrumented",
+    summary: "No workflow evidence is available yet.",
+    nextStep: "Create at least one workflow-state.md through the relevant track.",
+  },
+  {
+    level: 1,
+    name: "Documented",
+    summary: "Workflow state exists and required metadata is mechanically readable.",
+    nextStep: "Keep workflow state current and run the metrics report regularly.",
+  },
+  {
+    level: 2,
+    name: "Managed",
+    summary: "Active work is stage-aware and current-stage evidence is mostly present.",
+    nextStep: "Close blockers and clarifications, then strengthen traceability.",
+  },
+  {
+    level: 3,
+    name: "Traceable",
+    summary: "Requirements have expected downstream links for the current stages.",
+    nextStep: "Drive completed workflows through testing and review evidence.",
+  },
+  {
+    level: 4,
+    name: "Verified",
+    summary: "Completed workflows include downstream test evidence.",
+    nextStep: "Add QA reviews and corrective-action evidence for continual improvement.",
+  },
+  {
+    level: 5,
+    name: "Improving",
+    summary: "Quality reviews exist and open QA gaps are visible or cleared.",
+    nextStep: "Use trend snapshots or periodic reviews to watch quality drift.",
+  },
+] as const;
+
+/**
+ * Assess repository maturity from observable quality-metrics evidence.
+ *
+ * @param input - Workflow, metadata, and QA evidence.
+ * @returns Evidence-backed maturity assessment.
+ */
+export function assessMaturity(input: MaturityInput): MaturityAssessment {
+  const evidence: string[] = [];
+  const gaps: string[] = [];
+  const workflowStateCount = input.workflowStateFiles?.length ?? input.workflows.length;
+  const unreadableWorkflowStates = input.unreadableWorkflowStates ?? [];
+  const doneWorkflows = input.workflows.filter((workflow) => workflow.status === "done");
+  const averageStageScore = average(input.workflows.map((workflow) => workflow.stageScore));
+  const averageTraceability = average(input.workflows.map((workflow) => workflow.requirementCoverage));
+  let level = 0;
+
+  if (input.workflows.length === 0) {
+    if (workflowStateCount > 0) {
+      evidence.push(`${workflowStateCount} workflow state file(s) found.`);
+      gaps.push(
+        `${unreadableWorkflowStates.length || workflowStateCount} workflow-state.md file(s) could not be read as workflow evidence.`,
+      );
+      return maturityResult(
+        level,
+        evidence,
+        gaps,
+        "Fix workflow-state.md YAML frontmatter so the quality metrics script can read it.",
+      );
+    }
+
+    gaps.push("No workflow-state.md files were found under specs/ or examples/.");
+    return maturityResult(level, evidence, gaps);
+  }
+
+  level = 1;
+  evidence.push(`${input.workflows.length} workflow state file(s) found.`);
+  if (unreadableWorkflowStates.length > 0) {
+    gaps.push(`${unreadableWorkflowStates.length} workflow-state.md file(s) could not be read as workflow evidence.`);
+  }
+  if (input.missingFrontmatter.length === 0) {
+    evidence.push("Required Markdown frontmatter is complete.");
+  } else {
+    gaps.push(`${input.missingFrontmatter.length} required Markdown frontmatter gap(s) remain.`);
+  }
+
+  if (unreadableWorkflowStates.length === 0 && input.missingFrontmatter.length === 0 && averageStageScore >= 80) {
+    level = 2;
+    evidence.push(`Average stage score is ${formatPercent(averageStageScore)}.`);
+  } else {
+    gaps.push("Average stage score is below 80%, unreadable workflow states exist, or metadata gaps remain.");
+  }
+
+  if (level >= 2 && averageTraceability >= 80) {
+    level = 3;
+    evidence.push(`Average stage-aware requirement chain coverage is ${formatPercent(averageTraceability)}.`);
+  } else if (level >= 2) {
+    gaps.push("Stage-aware requirement chain coverage is below 80%.");
+  }
+
+  if (level >= 3 && doneWorkflows.length > 0 && doneWorkflows.every((workflow) => workflow.testCoverage >= 100)) {
+    level = 4;
+    evidence.push(`${doneWorkflows.length} completed workflow(s) include downstream test evidence.`);
+  } else if (level >= 3) {
+    gaps.push("No completed workflow has complete downstream test evidence yet.");
+  }
+
+  if (level >= 4 && input.qualityReviews > 0 && input.checklistGaps === 0) {
+    level = 5;
+    evidence.push(`${input.qualityReviews} quality review(s) found with no open checklist gaps.`);
+  } else if (level >= 4) {
+    gaps.push("No clean QA review evidence is present under quality/.");
+  }
+
+  return maturityResult(level, evidence, gaps);
+}
+
+function maturityResult(level: number, evidence: string[], gaps: string[], nextStep?: string): MaturityAssessment {
+  const definition = maturityLevels[level];
+  return {
+    level: definition.level,
+    name: definition.name,
+    summary: definition.summary,
+    evidence,
+    gaps: gaps.length === 0 ? ["No maturity gaps detected for this level."] : gaps,
+    nextStep: nextStep ?? definition.nextStep,
+  };
 }
 
 function workflowStateFiles(): string[] {
@@ -575,6 +751,10 @@ function formatPercent(value: number): string {
 function renderSignal(label: string, values: string[]): string {
   if (values.length === 0) return `### ${label}\n\n- None.\n`;
   return `### ${label}\n\n${values.map((value) => `- ${value}`).join("\n")}\n`;
+}
+
+function renderList(values: string[]): string[] {
+  return values.length === 0 ? ["- None."] : values.map((value) => `- ${value}`);
 }
 
 function escapeRegExp(value: string): string {

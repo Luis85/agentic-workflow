@@ -14,6 +14,8 @@ entry_point: true
 
 ## Type Aliases
 
+- [MaturityAssessment](type-aliases/MaturityAssessment.md)
+- [MaturityInput](type-aliases/MaturityInput.md)
 - [QualityMetricOptions](type-aliases/QualityMetricOptions.md)
 - [QualityMetrics](type-aliases/QualityMetrics.md)
 - [TraceabilityCoverageInput](type-aliases/TraceabilityCoverageInput.md)
@@ -23,6 +25,7 @@ entry_point: true
 
 ## Functions
 
+- [assessMaturity](functions/assessMaturity.md)
 - [collectQualityMetrics](functions/collectQualityMetrics.md)
 - [completeArtifactsFor](functions/completeArtifactsFor.md)
 - [completeCanonicalArtifacts](functions/completeCanonicalArtifacts.md)

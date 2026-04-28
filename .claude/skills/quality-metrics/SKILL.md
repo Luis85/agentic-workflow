@@ -38,12 +38,14 @@ npm run quality:metrics -- --json
 - Open blockers and clarifications in workflow state.
 - QA checklist volume and gap/nonconformity counts under `quality/`.
 - Stage-aware score so future lifecycle evidence is not treated as a defect while work is still in progress.
+- Evidence-backed maturity level with evidence, gaps, and next-step guidance.
 
 ## Reporting
 
 Summarize:
 
 - overall workflow score and stage-aware score,
+- maturity level, evidence, gaps, and next step,
 - lowest-scoring workflow KPIs,
 - active blockers and open clarifications,
 - missing frontmatter or documentation hygiene signals,

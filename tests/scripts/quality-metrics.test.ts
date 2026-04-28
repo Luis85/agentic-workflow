@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  assessMaturity,
   collectQualityMetrics,
   completeCanonicalArtifacts,
   expectedArtifactsForStage,
@@ -25,6 +26,7 @@ test("renderQualityMetrics includes the headline KPIs and attention signals", ()
   const report = renderQualityMetrics(metrics);
   assert.match(report, /^# Quality metrics/m);
   assert.match(report, /Overall workflow score/);
+  assert.match(report, /Maturity assessment/);
   assert.match(report, /Stage score/);
   assert.match(report, /Workflow deliverables/);
   assert.match(report, /Attention signals/);
@@ -72,6 +74,34 @@ test("stage-aware helpers derive expected artifacts and traceability links", () 
     }),
     100,
   );
+});
+
+test("assessMaturity reports evidence-backed level and gaps", () => {
+  const metrics = collectQualityMetrics({ feature: "quality-metrics-reporting" });
+  const assessment = assessMaturity({
+    workflows: metrics.workflows,
+    missingFrontmatter: [],
+    checklistGaps: 0,
+    qualityReviews: 0,
+  });
+  assert.equal(assessment.level, 4);
+  assert.equal(assessment.name, "Verified");
+  assert.match(assessment.gaps.join("\n"), /No clean QA review evidence/);
+});
+
+test("assessMaturity distinguishes unreadable workflow states from missing workflows", () => {
+  const assessment = assessMaturity({
+    workflows: [],
+    workflowStateFiles: ["specs/example/workflow-state.md"],
+    unreadableWorkflowStates: ["specs/example/workflow-state.md"],
+    missingFrontmatter: [],
+    checklistGaps: 0,
+    qualityReviews: 0,
+  });
+  assert.equal(assessment.level, 0);
+  assert.match(assessment.evidence.join("\n"), /1 workflow state file/);
+  assert.match(assessment.gaps.join("\n"), /could not be read as workflow evidence/);
+  assert.match(assessment.nextStep, /Fix workflow-state.md YAML frontmatter/);
 });
 
 test("rtmLinksFromRow preserves blank interior cells", () => {
