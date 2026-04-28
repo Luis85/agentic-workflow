@@ -1,0 +1,124 @@
+{
+  "nodes": [
+    {
+      "id": "idea",
+      "type": "text",
+      "x": -900,
+      "y": -100,
+      "width": 180,
+      "height": 90,
+      "text": "1. Idea\n`idea.md`"
+    },
+    {
+      "id": "research",
+      "type": "text",
+      "x": -660,
+      "y": -100,
+      "width": 180,
+      "height": 90,
+      "text": "2. Research\n`research.md`"
+    },
+    {
+      "id": "requirements",
+      "type": "text",
+      "x": -420,
+      "y": -100,
+      "width": 180,
+      "height": 90,
+      "text": "3. Requirements\n`requirements.md`"
+    },
+    {
+      "id": "design",
+      "type": "text",
+      "x": -180,
+      "y": -100,
+      "width": 180,
+      "height": 90,
+      "text": "4. Design\n`design.md`"
+    },
+    {
+      "id": "specification",
+      "type": "text",
+      "x": 60,
+      "y": -100,
+      "width": 180,
+      "height": 90,
+      "text": "5. Specification\n`spec.md`"
+    },
+    {
+      "id": "tasks",
+      "type": "text",
+      "x": 300,
+      "y": -100,
+      "width": 180,
+      "height": 90,
+      "text": "6. Tasks\n`tasks.md`"
+    },
+    {
+      "id": "implementation",
+      "type": "text",
+      "x": 540,
+      "y": -100,
+      "width": 180,
+      "height": 90,
+      "text": "7. Implementation\ncode + log"
+    },
+    {
+      "id": "testing",
+      "type": "text",
+      "x": 780,
+      "y": -100,
+      "width": 180,
+      "height": 90,
+      "text": "8. Testing\nplan + report"
+    },
+    {
+      "id": "review",
+      "type": "text",
+      "x": 1020,
+      "y": -100,
+      "width": 180,
+      "height": 90,
+      "text": "9. Review\nreview + RTM"
+    },
+    {
+      "id": "release",
+      "type": "text",
+      "x": 1260,
+      "y": -100,
+      "width": 180,
+      "height": 90,
+      "text": "10. Release\nrelease notes"
+    },
+    {
+      "id": "retro",
+      "type": "text",
+      "x": 1500,
+      "y": -100,
+      "width": 180,
+      "height": 90,
+      "text": "11. Learning\nretrospective"
+    },
+    {
+      "id": "optional",
+      "type": "text",
+      "x": -900,
+      "y": 160,
+      "width": 780,
+      "height": 160,
+      "text": "Optional companion and pre-stage tracks:\n[[docs/project-scaffolding-track.md|Scaffolding]] · [[docs/stock-taking-track.md|Stock-taking]] · [[docs/discovery-track.md|Discovery]] · [[docs/sales-cycle.md|Sales]] · [[docs/project-track.md|Project]] · [[docs/portfolio-track.md|Portfolio]] · [[docs/roadmap-management-track.md|Roadmap]] · [[docs/quality-assurance-track.md|Quality]]"
+    }
+  ],
+  "edges": [
+    { "id": "e1", "fromNode": "idea", "toNode": "research", "toEnd": "arrow" },
+    { "id": "e2", "fromNode": "research", "toNode": "requirements", "toEnd": "arrow" },
+    { "id": "e3", "fromNode": "requirements", "toNode": "design", "toEnd": "arrow" },
+    { "id": "e4", "fromNode": "design", "toNode": "specification", "toEnd": "arrow" },
+    { "id": "e5", "fromNode": "specification", "toNode": "tasks", "toEnd": "arrow" },
+    { "id": "e6", "fromNode": "tasks", "toNode": "implementation", "toEnd": "arrow" },
+    { "id": "e7", "fromNode": "implementation", "toNode": "testing", "toEnd": "arrow" },
+    { "id": "e8", "fromNode": "testing", "toNode": "review", "toEnd": "arrow" },
+    { "id": "e9", "fromNode": "review", "toNode": "release", "toEnd": "arrow" },
+    { "id": "e10", "fromNode": "release", "toNode": "retro", "toEnd": "arrow" }
+  ]
+}

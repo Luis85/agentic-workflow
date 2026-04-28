@@ -1,0 +1,30 @@
+filters:
+  and:
+    - 'file.path.startsWith("docs/glossary/")'
+    - 'file.ext == "md"'
+formulas:
+  term: 'note.term'
+  aliases: 'note.aliases'
+  status: 'note.status'
+  last_updated: 'note["last-updated"]'
+  tags: 'note.tags'
+properties:
+  formula.term:
+    displayName: Term
+  formula.aliases:
+    displayName: Aliases
+  formula.status:
+    displayName: Status
+  formula.last_updated:
+    displayName: Last updated
+  formula.tags:
+    displayName: Tags
+views:
+  - type: table
+    name: Glossary
+    order:
+      - formula.term
+      - formula.aliases
+      - formula.status
+      - formula.last_updated
+      - formula.tags

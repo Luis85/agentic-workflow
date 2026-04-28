@@ -19,6 +19,7 @@
     "check:workflow-docs": "tsx scripts/check-workflow-docs.ts",
     "check:frontmatter": "tsx scripts/check-frontmatter.ts",
     "check:obsidian": "tsx scripts/check-obsidian.ts",
+    "check:obsidian-assets": "tsx scripts/check-obsidian-assets.ts",
     "check:specs": "tsx scripts/check-spec-state.ts",
     "check:roadmaps": "tsx scripts/check-roadmaps.ts",
     "check:traceability": "tsx scripts/check-traceability.ts",
@@ -34,8 +35,9 @@
   "devDependencies": {
     "@types/node": "^25.5.0",
     "tsx": "^4.20.6",
-    "typescript": "^6.0.2",
     "typedoc": "^0.28.19",
-    "typedoc-plugin-markdown": "^4.11.0"
+    "typedoc-plugin-markdown": "^4.11.0",
+    "typescript": "^6.0.2",
+    "yaml": "^2.8.3"
   }
 }

@@ -25,6 +25,7 @@ Records of architecturally significant decisions. Format follows Michael Nygard'
 | [0010](0010-shard-glossary-into-one-file-per-term.md) | Shard the glossary into one file per term under docs/glossary/ | Proposed |
 | [0011](0011-add-project-scaffolding-track.md) | Add a Project Scaffolding Track for source-led template adoption | Proposed |
 | [0012](0012-add-roadmap-management-track.md) | Add a Roadmap Management Track for product and project planning | Proposed |
+| [0013](0013-add-obsidian-as-ui-layer.md) | Add Obsidian as an opt-in UI layer | Proposed |
 <!-- END GENERATED: adr-index -->
 
 ## Conventions

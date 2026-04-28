@@ -1,0 +1,114 @@
+{
+  "nodes": [
+    {
+      "id": "welcome",
+      "type": "text",
+      "x": -520,
+      "y": -240,
+      "width": 360,
+      "height": 180,
+      "text": "# Specorator Vault\nOpen this repository as an Obsidian vault to browse workflow state, ADRs, glossary entries, and companion tracks."
+    },
+    {
+      "id": "repo-entry",
+      "type": "file",
+      "x": -80,
+      "y": -260,
+      "width": 280,
+      "height": 120,
+      "file": "README.md"
+    },
+    {
+      "id": "agent-rules",
+      "type": "file",
+      "x": 260,
+      "y": -260,
+      "width": 280,
+      "height": 120,
+      "file": "AGENTS.md"
+    },
+    {
+      "id": "constitution",
+      "type": "file",
+      "x": -80,
+      "y": -80,
+      "width": 280,
+      "height": 120,
+      "file": "memory/constitution.md"
+    },
+    {
+      "id": "memory",
+      "type": "file",
+      "x": 260,
+      "y": -80,
+      "width": 280,
+      "height": 120,
+      "file": ".claude/memory/MEMORY.md"
+    },
+    {
+      "id": "workflow",
+      "type": "file",
+      "x": -80,
+      "y": 100,
+      "width": 280,
+      "height": 120,
+      "file": "docs/specorator.md"
+    },
+    {
+      "id": "sink",
+      "type": "file",
+      "x": 260,
+      "y": 100,
+      "width": 280,
+      "height": 120,
+      "file": "docs/sink.md"
+    },
+    {
+      "id": "bases",
+      "type": "text",
+      "x": -520,
+      "y": 40,
+      "width": 360,
+      "height": 220,
+      "text": "## Bases\n- [[docs/obsidian/bases/specs.base|Specs]]\n- [[docs/obsidian/bases/adrs.base|ADRs]]\n- [[docs/obsidian/bases/glossary.base|Glossary]]\n- [[docs/obsidian/bases/project-followups.base|Project followups]]"
+    },
+    {
+      "id": "tracks",
+      "type": "text",
+      "x": -520,
+      "y": 320,
+      "width": 700,
+      "height": 180,
+      "text": "## Track docs\n[[docs/workflow-overview.md|Workflow overview]] · [[docs/project-track.md|Project]] · [[docs/portfolio-track.md|Portfolio]] · [[docs/roadmap-management-track.md|Roadmap]] · [[docs/quality-assurance-track.md|Quality]] · [[docs/discovery-track.md|Discovery]]"
+    },
+    {
+      "id": "lifecycle",
+      "type": "file",
+      "x": 260,
+      "y": 320,
+      "width": 280,
+      "height": 120,
+      "file": "docs/obsidian/canvas/lifecycle.canvas"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-welcome-repo",
+      "fromNode": "welcome",
+      "toNode": "repo-entry",
+      "toEnd": "arrow"
+    },
+    {
+      "id": "e-repo-workflow",
+      "fromNode": "repo-entry",
+      "toNode": "workflow",
+      "toEnd": "arrow"
+    },
+    {
+      "id": "e-workflow-lifecycle",
+      "fromNode": "workflow",
+      "toNode": "lifecycle",
+      "toEnd": "arrow"
+    }
+  ]
+}
