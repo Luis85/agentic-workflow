@@ -32,6 +32,26 @@ npm run verify
 
 `verify` runs script typechecking, script unit tests, and each `check:*` task in order. It stops at the first failure and prints the command to rerun while iterating.
 
+## Quality Metrics
+
+Report deterministic quality KPIs for workflow deliverables, documentation, traceability, and QA checklists:
+
+```bash
+npm run quality:metrics
+```
+
+Scope the report to one feature:
+
+```bash
+npm run quality:metrics -- --feature <feature-slug>
+```
+
+Use JSON when another tool needs to consume the metrics:
+
+```bash
+npm run quality:metrics -- --json
+```
+
 ## TypeScript and Tests
 
 Repository scripts are TypeScript files executed with `tsx`.
