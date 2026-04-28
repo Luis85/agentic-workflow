@@ -104,7 +104,7 @@ Check scripts use the same human output by default. Pass `--json` to any check s
 npm run check:links -- --json
 ```
 
-JSON output includes the check name, pass/fail status, and normalized diagnostics with `path`, `line`, `code`, and `message` fields when available. Markdown link diagnostics use stable codes such as `LINK_URI`, `LINK_FILE`, and `LINK_ANCHOR`; frontmatter diagnostics use stable `FM_*` codes such as `FM_MISSING`, `FM_KEY`, and `FM_ARTIFACT_STATUS`.
+JSON output includes the check name, pass/fail status, and normalized diagnostics with `path`, `line`, `code`, and `message` fields when available. Markdown link diagnostics use stable codes such as `LINK_URI`, `LINK_FILE`, and `LINK_ANCHOR`; frontmatter diagnostics use stable `FM_*` codes such as `FM_MISSING`, `FM_KEY`, and `FM_ARTIFACT_STATUS`; Obsidian compatibility diagnostics use stable `OBS_*` codes such as `OBS_PROPERTY_DUPLICATE` and `OBS_FRONTMATTER_JSON`.
 
 In GitHub Actions, `verify` requests JSON diagnostics from supported check scripts and emits workflow annotations for each structured error. Local `npm run verify` output stays line-oriented.
 
@@ -119,6 +119,7 @@ In GitHub Actions, `verify` requests JSON diagnostics from supported check scrip
 | `npm run check:product-page` | Validate the public product page, local assets, upkeep checkbox, and Pages workflow. |
 | `npm run check:workflow-docs` | Confirm core workflow docs and package scripts keep the tool contract visible. |
 | `npm run check:frontmatter` | Validate required frontmatter on README entry points, state files, ADRs, and review artifacts. |
+| `npm run check:obsidian` | Validate Markdown frontmatter is Obsidian-compatible, unique, and human-readable. |
 | `npm run check:specs` | Validate lifecycle `workflow-state.md` files and their artifact maps. |
 | `npm run check:roadmaps` | Validate roadmap state frontmatter, dates, document maps, and required sections. |
 | `npm run check:traceability` | Validate lifecycle artifact IDs and local traceability references. |
