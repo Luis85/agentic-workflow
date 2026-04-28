@@ -52,13 +52,25 @@ These are not bundled into `npm run verify` on purpose — see the verify gate d
 `zizmor` runs twice in the workflow:
 
 1. **Auditor persona, SARIF output** — uploads everything (including pedantic findings) to the Security tab so reviewers can see the full picture. This step is `continue-on-error` so the SARIF file always lands.
-2. **Default persona, gate** — only fails the build on `medium`+ findings. This avoids blocking PRs on stylistic warnings (e.g. unpinned major-version tags) while still gating real risks (template injection, write-permission leaks, dangerous triggers).
+2. **Default persona, gate** — fails the build on `unpinned-uses` and any other default-persona finding. The auditor persona is reserved for SARIF visibility so reviewers see the full picture without making the build flap on stylistic findings.
 
-Tighten the gate to `--persona=auditor` once the repo has paid down the inventory of pedantic findings.
+Tighten the gate to `--persona=auditor` once every pedantic finding has been resolved.
 
 ## Action pinning
 
-The current workflows reference major-version tags (e.g. `actions/checkout@v6`). The auditor persona surfaces this as a pedantic finding. Pinning every action to a commit SHA is a deliberate follow-up: it gives the strongest supply-chain guarantee but adds churn whenever an action releases. Until Dependabot is configured to bump SHAs automatically, the major-version tag is the default for all workflows in this repo.
+Every action call in this repo is pinned to a commit SHA with the human-readable version comment alongside, e.g.:
+
+```yaml
+uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+```
+
+Pinning to SHA is a hard requirement enforced by zizmor's `unpinned-uses` rule. To bump an action:
+
+1. Find the new tag's commit SHA (`gh api repos/<owner>/<repo>/git/refs/tags/<tag>`; if the object type is `tag`, dereference it via `gh api repos/<owner>/<repo>/git/tags/<sha>`).
+2. Update the `@<sha>` and the trailing `# <version>` comment in the same edit.
+3. Verify the workflow still parses (`actionlint`) and is happy with zizmor.
+
+Configuring Dependabot to bump SHAs automatically (`package-ecosystem: github-actions`) is a follow-up.
 
 ## Adopting in a downstream project
 
