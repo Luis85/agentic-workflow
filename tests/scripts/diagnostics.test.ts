@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   checkResult,
   formatDiagnostic,
+  formatGitHubAnnotation,
   normalizeDiagnostic,
   wantsJson,
 } from "../../scripts/lib/diagnostics.js";
@@ -53,4 +54,16 @@ test("formatDiagnostic preserves location and code when available", () => {
 test("wantsJson detects explicit JSON output request", () => {
   assert.equal(wantsJson(["node", "script.ts", "--json"]), true);
   assert.equal(wantsJson(["node", "script.ts"]), false);
+});
+
+test("formatGitHubAnnotation escapes Actions command syntax", () => {
+  assert.equal(
+    formatGitHubAnnotation({
+      path: "docs/example:one,two.md",
+      line: 7,
+      code: "LINK_ANCHOR",
+      message: "bad 100% link\nmissing anchor",
+    }),
+    "::error file=docs/example%3Aone%2Ctwo.md,line=7,title=LINK_ANCHOR::bad 100%25 link%0Amissing anchor",
+  );
 });

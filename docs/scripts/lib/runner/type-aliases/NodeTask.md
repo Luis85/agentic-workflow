@@ -16,6 +16,12 @@
 
 ***
 
+### jsonDiagnostics?
+
+> `optional` **jsonDiagnostics?**: `boolean`
+
+***
+
 ### label
 
 > **label**: `string`

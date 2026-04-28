@@ -67,6 +67,22 @@ export function formatDiagnostic(diagnostic: Diagnostic): string {
 }
 
 /**
+ * Render a diagnostic as a GitHub Actions workflow annotation.
+ *
+ * @param {Diagnostic} diagnostic - Structured diagnostic.
+ * @returns {string} GitHub Actions annotation command.
+ */
+export function formatGitHubAnnotation(diagnostic: Diagnostic): string {
+  const properties = [
+    diagnostic.path ? `file=${escapeAnnotationProperty(diagnostic.path)}` : "",
+    diagnostic.line !== undefined ? `line=${diagnostic.line}` : "",
+    diagnostic.code ? `title=${escapeAnnotationProperty(diagnostic.code)}` : "",
+  ].filter(Boolean);
+  const propertySuffix = properties.length > 0 ? ` ${properties.join(",")}` : "";
+  return `::error${propertySuffix}::${escapeAnnotationData(diagnostic.message)}`;
+}
+
+/**
  * Detect whether the current CLI invocation requested JSON diagnostics.
  *
  * @param {string[]} [argv=process.argv] - Process arguments.
@@ -74,4 +90,12 @@ export function formatDiagnostic(diagnostic: Diagnostic): string {
  */
 export function wantsJson(argv: string[] = process.argv): boolean {
   return argv.includes("--json");
+}
+
+function escapeAnnotationData(value: string): string {
+  return value.replace(/%/g, "%25").replace(/\r/g, "%0D").replace(/\n/g, "%0A");
+}
+
+function escapeAnnotationProperty(value: string): string {
+  return escapeAnnotationData(value).replace(/:/g, "%3A").replace(/,/g, "%2C");
 }
