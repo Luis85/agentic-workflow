@@ -60,6 +60,8 @@ npm run check:links -- --json
 
 JSON output includes the check name, pass/fail status, and normalized diagnostics with `path`, `line`, `code`, and `message` fields when available. Markdown link diagnostics use stable codes such as `LINK_URI`, `LINK_FILE`, and `LINK_ANCHOR`; frontmatter diagnostics use stable `FM_*` codes such as `FM_MISSING`, `FM_KEY`, and `FM_ARTIFACT_STATUS`.
 
+In GitHub Actions, `verify` requests JSON diagnostics from supported check scripts and emits workflow annotations for each structured error. Local `npm run verify` output stays line-oriented.
+
 ## Checks
 
 | Script | Purpose |

@@ -22,5 +22,6 @@ entry_point: true
 
 - [checkResult](functions/checkResult.md)
 - [formatDiagnostic](functions/formatDiagnostic.md)
+- [formatGitHubAnnotation](functions/formatGitHubAnnotation.md)
 - [normalizeDiagnostic](functions/normalizeDiagnostic.md)
 - [wantsJson](functions/wantsJson.md)

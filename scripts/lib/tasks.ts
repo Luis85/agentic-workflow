@@ -6,6 +6,7 @@
  * @property {string} label - Human-readable task label.
  * @property {string} [script] - Repository-relative TypeScript script path.
  * @property {string[]} [command] - Command and arguments to execute directly.
+ * @property {boolean} [jsonDiagnostics] - Whether CI may request `--json` and emit GitHub Actions annotations.
  */
 
 /**
@@ -31,6 +32,7 @@ export const checkTasks = [
     name: "check:links",
     label: "Markdown links",
     script: "scripts/check-markdown-links.ts",
+    jsonDiagnostics: true,
   },
   {
     name: "check:adr-index",
@@ -61,6 +63,7 @@ export const checkTasks = [
     name: "check:frontmatter",
     label: "Frontmatter conventions",
     script: "scripts/check-frontmatter.ts",
+    jsonDiagnostics: true,
   },
   {
     name: "check:specs",

@@ -6,7 +6,7 @@
 
 # Variable: checkTasks
 
-> `const` **checkTasks**: (\{ `command`: `string`[]; `label`: `string`; `name`: `string`; `script?`: `undefined`; \} \| \{ `command?`: `undefined`; `label`: `string`; `name`: `string`; `script`: `string`; \})[]
+> `const` **checkTasks**: (\{ `command`: `string`[]; `jsonDiagnostics?`: `undefined`; `label`: `string`; `name`: `string`; `script?`: `undefined`; \} \| \{ `command?`: `undefined`; `jsonDiagnostics`: `boolean`; `label`: `string`; `name`: `string`; `script`: `string`; \} \| \{ `command?`: `undefined`; `jsonDiagnostics?`: `undefined`; `label`: `string`; `name`: `string`; `script`: `string`; \})[]
 
 Read-only checks executed by `npm run verify`.
 
