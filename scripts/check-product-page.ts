@@ -46,8 +46,11 @@ function requireIndexMarkup(html: string) {
     if (!html.includes(needle)) errors.push(message);
   }
   const hrefs = getAttributeValues(html, "href");
-  if (!hrefs.some((href) => /^https:\/\/github\.com\/[^/\s]+\/[^/\s]+\/generate\/?$/.test(href))) {
-    errors.push("primary CTA should point to a GitHub template generator URL");
+  if (hrefs.some((href) => /^https:\/\/github\.com\/[^/\s]+\/[^/\s]+\/generate\/?$/.test(href))) {
+    errors.push("sites/index.html must not link to a GitHub template generator URL");
+  }
+  if (!hrefs.some((href) => /\/docs\/specorator\.md$/.test(href))) {
+    errors.push("primary CTA should point to the workflow documentation");
   }
   if (!hrefs.some((href) => /(^|\/)examples\//.test(href))) {
     errors.push("sites/index.html should link to an example artifact tree");
