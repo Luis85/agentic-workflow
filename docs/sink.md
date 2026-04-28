@@ -81,6 +81,14 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │       ├── weekly-log.md                    # Groups C+D weekly entries (append-only)
 │       ├── status-report.md                 # client-facing RAG snapshot (replaced each /project:report run)
 │       └── project-closure.md              # Group F: handover, satisfaction, lessons, archive
+├── quality/                                 # one folder per QA review (ISO 9001-aligned, opt-in)
+│   └── <quality-review-slug>/
+│       ├── quality-state.md                 # QA review state machine, owned by /quality:* commands
+│       ├── quality-plan.md                  # plan, scope, ISO 9001 alignment, readiness criteria
+│       ├── checklists/
+│       │   └── project-execution.md         # evidence-backed checklist items
+│       ├── quality-review.md                # readiness verdict, findings, risks
+│       └── improvement-plan.md              # corrective actions and effectiveness checks
 ├── specs/                                   # one folder per feature
 │   └── <slug>/
 │       ├── workflow-state.md                # state machine, owned by /spec:* commands
@@ -180,6 +188,11 @@ The root `README.md` is the public repository entry point and is exempt from thi
 | `projects/<project>/weekly-log.md` | `project-manager` | Append-only |
 | `projects/<project>/status-report.md` | `project-manager` | Replaced each `/project:report` run |
 | `projects/<project>/project-closure.md` | `project-manager` (Closure) | Frozen on client sign-off; G01 evaluations appended |
+| `quality/<review>/quality-state.md` | `/quality:start`, then `/quality:*` commands on transition | QA review state machine; quality-assurance skill-owned |
+| `quality/<review>/quality-plan.md` | `quality-assurance` skill | Written in Plan; defines scope, ISO 9001 alignment, checklist set, and readiness criteria |
+| `quality/<review>/checklists/*.md` | `quality-assurance` skill | Evidence-backed checklists; updated during Check, preserving gaps |
+| `quality/<review>/quality-review.md` | `quality-assurance` skill | Written in Review; states readiness, nonconformities, risks, and evidence gaps |
+| `quality/<review>/improvement-plan.md` | `quality-assurance` skill | Written in Improve; corrective actions remain open until effectiveness is verified |
 | `discovery/<sprint>/discovery-state.md` | `/discovery:start`, then `/discovery:*` commands on transition | Sprint state machine; facilitator-owned |
 | `discovery/<sprint>/<phase>.md` | The phase's owning facilitator + consulted specialists (per `docs/discovery-track.md` §3) | Each phase writes once; later phases never rewrite upstream phase artifacts |
 | `discovery/<sprint>/chosen-brief.md` | `facilitator` (Handoff) | One per surviving concept; mandatory input to `/spec:idea` |
@@ -272,6 +285,12 @@ When a team enters the kit with a **blank page** (no brief), the Discovery Track
 
 A sprint may emit **0, 1, or N** chosen briefs. Zero is a valid outcome (no-go); the sprint folder is preserved as historical context regardless. The handoff is the *only* link between the discovery and specs trees — before handoff no `specs/<slug>/` exists; after handoff the brief is referenced from `idea.md`'s frontmatter `inputs:`.
 
+## Quality Assurance Track sub-tree
+
+When a team needs an ISO 9001-aligned readiness check, the Quality Assurance Track creates one `quality/<quality-review-slug>/` folder. It can review a project, portfolio, release, supplier, or active feature. It produces a QA plan, evidence-backed checklist, readiness report, and improvement plan.
+
+The track supports internal readiness and audit preparation, but it does not grant certification or replace an accredited auditor. See [`docs/quality-assurance-track.md`](quality-assurance-track.md) for the methodology.
+
 ## Portfolio Track sub-tree
 
 When a team needs to manage **multiple parallel features** or operates as a **service provider**, the Portfolio Track adds a management layer above the Specorator. It lives at `portfolio/<portfolio-slug>/` parallel to `specs/` and `discovery/`. See [`docs/portfolio-track.md`](portfolio-track.md) for the methodology and [ADR-0009](adr/0009-add-portfolio-manager-role.md) for the rationale.
@@ -309,6 +328,7 @@ These skills append to cross-workflow files:
 - `product-page` → `sites/index.html`, supporting `sites/` assets, and optionally `.github/workflows/pages.yml`.
 - `domain-context` → `docs/CONTEXT.md` (or `CONTEXT-MAP.md` + `contexts/<name>.md`).
 - `new-glossary-entry` → `docs/glossary/<slug>.md` (via `/glossary:new`). Per [ADR-0010](adr/0010-shard-glossary-into-one-file-per-term.md), supersedes the deprecated `ubiquitous-language` → `docs/UBIQUITOUS_LANGUAGE.md` flow.
+- `quality-assurance` → `quality/<review>/quality-state.md`, `quality-plan.md`, `checklists/*.md`, `quality-review.md`, and `improvement-plan.md`.
 - `specorator-improvement` → the affected template surfaces: `scripts/`, `tests/scripts/`, `package.json`, `.github/workflows/`, `.claude/commands/`, `.claude/skills/`, `.claude/agents/`, `templates/`, `docs/`, and the owning `specs/<slug>/` artifacts.
 
 When any of these write, the active feature's `workflow-state.md` gets a dated one-line entry appended to the `## Hand-off notes` free-form section so the workflow has a paper trail. The frontmatter schema (per `templates/workflow-state-template.md`) is fixed — agents do not add new frontmatter keys.

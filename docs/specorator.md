@@ -18,7 +18,8 @@ A solution-agnostic, **spec-driven** workflow for building software with humans 
 8. [Iteration model](#8-iteration-model)
 9. [Usage guidelines](#9-usage-guidelines)
 10. [Future extensions](#10-future-extensions)
-11. [Improving Specorator itself](#11-improving-specorator-itself)
+11. [Quality Assurance Track](#11-quality-assurance-track)
+12. [Improving Specorator itself](#12-improving-specorator-itself)
 
 ---
 
@@ -86,6 +87,10 @@ flowchart LR
 
 - **Project Scaffolding Track** — a source-led onboarding workflow for teams adopting the template with existing folders or Markdown files. Produces `starter-pack.md` and `handoff.md`, then routes to Discovery, Stage 1, Project Manager Track, or Stock-taking. Defined in [`docs/project-scaffolding-track.md`](project-scaffolding-track.md); rationale in [ADR-0011](adr/0011-add-project-scaffolding-track.md). **Use when source material exists but no canonical artifacts exist yet.**
 - **Discovery Track** — a 5-phase ideation + design-sprint mini-workflow (Frame → Diverge → Converge → Prototype → Validate → Handoff) for teams arriving with a blank page rather than a brief. Produces `chosen-brief.md` which seeds Stage 1. Defined in [`docs/discovery-track.md`](discovery-track.md); rationale in [ADR-0005](adr/0005-add-discovery-track-before-stage-1.md). **Skip when a brief already exists.**
+
+**Optional companion track** (run alongside projects, portfolios, releases, or features when quality-system readiness matters):
+
+- **Quality Assurance Track** — an ISO 9001-aligned evidence workflow for checking project execution health and delivery readiness. Produces `quality-plan.md`, checklists, `quality-review.md`, and `improvement-plan.md`. Defined in [`docs/quality-assurance-track.md`](quality-assurance-track.md). **Use for internal readiness, quality drift review, release readiness, supplier assurance, or audit preparation.**
 
 ---
 
@@ -250,6 +255,11 @@ The `orchestrator` agent (or a human) reads `workflow-state.md` and:
 | `/spec:analyze` | Optional gate — cross-artifact consistency check |
 | `/adr:new "<title>"` | File a new architecture decision |
 | `/scaffold:start <slug> <source>` | Start source-led project scaffolding |
+| `/quality:start <slug> [scope]` | Start an ISO 9001-aligned quality review |
+| `/quality:plan <slug>` | Create the quality assurance plan and checklist set |
+| `/quality:check <slug>` | Execute checklists and record evidence, gaps, and risks |
+| `/quality:review <slug>` | Summarize readiness, nonconformities, and risks |
+| `/quality:improve <slug>` | Convert findings into corrective actions and improvement follow-up |
 | `/specorator:update "<idea>"` | Classify and guide a template improvement |
 | `/specorator:add-script "<purpose>"` | Add or change a repository script/check/fixer |
 | `/specorator:add-tooling "<purpose>"` | Add developer tooling, CI, generated tooling, or operational automation |
@@ -316,7 +326,25 @@ The workflow is iterative, not waterfall:
 
 ---
 
-## 11. Improving Specorator itself
+## 11. Quality Assurance Track
+
+The Quality Assurance Track checks whether project execution is controlled enough to deliver a quality product. It is aligned to ISO 9001 quality management concepts and creates evidence-backed checklists, readiness reviews, and corrective actions.
+
+This track supports internal readiness and audit preparation. It does not grant certification or replace an accredited auditor. As of 2026-04-28, ISO 9001:2015 remains ISO's current published requirements edition, with ISO 9001:2015/Amd 1:2024 listed and ISO/FDIS 9001 under development. See ISO's current standard page: <https://www.iso.org/standard/62085.html>.
+
+| Phase | Command | Artifact |
+|---|---|---|
+| Start | `/quality:start <slug> [scope]` | `quality-state.md` |
+| Plan | `/quality:plan <slug>` | `quality-plan.md`, `checklists/project-execution.md` |
+| Check | `/quality:check <slug>` | completed checklists |
+| Review | `/quality:review <slug>` | `quality-review.md` |
+| Improve | `/quality:improve <slug>` | `improvement-plan.md` |
+
+Use it before release, during project health reviews, before client handoff, for supplier assurance, or after retrospectives reveal recurring quality-system gaps. The full method lives in [`docs/quality-assurance-track.md`](quality-assurance-track.md).
+
+---
+
+## 12. Improving Specorator itself
 
 Specorator can be used to improve the template while a human is actively using it. Treat those requests as template improvements, not downstream product work. Examples include adding a quality drift review check, introducing a new operational routine, adding slash commands, or updating the workflow method.
 

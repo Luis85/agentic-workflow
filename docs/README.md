@@ -56,6 +56,7 @@ Look-it-up, normative. Authoritative; not narrative.
 
 - [`specorator.md`](./specorator.md) — the full workflow definition.
 - [`project-scaffolding-track.md`](./project-scaffolding-track.md) — source-led onboarding track for turning collected docs into starter artifacts.
+- [`quality-assurance-track.md`](./quality-assurance-track.md) — ISO 9001-aligned quality assurance review workflow.
 - [`workflow-overview.md`](./workflow-overview.md) — one-page cheat sheet + slash-command list.
 - [`ears-notation.md`](./ears-notation.md) — the requirement-syntax catalogue.
 - [`traceability.md`](./traceability.md) — the ID scheme and the requirement → spec → task → code → test chain.
@@ -89,6 +90,7 @@ Understanding-oriented. Background, rationale, and the *why* behind decisions.
 - [`project-scaffolding-track.md`](./project-scaffolding-track.md) — why source-led template adoption needs a separate evidence-first track.
 - [`sales-cycle.md`](./sales-cycle.md) — why service-provider work needs a pre-Discovery commercial track.
 - [`project-track.md`](./project-track.md) — why client engagements need P3.Express-style governance.
+- [`quality-assurance-track.md`](./quality-assurance-track.md) — why project execution health needs evidence-backed QA checklists and corrective actions.
 - [`portfolio-track.md`](./portfolio-track.md) — why portfolios sit above the Specorator lifecycle.
 - [`stock-taking-track.md`](./stock-taking-track.md) — why brownfield projects need a separate inventory step.
 - [`adr/`](./adr/) — the rationale half of each ADR file. (The index lives under Reference above.)
