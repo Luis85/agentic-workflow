@@ -72,6 +72,12 @@ export const checkTasks = [
     jsonDiagnostics: true,
   },
   {
+    name: "check:obsidian-assets",
+    label: "Obsidian vault assets",
+    script: "scripts/check-obsidian-assets.ts",
+    jsonDiagnostics: true,
+  },
+  {
     name: "check:specs",
     label: "Spec workflow state",
     script: "scripts/check-spec-state.ts",

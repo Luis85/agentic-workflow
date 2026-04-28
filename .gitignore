@@ -8,6 +8,10 @@ Thumbs.db
 *.swp
 *.swo
 
+# Obsidian vault-local state
+.obsidian/
+.trash/
+
 # Dependencies
 node_modules/
 

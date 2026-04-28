@@ -131,6 +131,7 @@ In GitHub Actions, `verify` requests JSON diagnostics from supported check scrip
 | `npm run check:workflow-docs` | Confirm core workflow docs and package scripts keep the tool contract visible. |
 | `npm run check:frontmatter` | Validate required frontmatter on README entry points, state files, ADRs, and review artifacts. |
 | `npm run check:obsidian` | Validate Markdown frontmatter is Obsidian-compatible, unique, and human-readable. |
+| `npm run check:obsidian-assets` | Validate committed Obsidian `.base`/`.canvas` assets and reject tracked vault-local state. |
 | `npm run check:specs` | Validate lifecycle `workflow-state.md` files and their artifact maps. |
 | `npm run check:roadmaps` | Validate roadmap state frontmatter, dates, document maps, and required sections. |
 | `npm run check:traceability` | Validate lifecycle artifact IDs and local traceability references. |

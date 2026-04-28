@@ -1,0 +1,37 @@
+filters:
+  and:
+    - 'file.path.startsWith("specs/")'
+    - 'file.name == "workflow-state.md"'
+formulas:
+  feature: 'note.feature'
+  area: 'note.area'
+  current_stage: 'note.current_stage'
+  status: 'note.status'
+  last_updated: 'note.last_updated'
+  last_agent: 'note.last_agent'
+properties:
+  formula.feature:
+    displayName: Feature
+  formula.area:
+    displayName: Area
+  formula.current_stage:
+    displayName: Stage
+  formula.status:
+    displayName: Status
+  formula.last_updated:
+    displayName: Last updated
+  formula.last_agent:
+    displayName: Last agent
+views:
+  - type: table
+    name: Active specs
+    filters:
+      and:
+        - 'formula.status == "active"'
+    order:
+      - formula.feature
+      - formula.area
+      - formula.current_stage
+      - formula.status
+      - formula.last_updated
+      - formula.last_agent

@@ -34,6 +34,15 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │   │   └── <name>.md
 │   ├── glossary/                            # one file per term (per ADR-0010)
 │   │   └── <slug>.md                        # docs/glossary/<slug>.md, e.g. quality-gate.md
+│   ├── obsidian/                            # optional Obsidian vault UI layer
+│   │   ├── README.md                        # setup guide and manual acceptance checklist
+│   │   ├── bases/                           # committed .base query definitions
+│   │   │   ├── specs.base
+│   │   │   ├── adrs.base
+│   │   │   └── glossary.base
+│   │   └── canvas/                          # committed JSON Canvas layouts
+│   │       ├── home.canvas
+│   │       └── lifecycle.canvas
 │   └── UBIQUITOUS_LANGUAGE.md               # deprecated by ADR-0010; kept for forks on earlier template versions (LAZY)
 ├── templates/                               # blank artifacts; stages copy + fill
 │   └── *-template.md
@@ -173,6 +182,9 @@ The root `README.md` is the public repository entry point and is exempt from thi
 | `docs/CONTEXT.md`, `docs/CONTEXT-MAP.md`, `docs/contexts/*.md` | `domain-context` skill | Additive, agent-updated |
 | `docs/glossary/<slug>.md` | `new-glossary-entry` skill | Additive, agent-updated; refine in place with dated note. Renames create a new file with the old slug in `aliases:`; deprecated entries remain as historical record |
 | `docs/UBIQUITOUS_LANGUAGE.md` | `ubiquitous-language` skill (**deprecated by [ADR-0010](adr/0010-shard-glossary-into-one-file-per-term.md)**) | Frozen for new content; kept readable for projects on earlier template versions |
+| `docs/obsidian/README.md` | Repo maintainers | Living setup guide for the optional Obsidian UI layer |
+| `docs/obsidian/bases/*.base` | Repo maintainers | Living query assets; validated by `check:obsidian-assets` |
+| `docs/obsidian/canvas/*.canvas` | Repo maintainers | Living JSON Canvas assets; validated by `check:obsidian-assets` |
 | `templates/*-template.md` | Human | Versioned; updates propagate to new features only |
 | `scaffolding/<project>/scaffolding-state.md` | `/scaffold:start`, then `/scaffold:*` commands on transition | Engagement state machine; project-scaffolder-owned |
 | `scaffolding/<project>/intake.md` | `project-scaffolder` | Written once in Phase 1; records source pointers, adoption context, desired outputs |
@@ -311,6 +323,14 @@ When a team needs a maintained product/project roadmap, the Roadmap Management T
 The track is opt-in and read-only toward `specs/`, `projects/`, `portfolio/`, and `discovery/`. Roadmap items do not become accepted requirements, project changes, or external commitments until the appropriate human gate and downstream workflow accepts them.
 
 See [`docs/roadmap-management-track.md`](roadmap-management-track.md) for the methodology and [ADR-0012](adr/0012-add-roadmap-management-track.md) for the rationale.
+
+## Obsidian UI layer sub-tree
+
+When a team wants a visual layer over the Markdown repository, `docs/obsidian/` provides optional Obsidian Bases and Canvas assets. The vault root is the repository root; committed assets live under `docs/obsidian/`, while `.obsidian/` workspace state and `.trash/` stay local and ignored by git.
+
+The layer is read/write from Obsidian's point of view but not authoritative for workflow transitions. Slash commands, agents, scripts, and canonical Markdown artifacts remain the control plane. `check:obsidian` validates Markdown frontmatter compatibility across the repository, while `check:obsidian-assets` validates the committed `.base` and `.canvas` assets and rejects tracked vault-local state.
+
+See [`docs/obsidian/README.md`](obsidian/README.md) for setup and [ADR-0013](adr/0013-add-obsidian-as-ui-layer.md) for the rationale.
 
 ## Discovery Track sub-tree
 
