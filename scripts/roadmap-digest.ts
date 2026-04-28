@@ -18,6 +18,6 @@ if (json) {
   console.log(renderRoadmapDigest(report));
 }
 
-if (report.warnings.includes(`roadmaps/${slug}/roadmap-strategy.md is missing`)) {
+if (report.strategyMissing) {
   process.exit(1);
 }

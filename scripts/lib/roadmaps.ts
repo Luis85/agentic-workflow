@@ -53,6 +53,8 @@ export type RoadmapDigestReport = {
   roadmap: string;
   audience: string;
   generatedAt: string;
+  strategyPath: string;
+  strategyMissing: boolean;
   subject: string;
   emphasis: string[];
   sources: string[];
@@ -273,13 +275,31 @@ export function renderRoadmapEvidence(report: RoadmapEvidenceReport): string {
  */
 export function collectRoadmapDigest(slug: string, audience: string): RoadmapDigestReport {
   const generatedAt = new Date().toISOString();
+  const safeSlug = safeRoadmapSlug(slug);
   const audienceKey = normalizeAudience(audience);
   const profile = roadmapAudienceProfile(audienceKey);
+  const strategyPath = safeSlug ? `roadmaps/${safeSlug}/roadmap-strategy.md` : "roadmaps/<invalid>/roadmap-strategy.md";
+
+  if (!safeSlug) {
+    return {
+      roadmap: slug,
+      audience: audienceKey,
+      generatedAt,
+      strategyPath,
+      strategyMissing: true,
+      subject: `Roadmap update for ${slug}`,
+      emphasis: profile.emphasis,
+      sources: [],
+      sections: [],
+      warnings: ["Invalid roadmap slug. Use a kebab-case folder name without path separators."],
+    };
+  }
+
   const documents = [
-    roadmapDocument(slug, "roadmap-strategy.md"),
-    roadmapDocument(slug, "roadmap-board.md"),
-    roadmapDocument(slug, "delivery-plan.md"),
-    roadmapDocument(slug, "stakeholder-map.md"),
+    roadmapDocument(safeSlug, "roadmap-strategy.md"),
+    roadmapDocument(safeSlug, "roadmap-board.md"),
+    roadmapDocument(safeSlug, "delivery-plan.md"),
+    roadmapDocument(safeSlug, "stakeholder-map.md"),
   ];
   const warnings = documents
     .filter((document) => !document.exists)
@@ -293,10 +313,12 @@ export function collectRoadmapDigest(slug: string, audience: string): RoadmapDig
   }
 
   return {
-    roadmap: slug,
+    roadmap: safeSlug,
     audience: audienceKey,
     generatedAt,
-    subject: `Roadmap update for ${slug}`,
+    strategyPath,
+    strategyMissing: !documents[0].exists,
+    subject: `Roadmap update for ${safeSlug}`,
     emphasis: profile.emphasis,
     sources: sourcePaths,
     sections,
@@ -317,6 +339,7 @@ export function renderRoadmapDigest(report: RoadmapDigestReport): string {
     `Generated: ${report.generatedAt}`,
     `Audience: ${report.audience}`,
     `Subject: ${report.subject}`,
+    `Strategy: \`${report.strategyPath}\``,
     "",
     "## Audience emphasis",
     "",
@@ -536,7 +559,12 @@ type RoadmapDigestDocument = {
 };
 
 function roadmapDocument(slug: string, fileName: string): RoadmapDigestDocument {
-  const filePath = path.join(repoRoot, "roadmaps", slug, fileName);
+  const filePath = path.resolve(repoRoot, "roadmaps", slug, fileName);
+  const roadmapsRoot = path.resolve(repoRoot, "roadmaps");
+  const relativeToRoadmaps = path.relative(roadmapsRoot, filePath);
+  if (relativeToRoadmaps.startsWith("..") || path.isAbsolute(relativeToRoadmaps)) {
+    return { relativePath: `roadmaps/${slug}/${fileName}`, exists: false, text: "" };
+  }
   const relativePath = relativeToRoot(filePath);
   if (!fs.existsSync(filePath)) return { relativePath, exists: false, text: "" };
   return { relativePath, exists: true, text: readText(filePath) };
@@ -616,6 +644,12 @@ function stripFrontmatter(text: string): string {
 
 function normalizeAudience(audience: string): string {
   return audience.trim().toLowerCase().replace(/[_\s]+/g, "-") || "general";
+}
+
+function safeRoadmapSlug(slug: string): string | null {
+  const normalized = slug.trim();
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(normalized)) return null;
+  return normalized;
 }
 
 function roadmapAudienceProfile(audience: string): { emphasis: string[] } {

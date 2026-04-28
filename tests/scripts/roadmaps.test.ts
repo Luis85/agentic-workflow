@@ -187,6 +187,8 @@ test("roadmap digest generates an audience-specific draft from roadmap artifacts
     const markdown = renderRoadmapDigest(report);
 
     assert.equal(report.audience, "leadership");
+    assert.equal(report.strategyMissing, false);
+    assert.equal(report.strategyPath, "roadmaps/test-digest-roadmap/roadmap-strategy.md");
     assert.deepEqual(report.warnings, []);
     assert.equal(report.emphasis.includes("trade-offs"), true);
     assert.equal(report.sections.some((section) => section.title === "Now"), true);
@@ -195,6 +197,26 @@ test("roadmap digest generates an audience-specific draft from roadmap artifacts
   } finally {
     fs.rmSync(roadmapDir, { recursive: true, force: true });
   }
+});
+
+test("roadmap digest rejects unsafe roadmap slugs before filesystem reads", () => {
+  const report = collectRoadmapDigest("../test-digest-roadmap", "leadership");
+
+  assert.equal(report.strategyMissing, true);
+  assert.deepEqual(report.sources, []);
+  assert.deepEqual(report.sections, []);
+  assert.equal(
+    report.warnings.includes("Invalid roadmap slug. Use a kebab-case folder name without path separators."),
+    true,
+  );
+});
+
+test("roadmap digest reports missing strategy through structured state", () => {
+  const report = collectRoadmapDigest("missing-roadmap", "leadership");
+
+  assert.equal(report.strategyMissing, true);
+  assert.equal(report.strategyPath, "roadmaps/missing-roadmap/roadmap-strategy.md");
+  assert.equal(report.warnings.includes("roadmaps/missing-roadmap/roadmap-strategy.md is missing"), true);
 });
 
 function validState(): Record<string, unknown> {

@@ -46,6 +46,18 @@
 
 ***
 
+### strategyMissing
+
+> **strategyMissing**: `boolean`
+
+***
+
+### strategyPath
+
+> **strategyPath**: `string`
+
+***
+
 ### subject
 
 > **subject**: `string`
