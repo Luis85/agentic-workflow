@@ -1,3 +1,9 @@
+---
+title: "check-traceability"
+folder: "docs/scripts/check-traceability"
+description: "Entry point for generated API reference for the check-traceability script."
+entry_point: true
+---
 [**agentic-workflow**](../README.md)
 
 ***

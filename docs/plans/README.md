@@ -1,3 +1,9 @@
+---
+title: "docs/plans/"
+folder: "docs/plans"
+description: "Entry point for dated working plans that do not fit a single feature spec."
+entry_point: true
+---
 # `docs/plans/`
 
 **Plans** are short‑lived, dated working documents for cross‑cutting work that doesn't fit neatly into a single feature spec under `specs/<slug>/`. Examples: a quality‑hardening sweep, a multi‑PR refactor, an automation routine being introduced, a migration to a new tool.

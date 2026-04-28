@@ -1,3 +1,9 @@
+---
+title: "lib/repo"
+folder: "docs/scripts/lib/repo"
+description: "Entry point for generated API reference for the lib/repo script helper module."
+entry_point: true
+---
 [**agentic-workflow**](../../README.md)
 
 ***

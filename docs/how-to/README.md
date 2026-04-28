@@ -1,3 +1,9 @@
+---
+title: "How-to recipes"
+folder: "docs/how-to"
+description: "Entry point for task-oriented recipes and planned how-to coverage."
+entry_point: true
+---
 # How-to recipes
 
 Task-oriented recipes — *"how do I do X?"* Each recipe takes you from a known starting point to a concrete end state, in steps you can copy-paste.

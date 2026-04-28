@@ -1,3 +1,9 @@
+---
+title: "Product page source"
+folder: "sites"
+description: "Entry point for the static public product page source."
+entry_point: true
+---
 # Product page source
 
 `sites/index.html` is the canonical public product page entrypoint. It must stay directly openable from the filesystem and deployable as static files.

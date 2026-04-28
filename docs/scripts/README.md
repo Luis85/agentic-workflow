@@ -1,3 +1,9 @@
+---
+title: "Repository Scripts"
+folder: "docs/scripts"
+description: "Entry point for generated TypeDoc reference for repository scripts."
+entry_point: true
+---
 **agentic-workflow**
 
 ***
@@ -52,7 +58,7 @@ npm run test:scripts
 | `npm run check:script-docs` | Confirm TypeDoc-generated script API docs are current. |
 | `npm run check:product-page` | Validate the public product page, local assets, upkeep checkbox, and Pages workflow. |
 | `npm run check:workflow-docs` | Confirm core workflow docs and package scripts keep the tool contract visible. |
-| `npm run check:frontmatter` | Validate required frontmatter on state files, ADRs, and review artifacts. |
+| `npm run check:frontmatter` | Validate required frontmatter on README entry points, state files, ADRs, and review artifacts. |
 | `npm run check:specs` | Validate lifecycle `workflow-state.md` files and their artifact maps. |
 | `npm run check:traceability` | Validate lifecycle artifact IDs and local traceability references. |
 

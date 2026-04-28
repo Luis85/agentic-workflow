@@ -1,3 +1,9 @@
+---
+title: "specs/ — per-feature work product"
+folder: "specs"
+description: "Entry point for per-feature workflow artifacts under specs/<feature-slug>."
+entry_point: true
+---
 # `specs/` — per-feature work product
 
 Each feature lives at `specs/<feature-slug>/` and contains the artifacts produced by the workflow.

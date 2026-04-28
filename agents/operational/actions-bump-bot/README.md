@@ -1,3 +1,9 @@
+---
+title: "actions-bump-bot — operator notes"
+folder: "agents/operational/actions-bump-bot"
+description: "Operator entry point for the GitHub Actions dependency update routine."
+entry_point: true
+---
 # actions-bump-bot — operator notes
 
 Companion to [`PROMPT.md`](./PROMPT.md).

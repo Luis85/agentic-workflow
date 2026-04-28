@@ -1,3 +1,9 @@
+---
+title: ".claude/memory/"
+folder: ".claude/memory"
+description: "Entry point for shared operational memory used by agents and contributors."
+entry_point: true
+---
 # `.claude/memory/`
 
 Shared, version-controlled **operational memory** for AI agents and humans working in this repo.

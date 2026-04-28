@@ -1,3 +1,9 @@
+---
+title: "Examples"
+folder: "examples"
+description: "Entry point for worked examples of features built with the workflow kit."
+entry_point: true
+---
 # Examples
 
 Worked end-to-end examples of features developed with this kit.

@@ -1,3 +1,9 @@
+---
+title: "Subagents"
+folder: ".claude/agents"
+description: "Entry point for lifecycle agent role definitions and their operating contracts."
+entry_point: true
+---
 # Subagents
 
 One subagent per SDLC role. Each has:

@@ -1,3 +1,9 @@
+---
+title: "lib/workflow-schema"
+folder: "docs/scripts/lib/workflow-schema"
+description: "Entry point for generated API reference for the lib/workflow-schema script helper module."
+entry_point: true
+---
 [**agentic-workflow**](../../README.md)
 
 ***

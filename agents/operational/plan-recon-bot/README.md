@@ -1,3 +1,9 @@
+---
+title: "plan-recon-bot — operator notes"
+folder: "agents/operational/plan-recon-bot"
+description: "Operator entry point for plan reconciliation scheduling, scope, and outputs."
+entry_point: true
+---
 # plan-recon-bot — operator notes
 
 Companion to [`PROMPT.md`](./PROMPT.md). Schedules and observes the plan archival routine.

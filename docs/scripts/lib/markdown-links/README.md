@@ -1,3 +1,9 @@
+---
+title: "lib/markdown-links"
+folder: "docs/scripts/lib/markdown-links"
+description: "Entry point for generated API reference for the lib/markdown-links script helper module."
+entry_point: true
+---
 [**agentic-workflow**](../../README.md)
 
 ***

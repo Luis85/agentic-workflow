@@ -1,3 +1,9 @@
+---
+title: "docs/archive/"
+folder: "docs/archive"
+description: "Entry point for retained historical artifacts that are no longer current truth."
+entry_point: true
+---
 # `docs/archive/`
 
 Archive of historical artifacts that are no longer the **current** truth but are kept for institutional memory.

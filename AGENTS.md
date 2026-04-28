@@ -39,6 +39,7 @@ Before doing any non-trivial work, read:
 
 - Markdown for all artifacts. Keep them concise; prefer precision over completeness in early iterations.
 - File names are kebab-case. Per-feature work lives under `specs/<feature-slug>/`.
+- Each folder may have at most one `README.md`. When present, it is the folder's entry point for GitHub-style Markdown browsing and must start with YAML frontmatter containing `title`, `folder`, `description`, and `entry_point: true`. The `folder` value is the repository-relative directory path, or `.` for the repository root.
 - IDs are stable: `REQ-<AREA>-NNN`, `T-<AREA>-NNN`, `TEST-<AREA>-NNN`, `ADR-NNNN`.
 - ADR bodies are immutable. To change a decision, supersede it; the predecessor's `status` and `superseded-by` pointers are the only fields that may be updated.
 - Glossary terms live one-per-file under `docs/glossary/<slug>.md`. Define a term with `/glossary:new "<term>"`. The directory listing is the index — no `README.md` index to maintain. See [ADR-0010](docs/adr/0010-shard-glossary-into-one-file-per-term.md). The legacy `docs/UBIQUITOUS_LANGUAGE.md` single-file model is deprecated.
