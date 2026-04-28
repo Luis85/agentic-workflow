@@ -13,6 +13,7 @@
 - [check-script-docs](check-script-docs/README.md)
 - [check-spec-state](check-spec-state/README.md)
 - [check-traceability](check-traceability/README.md)
+- [doctor](doctor/README.md)
 - [fix-adr-index](fix-adr-index/README.md)
 - [fix-command-docs](fix-command-docs/README.md)
 - [fix-generated](fix-generated/README.md)

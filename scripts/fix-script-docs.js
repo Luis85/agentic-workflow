@@ -10,7 +10,12 @@ if (result.error) {
   process.exit(1);
 }
 
-process.exit(result.status || 0);
+if (result.signal) {
+  console.error(`docs:scripts terminated by signal ${result.signal}`);
+  process.exit(1);
+}
+
+process.exit(result.status ?? 1);
 
 function spawnNpm(args, options) {
   if (process.env.npm_execpath) {

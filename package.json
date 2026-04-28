@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "doctor": "node scripts/doctor.js",
     "verify": "node scripts/verify.js",
     "check:links": "node scripts/check-markdown-links.js",
     "check:adr-index": "node scripts/check-adr-index.js",
