@@ -109,7 +109,14 @@ const checklistGapPattern = /^\s*-\s+Status:\s+(gap|nonconformity)\b/gim;
  * @returns Repository-level and per-workflow quality metrics.
  */
 export function collectQualityMetrics(options: QualityMetricOptions = {}): QualityMetrics {
-  const workflows = workflowStateFiles()
+  const workflowStatePaths = workflowStateFiles();
+  const scopedWorkflowStatePaths = workflowStatePaths.filter(
+    (statePath) => !options.feature || path.basename(path.dirname(statePath)) === options.feature,
+  );
+  const unreadableWorkflowStates = scopedWorkflowStatePaths
+    .filter((statePath) => !extractFrontmatter(readText(statePath)))
+    .map(relativeToRoot);
+  const workflows = workflowStatePaths
     .map(readWorkflowMetric)
     .filter((metric): metric is WorkflowMetric => Boolean(metric))
     .filter((metric) => !options.feature || metric.feature === options.feature);
@@ -134,6 +141,8 @@ export function collectQualityMetrics(options: QualityMetricOptions = {}): Quali
     .map((workflow) => `${workflow.feature} (${workflow.path})`);
   const maturity = assessMaturity({
     workflows,
+    workflowStateFiles: scopedWorkflowStatePaths.map(relativeToRoot),
+    unreadableWorkflowStates,
     missingFrontmatter,
     checklistGaps,
     qualityReviews: qualityReviewCount(),
@@ -242,6 +251,8 @@ export function renderQualityMetrics(metrics: QualityMetrics): string {
 
 export type MaturityInput = {
   workflows: WorkflowMetric[];
+  workflowStateFiles?: string[];
+  unreadableWorkflowStates?: string[];
   missingFrontmatter: string[];
   checklistGaps: number;
   qualityReviews: number;
@@ -295,29 +306,47 @@ const maturityLevels = [
 export function assessMaturity(input: MaturityInput): MaturityAssessment {
   const evidence: string[] = [];
   const gaps: string[] = [];
+  const workflowStateCount = input.workflowStateFiles?.length ?? input.workflows.length;
+  const unreadableWorkflowStates = input.unreadableWorkflowStates ?? [];
   const doneWorkflows = input.workflows.filter((workflow) => workflow.status === "done");
   const averageStageScore = average(input.workflows.map((workflow) => workflow.stageScore));
   const averageTraceability = average(input.workflows.map((workflow) => workflow.requirementCoverage));
   let level = 0;
 
   if (input.workflows.length === 0) {
+    if (workflowStateCount > 0) {
+      evidence.push(`${workflowStateCount} workflow state file(s) found.`);
+      gaps.push(
+        `${unreadableWorkflowStates.length || workflowStateCount} workflow-state.md file(s) could not be read as workflow evidence.`,
+      );
+      return maturityResult(
+        level,
+        evidence,
+        gaps,
+        "Fix workflow-state.md YAML frontmatter so the quality metrics script can read it.",
+      );
+    }
+
     gaps.push("No workflow-state.md files were found under specs/ or examples/.");
     return maturityResult(level, evidence, gaps);
   }
 
   level = 1;
   evidence.push(`${input.workflows.length} workflow state file(s) found.`);
+  if (unreadableWorkflowStates.length > 0) {
+    gaps.push(`${unreadableWorkflowStates.length} workflow-state.md file(s) could not be read as workflow evidence.`);
+  }
   if (input.missingFrontmatter.length === 0) {
     evidence.push("Required Markdown frontmatter is complete.");
   } else {
     gaps.push(`${input.missingFrontmatter.length} required Markdown frontmatter gap(s) remain.`);
   }
 
-  if (input.missingFrontmatter.length === 0 && averageStageScore >= 80) {
+  if (unreadableWorkflowStates.length === 0 && input.missingFrontmatter.length === 0 && averageStageScore >= 80) {
     level = 2;
     evidence.push(`Average stage score is ${formatPercent(averageStageScore)}.`);
   } else {
-    gaps.push("Average stage score is below 80% or metadata gaps remain.");
+    gaps.push("Average stage score is below 80%, unreadable workflow states exist, or metadata gaps remain.");
   }
 
   if (level >= 2 && averageTraceability >= 80) {
@@ -344,7 +373,7 @@ export function assessMaturity(input: MaturityInput): MaturityAssessment {
   return maturityResult(level, evidence, gaps);
 }
 
-function maturityResult(level: number, evidence: string[], gaps: string[]): MaturityAssessment {
+function maturityResult(level: number, evidence: string[], gaps: string[], nextStep?: string): MaturityAssessment {
   const definition = maturityLevels[level];
   return {
     level: definition.level,
@@ -352,7 +381,7 @@ function maturityResult(level: number, evidence: string[], gaps: string[]): Matu
     summary: definition.summary,
     evidence,
     gaps: gaps.length === 0 ? ["No maturity gaps detected for this level."] : gaps,
-    nextStep: definition.nextStep,
+    nextStep: nextStep ?? definition.nextStep,
   };
 }
 

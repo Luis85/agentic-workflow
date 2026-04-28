@@ -28,6 +28,18 @@
 
 ***
 
+### unreadableWorkflowStates?
+
+> `optional` **unreadableWorkflowStates?**: `string`[]
+
+***
+
 ### workflows
 
 > **workflows**: [`WorkflowMetric`](WorkflowMetric.md)[]
+
+***
+
+### workflowStateFiles?
+
+> `optional` **workflowStateFiles?**: `string`[]

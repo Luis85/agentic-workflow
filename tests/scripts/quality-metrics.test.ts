@@ -89,6 +89,21 @@ test("assessMaturity reports evidence-backed level and gaps", () => {
   assert.match(assessment.gaps.join("\n"), /No clean QA review evidence/);
 });
 
+test("assessMaturity distinguishes unreadable workflow states from missing workflows", () => {
+  const assessment = assessMaturity({
+    workflows: [],
+    workflowStateFiles: ["specs/example/workflow-state.md"],
+    unreadableWorkflowStates: ["specs/example/workflow-state.md"],
+    missingFrontmatter: [],
+    checklistGaps: 0,
+    qualityReviews: 0,
+  });
+  assert.equal(assessment.level, 0);
+  assert.match(assessment.evidence.join("\n"), /1 workflow state file/);
+  assert.match(assessment.gaps.join("\n"), /could not be read as workflow evidence/);
+  assert.match(assessment.nextStep, /Fix workflow-state.md YAML frontmatter/);
+});
+
 test("rtmLinksFromRow preserves blank interior cells", () => {
   assert.deepEqual(markdownTableCells("| REQ-QMR-001 | SPEC-QMR-001 |  | `src/file.ts` | TEST-QMR-001 | pass |"), [
     "REQ-QMR-001",
