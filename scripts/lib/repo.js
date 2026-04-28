@@ -89,7 +89,7 @@ export function parseSimpleYaml(raw) {
       if (typeof data[currentKey] !== "object" || Array.isArray(data[currentKey])) {
         data[currentKey] = {};
       }
-      data[currentKey][nested[1].trim()] = parseYamlScalar(nested[2].trim());
+      data[currentKey][nested[1].trim()] = parseYamlScalar(stripInlineComment(nested[2]).trim());
       continue;
     }
 
@@ -97,11 +97,27 @@ export function parseSimpleYaml(raw) {
     if (!match) continue;
 
     currentKey = match[1].trim();
-    const value = match[2].trim();
+    const value = stripInlineComment(match[2]).trim();
     data[currentKey] = value === "" ? {} : parseYamlScalar(value);
   }
 
   return data;
+}
+
+function stripInlineComment(value) {
+  let quote = null;
+  for (let index = 0; index < value.length; index += 1) {
+    const char = value[index];
+    const previous = value[index - 1];
+    if ((char === '"' || char === "'") && previous !== "\\") {
+      quote = quote === char ? null : quote || char;
+      continue;
+    }
+    if (char === "#" && !quote && (index === 0 || /\s/.test(previous))) {
+      return value.slice(0, index);
+    }
+  }
+  return value;
 }
 
 function parseYamlScalar(value) {

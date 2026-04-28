@@ -16,8 +16,16 @@ for (const filePath of markdownFiles()) {
       if (shouldIgnoreTarget(target)) continue;
 
       const [targetPath, rawAnchor] = target.split("#");
+      const decodedPath = safeDecode(targetPath);
+      const decodedAnchor = safeDecode(rawAnchor);
+
+      if (!decodedPath.ok || !decodedAnchor.ok) {
+        errors.push(`${relativeToRoot(filePath)}:${lineIndex + 1} has invalid URI escape in link ${target}`);
+        continue;
+      }
+
       const resolvedPath = targetPath
-        ? path.resolve(path.dirname(filePath), decodeURIComponent(targetPath))
+        ? path.resolve(path.dirname(filePath), decodedPath.value)
         : filePath;
 
       if (targetPath && !fs.existsSync(resolvedPath)) {
@@ -27,7 +35,7 @@ for (const filePath of markdownFiles()) {
 
       if (rawAnchor && fs.existsSync(resolvedPath)) {
         const anchors = collectAnchors(readText(resolvedPath));
-        const anchor = decodeURIComponent(rawAnchor).toLowerCase();
+        const anchor = decodedAnchor.value.toLowerCase();
         if (!anchors.has(anchor)) {
           errors.push(`${relativeToRoot(filePath)}:${lineIndex + 1} links to missing anchor ${target}`);
         }
@@ -37,6 +45,15 @@ for (const filePath of markdownFiles()) {
 }
 
 failIfErrors(errors, "check:links");
+
+function safeDecode(value) {
+  if (value === undefined) return { ok: true, value: "" };
+  try {
+    return { ok: true, value: decodeURIComponent(value) };
+  } catch {
+    return { ok: false, value };
+  }
+}
 
 function shouldIgnoreTarget(target) {
   if (!target || target.startsWith("#")) return false;
