@@ -3,7 +3,7 @@ id: SPECDOC-CLI-001
 title: CLI Todo App — Specification
 stage: specification
 feature: cli-todo
-status: draft
+status: complete
 owner: architect
 inputs:
   - PRD-CLI-001
