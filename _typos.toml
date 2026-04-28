@@ -1,0 +1,37 @@
+[default]
+# Ignore ALL-CAPS hyphenated identifiers — trace IDs (REQ-IST-001, T-AUTH-014),
+# implementation-log keys (IMPL-LOG-IST-001, TASKS-IST-001), and similar.
+# These are stable identifiers per docs/traceability.md, not English words.
+extend-ignore-re = [
+  # Trace IDs: T-IST-001, REQ-AUTH-014, IMPL-LOG-IST-001, etc.
+  "[A-Z]+(-[A-Z]+)+(-\\d+)?",
+  "ADR-\\d{4}",
+]
+
+[default.extend-words]
+# Project-specific terms — keep verbatim
+specorator = "specorator"
+Specorator = "Specorator"
+arc42 = "arc42"
+
+# Domain abbreviations / acronyms typos misreads as typos
+RTO = "RTO"          # Recovery Time Objective
+ND = "ND"            # placeholder NFR identifier ("ND1") in design template
+IST = "IST"          # area code for the improve-specorator-tooling feature
+
+# Tool / library names
+wrk = "wrk"          # HTTP load-testing tool
+
+# Intentional non-words used in prose
+mis = "mis"          # used in compound forms ("mis-typed")
+criticals = "criticals"  # plural informal noun for critical findings
+
+[files]
+extend-exclude = [
+  "node_modules",
+  ".worktrees",
+  "examples",
+  "package-lock.json",
+  "*.svg",
+  "docs/scripts/**",
+]

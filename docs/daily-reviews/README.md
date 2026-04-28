@@ -6,7 +6,7 @@ entry_point: true
 ---
 # `docs/daily-reviews/`
 
-An **optional, project‑implemented** Markdown archive pattern for [`review-bot`](../../agents/operational/review-bot/PROMPT.md) findings. The `review-bot` routine itself is purely read‑only — it never commits files or opens PRs. If a project wants a git‑browseable archive in addition to GitHub issues, it must run a **separate** scheduled job (or a person commits by hand) that copies the issue body into `docs/daily-reviews/YYYY-MM-DD.md`.
+An **optional, project‑implemented** Markdown archive pattern for [`review-bot`](../../agents/operational/review-bot/PROMPT.md) findings. The `review-bot` routine itself is purely read‑only — it never commits files or opens PRs. If a project wants a git‑browsable archive in addition to GitHub issues, it must run a **separate** scheduled job (or a person commits by hand) that copies the issue body into `docs/daily-reviews/YYYY-MM-DD.md`.
 
 This directory is therefore the destination of an optional pattern, not an output of any bot in this template.
 
@@ -14,7 +14,7 @@ This directory is therefore the destination of an optional pattern, not an outpu
 
 Implement the digest pattern if the project wants:
 
-- A **searchable** archive of reviews, browseable inside the repo (issues alone are search‑filterable but not git‑diffable).
+- A **searchable** archive of reviews, browsable inside the repo (issues alone are search‑filterable but not git‑diffable).
 - A trail readers can traverse with `git log -- docs/daily-reviews/` after the GitHub issues have been closed and labels pruned.
 
 Skip it if your team treats issues as the canonical archive — `review-bot`'s primary sink (one issue per run, label `review-bot`) covers the same content. There is no behaviour the digest unlocks beyond what the issue already provides.
@@ -44,7 +44,7 @@ Use `issue: null` only when the review was archived locally before a GitHub issu
 Two reasons:
 
 1. **Auto‑flip on merge** keys off the GitHub issue's checklist, not this file. When a fix PR contains the magic line `Refs #<issue> finding:<sha7>.<idx>`, the corresponding line in the issue gets ticked. The digest here is a snapshot; it doesn't update after creation.
-2. **Closed issues drop off the label view** — exactly what you want for tracker discipline. Old digests stay here, browseable, without cluttering the active label.
+2. **Closed issues drop off the label view** — exactly what you want for tracker discipline. Old digests stay here, browsable, without cluttering the active label.
 
 ## Anti‑patterns
 

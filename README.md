@@ -2,6 +2,8 @@
 
 ![Version](https://img.shields.io/badge/version-v0.2-blue) ![License](https://img.shields.io/badge/license-MIT-green)
 
+[![Verify](https://github.com/Luis85/agentic-workflow/actions/workflows/verify.yml/badge.svg?branch=main)](https://github.com/Luis85/agentic-workflow/actions/workflows/verify.yml) [![gitleaks](https://github.com/Luis85/agentic-workflow/actions/workflows/gitleaks.yml/badge.svg?branch=main)](https://github.com/Luis85/agentic-workflow/actions/workflows/gitleaks.yml) [![typos](https://github.com/Luis85/agentic-workflow/actions/workflows/typos.yml/badge.svg?branch=main)](https://github.com/Luis85/agentic-workflow/actions/workflows/typos.yml) [![zizmor](https://github.com/Luis85/agentic-workflow/actions/workflows/zizmor.yml/badge.svg?branch=main)](https://github.com/Luis85/agentic-workflow/actions/workflows/zizmor.yml)
+
 **Build software the right way with AI.** Specorator is a ready-to-use workflow template that keeps humans in charge of *what* to build while AI agents handle the heavy lifting of *how*.
 
 > **Status:** v0.2 — Foundation + Skills layer. Intentionally generic and starting-point-y — fork it, adapt it, make it yours.

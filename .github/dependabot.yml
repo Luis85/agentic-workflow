@@ -1,0 +1,58 @@
+version: 2
+
+updates:
+  # GitHub Actions — keep SHA pins fresh
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Etc/UTC
+    # Wait this many days after a release before opening a bump PR. Mitigates
+    # the "compromised release window" supply-chain risk where a hostile
+    # version is yanked within a few hours of publication. Dependabot does
+    # not accept semver-keyed cooldowns for the github-actions ecosystem;
+    # only the flat default-days is honoured here.
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: chore
+      include: scope
+    labels:
+      - area:ci
+      - dependencies
+    groups:
+      actions-minor-and-patch:
+        update-types:
+          - minor
+          - patch
+
+  # npm — verify-gate tooling
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:30"
+      timezone: Etc/UTC
+    # Same cooldown rationale as the github-actions block above.
+    cooldown:
+      default-days: 7
+      semver-major-days: 30
+      semver-minor-days: 3
+    open-pull-requests-limit: 5
+    versioning-strategy: increase-if-necessary
+    commit-message:
+      prefix: chore
+      include: scope
+    labels:
+      - area:scripts
+      - dependencies
+    groups:
+      dev-dependencies:
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
