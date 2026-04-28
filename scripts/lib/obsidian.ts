@@ -1,6 +1,11 @@
 import type { Diagnostic } from "./diagnostics.js";
 import { extractFrontmatter, relativeToRoot, readText } from "./repo.js";
 
+export type ObsidianFixResult = {
+  text: string;
+  changed: boolean;
+};
+
 export type ObsidianDiagnosticCode =
   | "OBS_FRONTMATTER_CLOSE"
   | "OBS_FRONTMATTER_JSON"
@@ -143,6 +148,51 @@ export function obsidianDiagnosticsForFrontmatter(filePath: string, raw: string)
   return errors;
 }
 
+/**
+ * Apply safe, mechanical Obsidian frontmatter repairs to a Markdown document.
+ *
+ * The fixer only rewrites documents with a valid frontmatter block. It quotes
+ * scalar wikilinks such as `related: [[Some Note]]` while preserving inline YAML
+ * comments. Structural problems, duplicate properties, tabs, and JSON-style
+ * metadata remain check failures because they need human review.
+ *
+ * @param {string} text - Complete Markdown document contents.
+ * @returns {ObsidianFixResult} Fixed text and whether it changed.
+ */
+export function fixObsidianFrontmatter(text: string): ObsidianFixResult {
+  const frontmatter = extractFrontmatter(text);
+  if (!frontmatter) return { text, changed: false };
+
+  const normalized = text.replace(/\r\n/g, "\n");
+  const start = 4;
+  const end = normalized.indexOf("\n---\n", start);
+  if (end === -1) return { text, changed: false };
+
+  const raw = normalized.slice(start, end);
+  const fixedRaw = fixObsidianFrontmatterBlock(raw);
+  if (fixedRaw === raw && normalized === text) return { text, changed: false };
+
+  return {
+    text: `---\n${fixedRaw}\n---\n${normalized.slice(end + 5)}`,
+    changed: true,
+  };
+}
+
+/**
+ * Apply safe, mechanical Obsidian repairs to raw YAML frontmatter.
+ *
+ * @param {string} raw - Raw frontmatter without delimiter lines.
+ * @returns {string} Repaired raw frontmatter.
+ */
+export function fixObsidianFrontmatterBlock(raw: string): string {
+  if (/^\s*[\[{]/.test(raw)) return raw;
+
+  return raw
+    .split("\n")
+    .map((line) => fixScalarWikilinkLine(line))
+    .join("\n");
+}
+
 function validateScalarWikilink(errors: Diagnostic[], filePath: string, lineNumber: number, value: string): void {
   if (!value.includes("[[")) return;
   if (value.startsWith("\"") || value.startsWith("'")) return;
@@ -156,6 +206,45 @@ function validateScalarWikilink(errors: Diagnostic[], filePath: string, lineNumb
       "internal links in property values must be quoted for Obsidian Properties",
     ),
   );
+}
+
+function fixScalarWikilinkLine(line: string): string {
+  if (line.startsWith(" ") || line.startsWith("\t")) return line;
+
+  const match = line.match(/^([^:#]+):(\s+)(.*)$/);
+  if (!match) return line;
+
+  const [, rawName, separator, rawValue] = match;
+  if (rawName.trim() !== rawName || !propertyNamePattern.test(rawName)) return line;
+
+  const { value, comment } = splitInlineComment(rawValue);
+  const trimmedValue = value.trim();
+  if (!trimmedValue.startsWith("[[") || trimmedValue.startsWith("\"") || trimmedValue.startsWith("'")) return line;
+
+  const leading = value.match(/^\s*/)?.[0] || "";
+  const trailing = value.match(/\s*$/)?.[0] || "";
+  return `${rawName}:${separator}${leading}${JSON.stringify(trimmedValue)}${trailing}${comment}`;
+}
+
+function splitInlineComment(value: string): { value: string; comment: string } {
+  let quote: string | null = null;
+  for (let index = 0; index < value.length; index += 1) {
+    const char = value[index];
+    const previous = value[index - 1];
+    if ((char === "\"" || char === "'") && previous !== "\\") {
+      quote = quote === char ? null : quote || char;
+      continue;
+    }
+    if (char === "#" && !quote && index > 0 && /\s/.test(previous)) {
+      let commentStart = index;
+      while (commentStart > 0 && /\s/.test(value[commentStart - 1])) commentStart -= 1;
+      return {
+        value: value.slice(0, commentStart),
+        comment: value.slice(commentStart),
+      };
+    }
+  }
+  return { value, comment: "" };
 }
 
 function obsidianDiagnostic(code: ObsidianDiagnosticCode, filePath: string, line: number, message: string): Diagnostic {

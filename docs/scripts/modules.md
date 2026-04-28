@@ -21,6 +21,7 @@
 - [fix-adr-index](fix-adr-index/README.md)
 - [fix-command-docs](fix-command-docs/README.md)
 - [fix-generated](fix-generated/README.md)
+- [fix-obsidian](fix-obsidian/README.md)
 - [fix-script-docs](fix-script-docs/README.md)
 - [lib/adr](lib/adr/README.md)
 - [lib/commands](lib/commands/README.md)

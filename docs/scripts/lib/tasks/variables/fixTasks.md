@@ -14,12 +14,12 @@ Deterministic repair tasks executed by `npm run fix`.
 
 ### label
 
-> **label**: `string` = `"ADR index"`
+> **label**: `string` = `"Obsidian Markdown compatibility"`
 
 ### name
 
-> **name**: `string` = `"fix:adr-index"`
+> **name**: `string` = `"fix:obsidian"`
 
 ### script
 
-> **script**: `string` = `"scripts/fix-adr-index.ts"`
+> **script**: `string` = `"scripts/fix-obsidian.ts"`
