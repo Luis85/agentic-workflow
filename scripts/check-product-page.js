@@ -39,20 +39,24 @@ function requireIndexMarkup(html) {
     ['rel="icon"', "sites/index.html must include a favicon"],
     ['property="og:title"', "sites/index.html must include Open Graph metadata"],
     ['name="twitter:card"', "sites/index.html must include Twitter card metadata"],
-    ["github.com/Luis85/agentic-workflow/generate", "primary CTA should point to the GitHub template generator"],
     ["assets/artifact-chain.svg", "sites/index.html should include the artifact-chain visual"],
-    ["examples/cli-todo", "sites/index.html should link to the example artifact tree"],
     ["Quickstart", "sites/index.html should include a quickstart section"],
   ];
   for (const [needle, message] of required) {
     if (!html.includes(needle)) errors.push(message);
   }
+  const hrefs = getAttributeValues(html, "href");
+  if (!hrefs.some((href) => /^https:\/\/github\.com\/[^/\s]+\/[^/\s]+\/generate\/?$/.test(href))) {
+    errors.push("primary CTA should point to a GitHub template generator URL");
+  }
+  if (!hrefs.some((href) => /(^|\/)examples\//.test(href))) {
+    errors.push("sites/index.html should link to an example artifact tree");
+  }
 }
 
 function checkLocalReferences(html) {
   const ids = new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]));
-  for (const match of html.matchAll(/\s(?:href|src)="([^"]+)"/g)) {
-    const target = match[1];
+  for (const target of getAttributeValues(html, "href").concat(getAttributeValues(html, "src"))) {
     if (target.startsWith("#")) {
       const id = target.slice(1);
       if (!ids.has(id)) errors.push(`sites/index.html references missing anchor #${id}`);
@@ -66,6 +70,11 @@ function checkLocalReferences(html) {
     }
     if (!fs.existsSync(targetPath)) errors.push(`sites/index.html references missing local asset: ${target}`);
   }
+}
+
+function getAttributeValues(html, attributeName) {
+  const pattern = new RegExp(`\\s${attributeName}="([^"]+)"`, "g");
+  return [...html.matchAll(pattern)].map((match) => match[1]);
 }
 
 function checkCss(text) {
