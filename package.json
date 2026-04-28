@@ -7,7 +7,7 @@
     "doctor": "tsx scripts/doctor.ts",
     "verify": "tsx scripts/verify.ts",
     "typecheck:scripts": "tsc --project tsconfig.scripts.json --noEmit",
-    "test:scripts": "node --test --import tsx tests/scripts/inventory.test.ts tests/scripts/markdown-links.test.ts tests/scripts/repo.test.ts",
+    "test:scripts": "tsx scripts/test-scripts.ts",
     "check:links": "tsx scripts/check-markdown-links.ts",
     "check:adr-index": "tsx scripts/check-adr-index.ts",
     "check:commands": "tsx scripts/check-command-docs.ts",

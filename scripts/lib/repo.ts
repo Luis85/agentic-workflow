@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { DiagnosticInput, checkResult, formatDiagnostic, wantsJson } from "./diagnostics.js";
 
 export type FrontmatterBlock = {
   raw: string;
@@ -115,17 +116,27 @@ export function markdownFiles(): string[] {
 /**
  * Print accumulated validation errors and terminate the current Node process.
  *
- * @param {string[]} errors - Human-readable validation errors.
+ * @param {DiagnosticInput[]} errors - Human-readable or structured validation errors.
  * @param {string} heading - Check name shown before the result.
  */
-export function failIfErrors(errors: string[], heading: string): void {
-  if (errors.length === 0) {
-    console.log(`${heading}: ok`);
+export function failIfErrors(errors: DiagnosticInput[], heading: string): void {
+  const result = checkResult(heading, errors);
+  if (wantsJson()) {
+    console.log(JSON.stringify(result, null, 2));
+  }
+
+  if (result.status === "pass") {
+    if (!wantsJson()) {
+      console.log(`${heading}: ok`);
+    }
     return;
   }
 
-  console.error(`${heading}: ${errors.length} error(s)`);
-  for (const error of errors) console.error(`- ${error}`);
+  if (!wantsJson()) {
+    console.error(`${heading}: ${result.errors.length} error(s)`);
+    for (const error of result.errors) console.error(`- ${formatDiagnostic(error)}`);
+  }
+
   process.exit(1);
 }
 
