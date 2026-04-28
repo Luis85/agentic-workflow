@@ -71,6 +71,12 @@ export const checkTasks = [
     script: "scripts/check-spec-state.ts",
   },
   {
+    name: "check:roadmaps",
+    label: "Roadmap state",
+    script: "scripts/check-roadmaps.ts",
+    jsonDiagnostics: true,
+  },
+  {
     name: "check:traceability",
     label: "Traceability IDs",
     script: "scripts/check-traceability.ts",
