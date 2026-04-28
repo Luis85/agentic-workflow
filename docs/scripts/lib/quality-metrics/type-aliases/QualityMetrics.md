@@ -66,6 +66,10 @@
 
 > **markdownFiles**: `number`
 
+#### maturity
+
+> **maturity**: [`MaturityAssessment`](MaturityAssessment.md)
+
 #### overallScore
 
 > **overallScore**: `number`
