@@ -107,7 +107,7 @@ Items reviewed: <N>
 Stakeholder attention: <list or none>
 Team communication: <next message or none>
 Decisions needed: <list or none>
-Next review: <date or cadence>
+Next review: <YYYY-MM-DD>
 ```
 
 ## Boundaries
@@ -115,4 +115,5 @@ Next review: <date or cadence>
 - Surface trade-offs; humans make priority, funding, external commitment, and scope decisions.
 - Cite source artifacts for every non-obvious status, risk, or dependency.
 - Prefer "unknown, owner, next evidence" over invented certainty.
+- Keep `last_review` and `next_review` as parseable ISO dates (`YYYY-MM-DD`) or null before the first scheduled review.
 - Never edit files outside `roadmaps/<slug>/`.

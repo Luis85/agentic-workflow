@@ -32,7 +32,7 @@ Invoke the `roadmap-manager` agent to:
 4. Identify stakeholder conflicts and team communication needs.
 5. Update `communication-log.md` with the next recommended update.
 6. Update `decision-log.md` for decisions requested or made.
-7. Set `last_review`, `next_review`, and `last_updated` in `roadmap-state.md`.
+7. Set `last_review`, `next_review`, and `last_updated` in `roadmap-state.md`; `last_review` and `next_review` must be ISO dates (`YYYY-MM-DD`), not cadence text.
 
 ## Don't
 

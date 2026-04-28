@@ -57,6 +57,7 @@ roadmaps/
 ## 5. Artifact Rules
 
 - `roadmap-state.md` is owned by `/roadmap:*` commands.
+- `last_review` and `next_review` in `roadmap-state.md` are ISO dates (`YYYY-MM-DD`) or null before the first scheduled review. Cadence belongs in `roadmap-strategy.md`, not in state frontmatter.
 - `roadmap-strategy.md` is living but changes should be logged in `roadmap-state.md`.
 - `roadmap-board.md` is updated in place; change rationale is recorded in its Change Summary.
 - `delivery-plan.md` only covers committed or date-sensitive roadmap items. It does not replace project plans, task lists, or `specs/`.

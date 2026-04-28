@@ -3,7 +3,7 @@ roadmap: ~                # kebab-case slug
 status: active            # active | paused | done
 scope_type: mixed         # product | project | program | mixed
 last_review: ~            # ISO date of last roadmap review
-next_review: ~            # ISO date or cadence note
+next_review: ~            # ISO date of next planned roadmap review
 last_updated: <YYYY-MM-DD>
 last_agent: roadmap-manager
 documents:
