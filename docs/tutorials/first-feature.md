@@ -98,7 +98,7 @@ The first argument is the feature slug; the optional second is the area code tha
 
 **What happens:** the `pm` agent writes a PRD at `requirements.md` from `templates/prd-template.md`. The document's own ID is `PRD-DOCS-001`; functional requirements inside it use **EARS notation** with stable IDs `REQ-DOCS-NNN`. For this feature you should expect one or two requirements — e.g. *"Where the `docs/glossary/` directory is read, the system shall include a `tracer-bullet.md` entry with a one-sentence canonical definition."*
 
-**If you see this, you are on track:** `requirements.md` has frontmatter `id: PRD-DOCS-001`. Body has `## Goals`, `## Non-goals`, `## Personas / stakeholders`, `## Jobs to be done`, and a `## Requirements` section listing at least one `REQ-DOCS-NNN` line that uses one of the EARS keywords (`Where`, `When`, `If`, `While`, `Where`/`shall`). For the EARS reference, see [`docs/ears-notation.md`](../ears-notation.md).
+**If you see this, you are on track:** `requirements.md` has frontmatter `id: PRD-DOCS-001`. Body has `## Summary`, `## Goals`, `## Non-goals`, `## Personas / stakeholders`, `## Jobs to be done`, and a `## Functional requirements (EARS)` section listing at least one `REQ-DOCS-NNN` line that uses one of the EARS keywords (`When`, `Where`, `While`, `If`, the optional-feature pattern, or the ubiquitous `the system shall` form). Further sections — `## Non-functional requirements`, `## Success metrics`, `## Release criteria`, `## Open questions / clarifications`, `## Out of scope`, `## Quality gate` — round out the PRD shape. For the EARS reference, see [`docs/ears-notation.md`](../ears-notation.md).
 
 ---
 
