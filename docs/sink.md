@@ -362,6 +362,7 @@ These skills append to cross-workflow files:
 - `domain-context` → `docs/CONTEXT.md` (or `CONTEXT-MAP.md` + `contexts/<name>.md`).
 - `new-glossary-entry` → `docs/glossary/<slug>.md` (via `/glossary:new`). Per [ADR-0010](adr/0010-shard-glossary-into-one-file-per-term.md), supersedes the deprecated `ubiquitous-language` → `docs/UBIQUITOUS_LANGUAGE.md` flow.
 - `quality-assurance` → `quality/<review>/quality-state.md`, `quality-plan.md`, `checklists/*.md`, `quality-review.md`, and `improvement-plan.md`.
+- `quality-metrics` → `quality/metrics/<scope>/<timestamp>.json` when invoked with `--save`.
 - `roadmap-management` → `roadmaps/<slug>/roadmap-state.md`, `roadmap-strategy.md`, `roadmap-board.md`, `delivery-plan.md`, `stakeholder-map.md`, `communication-log.md`, and `decision-log.md`.
 - `specorator-improvement` → the affected template surfaces: `scripts/`, `tests/scripts/`, `package.json`, `.github/workflows/`, `.claude/commands/`, `.claude/skills/`, `.claude/agents/`, `templates/`, `docs/`, and the owning `specs/<slug>/` artifacts.
 

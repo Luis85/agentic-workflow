@@ -173,7 +173,7 @@ The track starts as Markdown-first workflow infrastructure. The highest-value fo
 |---|---|---|
 | Roadmap state check | Validate required roadmap artifacts, frontmatter, review dates, and append-only log structure | `npm run check:roadmaps` (implemented) |
 | Evidence collector | Summarize linked `specs/`, `projects/`, and `portfolio/` signals for `/roadmap:shape` and `/roadmap:review` | `npm run roadmap:evidence -- <slug>` (implemented) |
-| Communication digest | Generate audience-specific draft updates from `roadmap-board.md`, `delivery-plan.md`, and `stakeholder-map.md` | `npm run roadmap:digest -- <slug> <audience>` |
+| Communication digest | Generate audience-specific draft updates from `roadmap-board.md`, `delivery-plan.md`, and `stakeholder-map.md` | `npm run roadmap:digest -- <slug> <audience>` (implemented) |
 | Staleness report | Flag old reviews, low-confidence `Now` items, missing success metrics, unresolved decisions, and stale stakeholder updates | `npm run roadmap:review-check` |
 | External export | Render a read-only roadmap summary for GitHub Pages or stakeholder packets | `npm run roadmap:export -- <slug>` |
 

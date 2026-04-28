@@ -14,6 +14,8 @@ entry_point: true
 
 ## Type Aliases
 
+- [RoadmapDigestReport](type-aliases/RoadmapDigestReport.md)
+- [RoadmapDigestSection](type-aliases/RoadmapDigestSection.md)
 - [RoadmapEvidenceArtifact](type-aliases/RoadmapEvidenceArtifact.md)
 - [RoadmapEvidenceReport](type-aliases/RoadmapEvidenceReport.md)
 
@@ -27,8 +29,10 @@ entry_point: true
 
 ## Functions
 
+- [collectRoadmapDigest](functions/collectRoadmapDigest.md)
 - [collectRoadmapEvidence](functions/collectRoadmapEvidence.md)
 - [linkedArtifactPathsFromStrategy](functions/linkedArtifactPathsFromStrategy.md)
+- [renderRoadmapDigest](functions/renderRoadmapDigest.md)
 - [renderRoadmapEvidence](functions/renderRoadmapEvidence.md)
 - [roadmapStateDiagnostics](functions/roadmapStateDiagnostics.md)
 - [roadmapStateFiles](functions/roadmapStateFiles.md)

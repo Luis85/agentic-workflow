@@ -1,11 +1,16 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
 import {
+  collectRoadmapDigest,
   linkedArtifactPathsFromStrategy,
+  renderRoadmapDigest,
   renderRoadmapEvidence,
   summarizeEvidenceArtifact,
   validateRoadmapStateData,
 } from "../../scripts/lib/roadmaps.js";
+import { repoRoot } from "../../scripts/lib/repo.js";
 
 test("roadmap state validation accepts ISO review dates and pending documents", () => {
   const diagnostics = validateRoadmapStateData(
@@ -114,6 +119,104 @@ test("roadmap evidence renderer includes warnings", () => {
 
   assert.match(markdown, /Roadmap evidence - product/);
   assert.match(markdown, /specs\/missing\/workflow-state\.md is linked but missing/);
+});
+
+test("roadmap digest generates an audience-specific draft from roadmap artifacts", () => {
+  const slug = "test-digest-roadmap";
+  const roadmapDir = path.join(repoRoot, "roadmaps", slug);
+  fs.rmSync(roadmapDir, { recursive: true, force: true });
+  fs.mkdirSync(roadmapDir, { recursive: true });
+
+  try {
+    fs.writeFileSync(
+      path.join(roadmapDir, "roadmap-strategy.md"),
+      [
+        "# Strategy",
+        "",
+        "## Outcomes",
+        "",
+        "- Reduce onboarding uncertainty for delivery teams.",
+        "",
+        "## Audiences",
+        "",
+        "- Leadership needs trade-off visibility.",
+      ].join("\n"),
+      "utf8",
+    );
+    fs.writeFileSync(
+      path.join(roadmapDir, "roadmap-board.md"),
+      [
+        "# Board",
+        "",
+        "## Now",
+        "",
+        "| Item | Outcome |",
+        "|---|---|",
+        "| State checker | Roadmaps are verifiable. |",
+        "",
+        "## Next",
+        "",
+        "- Communication digest for stakeholder updates.",
+      ].join("\n"),
+      "utf8",
+    );
+    fs.writeFileSync(
+      path.join(roadmapDir, "delivery-plan.md"),
+      [
+        "# Delivery",
+        "",
+        "## Risks",
+        "",
+        "- External updates must not imply commitments.",
+      ].join("\n"),
+      "utf8",
+    );
+    fs.writeFileSync(
+      path.join(roadmapDir, "stakeholder-map.md"),
+      [
+        "# Stakeholders",
+        "",
+        "## Leadership",
+        "",
+        "- Needs decisions, risk, and investment signal.",
+      ].join("\n"),
+      "utf8",
+    );
+
+    const report = collectRoadmapDigest(slug, "leadership");
+    const markdown = renderRoadmapDigest(report);
+
+    assert.equal(report.audience, "leadership");
+    assert.equal(report.strategyMissing, false);
+    assert.equal(report.strategyPath, "roadmaps/test-digest-roadmap/roadmap-strategy.md");
+    assert.deepEqual(report.warnings, []);
+    assert.equal(report.emphasis.includes("trade-offs"), true);
+    assert.equal(report.sections.some((section) => section.title === "Now"), true);
+    assert.match(markdown, /Roadmap digest - test-digest-roadmap/);
+    assert.match(markdown, /Needs decisions, risk, and investment signal/);
+  } finally {
+    fs.rmSync(roadmapDir, { recursive: true, force: true });
+  }
+});
+
+test("roadmap digest rejects unsafe roadmap slugs before filesystem reads", () => {
+  const report = collectRoadmapDigest("../test-digest-roadmap", "leadership");
+
+  assert.equal(report.strategyMissing, true);
+  assert.deepEqual(report.sources, []);
+  assert.deepEqual(report.sections, []);
+  assert.equal(
+    report.warnings.includes("Invalid roadmap slug. Use a kebab-case folder name without path separators."),
+    true,
+  );
+});
+
+test("roadmap digest reports missing strategy through structured state", () => {
+  const report = collectRoadmapDigest("missing-roadmap", "leadership");
+
+  assert.equal(report.strategyMissing, true);
+  assert.equal(report.strategyPath, "roadmaps/missing-roadmap/roadmap-strategy.md");
+  assert.equal(report.warnings.includes("roadmaps/missing-roadmap/roadmap-strategy.md is missing"), true);
 });
 
 function validState(): Record<string, unknown> {

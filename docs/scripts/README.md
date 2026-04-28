@@ -52,6 +52,13 @@ Use JSON when another tool needs to consume the metrics:
 npm run quality:metrics -- --json
 ```
 
+Persist and compare trend snapshots:
+
+```bash
+npm run quality:metrics -- --save
+npm run quality:metrics -- --compare
+```
+
 Metric interpretation guidance lives in `docs/quality-metrics.md`. The stage score is stage-aware: future lifecycle evidence is not treated as a defect while a workflow is still in progress. The maturity assessment is evidence-backed adoption guidance, not certification.
 
 ## Roadmap Evidence
@@ -66,6 +73,20 @@ Use JSON when another agent or tool needs to consume the evidence report:
 
 ```bash
 npm run roadmap:evidence -- <roadmap-slug> --json
+```
+
+## Roadmap Digest
+
+Generate an audience-specific draft roadmap update from the roadmap strategy, board, delivery plan, and stakeholder map:
+
+```bash
+npm run roadmap:digest -- <roadmap-slug> <audience>
+```
+
+Common audiences are `leadership`, `delivery-team`, `customers`, and `sales-support`. Use JSON when another agent or tool needs the digest report:
+
+```bash
+npm run roadmap:digest -- <roadmap-slug> leadership --json
 ```
 
 ## TypeScript and Tests
@@ -141,6 +162,7 @@ npm run fix
 Use narrower repair commands when you only want one generated surface:
 
 ```bash
+npm run fix:obsidian
 npm run fix:adr-index
 npm run fix:commands
 npm run fix:script-docs

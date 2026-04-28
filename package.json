@@ -7,6 +7,7 @@
     "doctor": "tsx scripts/doctor.ts",
     "verify": "tsx scripts/verify.ts",
     "quality:metrics": "tsx scripts/quality-metrics.ts",
+    "roadmap:digest": "tsx scripts/roadmap-digest.ts",
     "roadmap:evidence": "tsx scripts/roadmap-evidence.ts",
     "typecheck:scripts": "tsc --project tsconfig.scripts.json --noEmit",
     "test:scripts": "tsx scripts/test-scripts.ts",
@@ -23,6 +24,7 @@
     "check:traceability": "tsx scripts/check-traceability.ts",
     "docs:scripts": "typedoc --options typedoc.json",
     "fix": "tsx scripts/fix-generated.ts",
+    "fix:obsidian": "tsx scripts/fix-obsidian.ts",
     "fix:adr-index": "tsx scripts/fix-adr-index.ts",
     "fix:commands": "tsx scripts/fix-command-docs.ts",
     "fix:script-docs": "tsx scripts/fix-script-docs.ts"
