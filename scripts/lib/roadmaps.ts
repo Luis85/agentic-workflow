@@ -93,7 +93,7 @@ export function validateRoadmapStateData(
     "last_agent",
     "documents",
   ]) {
-    if (data[key] === undefined || data[key] === "") {
+    if (isMissingScalar(data[key])) {
       errors.push(diagnostic(rel, "ROADMAP_STATE_KEY", `missing frontmatter key: ${key}`));
     }
   }
@@ -127,6 +127,14 @@ function validateIsoDate(
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(value))) {
     errors.push(diagnostic(rel, "ROADMAP_STATE_DATE", `${key} must use YYYY-MM-DD`));
   }
+}
+
+function isMissingScalar(value: unknown): boolean {
+  return (
+    value === undefined ||
+    value === "" ||
+    (typeof value === "object" && value !== null && !Array.isArray(value) && Object.keys(value).length === 0)
+  );
 }
 
 function validateDocumentMap(rel: string, value: unknown, dirPath: string, errors: Diagnostic[]): void {

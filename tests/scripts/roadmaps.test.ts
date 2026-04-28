@@ -24,6 +24,23 @@ test("roadmap state validation rejects cadence text in next_review", () => {
   assert.equal(diagnostics.some((diagnostic) => diagnostic.code === "ROADMAP_STATE_DATE"), true);
 });
 
+test("roadmap state validation rejects blank scalar fields parsed as empty objects", () => {
+  const diagnostics = validateRoadmapStateData(
+    "roadmaps/product/roadmap-state.md",
+    "product",
+    { ...validState(), last_agent: {} },
+    ".",
+  );
+
+  assert.equal(
+    diagnostics.some(
+      (diagnostic) =>
+        diagnostic.code === "ROADMAP_STATE_KEY" && diagnostic.message === "missing frontmatter key: last_agent",
+    ),
+    true,
+  );
+});
+
 test("roadmap state validation checks required document keys and statuses", () => {
   const diagnostics = validateRoadmapStateData(
     "roadmaps/product/roadmap-state.md",
