@@ -77,7 +77,10 @@ export function obsidianDiagnosticsForFrontmatter(filePath: string, raw: string)
       errors.push(obsidianDiagnostic("OBS_FRONTMATTER_TAB", filePath, lineNumber, "frontmatter must use spaces, not tabs"));
     }
 
-    if (line.startsWith("  ")) return;
+    if (line.startsWith("  ")) {
+      validateListItemWikilink(errors, filePath, lineNumber, line.trim());
+      return;
+    }
 
     if (/^\s/.test(line)) {
       errors.push(
@@ -192,7 +195,19 @@ export function fixObsidianFrontmatterBlock(raw: string): string {
 function validateScalarWikilink(errors: Diagnostic[], filePath: string, lineNumber: number, value: string): void {
   if (!value.includes("[[")) return;
   if (value.startsWith("\"") || value.startsWith("'")) return;
-  if (!value.startsWith("[[") && (value.startsWith("[") || value.startsWith("{"))) return;
+  if (!value.startsWith("[[") && (value.startsWith("[") || value.startsWith("{"))) {
+    if (hasBareWikilink(value)) {
+      errors.push(
+        obsidianDiagnostic(
+          "OBS_PROPERTY_LINK_QUOTE",
+          filePath,
+          lineNumber,
+          "internal links in list property values must be quoted for Obsidian Properties",
+        ),
+      );
+    }
+    return;
+  }
 
   errors.push(
     obsidianDiagnostic(
@@ -204,8 +219,24 @@ function validateScalarWikilink(errors: Diagnostic[], filePath: string, lineNumb
   );
 }
 
+function validateListItemWikilink(errors: Diagnostic[], filePath: string, lineNumber: number, trimmedLine: string): void {
+  const match = trimmedLine.match(/^-\s+(.+)$/);
+  if (!match) return;
+  const value = match[1].trim();
+  if (!value.includes("[[") || !hasBareWikilink(value)) return;
+
+  errors.push(
+    obsidianDiagnostic(
+      "OBS_PROPERTY_LINK_QUOTE",
+      filePath,
+      lineNumber,
+      "internal links in list property values must be quoted for Obsidian Properties",
+    ),
+  );
+}
+
 function fixScalarWikilinkLine(line: string): string {
-  if (line.startsWith(" ") || line.startsWith("\t")) return line;
+  if (line.startsWith(" ") || line.startsWith("\t")) return fixListItemWikilinkLine(line);
 
   const match = line.match(/^([^:#]+):(\s+)(.*)$/);
   if (!match) return line;
@@ -215,11 +246,25 @@ function fixScalarWikilinkLine(line: string): string {
 
   const { value, comment } = splitInlineComment(rawValue);
   const trimmedValue = value.trim();
+  if (trimmedValue.startsWith("[") || trimmedValue.startsWith("{")) {
+    const fixedValue = quoteBareWikilinks(value);
+    return fixedValue === value ? line : `${rawName}:${separator}${fixedValue}${comment}`;
+  }
   if (!trimmedValue.startsWith("[[") || trimmedValue.startsWith("\"") || trimmedValue.startsWith("'")) return line;
 
   const leading = value.match(/^\s*/)?.[0] || "";
   const trailing = value.match(/\s*$/)?.[0] || "";
   return `${rawName}:${separator}${leading}${JSON.stringify(trimmedValue)}${trailing}${comment}`;
+}
+
+function fixListItemWikilinkLine(line: string): string {
+  const match = line.match(/^(\s*-\s+)(.*)$/);
+  if (!match) return line;
+
+  const [, marker, rawValue] = match;
+  const { value, comment } = splitInlineComment(rawValue);
+  const fixedValue = quoteBareWikilinks(value);
+  return fixedValue === value ? line : `${marker}${fixedValue}${comment}`;
 }
 
 function splitInlineComment(value: string): { value: string; comment: string } {
@@ -241,6 +286,49 @@ function splitInlineComment(value: string): { value: string; comment: string } {
     }
   }
   return { value, comment: "" };
+}
+
+function hasBareWikilink(value: string): boolean {
+  let quote: string | null = null;
+  for (let index = 0; index < value.length; index += 1) {
+    const char = value[index];
+    const previous = value[index - 1];
+    if ((char === "\"" || char === "'") && previous !== "\\") {
+      quote = quote === char ? null : quote || char;
+      continue;
+    }
+    if (!quote && value.startsWith("[[", index)) return true;
+  }
+  return false;
+}
+
+function quoteBareWikilinks(value: string): string {
+  let result = "";
+  let quote: string | null = null;
+
+  for (let index = 0; index < value.length; index += 1) {
+    const char = value[index];
+    const previous = value[index - 1];
+    if ((char === "\"" || char === "'") && previous !== "\\") {
+      quote = quote === char ? null : quote || char;
+      result += char;
+      continue;
+    }
+
+    if (!quote && value.startsWith("[[", index)) {
+      const end = value.indexOf("]]", index + 2);
+      if (end !== -1) {
+        const link = value.slice(index, end + 2);
+        result += JSON.stringify(link);
+        index = end + 1;
+        continue;
+      }
+    }
+
+    result += char;
+  }
+
+  return result;
 }
 
 function obsidianDiagnostic(code: ObsidianDiagnosticCode, filePath: string, line: number, message: string): Diagnostic {

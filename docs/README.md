@@ -61,6 +61,7 @@ Look-it-up, normative. Authoritative; not narrative.
 - [`workflow-overview.md`](./workflow-overview.md) — one-page cheat sheet + slash-command list.
 - [`ears-notation.md`](./ears-notation.md) — the requirement-syntax catalogue.
 - [`traceability.md`](./traceability.md) — the ID scheme and the requirement → spec → task → code → test chain.
+- [`obsidian-metadata.md`](./obsidian-metadata.md) — frontmatter compatibility rules for Obsidian source mode, Obsidian Properties UI, and repository checks.
 - [`sink.md`](./sink.md) — catalog of every artifact: where it lives, who owns it. *Regenerable index — don't edit by hand.*
 - [`sink.md#readme-entry-points`](./sink.md#readme-entry-points) — folder `README.md` entry-point and frontmatter convention.
 - [`quality-framework.md`](./quality-framework.md) — quality dimensions, gates, and Definition of Done per stage.
