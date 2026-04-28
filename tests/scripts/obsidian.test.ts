@@ -30,6 +30,11 @@ test("obsidian frontmatter rejects duplicate and malformed properties", () => {
         "owner:value",
         "  too: deep",
         "link: [[Unquoted Link]]",
+        "links: [trace, [[Inline Link]]]",
+        "refs:",
+        "  - [[List Link]]",
+        "  - task # [[Comment Link]]",
+        "apostrophe_links: [don't [[Apostrophe Link]]]",
       ].join("\n"),
     ),
     [
@@ -57,6 +62,24 @@ test("obsidian frontmatter rejects duplicate and malformed properties", () => {
         line: 7,
         message: "internal links in property values must be quoted for Obsidian Properties",
       },
+      {
+        code: "OBS_PROPERTY_LINK_QUOTE",
+        path: "docs/example.md",
+        line: 8,
+        message: "internal links in list property values must be quoted for Obsidian Properties",
+      },
+      {
+        code: "OBS_PROPERTY_LINK_QUOTE",
+        path: "docs/example.md",
+        line: 10,
+        message: "internal links in list property values must be quoted for Obsidian Properties",
+      },
+      {
+        code: "OBS_PROPERTY_LINK_QUOTE",
+        path: "docs/example.md",
+        line: 12,
+        message: "internal links in list property values must be quoted for Obsidian Properties",
+      },
     ],
   );
 });
@@ -78,7 +101,11 @@ test("fixObsidianFrontmatterBlock quotes scalar wikilinks and preserves comments
       [
         "title: Example",
         "related: [[Some Note]] # human context",
-        "aliases: [trace, [[Already list-safe]]]",
+        "aliases: [trace, [[Inline Link]], \"[[Already safe]\"]]",
+        "apostrophe_links: [don't [[Apostrophe Link]]]",
+        "refs:",
+        "  - [[List Link]] # list context",
+        "  - task # [[Comment Link]]",
         "nested:",
         "  link: [[Nested Note]]",
       ].join("\n"),
@@ -86,7 +113,11 @@ test("fixObsidianFrontmatterBlock quotes scalar wikilinks and preserves comments
     [
       "title: Example",
       "related: \"[[Some Note]]\" # human context",
-      "aliases: [trace, [[Already list-safe]]]",
+      "aliases: [trace, \"[[Inline Link]]\", \"[[Already safe]\"]]",
+      "apostrophe_links: [don't \"[[Apostrophe Link]]\"]",
+      "refs:",
+      "  - \"[[List Link]]\" # list context",
+      "  - task # [[Comment Link]]",
       "nested:",
       "  link: [[Nested Note]]",
     ].join("\n"),
