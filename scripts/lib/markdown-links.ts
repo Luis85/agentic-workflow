@@ -1,3 +1,30 @@
+import type { Diagnostic } from "./diagnostics.js";
+
+export type LinkDiagnosticCode = "LINK_URI" | "LINK_FILE" | "LINK_ANCHOR";
+
+/**
+ * Build a structured Markdown link diagnostic.
+ *
+ * @param {LinkDiagnosticCode} code - Stable diagnostic code for the link failure.
+ * @param {string} filePath - Repository-relative Markdown file path.
+ * @param {number} line - One-based line number.
+ * @param {string} target - Link target that failed validation.
+ * @returns {Diagnostic} Structured diagnostic for check output.
+ */
+export function linkDiagnostic(
+  code: LinkDiagnosticCode,
+  filePath: string,
+  line: number,
+  target: string,
+): Diagnostic {
+  return {
+    code,
+    path: filePath,
+    line,
+    message: linkDiagnosticMessage(code, target),
+  };
+}
+
 export function safeDecode(value: string | undefined): { ok: boolean; value: string } {
   if (value === undefined) return { ok: true, value: "" };
   try {
@@ -5,6 +32,12 @@ export function safeDecode(value: string | undefined): { ok: boolean; value: str
   } catch {
     return { ok: false, value };
   }
+}
+
+function linkDiagnosticMessage(code: LinkDiagnosticCode, target: string): string {
+  if (code === "LINK_URI") return `has invalid URI escape in link ${target}`;
+  if (code === "LINK_FILE") return `links to missing file ${target}`;
+  return `links to missing anchor ${target}`;
 }
 
 export function shouldIgnoreTarget(target: string): boolean {

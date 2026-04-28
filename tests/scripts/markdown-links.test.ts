@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   collectAnchors,
   githubSlug,
+  linkDiagnostic,
   safeDecode,
   shouldIgnoreTarget,
   slugVariants,
@@ -13,6 +14,15 @@ test("collectAnchors follows GitHub-style duplicate heading suffixes", () => {
   assert.equal(anchors.has("title"), true);
   assert.equal(anchors.has("a-code-heading"), true);
   assert.equal(anchors.has("a-code-heading-1"), true);
+});
+
+test("linkDiagnostic returns structured link failure details", () => {
+  assert.deepEqual(linkDiagnostic("LINK_ANCHOR", "docs/example.md", 12, "./target.md#missing"), {
+    code: "LINK_ANCHOR",
+    path: "docs/example.md",
+    line: 12,
+    message: "links to missing anchor ./target.md#missing",
+  });
 });
 
 test("slugVariants covers Unicode dash variants used in existing docs", () => {

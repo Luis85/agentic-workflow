@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { failIfErrors, markdownFiles, readText, relativeToRoot, repoRoot } from "./lib/repo.js";
-import { collectAnchors, safeDecode, shouldIgnoreTarget } from "./lib/markdown-links.js";
+import { collectAnchors, linkDiagnostic, safeDecode, shouldIgnoreTarget } from "./lib/markdown-links.js";
 
 const errors = [];
 const linkPattern = /!?\[[^\]]*?\]\(([^)\s]+(?:\s+"[^"]*")?)\)/g;
@@ -21,7 +21,7 @@ for (const filePath of markdownFiles()) {
       const decodedAnchor = safeDecode(rawAnchor);
 
       if (!decodedPath.ok || !decodedAnchor.ok) {
-        errors.push(`${relativeToRoot(filePath)}:${lineIndex + 1} has invalid URI escape in link ${target}`);
+        errors.push(linkDiagnostic("LINK_URI", relativeToRoot(filePath), lineIndex + 1, target));
         continue;
       }
 
@@ -30,7 +30,7 @@ for (const filePath of markdownFiles()) {
         : filePath;
 
       if (targetPath && !fs.existsSync(resolvedPath)) {
-        errors.push(`${relativeToRoot(filePath)}:${lineIndex + 1} links to missing file ${target}`);
+        errors.push(linkDiagnostic("LINK_FILE", relativeToRoot(filePath), lineIndex + 1, target));
         continue;
       }
 
@@ -38,7 +38,7 @@ for (const filePath of markdownFiles()) {
         const anchors = collectAnchors(readText(resolvedPath));
         const anchor = decodedAnchor.value.toLowerCase();
         if (!anchors.has(anchor)) {
-          errors.push(`${relativeToRoot(filePath)}:${lineIndex + 1} links to missing anchor ${target}`);
+          errors.push(linkDiagnostic("LINK_ANCHOR", relativeToRoot(filePath), lineIndex + 1, target));
         }
       }
     }
