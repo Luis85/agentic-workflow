@@ -11,11 +11,11 @@ updates:
       timezone: Etc/UTC
     # Wait this many days after a release before opening a bump PR. Mitigates
     # the "compromised release window" supply-chain risk where a hostile
-    # version is yanked within a few hours of publication.
+    # version is yanked within a few hours of publication. Dependabot does
+    # not accept semver-keyed cooldowns for the github-actions ecosystem;
+    # only the flat default-days is honoured here.
     cooldown:
       default-days: 7
-      semver-major-days: 30
-      semver-minor-days: 3
     open-pull-requests-limit: 5
     commit-message:
       prefix: chore

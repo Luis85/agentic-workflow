@@ -69,11 +69,12 @@ Both ecosystems run weekly Monday 06:00 / 06:30 UTC. The hour offset spreads PR 
 
 Both blocks set `cooldown` so Dependabot waits before proposing newly published versions:
 
-| Bump type | Wait |
-| --- | --- |
-| Patch (default) | 7 days |
-| Minor | 3 days |
-| Major | 30 days |
+| Ecosystem | Default | Minor | Major |
+| --- | --- | --- | --- |
+| github-actions | 7 days | n/a | n/a |
+| npm | 7 days | 3 days | 30 days |
+
+Dependabot does not accept semver-keyed cooldowns for the github-actions ecosystem — only the flat `default-days` field is honoured there. The npm ecosystem accepts the full split.
 
 The cooldown defends against the "compromised release window" supply-chain attack, where a hostile version is published and yanked within hours of release. By the time Dependabot proposes the bump, the ecosystem has had time to react.
 
