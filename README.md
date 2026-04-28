@@ -175,10 +175,11 @@ This template includes a small Node/npm integrity suite for local use and CI:
 
 ```bash
 npm install
+npm run doctor
 npm run verify
 ```
 
-`verify` is read-only. For deterministic local repairs, use `npm run fix:adr-index` to regenerate the ADR index and `npm run fix:commands` to regenerate command inventories, then run `npm run verify` again.
+`doctor` reports local environment and repository health. `verify` is read-only. For deterministic local repairs, use `npm run fix:adr-index` to regenerate the ADR index and `npm run fix:commands` to regenerate command inventories, then run `npm run verify` again.
 Use `npm run fix` to run all generated-block repair helpers together. See [`scripts/README.md`](scripts/README.md) for the full script inventory.
 
 ---
