@@ -36,6 +36,7 @@ The retro is **mandatory**, even on clean ships. For trivial work it can be a si
   When `BASE` is empty, **skip `git log`** and reconstruct the change history from `implementation-log.md` + `tasks.md` checkboxes — do not silently run `git log "$BASE"..HEAD`, which would degrade to an unfiltered log. Override per `docs/steering/operations.md` if the project uses a different integration branch (e.g. `DEFAULT_REF=origin/release`).
 - Recent retros under `specs/*/retrospective.md` to spot patterns.
 - `memory/constitution.md`
+- `.claude/skills/quality-metrics/SKILL.md`
 
 ## Procedure
 
@@ -48,10 +49,11 @@ The retro is **mandatory**, even on clean ships. For trivial work it can be a si
    - Quality gates that flagged real issues — keep.
    - Quality gates that produced noise — tune.
    - Agents that needed manual intervention — fix scope or tools.
-6. **Actions.** Each with an owner and a due date, captured in the table.
-7. **Amendments.** Propose changes to templates / agents / constitution. Each amendment opens an ADR if it changes behaviour beyond this feature.
-8. **Lessons.** One-liners worth remembering.
-9. Update `workflow-state.md`: mark `retrospective.md` as `complete` and the overall `status:` as `done`. Print the closing summary (feature complete; next-feature suggestion; open action-item list).
+6. **Quality trend.** Run `npm run quality:metrics -- --feature <slug> --compare` when Bash is available and summarize whether quality signals improved, regressed, or lacked a baseline. Then run `npm run quality:metrics -- --feature <slug> --save` to create the post-retro baseline for future comparisons. If Bash is unavailable, ask the user to run `/quality:status --feature <slug> --compare` and `/quality:status --feature <slug> --save`.
+7. **Actions.** Each with an owner and a due date, captured in the table.
+8. **Amendments.** Propose changes to templates / agents / constitution. Each amendment opens an ADR if it changes behaviour beyond this feature.
+9. **Lessons.** One-liners worth remembering.
+10. Update `workflow-state.md`: mark `retrospective.md` as `complete` and the overall `status:` as `done`. Print the closing summary (feature complete; quality trend/baseline status; next-feature suggestion; open action-item list).
 
 ## Quality bar
 

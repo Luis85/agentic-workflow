@@ -26,6 +26,12 @@ Use JSON for tooling:
 npm run quality:metrics -- --json
 ```
 
+Claude workflow command:
+
+```bash
+/quality:status [--feature <feature-slug>] [--compare] [--save] [--json]
+```
+
 Persist a timestamped baseline snapshot:
 
 ```bash
@@ -70,6 +76,19 @@ npm run quality:metrics -- --compare
 - QA checklist gaps or nonconformities.
 
 Use trends to spot drift or improvement between reviews. Do not treat a single delta as root-cause evidence; inspect the underlying workflow rows and attention signals before acting.
+
+## Agent awareness
+
+The `quality-metrics` skill and `/quality:status` command make KPI evidence available to agents at workflow handoffs:
+
+- Orchestrator recommends status checks when readiness or next action is unclear.
+- QA incorporates feature-scoped blockers, clarifications, traceability, and test evidence gaps into test planning/reporting.
+- Reviewer uses JSON metrics as deterministic evidence before writing a verdict.
+- Release manager checks feature-scoped quality status or trend before release readiness.
+- Retrospective saves a post-learning baseline so future work can compare drift.
+- Project, roadmap, and portfolio agents can consume JSON snapshots in status and planning artifacts.
+
+Agents must cite the snapshot timestamp or command output they used. If no snapshot is available, they report it as missing evidence rather than inventing KPI values.
 
 ## Stage-aware scoring
 

@@ -373,7 +373,7 @@ Each arrow is a quality gate. See [`docs/workflow-overview.md`](docs/workflow-ov
 
 # Quality Assurance Track:
 /quality:check    /quality:improve  /quality:plan
-/quality:review   /quality:start
+/quality:review   /quality:start    /quality:status
 
 # roadmap:
 /roadmap:align        /roadmap:communicate  /roadmap:review

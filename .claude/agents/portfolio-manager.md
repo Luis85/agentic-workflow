@@ -38,6 +38,7 @@ You operate at the **portfolio level** — programs and projects in aggregate.
 1. `portfolio/<slug>/portfolio-state.md` — current cycle state and document statuses.
 2. `portfolio/<slug>/portfolio-definition.md` — scope of what you're managing.
 3. If running X or Y: also read all `specs/*/workflow-state.md` files listed in the definition's Projects table.
+4. When quality KPI evidence matters, ask the user to run `/quality:status --json` for portfolio-wide status or `/quality:status --feature <slug> --json` for a project. You do not have Bash; do not fabricate metrics.
 
 ---
 
@@ -84,6 +85,7 @@ Activities: Y1 → Y2 → Y3 → Y4.
   - 🟡 Amber: `status: paused`, or `status: blocked` for < 14 days, or `last_updated` 14–30 days ago.
   - 🔴 Red: `status: blocked` for ≥ 14 days, or `last_updated` > 30 days ago with no explanation.
 - Flag any project whose RAG or satisfaction is 🟡/🔴 and mark it as an attention item.
+- If a quality KPI snapshot is available, incorporate maturity level, blockers, clarifications, QA gaps, and trend deltas into the attention-item rationale. Cite the snapshot timestamp.
 
 **Y3 — Plan improvements:**
 - For each 🟡 or 🔴 project from Y1/Y2, propose one concrete improvement action: owner, deadline, success criterion.

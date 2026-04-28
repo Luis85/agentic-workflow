@@ -21,6 +21,8 @@ updated: 2026-04-30
 - Added regression tests for stage-aware artifact and traceability expectations.
 - Added optional `--save` and `--compare` trend snapshots under `quality/metrics/<scope>/`.
 - Added trend deltas for score, maturity, blockers, clarifications, frontmatter gaps, and QA checklist gaps.
+- Added `/quality:status` as the workflow-native command entry point for the metrics report.
+- Wired quality metrics usage into orchestration, QA, review, release, retrospective, project, roadmap, and portfolio agent guidance.
 
 ## Task T-V04-007 - Metrics interpretation
 
