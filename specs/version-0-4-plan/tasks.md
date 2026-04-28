@@ -47,7 +47,7 @@ updated: 2026-04-28
 
 ### T-V04-005 — Add workflow metrics report
 
-- **Description:** Add a deterministic local metrics report for workflow health, with human-readable output and JSON output if useful.
+- **Description:** Add a deterministic local metrics report for workflow health, with both human-readable output and required machine-readable JSON output for v0.5 release-readiness consumption.
 - **Satisfies:** REQ-V04-003, REQ-V04-004, REQ-V04-009, NFR-V04-002, NFR-V04-003, NFR-V04-005, SPEC-V04-003, SPEC-V04-008
 - **Depends on:** T-V04-001
 - **Owner:** dev

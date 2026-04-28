@@ -28,7 +28,7 @@ updated: 2026-04-28
 ### SPEC-V04-003 — Workflow metrics report
 
 - **Satisfies:** REQ-V04-003, REQ-V04-004, NFR-V04-002, NFR-V04-003
-- **Behavior:** A deterministic report summarizes workflow health using local repository artifacts and emits human-readable output, with JSON output if useful for CI or future automation.
+- **Behavior:** A deterministic report summarizes workflow health using local repository artifacts and emits both human-readable output and machine-readable JSON output for CI and future release automation.
 - **Acceptance:** Metrics include active specs by stage, blocked specs, skipped artifacts, open clarifications, validation status, and completed examples when data exists.
 
 ### SPEC-V04-004 — Metrics documentation
