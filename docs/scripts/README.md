@@ -68,6 +68,20 @@ Use JSON when another agent or tool needs to consume the evidence report:
 npm run roadmap:evidence -- <roadmap-slug> --json
 ```
 
+## Roadmap Digest
+
+Generate an audience-specific draft roadmap update from the roadmap strategy, board, delivery plan, and stakeholder map:
+
+```bash
+npm run roadmap:digest -- <roadmap-slug> <audience>
+```
+
+Common audiences are `leadership`, `delivery-team`, `customers`, and `sales-support`. Use JSON when another agent or tool needs the digest report:
+
+```bash
+npm run roadmap:digest -- <roadmap-slug> leadership --json
+```
+
 ## TypeScript and Tests
 
 Repository scripts are TypeScript files executed with `tsx`.
