@@ -1,26 +1,34 @@
 # Workflow Overview — One-Page Cheat Sheet
 
-```
-[Stock-taking Track — pre-Discovery or pre-Stage 1, opt-in for legacy/brownfield projects, see docs/stock-taking-track.md]
-   Scope → Audit → Synthesize → Handoff (stock-taking-inventory.md)
-   legacy-auditor                                                                │
-                                                  (inventory feeds /discovery:start or /spec:idea)
-                                                                                ▼
-[Discovery Track — pre-stage 1, opt-in, see docs/discovery-track.md]
-   Frame → Diverge → Converge → Prototype → Validate → Handoff (chosen-brief.md)
-   facilitator + product-strategist, user-researcher, game-designer,
-                  divergent-thinker, critic, prototyper                         │
-                                                                          (chosen-brief.md feeds /spec:idea)
-                                                                                ▼
-┌──────────┐   ┌──────────┐   ┌──────────────┐   ┌──────────┐   ┌─────────────┐   ┌────────┐
-│ 1. Idea  │ → │ 2. Resrch│ → │ 3. Requirts  │ → │ 4. Design│ → │ 5. Specify  │ → │ 6.Tasks│
-│ analyst  │   │ analyst  │   │ pm           │   │ ux/ui/ar │   │ architect   │   │ planner│
-└──────────┘   └──────────┘   └──────────────┘   └──────────┘   └─────────────┘   └────────┘
-                                                                                       │
-┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐              ▼
-│11. Retro │ ← │10.Release│ ← │ 9. Review│ ← │ 8. Test  │ ← │7.Implem't│  ◄───────────┘
-│ retro    │   │ rel-mgr  │   │ reviewer │   │ qa       │   │ dev      │
-└──────────┘   └──────────┘   └──────────┘   └──────────┘   └──────────┘
+```mermaid
+flowchart TD
+    stock["Stock-taking Track<br/>Scope -> Audit -> Synthesize -> Handoff<br/>Owner: legacy-auditor<br/>Output: stock-taking-inventory.md"]
+    discovery["Discovery Track<br/>Frame -> Diverge -> Converge -> Prototype -> Validate -> Handoff<br/>Owners: facilitator + discovery specialists<br/>Output: chosen-brief.md"]
+
+    idea["1. Idea<br/>analyst"]
+    research["2. Research<br/>analyst"]
+    requirements["3. Requirements<br/>pm"]
+    design["4. Design<br/>ux / ui / architect"]
+    specification["5. Specification<br/>architect"]
+    tasks["6. Tasks<br/>planner"]
+    implementation["7. Implementation<br/>dev"]
+    testing["8. Testing<br/>qa"]
+    review["9. Review<br/>reviewer"]
+    release["10. Release<br/>release-manager"]
+    retro["11. Retrospective<br/>retrospective"]
+
+    stock -->|inventory feeds /discovery:start or /spec:idea| discovery
+    discovery -->|chosen-brief.md feeds /spec:idea| idea
+    idea --> research
+    research --> requirements
+    requirements --> design
+    design --> specification
+    specification --> tasks
+    tasks --> implementation
+    implementation --> testing
+    testing --> review
+    review --> release
+    release --> retro
 ```
 
 ## At each stage
@@ -36,24 +44,30 @@
 
 ## Quality gates between stages
 
-```
-Idea ──[scope-bounded]── Research ──[sources+alternatives+risks]── Requirements
-                                         │
-                       [EARS+IDs+testable]
-                                         ▼
-                                     Design ──[boundaries+ADRs]── Specification
-                                                                       │
-                                                  [unambiguous+edge-cases]
-                                                                       ▼
-                                                                    Tasks ──[≤½day+TDD]── Implementation
-                                                                                                │
-                                                                                  [matches-spec+lint]
-                                                                                                ▼
-                                                                                            Testing ──[every-REQ-tested]── Review
-                                                                                                                              │
-                                                                                                            [RTM-complete+no-criticals]
-                                                                                                                              ▼
-                                                                                                                          Release ──[changelog+rollback]── Retro
+```mermaid
+flowchart LR
+    idea["Idea"]
+    research["Research"]
+    requirements["Requirements"]
+    design["Design"]
+    specification["Specification"]
+    tasks["Tasks"]
+    implementation["Implementation"]
+    testing["Testing"]
+    review["Review"]
+    release["Release"]
+    retro["Retro"]
+
+    idea -->|scope bounded| research
+    research -->|sources + alternatives + risks| requirements
+    requirements -->|EARS + IDs + testable| design
+    design -->|boundaries + ADRs| specification
+    specification -->|unambiguous + edge cases| tasks
+    tasks -->|half-day + TDD ordered| implementation
+    implementation -->|matches spec + lint| testing
+    testing -->|every REQ tested| review
+    review -->|RTM complete + no criticals| release
+    release -->|changelog + rollback| retro
 ```
 
 Optional gates `/spec:clarify` and `/spec:analyze` may be inserted between any two stages.

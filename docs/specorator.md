@@ -42,21 +42,35 @@ See [`memory/constitution.md`](../memory/constitution.md) for the full version. 
 
 ```mermaid
 flowchart LR
-    Z[Discovery Track] -.brief.-> A[1. Idea]
-    A --> B[2. Research]
-    B --> C[3. Requirements]
-    C --> D[4. Design]
-    D --> E[5. Specification]
-    E --> F[6. Tasks]
-    F --> G[7. Implementation]
-    G --> H[8. Testing]
-    H --> I[9. Review]
-    I --> J[10. Release]
-    J --> K[11. Learning]
-    K -.feedback.-> A
-    I -.defect.-> C
-    I -.defect.-> D
-    H -.defect.-> G
+    discovery["Discovery Track"]
+    idea["1. Idea"]
+    research["2. Research"]
+    requirements["3. Requirements"]
+    design["4. Design"]
+    specification["5. Specification"]
+    tasks["6. Tasks"]
+    implementation["7. Implementation"]
+    testing["8. Testing"]
+    review["9. Review"]
+    release["10. Release"]
+    learning["11. Learning"]
+
+    discovery -.->|brief| idea
+    idea --> research
+    research --> requirements
+    requirements --> design
+    design --> specification
+    specification --> tasks
+    tasks --> implementation
+    implementation --> testing
+    testing --> review
+    review --> release
+    release --> learning
+
+    learning -.->|feedback| idea
+    review -.->|defect| requirements
+    review -.->|defect| design
+    testing -.->|defect| implementation
 ```
 
 **Optional gates** (run between any two stages when needed):
