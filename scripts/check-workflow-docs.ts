@@ -46,6 +46,7 @@ const requiredPackageScripts = [
   "typecheck:scripts",
   "test:scripts",
   "check:links",
+  "check:roadmaps",
   "check:workflow-docs",
   "fix",
 ];

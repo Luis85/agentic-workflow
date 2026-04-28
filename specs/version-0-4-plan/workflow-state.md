@@ -4,7 +4,7 @@ area: V04
 current_stage: implementation
 status: active
 last_updated: 2026-04-28
-last_agent: planner
+last_agent: codex
 artifacts:
   idea.md: complete
   research.md: complete
@@ -12,7 +12,7 @@ artifacts:
   design.md: complete
   spec.md: complete
   tasks.md: complete
-  implementation-log.md: pending
+  implementation-log.md: in-progress
   test-plan.md: pending
   test-report.md: pending
   review.md: pending
@@ -33,7 +33,7 @@ artifacts:
 | 4. Design | `design.md` | complete |
 | 5. Specification | `spec.md` | complete |
 | 6. Tasks | `tasks.md` | complete |
-| 7. Implementation | `implementation-log.md` + code | pending |
+| 7. Implementation | `implementation-log.md` + code | in-progress |
 | 8. Testing | `test-plan.md`, `test-report.md` | pending |
 | 9. Review | `review.md`, `traceability.md` | pending |
 | 10. Release | `release-notes.md` | pending |
@@ -50,6 +50,7 @@ artifacts:
 ## Hand-off notes
 
 - 2026-04-28 (codex): Planned v0.4 through Stage 6. Recommended implementation order is v0.3 validation baseline confirmation, CI gate contract, PR CI workflow, CI readiness checks, metrics report with machine-readable release-quality output, maturity documentation, public docs/product page review, release readiness verification, then v0.5 handoff.
+- 2026-04-28 (codex): Started T-V04-005/T-V04-007 by making quality metrics stage-aware and adding metric interpretation guidance.
 
 ## Open clarifications
 

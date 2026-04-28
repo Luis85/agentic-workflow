@@ -11,6 +11,7 @@ import {
 } from "./repo.js";
 import {
   canonicalArtifacts,
+  stageArtifacts,
   traceabilityIdPattern,
   traceabilityItemHeadingPattern,
 } from "./workflow-schema.js";
@@ -25,18 +26,27 @@ export type WorkflowMetric = {
   path: string;
   status: string;
   currentStage: string;
+  stageScore: number;
   artifactCompletion: number;
   artifactPresence: number;
+  expectedArtifactCompletion: number;
+  expectedArtifactPresence: number;
   frontmatterCoverage: number;
   requirementCoverage: number;
+  stageTraceabilityCoverage: number;
   testCoverage: number;
+  testCoverageExpected: boolean;
   earsCoverage: number;
+  earsExpected: boolean;
   openClarifications: number;
   blockers: number;
   counts: {
     artifactsExpected: number;
+    artifactsExpectedForStage: number;
     artifactsComplete: number;
+    artifactsCompleteForStage: number;
     artifactsPresent: number;
+    artifactsPresentForStage: number;
     artifactsWithFrontmatter: number;
     requirements: number;
     requirementsWithSpec: number;
@@ -124,16 +134,7 @@ export function collectQualityMetrics(options: QualityMetricOptions = {}): Quali
       qualityReviews: qualityReviewCount(),
       checklistItems,
       checklistGaps,
-      overallScore: average(
-        workflows.flatMap((workflow) => [
-          workflow.artifactCompletion,
-          workflow.artifactPresence,
-          workflow.frontmatterCoverage,
-          workflow.requirementCoverage,
-          workflow.testCoverage,
-          workflow.earsCoverage,
-        ]),
-      ),
+      overallScore: average(workflows.map((workflow) => workflow.stageScore)),
     },
     workflows,
     signals: {
@@ -170,12 +171,12 @@ export function renderQualityMetrics(metrics: QualityMetrics): string {
     "",
     "## Workflow deliverables",
     "",
-    "| Feature | Stage | Status | Artifacts | Presence | Frontmatter | Req chain | Test coverage | EARS | Blocks | Clarifications |",
-    "|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|",
+    "| Feature | Stage | Status | Stage score | Lifecycle artifacts | Expected artifacts | Frontmatter | Req chain | Test coverage | EARS | Blocks | Clarifications |",
+    "|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
   ];
 
   if (metrics.workflows.length === 0) {
-    lines.push("| _None found_ |  |  |  |  |  |  |  |  |  |  |");
+    lines.push("| _None found_ |  |  |  |  |  |  |  |  |  |  |  |");
   } else {
     for (const workflow of metrics.workflows) {
       lines.push(
@@ -183,12 +184,13 @@ export function renderQualityMetrics(metrics: QualityMetrics): string {
           workflow.feature,
           workflow.currentStage,
           workflow.status,
+          formatPercent(workflow.stageScore),
           formatPercent(workflow.artifactCompletion),
-          formatPercent(workflow.artifactPresence),
+          formatPercent(workflow.expectedArtifactCompletion),
           formatPercent(workflow.frontmatterCoverage),
           formatPercent(workflow.requirementCoverage),
-          formatPercent(workflow.testCoverage),
-          formatPercent(workflow.earsCoverage),
+          workflow.testCoverageExpected ? formatPercent(workflow.testCoverage) : "not expected yet",
+          workflow.earsExpected ? formatPercent(workflow.earsCoverage) : "not expected yet",
           String(workflow.blockers),
           String(workflow.openClarifications),
         ].join(" | ").replace(/^/, "| ").replace(/$/, " |"),
@@ -226,39 +228,69 @@ function readWorkflowMetric(statePath: string): WorkflowMetric | null {
   const artifacts = (state.artifacts || {}) as WorkflowArtifacts;
   const featureDir = path.dirname(statePath);
   const artifactNames = canonicalArtifacts;
+  const currentStage = String(state.current_stage || "unknown");
+  const workflowStatus = String(state.status || "unknown");
+  const expectedArtifacts = expectedArtifactsForStage(currentStage, workflowStatus);
   const existingArtifacts = artifactNames.filter((artifact) => fs.existsSync(path.join(featureDir, artifact)));
+  const existingExpectedArtifacts = expectedArtifacts.filter((artifact) => fs.existsSync(path.join(featureDir, artifact)));
   const artifactsWithFrontmatter = existingArtifacts.filter((artifact) =>
     Boolean(extractFrontmatter(readText(path.join(featureDir, artifact)))),
   );
   const completeArtifacts = completeCanonicalArtifacts(artifacts);
+  const completeExpectedArtifacts = completeArtifactsFor(expectedArtifacts, artifacts);
   const registry = collectTraceability(featureDir);
   const requirements = [...registry.reqs];
   const requirementsWithSpec = requirements.filter((id) => (registry.specsByReq.get(id)?.size || 0) > 0);
   const requirementsWithTasks = requirements.filter((id) => (registry.tasksByReq.get(id)?.size || 0) > 0);
   const requirementsWithTests = requirements.filter((id) => (registry.testsByReq.get(id)?.size || 0) > 0);
+  const expectation = traceabilityExpectation(currentStage, workflowStatus);
+  const requirementCoverage = stageTraceabilityCoverage({
+    requirements,
+    requirementsWithSpec,
+    requirementsWithTasks,
+    requirementsWithTests,
+    expectation,
+  });
+  const testCoverageExpected = expectation.tests;
+  const earsExpected = stageReached(currentStage, workflowStatus, "requirements");
+  const expectedArtifactCompletion = ratio(completeExpectedArtifacts, expectedArtifacts.length);
+  const expectedArtifactPresence = ratio(existingExpectedArtifacts.length, expectedArtifacts.length);
+  const earsCoverage = collectEarsCoverage(featureDir);
+  const scoredSignals = [
+    expectedArtifactCompletion,
+    expectedArtifactPresence,
+    ratio(artifactsWithFrontmatter.length, existingArtifacts.length),
+    requirementCoverage,
+  ];
+  if (earsExpected) scoredSignals.push(earsCoverage);
 
   return {
     feature,
     area,
     path: relativeToRoot(statePath),
-    status: String(state.status || "unknown"),
-    currentStage: String(state.current_stage || "unknown"),
+    status: workflowStatus,
+    currentStage,
+    stageScore: average(scoredSignals),
     artifactCompletion: ratio(completeArtifacts, artifactNames.length),
     artifactPresence: ratio(existingArtifacts.length, artifactNames.length),
+    expectedArtifactCompletion,
+    expectedArtifactPresence,
     frontmatterCoverage: ratio(artifactsWithFrontmatter.length, existingArtifacts.length),
-    requirementCoverage: average([
-      ratio(requirementsWithSpec.length, requirements.length),
-      ratio(requirementsWithTasks.length, requirements.length),
-      ratio(requirementsWithTests.length, requirements.length),
-    ]),
+    requirementCoverage,
+    stageTraceabilityCoverage: requirementCoverage,
     testCoverage: ratio(requirementsWithTests.length, requirements.length),
-    earsCoverage: collectEarsCoverage(featureDir),
+    testCoverageExpected,
+    earsCoverage,
+    earsExpected,
     openClarifications: sectionItemCount(text, "Open clarifications"),
     blockers: sectionItemCount(text, "Blocks"),
     counts: {
       artifactsExpected: artifactNames.length,
+      artifactsExpectedForStage: expectedArtifacts.length,
       artifactsComplete: completeArtifacts,
+      artifactsCompleteForStage: completeExpectedArtifacts,
       artifactsPresent: existingArtifacts.length,
+      artifactsPresentForStage: existingExpectedArtifacts.length,
       artifactsWithFrontmatter: artifactsWithFrontmatter.length,
       requirements: requirements.length,
       requirementsWithSpec: requirementsWithSpec.length,
@@ -267,6 +299,89 @@ function readWorkflowMetric(statePath: string): WorkflowMetric | null {
       tests: registry.tests.size,
     },
   };
+}
+
+export type TraceabilityExpectation = {
+  specs: boolean;
+  tasks: boolean;
+  tests: boolean;
+};
+
+export type TraceabilityCoverageInput = {
+  requirements: string[];
+  requirementsWithSpec: string[];
+  requirementsWithTasks: string[];
+  requirementsWithTests: string[];
+  expectation: TraceabilityExpectation;
+};
+
+/**
+ * Return canonical artifacts expected by the current workflow stage.
+ *
+ * @param currentStage - Workflow state's current stage.
+ * @param workflowStatus - Workflow state's status.
+ * @returns Canonical artifacts expected at or before the current stage.
+ */
+export function expectedArtifactsForStage(currentStage: string, workflowStatus: string): string[] {
+  if (workflowStatus === "done") return [...canonicalArtifacts];
+  const stageIndex = stageIndexOf(currentStage);
+  if (stageIndex === -1) return [...canonicalArtifacts];
+  return stageArtifacts.slice(0, stageIndex + 1).flatMap(([, artifacts]) => artifacts);
+}
+
+/**
+ * Count expected artifacts marked complete or skipped.
+ *
+ * @param expectedArtifacts - Stage-aware artifact names.
+ * @param artifacts - Workflow-state artifact status map.
+ * @returns Count of expected artifacts marked `complete` or `skipped`.
+ */
+export function completeArtifactsFor(expectedArtifacts: string[], artifacts: WorkflowArtifacts): number {
+  return expectedArtifacts.filter((artifact) => {
+    const status = artifacts[artifact];
+    return status === "complete" || status === "skipped";
+  }).length;
+}
+
+/**
+ * Decide which traceability links are expected at the current stage.
+ *
+ * @param currentStage - Workflow state's current stage.
+ * @param workflowStatus - Workflow state's status.
+ * @returns Expected downstream traceability surfaces.
+ */
+export function traceabilityExpectation(currentStage: string, workflowStatus: string): TraceabilityExpectation {
+  return {
+    specs: stageReached(currentStage, workflowStatus, "specification"),
+    tasks: stageReached(currentStage, workflowStatus, "tasks"),
+    tests: stageReached(currentStage, workflowStatus, "testing"),
+  };
+}
+
+/**
+ * Score only the traceability links expected by the current workflow stage.
+ *
+ * @param input - Requirement coverage counts and stage expectation flags.
+ * @returns Stage-aware traceability coverage percentage.
+ */
+export function stageTraceabilityCoverage(input: TraceabilityCoverageInput): number {
+  const scores: number[] = [];
+  if (input.expectation.specs) scores.push(ratio(input.requirementsWithSpec.length, input.requirements.length));
+  if (input.expectation.tasks) scores.push(ratio(input.requirementsWithTasks.length, input.requirements.length));
+  if (input.expectation.tests) scores.push(ratio(input.requirementsWithTests.length, input.requirements.length));
+  return scores.length === 0 ? 100 : average(scores);
+}
+
+function stageReached(currentStage: string, workflowStatus: string, targetStage: string): boolean {
+  if (workflowStatus === "done") return true;
+  const currentIndex = stageIndexOf(currentStage);
+  const targetIndex = stageIndexOf(targetStage);
+  if (currentIndex === -1 || targetIndex === -1) return false;
+  return currentIndex >= targetIndex;
+}
+
+function stageIndexOf(stage: string): number {
+  return stageArtifacts.findIndex(([stageName]) => stageName === stage);
 }
 
 function collectTraceability(featureDir: string): IdRegistry {

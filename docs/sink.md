@@ -15,6 +15,7 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │   ├── specorator.md                          # workflow definition (read first)
 │   ├── workflow-overview.md                 # one-page cheat sheet
 │   ├── quality-framework.md                 # quality dimensions, gates, DoD
+│   ├── quality-metrics.md                   # deterministic KPI interpretation guide
 │   ├── traceability.md                      # ID scheme REQ → SPEC → T → code → TEST
 │   ├── ears-notation.md                     # EARS reference
 │   ├── sink.md                              # this file
@@ -226,6 +227,10 @@ The root `README.md` is the public repository entry point and is exempt from thi
 | `.github/workflows/actionlint.yml` | Repo maintainers | Workflow YAML lint — see [`security-ci.md`](security-ci.md) |
 | `.github/workflows/zizmor.yml` | Repo maintainers | Workflow security scan — see [`security-ci.md`](security-ci.md) |
 | `.github/workflows/gitleaks.yml` | Repo maintainers | Secret scan — see [`security-ci.md`](security-ci.md) |
+| `.github/workflows/pr-title.yml` | Repo maintainers | Conventional Commits PR title check — see [`ci-automation.md`](ci-automation.md) |
+| `.github/workflows/typos.yml` | Repo maintainers | Spell check — see [`ci-automation.md`](ci-automation.md) |
+| `.github/dependabot.yml` | Repo maintainers | Auto-bump pinned action SHAs and npm devDeps — see [`ci-automation.md`](ci-automation.md) |
+| `_typos.toml` | Repo maintainers | Spell-check allowlist + ignore-regex patterns |
 | `specs/<slug>/arc42-questionnaire.md` | `arc42-baseline` skill | Created lazily on opt-in; canonical input to `design.md` Part C |
 | `specs/<slug>/design-alt-*.md`, `design-comparison.md` | `design-twice` skill | Created lazily on opt-in |
 | `.claude/skills/<name>/SKILL.md` | Skill author | Versioned in repo |

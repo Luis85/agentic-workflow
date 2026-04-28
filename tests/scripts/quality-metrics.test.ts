@@ -3,9 +3,12 @@ import assert from "node:assert/strict";
 import {
   collectQualityMetrics,
   completeCanonicalArtifacts,
+  expectedArtifactsForStage,
   markdownTableCells,
   renderQualityMetrics,
   rtmLinksFromRow,
+  stageTraceabilityCoverage,
+  traceabilityExpectation,
 } from "../../scripts/lib/quality-metrics.js";
 
 test("collectQualityMetrics reports repository workflow KPIs", () => {
@@ -22,8 +25,19 @@ test("renderQualityMetrics includes the headline KPIs and attention signals", ()
   const report = renderQualityMetrics(metrics);
   assert.match(report, /^# Quality metrics/m);
   assert.match(report, /Overall workflow score/);
+  assert.match(report, /Stage score/);
   assert.match(report, /Workflow deliverables/);
   assert.match(report, /Attention signals/);
+});
+
+test("collectQualityMetrics scores active workflows by current stage", () => {
+  const metrics = collectQualityMetrics({ feature: "version-0-4-plan" });
+  const workflow = metrics.workflows[0];
+  assert.equal(workflow.currentStage, "implementation");
+  assert.equal(workflow.testCoverageExpected, false);
+  assert.equal(workflow.testCoverage, 0);
+  assert.equal(workflow.requirementCoverage, 100);
+  assert.equal(workflow.stageScore > workflow.artifactCompletion, true);
 });
 
 test("completeCanonicalArtifacts ignores non-lifecycle workflow-state keys", () => {
@@ -34,6 +48,29 @@ test("completeCanonicalArtifacts ignores non-lifecycle workflow-state keys", () 
       "custom-report.md": "complete",
     }),
     2,
+  );
+});
+
+test("stage-aware helpers derive expected artifacts and traceability links", () => {
+  assert.deepEqual(expectedArtifactsForStage("requirements", "active"), [
+    "idea.md",
+    "research.md",
+    "requirements.md",
+  ]);
+  assert.deepEqual(traceabilityExpectation("implementation", "active"), {
+    specs: true,
+    tasks: true,
+    tests: false,
+  });
+  assert.equal(
+    stageTraceabilityCoverage({
+      requirements: ["REQ-QMR-001"],
+      requirementsWithSpec: ["REQ-QMR-001"],
+      requirementsWithTasks: ["REQ-QMR-001"],
+      requirementsWithTests: [],
+      expectation: traceabilityExpectation("implementation", "active"),
+    }),
+    100,
   );
 });
 

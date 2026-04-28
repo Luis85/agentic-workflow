@@ -48,6 +48,8 @@ Use JSON when another tool needs to consume the metrics:
 npm run quality:metrics -- --json
 ```
 
+Metric interpretation guidance lives in `docs/quality-metrics.md`. The stage score is stage-aware: future lifecycle evidence is not treated as a defect while a workflow is still in progress.
+
 ## TypeScript and Tests
 
 Repository scripts are TypeScript files executed with `tsx`.
@@ -90,6 +92,7 @@ In GitHub Actions, `verify` requests JSON diagnostics from supported check scrip
 | `npm run check:workflow-docs` | Confirm core workflow docs and package scripts keep the tool contract visible. |
 | `npm run check:frontmatter` | Validate required frontmatter on README entry points, state files, ADRs, and review artifacts. |
 | `npm run check:specs` | Validate lifecycle `workflow-state.md` files and their artifact maps. |
+| `npm run check:roadmaps` | Validate roadmap state frontmatter, dates, document maps, and required sections. |
 | `npm run check:traceability` | Validate lifecycle artifact IDs and local traceability references. |
 
 ## Script Documentation
