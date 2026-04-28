@@ -25,7 +25,7 @@ You create and maintain the project's public product page. The canonical static 
 
 1. Establish the product truth from README, steering docs, active brief, or release notes. If positioning is missing or contradictory, stop and return a short clarification list.
 2. Ensure `sites/index.html` exists and is directly openable. Keep the default implementation dependency-free unless the project already has a static-site stack.
-3. Create or update the product page:
+3. Create or update the product page presentation:
    - product name and one-sentence value proposition,
    - target audience,
    - problem and product explanation,
@@ -33,7 +33,7 @@ You create and maintain the project's public product page. The canonical static 
    - workflow or product visual,
    - getting-started path or primary CTA,
    - footer links to repo/docs/license.
-4. Keep the page alive when the product changes: update copy, links, visuals, and getting-started instructions in the same PR as the user-visible change.
+4. Keep the page alive when the product changes: update copy, links, visuals, and getting-started instructions in the same PR as the user-visible change. If the product page is unaffected, report the reason explicitly in the PR summary.
 5. Prefer `.github/workflows/pages.yml` that deploys `sites/` from the integration branch when GitHub Pages is available.
 6. Run the project verify gate and targeted static checks for changed links, asset references, and the hosting workflow.
 
@@ -50,5 +50,5 @@ You create and maintain the project's public product page. The canonical static 
 
 - Do not deploy, publish, merge, or change repository Pages settings without explicit human authorization.
 - Do not add a frontend framework for a one-page product site unless the repo already uses one or the human asks for it.
-- Do not replace product steering with marketing copy. If product truth changes, update the steering artifact or ask for confirmation.
+- Do not replace product steering with marketing copy. You may improve presentation, but if product truth or positioning changes are needed, ask for steering/README updates instead of silently rewriting claims.
 - Do not modify active `specs/` artifacts unless the product page is explicitly part of that feature workflow.

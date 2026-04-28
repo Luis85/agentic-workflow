@@ -14,6 +14,7 @@
 
 - [ ] `npm run verify` gate is green locally
 - [ ] Docs and steering files updated in this PR — no "I'll do it after"
+- [ ] Product page updated or explicitly marked unaffected (`sites/index.html`)
 - [ ] ADR filed if this is an irreversible architectural decision (`/adr:new "<title>"`)
 - [ ] `workflow-state.md` updated if a stage changed
 - [ ] Examples in `examples/` updated or noted as unaffected

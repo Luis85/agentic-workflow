@@ -53,6 +53,11 @@ export const checkTasks = [
     script: "scripts/check-workflow-docs.ts",
   },
   {
+    name: "check:product-page",
+    label: "Product page",
+    script: "scripts/check-product-page.ts",
+  },
+  {
     name: "check:frontmatter",
     label: "Frontmatter conventions",
     script: "scripts/check-frontmatter.ts",

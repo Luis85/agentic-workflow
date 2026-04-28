@@ -12,6 +12,7 @@
     "check:adr-index": "tsx scripts/check-adr-index.ts",
     "check:commands": "tsx scripts/check-command-docs.ts",
     "check:script-docs": "tsx scripts/check-script-docs.ts",
+    "check:product-page": "tsx scripts/check-product-page.ts",
     "check:workflow-docs": "tsx scripts/check-workflow-docs.ts",
     "check:frontmatter": "tsx scripts/check-frontmatter.ts",
     "check:specs": "tsx scripts/check-spec-state.ts",

@@ -10,6 +10,7 @@
 - [check-command-docs](check-command-docs/README.md)
 - [check-frontmatter](check-frontmatter/README.md)
 - [check-markdown-links](check-markdown-links/README.md)
+- [check-product-page](check-product-page/README.md)
 - [check-script-docs](check-script-docs/README.md)
 - [check-spec-state](check-spec-state/README.md)
 - [check-traceability](check-traceability/README.md)
