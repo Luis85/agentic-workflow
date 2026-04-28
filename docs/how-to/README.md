@@ -14,11 +14,12 @@ For the full doc map by Diátaxis quadrant — Tutorials / How-to / Reference / 
 
 ## Available recipes
 
-All recipes below are runnable and link out for the *why*. The first five are the original MVP set; the next nine were promoted from stubs as the workflow surface stabilised.
+All recipes below are runnable and link out for the *why*. Each ends with a `Last desk-checked` footer naming the commit it was last validated against — read it as a freshness stamp. Seventeen recipes in five intent groups:
 
 **Onboarding and configuration**
 
 - [How to fork and personalize the template](./fork-and-personalize.md) — turn a fresh clone into your own project.
+- [How to run the doctor preflight](./run-doctor.md) — confirm toolchain, repo state, and dependencies are sane.
 - [How to adapt steering for your own stack](./adapt-steering.md) — rewrite `docs/steering/*.md` so agents read your real context.
 - [How to customize agent permissions](./customize-agent-permissions.md) — change a tool list at the per-agent or project level.
 - [How to migrate an existing project to Specorator](./migrate-to-specorator.md) — overlay the workflow on a brownfield codebase.
@@ -29,7 +30,9 @@ All recipes below are runnable and link out for the *why*. The first five are th
 - [How to skip the Discovery Track on a simple feature](./skip-discovery.md) — go straight to `/spec:idea` and document the skip.
 - [How to write a requirement in EARS notation](./write-ears-requirement.md) — produce one functional requirement, ready for testing.
 - [How to file a new Architecture Decision Record](./add-adr.md) — capture an irreversible decision in `docs/adr/`.
+- [How to add a new glossary term](./add-glossary-term.md) — create a one-file-per-term entry under `docs/glossary/`.
 - [How to run the verify gate](./run-verify-gate.md) — `npm run verify` green before pushing.
+- [How to open a pull request from a worktree](./open-pr.md) — push a topic branch and open the PR.
 
 **Quality and release**
 

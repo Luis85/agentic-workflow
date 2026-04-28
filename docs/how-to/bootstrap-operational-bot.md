@@ -30,3 +30,6 @@
 - Reference — [`agents/operational/README.md`](../../agents/operational/README.md) — the eight-section shape and severity scale.
 - Reference — [`agents/operational/`](../../agents/operational/) — existing bots as examples.
 - Explanation — [`docs/specorator.md`](../specorator.md) — where operational agents fit relative to lifecycle agents.
+
+---
+*Last desk-checked 2026-04-28 against commit `81ef60a`.*

@@ -28,3 +28,6 @@
 - Reference — [`docs/specorator.md`](../specorator.md) — Stage 1 (Idea) definition.
 - Explanation — [ADR-0005](../adr/0005-add-discovery-track-before-stage-1.md) — why Discovery exists in the first place.
 - How-to — [`add-adr.md`](./add-adr.md) — file an ADR if the skip is policy-level.
+
+---
+*Last desk-checked 2026-04-28 against commit `81ef60a`.*
