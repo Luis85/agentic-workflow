@@ -48,6 +48,18 @@ Run the script unit tests:
 npm run test:scripts
 ```
 
+The test runner discovers `tests/scripts/**/*.test.ts` automatically, so new script tests do not need a package script edit.
+
+## Machine-readable diagnostics
+
+Check scripts use the same human output by default. Pass `--json` to any check script for structured output:
+
+```bash
+npm run check:links -- --json
+```
+
+JSON output includes the check name, pass/fail status, and normalized diagnostics with `path`, `line`, `code`, and `message` fields when available.
+
 ## Checks
 
 | Script | Purpose |
