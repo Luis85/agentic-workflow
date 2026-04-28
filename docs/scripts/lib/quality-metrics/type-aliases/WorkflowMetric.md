@@ -42,13 +42,25 @@
 
 > **artifactsComplete**: `number`
 
+#### artifactsCompleteForStage
+
+> **artifactsCompleteForStage**: `number`
+
 #### artifactsExpected
 
 > **artifactsExpected**: `number`
 
+#### artifactsExpectedForStage
+
+> **artifactsExpectedForStage**: `number`
+
 #### artifactsPresent
 
 > **artifactsPresent**: `number`
+
+#### artifactsPresentForStage
+
+> **artifactsPresentForStage**: `number`
 
 #### artifactsWithFrontmatter
 
@@ -88,6 +100,24 @@
 
 ***
 
+### earsExpected
+
+> **earsExpected**: `boolean`
+
+***
+
+### expectedArtifactCompletion
+
+> **expectedArtifactCompletion**: `number`
+
+***
+
+### expectedArtifactPresence
+
+> **expectedArtifactPresence**: `number`
+
+***
+
 ### feature
 
 > **feature**: `string`
@@ -118,6 +148,18 @@
 
 ***
 
+### stageScore
+
+> **stageScore**: `number`
+
+***
+
+### stageTraceabilityCoverage
+
+> **stageTraceabilityCoverage**: `number`
+
+***
+
 ### status
 
 > **status**: `string`
@@ -127,3 +169,9 @@
 ### testCoverage
 
 > **testCoverage**: `number`
+
+***
+
+### testCoverageExpected
+
+> **testCoverageExpected**: `boolean`

@@ -37,17 +37,20 @@ npm run quality:metrics -- --json
 - EARS coverage for functional requirements.
 - Open blockers and clarifications in workflow state.
 - QA checklist volume and gap/nonconformity counts under `quality/`.
+- Stage-aware score so future lifecycle evidence is not treated as a defect while work is still in progress.
 
 ## Reporting
 
 Summarize:
 
-- overall workflow score,
+- overall workflow score and stage-aware score,
 - lowest-scoring workflow KPIs,
 - active blockers and open clarifications,
 - missing frontmatter or documentation hygiene signals,
 - QA checklist gaps and nonconformities,
 - whether the result is a deterministic KPI snapshot or a full QA readiness review.
+
+Use `docs/quality-metrics.md` when explaining what a metric means, what action it supports, and what it must not be used to infer.
 
 ## Do Not
 

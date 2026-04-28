@@ -15,6 +15,7 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │   ├── specorator.md                          # workflow definition (read first)
 │   ├── workflow-overview.md                 # one-page cheat sheet
 │   ├── quality-framework.md                 # quality dimensions, gates, DoD
+│   ├── quality-metrics.md                   # deterministic KPI interpretation guide
 │   ├── traceability.md                      # ID scheme REQ → SPEC → T → code → TEST
 │   ├── ears-notation.md                     # EARS reference
 │   ├── sink.md                              # this file

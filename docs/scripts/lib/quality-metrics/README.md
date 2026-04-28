@@ -16,13 +16,19 @@ entry_point: true
 
 - [QualityMetricOptions](type-aliases/QualityMetricOptions.md)
 - [QualityMetrics](type-aliases/QualityMetrics.md)
+- [TraceabilityCoverageInput](type-aliases/TraceabilityCoverageInput.md)
+- [TraceabilityExpectation](type-aliases/TraceabilityExpectation.md)
 - [WorkflowArtifacts](type-aliases/WorkflowArtifacts.md)
 - [WorkflowMetric](type-aliases/WorkflowMetric.md)
 
 ## Functions
 
 - [collectQualityMetrics](functions/collectQualityMetrics.md)
+- [completeArtifactsFor](functions/completeArtifactsFor.md)
 - [completeCanonicalArtifacts](functions/completeCanonicalArtifacts.md)
+- [expectedArtifactsForStage](functions/expectedArtifactsForStage.md)
 - [markdownTableCells](functions/markdownTableCells.md)
 - [renderQualityMetrics](functions/renderQualityMetrics.md)
 - [rtmLinksFromRow](functions/rtmLinksFromRow.md)
+- [stageTraceabilityCoverage](functions/stageTraceabilityCoverage.md)
+- [traceabilityExpectation](functions/traceabilityExpectation.md)
