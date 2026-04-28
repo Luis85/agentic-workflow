@@ -57,10 +57,11 @@ export function checkResult(heading: string, errors: DiagnosticInput[]): CheckRe
  * @returns {string} Human-readable diagnostic line.
  */
 export function formatDiagnostic(diagnostic: Diagnostic): string {
-  const location =
-    diagnostic.path && diagnostic.line !== undefined
+  const location = diagnostic.path
+    ? diagnostic.line !== undefined
       ? `${diagnostic.path}:${diagnostic.line} `
-      : "";
+      : `${diagnostic.path} `
+    : "";
   const code = diagnostic.code ? `[${diagnostic.code}] ` : "";
   return `${location}${code}${diagnostic.message}`;
 }

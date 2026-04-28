@@ -23,6 +23,7 @@
 - [lib/adr](lib/adr/README.md)
 - [lib/commands](lib/commands/README.md)
 - [lib/diagnostics](lib/diagnostics/README.md)
+- [lib/frontmatter](lib/frontmatter/README.md)
 - [lib/markdown-links](lib/markdown-links/README.md)
 - [lib/repo](lib/repo/README.md)
 - [lib/runner](lib/runner/README.md)

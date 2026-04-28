@@ -39,6 +39,15 @@ test("formatDiagnostic preserves location and code when available", () => {
     }),
     "docs/example.md:7 [LINK] missing anchor",
   );
+
+  assert.equal(
+    formatDiagnostic({
+      path: "docs/example.md",
+      code: "FM_MISSING",
+      message: "is missing YAML frontmatter",
+    }),
+    "docs/example.md [FM_MISSING] is missing YAML frontmatter",
+  );
 });
 
 test("wantsJson detects explicit JSON output request", () => {
