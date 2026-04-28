@@ -71,7 +71,7 @@ The hub groups every file into a quadrant. The list below resolves several judgm
 - `branching.md` — policy is Reference; procedure is How-to.
 - `worktrees.md` — policy is Reference; procedure is How-to.
 
-The hub lists each of these once, under Reference, with a one-line note: "*Also linked under How-to: see [run-verify-gate](how-to/run-verify-gate.md), [resume-paused-feature](how-to/resume-paused-feature.md)*", so dual-purpose readers find them either way.
+The hub lists each of these once, under Reference, with a one-line note pointing at the procedural recipes — `how-to/run-verify-gate.md`, `how-to/resume-paused-feature.md` — so dual-purpose readers find them either way.
 
 **Explanation** (understanding-oriented, rationale and background):
 - `discovery-track.md`
@@ -176,15 +176,15 @@ Bottom note explains `steering/` is for agents, not readers, and points to `stee
 
 Insert one new section **after** the role-targeted "Start here — pick your role" block and **before** the "Common starting points" section:
 
-```markdown
+```text
 ## Documentation
 
-Full user guide is in [`docs/`](docs/README.md), organized by what you need:
+Full user guide is in `docs/` (docs/README.md), organized by what you need:
 
-- **Learning** → tutorials
-- **Doing** → how-to recipes
-- **Looking up** → reference
-- **Understanding** → explanation
+- Learning -> tutorials
+- Doing -> how-to recipes
+- Looking up -> reference
+- Understanding -> explanation
 ```
 
 No other changes to the top-level README. The placement keeps role-targeted onboarding as the primary entry point, with the Diátaxis hub as a secondary landing for visitors who already know what they need.

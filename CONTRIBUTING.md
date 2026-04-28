@@ -21,7 +21,7 @@ Concretely:
 1. **Branch.** Cut a fresh topic branch off the integration branch. Use one of the standard prefixes — see [`docs/branching.md`](./docs/branching.md).
 2. **Worktree.** Put the branch in `.worktrees/<slug>/`. See [`docs/worktrees.md`](./docs/worktrees.md).
 3. **Stage.** Walk the appropriate workflow stages for the change you're making. A typo fix doesn't need `/spec:research`; a new agent role does.
-4. **Verify.** Run the project's verify gate green before pushing. See [`docs/verify-gate.md`](./docs/verify-gate.md).
+4. **Verify.** Run `npm run verify` green before pushing. See [`docs/verify-gate.md`](./docs/verify-gate.md).
 5. **PR.** One concern per PR; never stack. See [`feedback_pr_hygiene.md`](./.claude/memory/feedback_pr_hygiene.md).
 6. **Review.** Address feedback with follow‑up commits, not rebases. See [`feedback_pr_workflow.md`](./.claude/memory/feedback_pr_workflow.md).
 7. **Merge.** Maintainer merges (or autonomous‑merge per [`feedback_autonomous_merge.md`](./.claude/memory/feedback_autonomous_merge.md)).
@@ -35,6 +35,7 @@ Concretely:
 | **Tighten an existing template.** | PR under `docs(templates): …`. Describe what was missing and why the template now catches it. |
 | **Add a new template / slash command / agent role.** | Open an ADR first. The constitution makes new roles ADR‑gated. |
 | **Add a new operational bot.** | Add `agents/operational/<name>/PROMPT.md` and `README.md`. Must follow the eight‑section common shape (see `agents/operational/README.md`). |
+| **Regenerate generated docs.** | Run `npm run fix` for all generated surfaces, or `npm run fix:adr-index` / `npm run fix:commands` / `npm run fix:script-docs` for one surface, review the generated output, then run `npm run verify`. |
 | **Replace a stage in the workflow.** | ADR. Stages map 1:1 to quality gates and IDs; replacing one is a constitutional‑level change. |
 | **Tweak `.claude/settings.json` defaults.** | PR. Loosening a deny rule needs an ADR; tightening one does not. |
 | **Add, rename, or remove a file under `docs/`.** | PR **must** also update [`docs/README.md`](./docs/README.md) so the Diátaxis hub stays accurate. The hub is the index of record; orphaned files are not allowed to ship. |
@@ -43,7 +44,7 @@ Concretely:
 
 The user-facing documentation lives in `docs/` and is organised by [Diátaxis](https://diataxis.fr/) — Tutorial, How-to, Reference, Explanation. Two rules:
 
-1. **The hub is canonical.** Any PR that adds, renames, or removes a file directly under `docs/` (excluding `archive/`, `daily-reviews/`, `postmortems/`, and other operational sub-collections) must update [`docs/README.md`](./docs/README.md) in the same PR. The `docs-review-bot` flags PRs that touch `docs/` without touching the hub.
+1. **The hub is canonical.** Any PR that adds, renames, or removes a file anywhere under `docs/` — including `docs/how-to/`, `docs/tutorials/`, and `docs/adr/` — must update [`docs/README.md`](./docs/README.md) in the same PR. Excluded sub-collections (which grow on their own internal indices, not the hub): `archive/`, `daily-reviews/`, `postmortems/`, `issues/`, `plans/`, `superpowers/`, `steering/`, `scripts/` (regenerable TypeDoc), `glossary/` (one-file-per-term per [ADR-0010](./docs/adr/0010-shard-glossary-into-one-file-per-term.md)). The `docs-review-bot` flags PRs that touch `docs/` without touching the hub.
 2. **Recipes use the template.** A new How-to guide starts from [`docs/how-to/_template.md`](./docs/how-to/_template.md). Keep every section other than `## Steps` to two sentences; *why*-content goes in Explanation, not in the recipe.
 
 ## What is **not** welcome

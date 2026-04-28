@@ -16,7 +16,7 @@ Read upstream:
 
 - `specs/<slug>/research.md`
 - `specs/<slug>/requirements.md`
-- `docs/CONTEXT.md`, `docs/UBIQUITOUS_LANGUAGE.md` (if present)
+- `docs/CONTEXT.md`, `docs/glossary/*.md` (per [ADR-0010](../../../docs/adr/0010-shard-glossary-into-one-file-per-term.md); legacy `docs/UBIQUITOUS_LANGUAGE.md` if present)
 
 Restate the design problem in one sentence. Confirm with the user.
 

@@ -19,7 +19,7 @@ The slash commands are defined in `.claude/commands/spec/` and own the agent inv
 
 ### Stage 3 — Requirements (`/spec:requirements`)
 - **Initial:** dispatch as-is. The pm reads `research.md` recommendation as the starting point.
-- **Suggested skills:** `grill` (for non-functional requirement discovery), `ubiquitous-language` (whenever a new domain term lands in EARS clauses).
+- **Suggested skills:** `grill` (for non-functional requirement discovery), `new-glossary-entry` via `/glossary:new "<term>"` (whenever a new domain term lands in EARS clauses; per ADR-0010, supersedes the deprecated `ubiquitous-language` skill).
 - **Mandatory:** every functional requirement uses EARS notation per `docs/ears-notation.md`.
 - **Optional gate:** offer `/spec:clarify` after this stage if the user enabled it in Step 2.
 
@@ -70,7 +70,7 @@ The slash commands are defined in `.claude/commands/spec/` and own the agent inv
 ## Cross-stage helpers
 
 - **ADR detected mid-stage:** any subagent may flag a decision that needs an ADR. The orchestrator should run `/adr:new "<title>"` on the user's behalf (after a one-question `AskUserQuestion` confirmation) and append a dated line to the `## Hand-off notes` free-form section of `workflow-state.md` recording the ADR path. Do **not** invent an `adrs:` frontmatter field — the schema in `templates/workflow-state-template.md` is fixed.
-- **Domain term coined:** if a subagent reports a new term, append it to `docs/UBIQUITOUS_LANGUAGE.md` via the `ubiquitous-language` skill (lazy creation if file doesn't exist).
+- **Domain term coined:** if a subagent reports a new term, scaffold a per-term file at `docs/glossary/<slug>.md` via `/glossary:new "<term>"` (the `new-glossary-entry` skill). Per [ADR-0010](../../../docs/adr/0010-shard-glossary-into-one-file-per-term.md) the legacy `ubiquitous-language` → `docs/UBIQUITOUS_LANGUAGE.md` flow is deprecated.
 - **Context shift:** if a subagent reports that the domain context map has changed, dispatch the `domain-context` skill to update `docs/CONTEXT.md`.
 
 ## What the orchestrator must NOT pass

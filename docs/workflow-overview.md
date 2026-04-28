@@ -90,24 +90,47 @@ Plus body sections (Skips, Blocks, Hand-off notes, Open clarifications). Canonic
 
 ## Slash commands
 
+<!-- BEGIN GENERATED: slash-commands -->
 ```
-# Pre-everything Stock-taking Track (opt-in, for legacy/brownfield projects):
-/stock:start <project>      /stock:audit               /stock:handoff
-/stock:scope                /stock:synthesize
+# Decisions:
+/adr:new
 
-# Pre-stage Discovery Track (opt-in, when no brief exists yet):
-/discovery:start <sprint>   /discovery:converge        /discovery:validate
-/discovery:frame            /discovery:prototype       /discovery:handoff
-/discovery:diverge
+# Discovery Track:
+/discovery:converge   /discovery:diverge    /discovery:frame
+/discovery:handoff    /discovery:prototype  /discovery:start
+/discovery:validate
+
+# glossary:
+/glossary:new
+
+# Portfolio Track:
+/portfolio:start  /portfolio:x      /portfolio:y
+/portfolio:z
+
+# Product:
+/product:page
+
+# Project Manager Track:
+/project:change    /project:close     /project:initiate
+/project:post      /project:report    /project:start
+/project:weekly
+
+# Sales Cycle Track:
+/sales:estimate  /sales:order     /sales:propose
+/sales:qualify   /sales:scope     /sales:start
 
 # Lifecycle:
-/spec:start <slug>          /spec:tasks                /spec:retro
-/spec:idea                  /spec:implement [task-id]  /spec:clarify
-/spec:research              /spec:test                 /spec:analyze
-/spec:requirements          /spec:review               /adr:new "<title>"
-/spec:design                /spec:release
-/spec:specify
+/spec:analyze       /spec:clarify       /spec:design
+/spec:idea          /spec:implement     /spec:release
+/spec:requirements  /spec:research      /spec:retro
+/spec:review        /spec:specify       /spec:start
+/spec:tasks         /spec:test
+
+# Stock-taking Track:
+/stock-taking:audit       /stock-taking:handoff     /stock-taking:scope
+/stock-taking:start       /stock-taking:synthesize
 ```
+<!-- END GENERATED: slash-commands -->
 
 ## Per-stage Definition of Done (one-liner each)
 

@@ -1,0 +1,30 @@
+{
+  "name": "agentic-workflow",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "doctor": "node scripts/doctor.js",
+    "verify": "node scripts/verify.js",
+    "check:links": "node scripts/check-markdown-links.js",
+    "check:adr-index": "node scripts/check-adr-index.js",
+    "check:commands": "node scripts/check-command-docs.js",
+    "check:script-docs": "node scripts/check-script-docs.js",
+    "check:frontmatter": "node scripts/check-frontmatter.js",
+    "check:specs": "node scripts/check-spec-state.js",
+    "check:traceability": "node scripts/check-traceability.js",
+    "docs:scripts": "typedoc --options typedoc.json",
+    "fix": "node scripts/fix-generated.js",
+    "fix:adr-index": "node scripts/fix-adr-index.js",
+    "fix:commands": "node scripts/fix-command-docs.js",
+    "fix:script-docs": "node scripts/fix-script-docs.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.39",
+    "typedoc": "^0.28.19",
+    "typedoc-plugin-markdown": "^4.11.0"
+  }
+}

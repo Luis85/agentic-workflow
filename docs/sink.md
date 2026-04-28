@@ -31,7 +31,9 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │   ├── CONTEXT-MAP.md                       # multi-context only (LAZY)
 │   ├── contexts/                            # multi-context only (LAZY)
 │   │   └── <name>.md
-│   └── UBIQUITOUS_LANGUAGE.md               # living glossary (LAZY)
+│   ├── glossary/                            # one file per term (per ADR-0010)
+│   │   └── <slug>.md                        # docs/glossary/<slug>.md, e.g. quality-gate.md
+│   └── UBIQUITOUS_LANGUAGE.md               # deprecated by ADR-0010; kept for forks on earlier template versions (LAZY)
 ├── templates/                               # blank artifacts; stages copy + fill
 │   └── *-template.md
 ├── stock-taking/                            # one folder per legacy-system engagement (opt-in, brownfield projects)
@@ -106,6 +108,10 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │       ├── idea.md, research.md, …          # same artifact set as specs/<slug>/
 │       └── adr/                             # project-local ADRs for the example (NOT docs/adr/)
 │           └── NNNN-<slug>.md               # project-local sequence, e.g. ADR-CLI-0001
+├── sites/                                   # public product page (directly openable static entrypoint)
+│   ├── index.html
+│   ├── styles.css                           # optional
+│   └── assets/                              # optional visuals and media
 └── .claude/
     ├── agents/                              # subagent definitions (specialists)
     ├── commands/                            # slash commands (entry points per stage)
@@ -122,7 +128,8 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 | `docs/steering/*` | Human | Updated as project evolves |
 | `docs/adr/NNNN-*.md` | Architect / any agent that flags | **Immutable from creation** per ADR-0001: only YAML `status` (proposed → accepted → deprecated → superseded) and `supersedes` / `superseded-by` pointers may change. Body (Context, Decision, Alternatives, Consequences) is frozen on creation. To revise rationale, supersede via new ADR. |
 | `docs/CONTEXT.md`, `docs/CONTEXT-MAP.md`, `docs/contexts/*.md` | `domain-context` skill | Additive, agent-updated |
-| `docs/UBIQUITOUS_LANGUAGE.md` | `ubiquitous-language` skill | Additive, agent-updated |
+| `docs/glossary/<slug>.md` | `new-glossary-entry` skill | Additive, agent-updated; refine in place with dated note. Renames create a new file with the old slug in `aliases:`; deprecated entries remain as historical record |
+| `docs/UBIQUITOUS_LANGUAGE.md` | `ubiquitous-language` skill (**deprecated by [ADR-0010](adr/0010-shard-glossary-into-one-file-per-term.md)**) | Frozen for new content; kept readable for projects on earlier template versions |
 | `templates/*-template.md` | Human | Versioned; updates propagate to new features only |
 | `stock-taking/<project>/stock-taking-state.md` | `/stock:start`, then `/stock:*` commands on transition | Engagement state machine; legacy-auditor-owned |
 | `stock-taking/<project>/<phase>.md` | `legacy-auditor` (per `docs/stock-taking-track.md` §3) | Each phase writes once; later phases never rewrite upstream phase artifacts |
@@ -153,6 +160,8 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 | `portfolio/<slug>/portfolio-progress.md` | Y cycle (Y4) | Replaced each Y run; history in git |
 | `portfolio/<slug>/portfolio-improvements.md` | Y cycle (Y3, Y4) | Replaced each Y run; history in git |
 | `portfolio/<slug>/portfolio-log.md` | Z cycle (Z3) | **Append-only** — never edit previous entries |
+| `sites/index.html`, `sites/**/*` | `product-page` skill / `product-page-designer` | Living public product page; updated with product positioning and user-visible changes |
+| `.github/workflows/pages.yml` | `product-page` skill / `product-page-designer` | GitHub Pages deployment workflow when Pages is the selected host |
 | `specs/<slug>/arc42-questionnaire.md` | `arc42-baseline` skill | Created lazily on opt-in; canonical input to `design.md` Part C |
 | `specs/<slug>/design-alt-*.md`, `design-comparison.md` | `design-twice` skill | Created lazily on opt-in |
 | `.claude/skills/<name>/SKILL.md` | Skill author | Versioned in repo |
@@ -171,7 +180,7 @@ Files marked `LAZY` above are not pre-scaffolded. They appear when a skill or ag
 
 ### Append-only
 
-`docs/CONTEXT.md`, `docs/UBIQUITOUS_LANGUAGE.md`, `specs/<slug>/implementation-log.md`, and the `## Hand-off notes` free-form section of `workflow-state.md` are append-only in spirit. Agents may reorder or refine, but the historical narrative survives. (The workflow-state YAML frontmatter has no `notes:` field — append-only content lives in markdown sections.)
+`docs/CONTEXT.md`, `docs/glossary/*.md` (and the legacy `docs/UBIQUITOUS_LANGUAGE.md` for forks on earlier template versions), `specs/<slug>/implementation-log.md`, and the `## Hand-off notes` free-form section of `workflow-state.md` are append-only in spirit. Agents may reorder or refine, but the historical narrative survives. (The workflow-state YAML frontmatter has no `notes:` field — append-only content lives in markdown sections.)
 
 ### Immutable
 
@@ -191,7 +200,7 @@ Accepted ADRs are immutable. To change a decision, file a new ADR superseding th
 3. `docs/specorator.md` §3.<stage> — the gate criteria for this stage.
 4. `specs/<slug>/workflow-state.md` — confirm upstream stages are complete.
 5. All numerically-earlier `specs/<slug>/<artifact>.md` files in stage order.
-6. `docs/CONTEXT.md` and `docs/UBIQUITOUS_LANGUAGE.md` if present.
+6. `docs/CONTEXT.md` and `docs/glossary/*.md` (per [ADR-0010](adr/0010-shard-glossary-into-one-file-per-term.md); legacy `docs/UBIQUITOUS_LANGUAGE.md` if present on older forks).
 7. Any topically relevant ADRs (skim titles).
 
 ## Stock-taking Track sub-tree
@@ -260,7 +269,8 @@ A portfolio is bootstrapped with `/portfolio:start <slug>`. The three cycle comm
 These skills append to cross-workflow files:
 
 - `record-decision` → `docs/adr/NNNN-<slug>.md` (via `/adr:new`).
+- `product-page` → `sites/index.html`, supporting `sites/` assets, and optionally `.github/workflows/pages.yml`.
 - `domain-context` → `docs/CONTEXT.md` (or `CONTEXT-MAP.md` + `contexts/<name>.md`).
-- `ubiquitous-language` → `docs/UBIQUITOUS_LANGUAGE.md`.
+- `new-glossary-entry` → `docs/glossary/<slug>.md` (via `/glossary:new`). Per [ADR-0010](adr/0010-shard-glossary-into-one-file-per-term.md), supersedes the deprecated `ubiquitous-language` → `docs/UBIQUITOUS_LANGUAGE.md` flow.
 
 When any of these write, the active feature's `workflow-state.md` gets a dated one-line entry appended to the `## Hand-off notes` free-form section so the workflow has a paper trail. The frontmatter schema (per `templates/workflow-state-template.md`) is fixed — agents do not add new frontmatter keys.

@@ -192,7 +192,7 @@ Where to go from here:
 
 - **Try a real feature.** [`how-to/resume-paused-feature.md`](../how-to/resume-paused-feature.md) shows how to resume across sessions; the [`orchestrate`](../../.claude/skills/orchestrate/SKILL.md) skill drives the same flow on bigger work.
 - **Customize the workflow for your stack.** [`how-to/fork-and-personalize.md`](../how-to/fork-and-personalize.md) and [`how-to/adapt-steering.md`](../how-to/adapt-steering.md).
-- **Understand why the workflow looks like this.** [`docs/specorator.md`](../specorator.md) is the canonical definition; the [Explanation](../README.md#-explanation) quadrant in the doc hub has the rationale for each track.
+- **Understand why the workflow looks like this.** [`docs/specorator.md`](../specorator.md) is the canonical definition; the [Explanation](../README.md#explanation) quadrant in the doc hub has the rationale for each track.
 - **Learn the small disciplines.** [`how-to/write-ears-requirement.md`](../how-to/write-ears-requirement.md), [`how-to/add-adr.md`](../how-to/add-adr.md), [`how-to/run-verify-gate.md`](../how-to/run-verify-gate.md).
 
 If you want to throw away your scratch branch and start fresh:

@@ -13,11 +13,12 @@
 ## Steps
 
 1. Stage every file you intend to push — `git add -A` (or specific paths). The gate runs against the working tree, not stashed work.
-2. Open Claude Code — `claude`.
-3. Run the verify skill — `/verify`. The skill chains the configured formatter, linter, type-checker, test runner, and build for your stack.
-4. Read the output top-to-bottom. A red line in any phase fails the gate; do not push.
-5. Fix the failure, re-stage, and re-run `/verify`. Repeat until every phase reports green.
-6. Push — `git push origin HEAD`. Never use `--no-verify`; the deny rule in [`.claude/settings.json`](../../.claude/settings.json) is intentional.
+2. Run the verify gate. Two equivalent entry points:
+   - **From the shell** — `npm run verify`. This is the canonical command and what CI (`.github/workflows/verify.yml`) runs.
+   - **From Claude Code** — open `claude`, then run `/verify`. The skill wraps the same composite for you.
+3. Read the output top-to-bottom. A red line in any phase fails the gate; do not push.
+4. Fix the failure, re-stage, and re-run the same command. Repeat until every phase reports green.
+5. Push — `git push origin HEAD`. Never use `--no-verify`; the deny rule in [`.claude/settings.json`](../../.claude/settings.json) is intentional.
 
 ## Verify
 

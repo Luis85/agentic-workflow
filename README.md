@@ -6,6 +6,10 @@
 
 > **Status:** v0.2 — Foundation + Skills layer. Intentionally generic and starting-point-y — fork it, adapt it, make it yours.
 
+Product page: <https://luis85.github.io/agentic-workflow/>
+
+The page source lives in [`sites/index.html`](sites/index.html). The `product-page` skill and `product-page-designer` agent keep that page current when a project starts, positioning changes, or user-visible releases would make the page stale.
+
 ---
 
 ## What is this?
@@ -173,12 +177,27 @@ Claude guides you through the rest — asking the right questions, running the r
 
 The full user guide lives in [`docs/`](docs/README.md), organized by what you need:
 
-- **Learning** → [tutorials](docs/README.md#-tutorials)
-- **Doing** → [how-to recipes](docs/README.md#-how-to-guides)
-- **Looking up** → [reference](docs/README.md#-reference)
-- **Understanding** → [explanation](docs/README.md#-explanation)
+- **Learning** → [tutorials](docs/README.md#tutorials)
+- **Doing** → [how-to recipes](docs/README.md#how-to-guides)
+- **Looking up** → [reference](docs/README.md#reference)
+- **Understanding** → [explanation](docs/README.md#explanation)
 
 If you are completely new to the project, the [first-feature tutorial](docs/tutorials/first-feature.md) walks the entire workflow on a tiny example in 60–90 minutes.
+
+---
+
+## Repository checks
+
+This template includes a small Node/npm integrity suite for local use and CI:
+
+```bash
+npm install
+npm run doctor
+npm run verify
+```
+
+`doctor` reports local environment and repository health. `verify` is read-only. For deterministic local repairs, use `npm run fix:adr-index` to regenerate the ADR index, `npm run fix:commands` to regenerate command inventories, and `npm run fix:script-docs` to regenerate script API docs from JSDoc blocks, then run `npm run verify` again.
+Use `npm run fix` to run all generated-block repair helpers together. See [`scripts/README.md`](scripts/README.md) for the full script inventory.
 
 ---
 
@@ -222,19 +241,15 @@ This files a permanent Architecture Decision Record (ADR) in `docs/adr/`.
 
 ## Plain-English glossary
 
-New to this kind of workflow? Here's the jargon decoded:
+New to this kind of workflow? See [`docs/glossary/`](docs/glossary/) — one Markdown file per term. Good starting points:
 
-| Term | What it means in practice |
-|---|---|
-| **Spec** | A written description of exactly what to build — no ambiguity, no guessing |
-| **Quality gate** | A short checklist a stage must pass before the next one starts |
-| **Agent** | An AI assistant specialised for one role: PM, designer, developer, QA, and so on |
-| **Artifact** | A Markdown file produced at each stage (`idea.md`, `requirements.md`, `design.md`, …) |
-| **EARS** | A sentence format for requirements that makes them unambiguous and testable (e.g. *"When the user submits the form, the system shall send a confirmation email"*) |
-| **ADR** | A one-page record of an important decision — what was decided, why, and what alternatives were rejected |
-| **Traceability** | Every piece of code traces to a task, every task to a requirement, every requirement to a test |
-| **Retrospective** | A short look-back after every feature: what worked, what didn't, what to change next time |
-| **Discovery Track** | A structured ideation mini-sprint for when you have a problem but no clear solution yet |
+- [Spec](docs/glossary/spec.md) — a written description of exactly what to build.
+- [Agent](docs/glossary/agent.md) — an AI assistant specialised for one role.
+- [Artifact](docs/glossary/artifact.md) — a Markdown file produced at each stage.
+- [Quality gate](docs/glossary/quality-gate.md) — the checklist a stage must pass before the next one starts.
+- [EARS](docs/glossary/ears.md), [ADR](docs/glossary/adr.md), [Traceability](docs/glossary/traceability.md), [Retrospective](docs/glossary/retrospective.md), [Discovery Track](docs/glossary/discovery-track.md).
+
+Add a new term with `/glossary:new "<term>"`. See [ADR-0010](docs/adr/0010-shard-glossary-into-one-file-per-term.md) for the convention.
 
 ---
 
@@ -266,20 +281,47 @@ Each arrow is a quality gate. See [`docs/workflow-overview.md`](docs/workflow-ov
 
 ## Slash commands reference
 
+<!-- BEGIN GENERATED: slash-commands -->
 ```
-# Discovery Track (when you don't have a brief yet):
-/discovery:start <sprint>    /discovery:converge      /discovery:validate
-/discovery:frame             /discovery:prototype     /discovery:handoff
-/discovery:diverge
+# Decisions:
+/adr:new
 
-# Lifecycle (Stages 1–11):
-/spec:start <slug>           /spec:tasks              /spec:retro
-/spec:idea                   /spec:implement [task]   /spec:clarify
-/spec:research               /spec:test               /spec:analyze
-/spec:requirements           /spec:review             /adr:new "<title>"
-/spec:design                 /spec:release
-/spec:specify
+# Discovery Track:
+/discovery:converge   /discovery:diverge    /discovery:frame
+/discovery:handoff    /discovery:prototype  /discovery:start
+/discovery:validate
+
+# glossary:
+/glossary:new
+
+# Portfolio Track:
+/portfolio:start  /portfolio:x      /portfolio:y
+/portfolio:z
+
+# Product:
+/product:page
+
+# Project Manager Track:
+/project:change    /project:close     /project:initiate
+/project:post      /project:report    /project:start
+/project:weekly
+
+# Sales Cycle Track:
+/sales:estimate  /sales:order     /sales:propose
+/sales:qualify   /sales:scope     /sales:start
+
+# Lifecycle:
+/spec:analyze       /spec:clarify       /spec:design
+/spec:idea          /spec:implement     /spec:release
+/spec:requirements  /spec:research      /spec:retro
+/spec:review        /spec:specify       /spec:start
+/spec:tasks         /spec:test
+
+# Stock-taking Track:
+/stock-taking:audit       /stock-taking:handoff     /stock-taking:scope
+/stock-taking:start       /stock-taking:synthesize
 ```
+<!-- END GENERATED: slash-commands -->
 
 You can also trigger everything conversationally — the `orchestrate` and `discovery-sprint` skills listen for natural language and dispatch the right command.
 
@@ -315,6 +357,7 @@ The artifact format (Markdown files in `specs/<feature>/`) and the ID scheme (`R
 | [`.claude/skills/`](.claude/skills/) | Reusable skill bundles (`orchestrate`, `grill`, `tdd-cycle`, `verify`, …) |
 | [`agents/operational/`](agents/operational/) | Scheduled bots: review-bot, dep-triage-bot, plan-recon-bot, and more |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | How to improve this template |
+| [`sites/index.html`](sites/index.html) | Public product page source, deployable through GitHub Pages |
 | [`AGENTS.md`](AGENTS.md) | Cross-tool root context (Codex, Cursor, Aider, Copilot all read this) |
 | [`CLAUDE.md`](CLAUDE.md) | Claude Code entry point — imports `AGENTS.md` |
 | [`.codex/`](.codex/) | Codex-specific instructions and workflow playbooks |

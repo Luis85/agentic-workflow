@@ -57,4 +57,4 @@ Every recipe — MVP or contributed — contains these sections, in order:
 - `## Verify` — one observable check that the goal is reached.
 - `## Related` — links to Reference, Explanation, and adjacent How-to.
 
-No section other than `## Steps` may exceed two sentences. Recipes contain no theory; *why*-content lives under [Explanation](../README.md#-explanation).
+No section other than `## Steps` may exceed two sentences. Recipes contain no theory; *why*-content lives under [Explanation](../README.md#explanation).

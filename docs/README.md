@@ -4,10 +4,10 @@ This is the user-facing index for `docs/`. It is organised by [Diátaxis](https:
 
 |  | If you want to… | Read… |
 |---|---|---|
-| 📚 | **Learn** Specorator end-to-end | a [Tutorial](#-tutorials) |
-| 🛠 | **Do** a specific task | a [How-to](#-how-to-guides) |
-| 📖 | **Look up** an authoritative fact | a [Reference](#-reference) doc |
-| 💡 | **Understand** why something is the way it is | an [Explanation](#-explanation) doc |
+| 📚 | **Learn** Specorator end-to-end | a [Tutorial](#tutorials) |
+| 🛠 | **Do** a specific task | a [How-to](#how-to-guides) |
+| 📖 | **Look up** an authoritative fact | a [Reference](#reference) doc |
+| 💡 | **Understand** why something is the way it is | an [Explanation](#explanation) doc |
 
 If you are new to the project, start with the tutorial. If you already know the basics, jump straight to the recipe or reference you need.
 
@@ -51,6 +51,8 @@ Look-it-up, normative. Authoritative; not narrative.
 - [`traceability.md`](./traceability.md) — the ID scheme and the requirement → spec → task → code → test chain.
 - [`sink.md`](./sink.md) — catalog of every artifact: where it lives, who owns it. *Regenerable index — don't edit by hand.*
 - [`quality-framework.md`](./quality-framework.md) — quality dimensions, gates, and Definition of Done per stage.
+- [`glossary/`](./glossary/) — plain-English glossary, one file per term (per [ADR-0010](./adr/0010-shard-glossary-into-one-file-per-term.md)). The directory listing is the index; add a term with `/glossary:new "<term>"`.
+- [`scripts/`](./scripts/) — generated TypeDoc API reference for the Node integrity scripts under `scripts/`. *Regenerable — `npm run fix:script-docs` rebuilds it from JSDoc.*
 - [`adr/`](./adr/) — index of every Architecture Decision Record. (Each ADR's *rationale* is an Explanation doc; this is the index.)
 
 ### Reference + How-to (dual-purpose)
@@ -81,7 +83,7 @@ Understanding-oriented. Background, rationale, and the *why* behind decisions.
 These directories are not user-facing reading material; they are listed here so the doc map is complete.
 
 - [`steering/`](./steering/) — scoped context loaded by stage agents (product, tech, ux, quality, operations). If you are *configuring* the agents for your own project, start with [`steering/README.md`](./steering/README.md). It is not part of the Diátaxis surface for human readers.
-- `archive/`, `daily-reviews/`, `postmortems/`, `issues/`, `plans/`, `superpowers/` — operational, historical, or contributor-internal collections. They will grow as the project adds methods, constraints, and frameworks; they are deliberately outside the Diátaxis quadrant map. The `docs-review-bot` keeps drift in check.
+- `archive/`, `daily-reviews/`, `postmortems/`, `issues/`, `plans/`, `superpowers/` — operational, historical, or contributor-internal collections. They will grow as the project adds methods, constraints, and frameworks; they are deliberately outside the Diátaxis quadrant map and the hub-drift check. The `docs-review-bot` keeps the rest of `docs/` in check.
 
 ---
 
