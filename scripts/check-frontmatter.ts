@@ -29,7 +29,7 @@ for (const filePath of markdownFiles()) {
 
     if (basename !== "README.md") {
       errors.push(frontmatterDiagnostic("FM_README_NAME", rel, "must be named README.md"));
-    } else {
+    } else if (rel !== "README.md") {
       requireFrontmatter(rel, frontmatter);
       if (frontmatter) validateReadme(rel, parseSimpleYaml(frontmatter.raw));
     }

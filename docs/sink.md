@@ -130,7 +130,7 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 
 Any folder may include one `README.md`, but it is optional. When present, it is the folder's entry point for Markdown viewers such as GitHub's repository browser: it should orient readers to the folder's purpose, link to the important files below it, and explain any local maintenance rules.
 
-Every tracked `README.md` starts with YAML frontmatter:
+Every tracked `README.md` below the repository root starts with YAML frontmatter:
 
 ```yaml
 ---
@@ -141,7 +141,7 @@ entry_point: true
 ---
 ```
 
-Use `folder: .` for the repository root. The `folder` value must match the README's containing directory, and `npm run check:frontmatter` enforces this along with the one-README-per-folder rule.
+The root `README.md` is the public repository entry point and is exempt from this frontmatter rule. For folder entry points, the `folder` value must match the README's containing directory, and `npm run check:frontmatter` enforces this along with the one-README-per-folder rule.
 
 ## Ownership
 
