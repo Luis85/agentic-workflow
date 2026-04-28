@@ -66,6 +66,12 @@ export const checkTasks = [
     jsonDiagnostics: true,
   },
   {
+    name: "check:obsidian",
+    label: "Obsidian Markdown compatibility",
+    script: "scripts/check-obsidian.ts",
+    jsonDiagnostics: true,
+  },
+  {
     name: "check:specs",
     label: "Spec workflow state",
     script: "scripts/check-spec-state.ts",
