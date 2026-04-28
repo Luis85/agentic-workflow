@@ -6,9 +6,9 @@
 
 # lib/commands
 
-## Interfaces
+## Type Aliases
 
-- [CommandRecord](interfaces/CommandRecord.md)
+- [CommandRecord](type-aliases/CommandRecord.md)
 
 ## Functions
 

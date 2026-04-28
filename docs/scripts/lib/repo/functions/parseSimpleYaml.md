@@ -6,7 +6,7 @@
 
 # Function: parseSimpleYaml()
 
-> **parseSimpleYaml**(`raw`): `Record`\<`string`, `unknown`\>
+> **parseSimpleYaml**(`raw`): [`SimpleYaml`](../type-aliases/SimpleYaml.md)
 
 Parse the small YAML subset used by repository state files.
 
@@ -24,6 +24,6 @@ Raw frontmatter without delimiter lines.
 
 ## Returns
 
-`Record`\<`string`, `unknown`\>
+[`SimpleYaml`](../type-aliases/SimpleYaml.md)
 
 Parsed YAML data.

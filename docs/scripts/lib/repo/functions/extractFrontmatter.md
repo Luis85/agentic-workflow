@@ -6,7 +6,7 @@
 
 # Function: extractFrontmatter()
 
-> **extractFrontmatter**(`text`): [`FrontmatterBlock`](../interfaces/FrontmatterBlock.md) \| `null`
+> **extractFrontmatter**(`text`): [`FrontmatterBlock`](../type-aliases/FrontmatterBlock.md) \| `null`
 
 Extract YAML frontmatter from a Markdown document.
 
@@ -20,6 +20,6 @@ Markdown document contents.
 
 ## Returns
 
-[`FrontmatterBlock`](../interfaces/FrontmatterBlock.md) \| `null`
+[`FrontmatterBlock`](../type-aliases/FrontmatterBlock.md) \| `null`
 
 Frontmatter and body, or null when no frontmatter block exists.

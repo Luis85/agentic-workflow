@@ -6,12 +6,12 @@
 
 # Function: getCommands()
 
-> **getCommands**(): [`CommandRecord`](../interfaces/CommandRecord.md)[]
+> **getCommands**(): [`CommandRecord`](../type-aliases/CommandRecord.md)[]
 
 Discover slash-command Markdown files under `.claude/commands`.
 
 ## Returns
 
-[`CommandRecord`](../interfaces/CommandRecord.md)[]
+[`CommandRecord`](../type-aliases/CommandRecord.md)[]
 
 Command records sorted by slash-command name.

@@ -1,5 +1,5 @@
 {
-  "entryPoints": ["scripts/**/*.js"],
+  "entryPoints": ["scripts/**/*.ts"],
   "entryPointStrategy": "expand",
   "exclude": ["scripts/README.md"],
   "out": "docs/scripts",

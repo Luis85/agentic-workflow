@@ -18,7 +18,7 @@ output actionable.
 
 ### tasks
 
-`object`[]
+[`NodeTask`](../type-aliases/NodeTask.md)[]
 
 Tasks to execute.
 

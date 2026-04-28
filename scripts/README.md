@@ -20,7 +20,23 @@ Run the full read-only gate:
 npm run verify
 ```
 
-`verify` runs each `check:*` task in order and stops at the first failure. The failing task prints the command to rerun while iterating.
+`verify` runs script typechecking, script unit tests, and each `check:*` task in order. It stops at the first failure and prints the command to rerun while iterating.
+
+## TypeScript and Tests
+
+Repository scripts are TypeScript files executed with `tsx`.
+
+Run the script type gate:
+
+```bash
+npm run typecheck:scripts
+```
+
+Run the script unit tests:
+
+```bash
+npm run test:scripts
+```
 
 ## Checks
 
@@ -30,13 +46,14 @@ npm run verify
 | `npm run check:adr-index` | Confirm `docs/adr/README.md` matches the ADR files. |
 | `npm run check:commands` | Confirm generated slash-command inventories are current. |
 | `npm run check:script-docs` | Confirm TypeDoc-generated script API docs are current. |
+| `npm run check:workflow-docs` | Confirm core workflow docs and package scripts keep the tool contract visible. |
 | `npm run check:frontmatter` | Validate required frontmatter on state files, ADRs, and review artifacts. |
 | `npm run check:specs` | Validate lifecycle `workflow-state.md` files and their artifact maps. |
 | `npm run check:traceability` | Validate lifecycle artifact IDs and local traceability references. |
 
 ## Script Documentation
 
-Scripts use JSDoc blocks as their source-level documentation. Public helpers exported from `scripts/lib/` should document their purpose, parameters, return values, and any meaningful thrown errors. Top-level CLI scripts should stay small and delegate reusable behavior to documented helpers when that behavior is worth preserving.
+Scripts use TypeScript signatures plus short documentation comments as their source-level documentation. Public helpers exported from `scripts/lib/` should document their purpose, parameters, return values, and any meaningful thrown errors. Top-level CLI scripts should stay small and delegate reusable behavior to documented helpers when that behavior is worth preserving.
 
 Generate Markdown script docs:
 

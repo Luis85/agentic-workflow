@@ -6,10 +6,6 @@
 
 # lib/tasks
 
-## Interfaces
-
-- [NodeTask](interfaces/NodeTask.md)
-
 ## Variables
 
 - [checkTasks](variables/checkTasks.md)
