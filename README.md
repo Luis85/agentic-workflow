@@ -6,6 +6,8 @@
 
 > **Status:** v0.2 — Foundation + Skills layer. Intentionally generic and starting-point-y — fork it, adapt it, make it yours.
 
+Product page: <https://luis85.github.io/agentic-workflow/>
+
 ---
 
 ## What is this?
