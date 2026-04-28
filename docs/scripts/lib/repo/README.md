@@ -6,9 +6,10 @@
 
 # lib/repo
 
-## Interfaces
+## Type Aliases
 
-- [FrontmatterBlock](interfaces/FrontmatterBlock.md)
+- [FrontmatterBlock](type-aliases/FrontmatterBlock.md)
+- [SimpleYaml](type-aliases/SimpleYaml.md)
 
 ## Variables
 

@@ -6,6 +6,10 @@
 
 # lib/runner
 
+## Type Aliases
+
+- [NodeTask](type-aliases/NodeTask.md)
+
 ## Functions
 
 - [runNodeTasks](functions/runNodeTasks.md)

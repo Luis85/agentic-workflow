@@ -6,12 +6,12 @@
 
 # Function: getAdrs()
 
-> **getAdrs**(): [`AdrRecord`](../interfaces/AdrRecord.md)[]
+> **getAdrs**(): [`AdrRecord`](../type-aliases/AdrRecord.md)[]
 
 Read ADR metadata from `docs/adr`.
 
 ## Returns
 
-[`AdrRecord`](../interfaces/AdrRecord.md)[]
+[`AdrRecord`](../type-aliases/AdrRecord.md)[]
 
 ADR records sorted by filename.

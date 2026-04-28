@@ -6,9 +6,9 @@
 
 # lib/adr
 
-## Interfaces
+## Type Aliases
 
-- [AdrRecord](interfaces/AdrRecord.md)
+- [AdrRecord](type-aliases/AdrRecord.md)
 
 ## Functions
 
