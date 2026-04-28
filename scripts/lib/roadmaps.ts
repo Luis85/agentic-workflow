@@ -43,6 +43,25 @@ export type RoadmapEvidenceReport = {
   warnings: string[];
 };
 
+export type RoadmapDigestSection = {
+  title: string;
+  sourcePath: string;
+  content: string;
+};
+
+export type RoadmapDigestReport = {
+  roadmap: string;
+  audience: string;
+  generatedAt: string;
+  strategyPath: string;
+  strategyMissing: boolean;
+  subject: string;
+  emphasis: string[];
+  sources: string[];
+  sections: RoadmapDigestSection[];
+  warnings: string[];
+};
+
 /**
  * Find roadmap state files under `roadmaps/<slug>/`.
  *
@@ -245,6 +264,119 @@ export function renderRoadmapEvidence(report: RoadmapEvidenceReport): string {
 }
 
 /**
+ * Generate an audience-specific roadmap communication digest.
+ *
+ * The digest is read-only. It summarizes selected roadmap artifacts into a
+ * draft update that a human can review before copying into `communication-log.md`.
+ *
+ * @param slug - Roadmap folder slug.
+ * @param audience - Intended audience, such as `leadership` or `delivery-team`.
+ * @returns Digest report for the roadmap and audience.
+ */
+export function collectRoadmapDigest(slug: string, audience: string): RoadmapDigestReport {
+  const generatedAt = new Date().toISOString();
+  const safeSlug = safeRoadmapSlug(slug);
+  const audienceKey = normalizeAudience(audience);
+  const profile = roadmapAudienceProfile(audienceKey);
+  const strategyPath = safeSlug ? `roadmaps/${safeSlug}/roadmap-strategy.md` : "roadmaps/<invalid>/roadmap-strategy.md";
+
+  if (!safeSlug) {
+    return {
+      roadmap: slug,
+      audience: audienceKey,
+      generatedAt,
+      strategyPath,
+      strategyMissing: true,
+      subject: `Roadmap update for ${slug}`,
+      emphasis: profile.emphasis,
+      sources: [],
+      sections: [],
+      warnings: ["Invalid roadmap slug. Use a kebab-case folder name without path separators."],
+    };
+  }
+
+  const documents = [
+    roadmapDocument(safeSlug, "roadmap-strategy.md"),
+    roadmapDocument(safeSlug, "roadmap-board.md"),
+    roadmapDocument(safeSlug, "delivery-plan.md"),
+    roadmapDocument(safeSlug, "stakeholder-map.md"),
+  ];
+  const warnings = documents
+    .filter((document) => !document.exists)
+    .map((document) => `${document.relativePath} is missing`);
+  const existingDocuments = documents.filter((document) => document.exists);
+  const sourcePaths = existingDocuments.map((document) => document.relativePath);
+  const sections = existingDocuments.flatMap((document) => digestSectionsForDocument(document, audienceKey));
+
+  if (sections.length === 0) {
+    warnings.push("No digest-ready roadmap sections were found.");
+  }
+
+  return {
+    roadmap: safeSlug,
+    audience: audienceKey,
+    generatedAt,
+    strategyPath,
+    strategyMissing: !documents[0].exists,
+    subject: `Roadmap update for ${safeSlug}`,
+    emphasis: profile.emphasis,
+    sources: sourcePaths,
+    sections,
+    warnings,
+  };
+}
+
+/**
+ * Render a roadmap communication digest as Markdown.
+ *
+ * @param report - Digest report.
+ * @returns Markdown digest draft.
+ */
+export function renderRoadmapDigest(report: RoadmapDigestReport): string {
+  const lines = [
+    `# Roadmap digest - ${report.roadmap}`,
+    "",
+    `Generated: ${report.generatedAt}`,
+    `Audience: ${report.audience}`,
+    `Subject: ${report.subject}`,
+    `Strategy: \`${report.strategyPath}\``,
+    "",
+    "## Audience emphasis",
+    "",
+    ...report.emphasis.map((item) => `- ${item}`),
+    "",
+    "## Draft update",
+    "",
+    `Subject: ${report.subject}`,
+    "",
+  ];
+
+  if (report.sections.length === 0) {
+    lines.push("_No roadmap content available for this audience yet._");
+  } else {
+    for (const section of report.sections) {
+      lines.push(`### ${section.title}`, "", section.content, "", `Source: \`${section.sourcePath}\``, "");
+    }
+  }
+
+  lines.push("## Source artifacts", "");
+  if (report.sources.length === 0) {
+    lines.push("- None found.");
+  } else {
+    lines.push(...report.sources.map((source) => `- \`${source}\``));
+  }
+
+  lines.push("", "## Warnings", "");
+  if (report.warnings.length === 0) {
+    lines.push("- None.");
+  } else {
+    lines.push(...report.warnings.map((warning) => `- ${warning}`));
+  }
+
+  return `${lines.join("\n")}\n`;
+}
+
+/**
  * Validate one roadmap state file.
  *
  * @param {string} filePath - Absolute path to `roadmap-state.md`.
@@ -418,4 +550,126 @@ function scalarString(value: unknown): string | undefined {
 
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+type RoadmapDigestDocument = {
+  relativePath: string;
+  exists: boolean;
+  text: string;
+};
+
+function roadmapDocument(slug: string, fileName: string): RoadmapDigestDocument {
+  const filePath = path.resolve(repoRoot, "roadmaps", slug, fileName);
+  const roadmapsRoot = path.resolve(repoRoot, "roadmaps");
+  const relativeToRoadmaps = path.relative(roadmapsRoot, filePath);
+  if (relativeToRoadmaps.startsWith("..") || path.isAbsolute(relativeToRoadmaps)) {
+    return { relativePath: `roadmaps/${slug}/${fileName}`, exists: false, text: "" };
+  }
+  const relativePath = relativeToRoot(filePath);
+  if (!fs.existsSync(filePath)) return { relativePath, exists: false, text: "" };
+  return { relativePath, exists: true, text: readText(filePath) };
+}
+
+function digestSectionsForDocument(document: RoadmapDigestDocument, audience: string): RoadmapDigestSection[] {
+  const fileName = path.basename(document.relativePath);
+  if (fileName === "roadmap-strategy.md") {
+    return compactSections(document, [
+      ["Why this roadmap matters", ["Purpose", "Goals", "Outcomes", "Business outcomes"]],
+      ["Audience and constraints", ["Audiences", "Stakeholders", "Constraints", "Non-goals"]],
+    ]);
+  }
+  if (fileName === "roadmap-board.md") {
+    return compactSections(document, [
+      ["Now", ["Now"]],
+      ["Next", ["Next"]],
+      ["Later", ["Later"]],
+      ["What changed", ["Change Summary", "Change summary", "Changes"]],
+    ]);
+  }
+  if (fileName === "delivery-plan.md") {
+    return compactSections(document, [
+      ["Delivery confidence", ["Confidence", "Milestones", "Target windows", "Capacity assumptions"]],
+      ["Dependencies and risks", ["Dependencies", "Risks", "Risk register", "Escalation path"]],
+    ]);
+  }
+  if (fileName === "stakeholder-map.md") {
+    return compactSections(document, [
+      ["Stakeholder notes", [audience, titleCase(audience), "Stakeholders", "Decision owners", "Alignment risks"]],
+      ["Communication guidance", ["Communication", "Team communication", "Cadence", "Approval notes"]],
+    ]);
+  }
+  return [];
+}
+
+function compactSections(
+  document: RoadmapDigestDocument,
+  candidates: Array<[string, string[]]>,
+): RoadmapDigestSection[] {
+  const sections: RoadmapDigestSection[] = [];
+  for (const [title, headings] of candidates) {
+    const content = firstSectionSnippet(document.text, headings);
+    if (!content) continue;
+    sections.push({ title, sourcePath: document.relativePath, content });
+  }
+  return sections;
+}
+
+function firstSectionSnippet(text: string, headings: string[]): string | null {
+  const body = stripFrontmatter(text);
+  for (const heading of headings) {
+    const section = markdownSection(body, heading);
+    if (section) return section;
+  }
+  return null;
+}
+
+function markdownSection(text: string, heading: string): string | null {
+  const pattern = new RegExp(`^#{2,4}\\s+${escapeRegExp(heading)}\\s*$`, "im");
+  const match = pattern.exec(text);
+  if (!match || match.index === undefined) return null;
+  const afterHeading = text.slice(match.index + match[0].length);
+  const nextHeading = afterHeading.search(/\n#{1,4}\s+/);
+  const raw = nextHeading === -1 ? afterHeading : afterHeading.slice(0, nextHeading);
+  const lines = raw
+    .split(/\r?\n/)
+    .map((line) => line.trimEnd())
+    .filter((line) => line.trim() && !/^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test(line.trim()));
+  if (lines.length === 0) return null;
+  return lines.slice(0, 12).join("\n");
+}
+
+function stripFrontmatter(text: string): string {
+  return extractFrontmatter(text)?.body || text;
+}
+
+function normalizeAudience(audience: string): string {
+  return audience.trim().toLowerCase().replace(/[_\s]+/g, "-") || "general";
+}
+
+function safeRoadmapSlug(slug: string): string | null {
+  const normalized = slug.trim();
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(normalized)) return null;
+  return normalized;
+}
+
+function roadmapAudienceProfile(audience: string): { emphasis: string[] } {
+  const profiles: Record<string, string[]> = {
+    leadership: ["outcomes", "trade-offs", "risk", "investment", "decisions needed"],
+    "delivery-team": ["priority", "sequence", "scope boundaries", "dependencies", "open questions"],
+    team: ["priority", "sequence", "scope boundaries", "dependencies", "open questions"],
+    customers: ["approved direction", "value", "caveats", "externally safe commitments"],
+    clients: ["approved direction", "value", "caveats", "externally safe commitments"],
+    "sales-support": ["what can be said", "what must not be promised", "escalation path"],
+    sales: ["what can be said", "what must not be promised", "escalation path"],
+    support: ["what can be said", "what must not be promised", "escalation path"],
+  };
+  return { emphasis: profiles[audience] || ["what changed", "why it changed", "confidence", "decisions needed"] };
+}
+
+function titleCase(value: string): string {
+  return value
+    .split("-")
+    .filter(Boolean)
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(" ");
 }
