@@ -31,6 +31,7 @@ npm run quality:metrics -- --json
 | Metric | Meaning | Use it for | Do not use it for | Typical action |
 |---|---|---|---|---|
 | Overall workflow score | Average of each workflow's stage-aware score. | Repository-level health trend and triage. | Comparing people, teams, or velocity. | Inspect low-scoring workflow rows before acting. |
+| Maturity assessment | Evidence-backed adoption level from local workflow, metadata, traceability, testing, and QA review signals. | Choosing the next realistic process improvement. | Certification, compliance claims, or ranking teams. | Work the stated next step and preserve evidence. |
 | Stage score | Evidence expected by the workflow's current stage. Future stages are not treated as defects. | Deciding whether the active stage has enough evidence to proceed. | Claiming the whole lifecycle is complete. | Fill missing current-stage artifacts, trace links, or required metadata. |
 | Lifecycle artifacts | Completion across all canonical lifecycle artifacts. | Understanding total lifecycle progress. | Penalizing active features that have not reached later stages. | Use as progress context, not a readiness gate. |
 | Expected artifacts | Completion for artifacts expected up to the current stage. | Current-stage readiness. | Hiding skipped artifacts without rationale. | Create or complete the current stage artifact, or document an allowed skip. |
@@ -54,10 +55,26 @@ Stage score avoids false negatives while a workflow is legitimately in progress:
 
 The lifecycle artifact percentage remains visible so readers can still see total progress across all 11 stages.
 
+## Maturity model
+
+The maturity assessment is an adoption guide. It uses observable repository evidence and reports the highest level currently supported by that evidence.
+
+| Level | Name | Entry evidence | Next step |
+|---:|---|---|---|
+| 0 | Uninstrumented | No workflow-state files are present. | Create at least one workflow-state file through the relevant track. |
+| 1 | Documented | Workflow state exists and required Markdown metadata is readable. | Keep workflow state current and run metrics regularly. |
+| 2 | Managed | Stage-aware score is at least 80% and required metadata is complete. | Close blockers and clarifications, then strengthen traceability. |
+| 3 | Traceable | Stage-aware requirement-chain coverage is at least 80%. | Drive completed workflows through testing and review evidence. |
+| 4 | Verified | Completed workflows include downstream test evidence. | Add QA reviews and corrective-action evidence. |
+| 5 | Improving | Quality reviews exist and open QA checklist gaps are cleared. | Use trend snapshots or periodic reviews to watch drift. |
+
+The maturity level should always be read with its evidence and gaps. A repository can have a high maturity level and still have open clarifications or active work that needs attention.
+
 ## Guardrails
 
 - Metrics are local repository evidence only.
 - Metrics do not measure individual productivity.
 - Metrics do not replace quality gates, critic review, stage-owner judgment, or release acceptance.
 - Metrics do not grant ISO 9001 certification or external audit approval.
+- Maturity levels describe repository evidence, not team capability or individual performance.
 - Thresholds are project policy. Treat hard pass/fail thresholds as configuration, not universal truth.

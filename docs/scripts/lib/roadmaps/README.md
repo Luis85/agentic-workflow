@@ -12,6 +12,11 @@ entry_point: true
 
 # lib/roadmaps
 
+## Type Aliases
+
+- [RoadmapEvidenceArtifact](type-aliases/RoadmapEvidenceArtifact.md)
+- [RoadmapEvidenceReport](type-aliases/RoadmapEvidenceReport.md)
+
 ## Variables
 
 - [requiredRoadmapStateSections](variables/requiredRoadmapStateSections.md)
@@ -22,7 +27,11 @@ entry_point: true
 
 ## Functions
 
+- [collectRoadmapEvidence](functions/collectRoadmapEvidence.md)
+- [linkedArtifactPathsFromStrategy](functions/linkedArtifactPathsFromStrategy.md)
+- [renderRoadmapEvidence](functions/renderRoadmapEvidence.md)
 - [roadmapStateDiagnostics](functions/roadmapStateDiagnostics.md)
 - [roadmapStateFiles](functions/roadmapStateFiles.md)
+- [summarizeEvidenceArtifact](functions/summarizeEvidenceArtifact.md)
 - [validateRoadmapStateData](functions/validateRoadmapStateData.md)
 - [validateRoadmapStateFile](functions/validateRoadmapStateFile.md)

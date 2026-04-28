@@ -6,6 +6,7 @@ import {
   parseSimpleYaml,
   readText,
   relativeToRoot,
+  repoRoot,
   walkFiles,
 } from "./repo.js";
 
@@ -21,6 +22,26 @@ export const roadmapDocuments = [
   ["decision_log", "decision-log.md"],
 ] as const;
 export const requiredRoadmapStateSections = ["Roadmap", "Documents", "Review history", "Hand-off notes"];
+
+export type RoadmapEvidenceArtifact = {
+  path: string;
+  exists: boolean;
+  kind: string;
+  title: string;
+  status?: string;
+  stage?: string;
+  lastUpdated?: string;
+  summary: string;
+};
+
+export type RoadmapEvidenceReport = {
+  roadmap: string;
+  strategyPath: string;
+  generatedAt: string;
+  linkedArtifacts: string[];
+  artifacts: RoadmapEvidenceArtifact[];
+  warnings: string[];
+};
 
 /**
  * Find roadmap state files under `roadmaps/<slug>/`.
@@ -42,6 +63,185 @@ export function roadmapStateFiles(): string[] {
  */
 export function roadmapStateDiagnostics(): Diagnostic[] {
   return roadmapStateFiles().flatMap((filePath) => validateRoadmapStateFile(filePath));
+}
+
+/**
+ * Collect linked artifact evidence for a roadmap.
+ *
+ * The collector reads `roadmaps/<slug>/roadmap-strategy.md`, extracts
+ * repository-local artifact links from backticked paths, and summarizes each
+ * linked file without modifying it.
+ *
+ * @param slug - Roadmap folder slug.
+ * @returns Evidence report for the roadmap.
+ */
+export function collectRoadmapEvidence(slug: string): RoadmapEvidenceReport {
+  const strategyPath = path.join(repoRoot, "roadmaps", slug, "roadmap-strategy.md");
+  const strategyRel = relativeToRoot(strategyPath);
+  const warnings: string[] = [];
+
+  if (!fs.existsSync(strategyPath)) {
+    return {
+      roadmap: slug,
+      strategyPath: strategyRel,
+      generatedAt: new Date().toISOString(),
+      linkedArtifacts: [],
+      artifacts: [],
+      warnings: [`${strategyRel} is missing`],
+    };
+  }
+
+  const strategyText = readText(strategyPath);
+  const linkedArtifacts = linkedArtifactPathsFromStrategy(strategyText);
+  const artifacts = linkedArtifacts.map((artifactPath) => summarizeEvidenceArtifact(artifactPath));
+  for (const artifact of artifacts) {
+    if (!artifact.exists) warnings.push(`${artifact.path} is linked but missing`);
+  }
+
+  return {
+    roadmap: slug,
+    strategyPath: strategyRel,
+    generatedAt: new Date().toISOString(),
+    linkedArtifacts,
+    artifacts,
+    warnings,
+  };
+}
+
+/**
+ * Extract repository-local artifact paths from a roadmap strategy document.
+ *
+ * @param text - Roadmap strategy Markdown.
+ * @returns Unique linked artifact paths.
+ */
+export function linkedArtifactPathsFromStrategy(text: string): string[] {
+  const paths = new Set<string>();
+  for (const match of text.matchAll(/`((?:specs|projects|portfolio|discovery|quality)\/[^`]+\.md)`/g)) {
+    const safePath = safeRepositoryArtifactPath(match[1]);
+    if (safePath) paths.add(safePath);
+  }
+  return [...paths].sort();
+}
+
+/**
+ * Summarize one linked roadmap evidence artifact.
+ *
+ * @param artifactPath - Repository-relative artifact path.
+ * @returns Summary for the artifact.
+ */
+export function summarizeEvidenceArtifact(artifactPath: string): RoadmapEvidenceArtifact {
+  const safePath = safeRepositoryArtifactPath(artifactPath);
+  if (!safePath) {
+    return {
+      path: artifactPath,
+      exists: false,
+      kind: "invalid-artifact",
+      title: path.basename(artifactPath),
+      summary: "Rejected unsafe linked artifact path.",
+    };
+  }
+
+  const absolutePath = path.join(repoRoot, safePath);
+  if (!fs.existsSync(absolutePath)) {
+    return {
+      path: safePath,
+      exists: false,
+      kind: evidenceKind(safePath),
+      title: path.basename(safePath),
+      summary: "Missing linked artifact.",
+    };
+  }
+
+  const text = readText(absolutePath);
+  const frontmatter = extractFrontmatter(text);
+  const data = frontmatter ? parseSimpleYaml(frontmatter.raw) : {};
+  const title = firstHeading(text) || String(data.title || path.basename(safePath));
+  const kind = evidenceKind(safePath);
+
+  if (safePath.endsWith("workflow-state.md")) {
+    const artifacts = data.artifacts && typeof data.artifacts === "object" ? (data.artifacts as Record<string, unknown>) : {};
+    const complete = Object.values(artifacts).filter((status) => status === "complete" || status === "skipped").length;
+    const total = Object.keys(artifacts).length;
+    const stage = String(data.current_stage || "unknown");
+    const status = String(data.status || "unknown");
+    const lastUpdated = String(data.last_updated || "unknown");
+    return {
+      path: safePath,
+      exists: true,
+      kind,
+      title,
+      status,
+      stage,
+      lastUpdated,
+      summary: `${status} at ${stage}; ${complete}/${total} lifecycle artifacts complete; last updated ${lastUpdated}.`,
+    };
+  }
+
+  const status = scalarString(data.status);
+  const phase = scalarString(data.phase) || scalarString(data.current_phase);
+  const lastUpdated = scalarString(data.last_updated) || scalarString(data.date);
+  const summaryParts = [
+    status ? `status ${status}` : "",
+    phase ? `phase ${phase}` : "",
+    lastUpdated ? `updated ${lastUpdated}` : "",
+  ].filter(Boolean);
+
+  return {
+    path: safePath,
+    exists: true,
+    kind,
+    title,
+    status,
+    stage: phase,
+    lastUpdated,
+    summary: summaryParts.length > 0 ? `${summaryParts.join("; ")}.` : "Linked artifact exists; no state frontmatter summary available.",
+  };
+}
+
+/**
+ * Render a roadmap evidence report as Markdown.
+ *
+ * @param report - Evidence report.
+ * @returns Markdown report.
+ */
+export function renderRoadmapEvidence(report: RoadmapEvidenceReport): string {
+  const lines = [
+    `# Roadmap evidence - ${report.roadmap}`,
+    "",
+    `Generated: ${report.generatedAt}`,
+    `Strategy: \`${report.strategyPath}\``,
+    "",
+    "## Linked artifacts",
+    "",
+    "| Path | Kind | Status | Stage / phase | Last updated | Summary |",
+    "|---|---|---|---|---|---|",
+  ];
+
+  if (report.artifacts.length === 0) {
+    lines.push("| _None found_ |  |  |  |  |  |");
+  } else {
+    for (const artifact of report.artifacts) {
+      lines.push(
+        [
+          artifact.exists ? `\`${artifact.path}\`` : `\`${artifact.path}\` (missing)`,
+          artifact.kind,
+          artifact.status || "-",
+          artifact.stage || "-",
+          artifact.lastUpdated || "-",
+          artifact.summary,
+        ].join(" | ").replace(/^/, "| ").replace(/$/, " |"),
+      );
+    }
+  }
+
+  lines.push("", "## Warnings", "");
+  if (report.warnings.length === 0) {
+    lines.push("- None.");
+  } else {
+    lines.push(...report.warnings.map((warning) => `- ${warning}`));
+  }
+
+  return `${lines.join("\n")}\n`;
 }
 
 /**
@@ -185,6 +385,35 @@ function validateRoadmapStateSections(rel: string, body: string): Diagnostic[] {
 
 function diagnostic(pathName: string, code: string, message: string): Diagnostic {
   return { path: pathName, code, message };
+}
+
+function safeRepositoryArtifactPath(artifactPath: string): string | null {
+  const normalized = artifactPath.replace(/\\/g, "/");
+  if (!/^(specs|projects|portfolio|discovery|quality)\//.test(normalized)) return null;
+  if (path.posix.isAbsolute(normalized) || normalized.split("/").includes("..")) return null;
+  const absolutePath = path.resolve(repoRoot, ...normalized.split("/"));
+  const relative = path.relative(repoRoot, absolutePath);
+  if (relative.startsWith("..") || path.isAbsolute(relative)) return null;
+  return normalized;
+}
+
+function evidenceKind(artifactPath: string): string {
+  if (artifactPath.startsWith("specs/")) return artifactPath.endsWith("workflow-state.md") ? "feature-state" : "feature-artifact";
+  if (artifactPath.startsWith("projects/")) return artifactPath.endsWith("project-state.md") ? "project-state" : "project-artifact";
+  if (artifactPath.startsWith("portfolio/")) return "portfolio-artifact";
+  if (artifactPath.startsWith("discovery/")) return "discovery-artifact";
+  if (artifactPath.startsWith("quality/")) return "quality-artifact";
+  return "artifact";
+}
+
+function firstHeading(text: string): string | undefined {
+  const heading = text.match(/^#\s+(.+)$/m);
+  return heading?.[1]?.trim();
+}
+
+function scalarString(value: unknown): string | undefined {
+  if (value === undefined || value === null || typeof value === "object") return undefined;
+  return String(value);
 }
 
 function escapeRegExp(value: string): string {

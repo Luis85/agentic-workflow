@@ -8,7 +8,7 @@ owner: dev
 inputs:
   - TASKS-V04-001
 created: 2026-04-28
-updated: 2026-04-28
+updated: 2026-04-29
 ---
 
 # Implementation log - Version 0.4
@@ -24,6 +24,13 @@ updated: 2026-04-28
 
 - Added `docs/quality-metrics.md` with metric meaning, decision use, misuse warnings, and typical actions.
 - Linked the interpretation guide from `docs/quality-framework.md`, `scripts/README.md`, and the `quality-metrics` skill.
+
+## Task T-V04-008 - Maturity model documentation
+
+- Added a five-level evidence-backed maturity assessment to `npm run quality:metrics`.
+- Included maturity evidence, gaps, and next-step guidance in the rendered report and JSON output.
+- Documented maturity levels in `docs/quality-metrics.md`.
+- Updated the `quality-metrics` skill to report maturity without presenting it as certification or people scoring.
 
 ## Verification
 
