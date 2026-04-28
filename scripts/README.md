@@ -54,7 +54,7 @@ Check scripts use the same human output by default. Pass `--json` to any check s
 npm run check:links -- --json
 ```
 
-JSON output includes the check name, pass/fail status, and normalized diagnostics with `path`, `line`, `code`, and `message` fields when available. Markdown link diagnostics use stable codes such as `LINK_URI`, `LINK_FILE`, and `LINK_ANCHOR`.
+JSON output includes the check name, pass/fail status, and normalized diagnostics with `path`, `line`, `code`, and `message` fields when available. Markdown link diagnostics use stable codes such as `LINK_URI`, `LINK_FILE`, and `LINK_ANCHOR`; frontmatter diagnostics use stable `FM_*` codes such as `FM_MISSING`, `FM_KEY`, and `FM_ARTIFACT_STATUS`.
 
 ## Checks
 
