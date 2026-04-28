@@ -82,7 +82,7 @@ function renderAnnotatedFailure(task: NodeTask, stdout: string | Buffer | null, 
 
   console.error(`${task.name}: ${result.errors.length} error(s)`);
   for (const error of result.errors) {
-    console.error(formatGitHubAnnotation(error));
+    console.log(formatGitHubAnnotation(error));
     console.error(`- ${formatDiagnostic(error)}`);
   }
 }

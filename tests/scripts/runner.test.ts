@@ -59,7 +59,7 @@ test("runNodeTasks emits GitHub Actions annotations for JSON diagnostics", () =>
 
   assert.equal(logs.some((line) => line.includes("test: check:fixture (Fixture check)")), true);
   assert.equal(
-    errors.includes(
+    logs.includes(
       "::error file=docs/example.md,line=3,title=LINK_FILE::links to missing file ./missing.md",
     ),
     true,
