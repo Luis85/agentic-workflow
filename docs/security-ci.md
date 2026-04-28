@@ -70,7 +70,7 @@ Pinning to SHA is a hard requirement enforced by zizmor's `unpinned-uses` rule. 
 2. Update the `@<sha>` and the trailing `# <version>` comment in the same edit.
 3. Verify the workflow still parses (`actionlint`) and is happy with zizmor.
 
-Configuring Dependabot to bump SHAs automatically (`package-ecosystem: github-actions`) is a follow-up.
+SHA bumps are automated by Dependabot — see [`ci-automation.md`](ci-automation.md#dependabot-policy).
 
 ## Adopting in a downstream project
 
