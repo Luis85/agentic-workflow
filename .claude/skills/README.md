@@ -51,6 +51,7 @@ Skills MAY include supporting files (templates, scripts, fixtures) alongside `SK
 | [`specorator-improvement/`](specorator-improvement/SKILL.md) | "improve Specorator", "add script", "add tooling", "add workflow", "quality drift review" | Guides improvements to the template itself across scripts, tooling, workflows, docs, agents, skills, generated references, verification, and PR delivery. |
 | [`project-scaffolding/`](project-scaffolding/SKILL.md) | "scaffold this project", "seed from docs", "fresh install with existing documentation", "guided setup" | Drives the source-led Project Scaffolding Track. Inventories provided folders or Markdown files, extracts evidence-backed context, assembles a starter pack, and routes to the right downstream track. |
 | [`discovery-sprint/`](discovery-sprint/SKILL.md) | "design sprint", "ideation", "brainstorm new product ideas", "blank page", "discovery sprint" | Drives the 5-phase Discovery Track (Frame → Diverge → Converge → Prototype → Validate → Handoff) conversationally. Dispatches the `facilitator` and 6 specialist consults. Output: `chosen-brief.md` that feeds `/spec:idea`. **Skip when a brief already exists — go to `orchestrate`.** |
+| [`roadmap-management/`](roadmap-management/SKILL.md) | "roadmap", "product roadmap", "project roadmap", "stakeholder update", "communicate roadmap", "align the team" | Drives the Roadmap Management Track. Maintains outcome roadmaps, delivery-plan signals, stakeholder maps, communication logs, and roadmap decisions. |
 
 ### Practice skills (used by stage agents)
 
@@ -106,6 +107,7 @@ All skills write to the same sink documented in [`docs/sink.md`](../../docs/sink
 
 - **Workflow-scoped artifacts** — `specs/<slug>/*.md` (managed by `/spec:*` commands).
 - **Product page** — `sites/index.html` and supporting `sites/` assets (managed by `product-page`).
+- **Roadmaps** — `roadmaps/<slug>/roadmap-state.md`, `roadmap-strategy.md`, `roadmap-board.md`, `delivery-plan.md`, `stakeholder-map.md`, `communication-log.md`, and `decision-log.md` (managed by `roadmap-management`).
 - **Cross-cutting artifacts** — `docs/adr/`, `docs/CONTEXT.md`, `docs/glossary/<slug>.md` (one file per term, per [ADR-0010](../../docs/adr/0010-shard-glossary-into-one-file-per-term.md); legacy `docs/UBIQUITOUS_LANGUAGE.md` is deprecated).
 - **Steering** — `docs/steering/*.md` (human-curated).
 

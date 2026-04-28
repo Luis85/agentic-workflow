@@ -27,6 +27,13 @@ Blank artifacts for each workflow stage. Copy into `specs/<feature>/<artifact>.m
 | [`traceability-template.md`](traceability-template.md) | 9 — Review | `traceability.md` (RTM) |
 | [`workflow-state-template.md`](workflow-state-template.md) | (every stage) | `workflow-state.md` |
 | [`checklist-template.md`](checklist-template.md) | (any gate) | `checklists/<name>.md` |
+| [`roadmap-state-template.md`](roadmap-state-template.md) | Roadmap Management Track | `roadmap-state.md` |
+| [`roadmap-strategy-template.md`](roadmap-strategy-template.md) | Roadmap Management Track | `roadmap-strategy.md` |
+| [`roadmap-board-template.md`](roadmap-board-template.md) | Roadmap Management Track | `roadmap-board.md` |
+| [`roadmap-delivery-plan-template.md`](roadmap-delivery-plan-template.md) | Roadmap Management Track | `delivery-plan.md` |
+| [`roadmap-stakeholder-map-template.md`](roadmap-stakeholder-map-template.md) | Roadmap Management Track | `stakeholder-map.md` |
+| [`roadmap-communication-log-template.md`](roadmap-communication-log-template.md) | Roadmap Management Track | `communication-log.md` |
+| [`roadmap-decision-log-template.md`](roadmap-decision-log-template.md) | Roadmap Management Track | `decision-log.md` |
 
 ## Conventions
 

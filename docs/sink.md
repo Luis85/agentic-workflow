@@ -81,6 +81,15 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │       ├── weekly-log.md                    # Groups C+D weekly entries (append-only)
 │       ├── status-report.md                 # client-facing RAG snapshot (replaced each /project:report run)
 │       └── project-closure.md              # Group F: handover, satisfaction, lessons, archive
+├── roadmaps/                                # one folder per product/project roadmap (Roadmap Management Track, opt-in)
+│   └── <roadmap-slug>/
+│       ├── roadmap-state.md                 # state machine, owned by /roadmap:* commands
+│       ├── roadmap-strategy.md              # scope, audiences, outcomes, constraints, linked artifacts
+│       ├── roadmap-board.md                 # Now / Next / Later outcome roadmap
+│       ├── delivery-plan.md                 # milestones, dependencies, risks, capacity assumptions
+│       ├── stakeholder-map.md               # stakeholders, decision owners, alignment risks
+│       ├── communication-log.md             # planned and sent roadmap updates
+│       └── decision-log.md                  # priority, commitment, and communication decisions
 ├── quality/                                 # one folder per QA review (ISO 9001-aligned, opt-in)
 │   └── <quality-review-slug>/
 │       ├── quality-state.md                 # QA review state machine, owned by /quality:* commands
@@ -188,6 +197,13 @@ The root `README.md` is the public repository entry point and is exempt from thi
 | `projects/<project>/weekly-log.md` | `project-manager` | Append-only |
 | `projects/<project>/status-report.md` | `project-manager` | Replaced each `/project:report` run |
 | `projects/<project>/project-closure.md` | `project-manager` (Closure) | Frozen on client sign-off; G01 evaluations appended |
+| `roadmaps/<roadmap>/roadmap-state.md` | `/roadmap:start`, then `/roadmap:*` commands on transition | Roadmap state machine; roadmap-manager-owned |
+| `roadmaps/<roadmap>/roadmap-strategy.md` | `roadmap-manager` (Start + review) | Living — scope, audience, outcomes, constraints, linked artifacts |
+| `roadmaps/<roadmap>/roadmap-board.md` | `roadmap-manager` (Shape + review) | Living — Now / Next / Later roadmap; change summary records movements |
+| `roadmaps/<roadmap>/delivery-plan.md` | `roadmap-manager` (Shape + review) | Living — delivery confidence, dependencies, risks, milestones; does not replace `projects/` or `specs/` |
+| `roadmaps/<roadmap>/stakeholder-map.md` | `roadmap-manager` (Align + review) | Living — stakeholder needs, stance, cadence, and decision owners |
+| `roadmaps/<roadmap>/communication-log.md` | `roadmap-manager` (Align + communicate + review) | Append-oriented; sent updates are historical |
+| `roadmaps/<roadmap>/decision-log.md` | `roadmap-manager` (Communicate + review) | Append-oriented; records roadmap priority and communication decisions, not ADRs |
 | `quality/<review>/quality-state.md` | `/quality:start`, then `/quality:*` commands on transition | QA review state machine; quality-assurance skill-owned |
 | `quality/<review>/quality-plan.md` | `quality-assurance` skill | Written in Plan; defines scope, ISO 9001 alignment, checklist set, and readiness criteria |
 | `quality/<review>/checklists/*.md` | `quality-assurance` skill | Evidence-backed checklists; updated during Check, preserving gaps |
@@ -283,6 +299,14 @@ Key characteristics:
 
 See [`docs/project-track.md`](project-track.md) for the full methodology and [ADR-0008](adr/0008-add-project-manager-track.md) for the rationale.
 
+## Roadmap Management Track sub-tree
+
+When a team needs a maintained product/project roadmap, the Roadmap Management Track creates one `roadmaps/<roadmap-slug>/` folder. It connects outcome-based product direction with project-management delivery confidence, dependencies, risks, stakeholder alignment, and team communication.
+
+The track is opt-in and read-only toward `specs/`, `projects/`, `portfolio/`, and `discovery/`. Roadmap items do not become accepted requirements, project changes, or external commitments until the appropriate human gate and downstream workflow accepts them.
+
+See [`docs/roadmap-management-track.md`](roadmap-management-track.md) for the methodology and [ADR-0012](adr/0012-add-roadmap-management-track.md) for the rationale.
+
 ## Discovery Track sub-tree
 
 When a team enters the kit with a **blank page** (no brief), the Discovery Track produces `chosen-brief.md` first; that brief is then the input the analyst reads in Stage 1. The track lives at `discovery/<sprint-slug>/` parallel to `specs/`. See [`docs/discovery-track.md`](discovery-track.md) for the methodology and [ADR-0005](adr/0005-add-discovery-track-before-stage-1.md) for the rationale.
@@ -333,6 +357,7 @@ These skills append to cross-workflow files:
 - `domain-context` → `docs/CONTEXT.md` (or `CONTEXT-MAP.md` + `contexts/<name>.md`).
 - `new-glossary-entry` → `docs/glossary/<slug>.md` (via `/glossary:new`). Per [ADR-0010](adr/0010-shard-glossary-into-one-file-per-term.md), supersedes the deprecated `ubiquitous-language` → `docs/UBIQUITOUS_LANGUAGE.md` flow.
 - `quality-assurance` → `quality/<review>/quality-state.md`, `quality-plan.md`, `checklists/*.md`, `quality-review.md`, and `improvement-plan.md`.
+- `roadmap-management` → `roadmaps/<slug>/roadmap-state.md`, `roadmap-strategy.md`, `roadmap-board.md`, `delivery-plan.md`, `stakeholder-map.md`, `communication-log.md`, and `decision-log.md`.
 - `specorator-improvement` → the affected template surfaces: `scripts/`, `tests/scripts/`, `package.json`, `.github/workflows/`, `.claude/commands/`, `.claude/skills/`, `.claude/agents/`, `templates/`, `docs/`, and the owning `specs/<slug>/` artifacts.
 
 When any of these write, the active feature's `workflow-state.md` gets a dated one-line entry appended to the `## Hand-off notes` free-form section so the workflow has a paper trail. The frontmatter schema (per `templates/workflow-state-template.md`) is fixed — agents do not add new frontmatter keys.
