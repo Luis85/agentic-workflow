@@ -42,7 +42,7 @@ const ignoredDirs = new Set([
  * @returns {string} The same path using `/` separators.
  */
 export function toPosix(filePath: string): string {
-  return filePath.split(path.sep).join("/");
+  return filePath.replace(/[\\/]+/g, "/");
 }
 
 /**
