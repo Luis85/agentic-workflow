@@ -9,6 +9,13 @@ updates:
       day: monday
       time: "06:00"
       timezone: Etc/UTC
+    # Wait this many days after a release before opening a bump PR. Mitigates
+    # the "compromised release window" supply-chain risk where a hostile
+    # version is yanked within a few hours of publication.
+    cooldown:
+      default-days: 7
+      semver-major-days: 30
+      semver-minor-days: 3
     open-pull-requests-limit: 5
     commit-message:
       prefix: chore
@@ -30,6 +37,11 @@ updates:
       day: monday
       time: "06:30"
       timezone: Etc/UTC
+    # Same cooldown rationale as the github-actions block above.
+    cooldown:
+      default-days: 7
+      semver-major-days: 30
+      semver-minor-days: 3
     open-pull-requests-limit: 5
     versioning-strategy: increase-if-necessary
     commit-message:

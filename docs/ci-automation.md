@@ -65,6 +65,18 @@ If a real typo is rejected because of an allowlist entry, **delete the entry** r
 
 Both ecosystems run weekly Monday 06:00 / 06:30 UTC. The hour offset spreads PR creation so reviewers don't see a wall of bumps simultaneously.
 
+### Release cooldown
+
+Both blocks set `cooldown` so Dependabot waits before proposing newly published versions:
+
+| Bump type | Wait |
+| --- | --- |
+| Patch (default) | 7 days |
+| Minor | 3 days |
+| Major | 30 days |
+
+The cooldown defends against the "compromised release window" supply-chain attack, where a hostile version is published and yanked within hours of release. By the time Dependabot proposes the bump, the ecosystem has had time to react.
+
 ## Local equivalents
 
 ```bash

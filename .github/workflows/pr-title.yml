@@ -1,13 +1,24 @@
 name: pr-title
 
+# Validates the PR title against Conventional Commits. Uses pull_request
+# (not pull_request_target) because the action only reads PR metadata via
+# the GitHub API — never checks out PR content — so no elevated token is
+# needed and the dangerous-triggers risk is avoided.
 on:
-  pull_request_target:
+  pull_request:
     types:
       - opened
       - edited
       - reopened
       - synchronize
 
+# Cancel superseded runs when the PR title is edited rapidly.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+# pull-requests: read — the action queries the PR title via the API.
+# Nothing else is needed; no write surface is granted.
 permissions:
   pull-requests: read
 

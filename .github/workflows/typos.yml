@@ -6,6 +6,13 @@ on:
     branches:
       - main
 
+# Cancel superseded runs on rapid pushes — saves minutes and reflects the
+# latest tree state.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# contents: read — typos clones the tree and scans files. No write needed.
 permissions:
   contents: read
 
