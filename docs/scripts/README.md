@@ -20,7 +20,7 @@ Run a local environment and repository diagnostic:
 npm run doctor
 ```
 
-`doctor` checks Node/npm/git availability, branch and worktree state, installed dependencies, generated-block drift, and the full verify gate. It is read-only and exits non-zero if required checks fail.
+`doctor` checks Node/npm/git availability, branch and worktree state, installed dependencies, GitHub workflow readiness, generated-block drift, and the full verify gate. It is read-only and exits non-zero if required checks fail. Dependency hints prefer `npm ci` when `package-lock.json` is present so local setup matches CI.
 
 ## Verify
 
