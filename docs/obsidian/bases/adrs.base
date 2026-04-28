@@ -1,0 +1,34 @@
+filters:
+  and:
+    - 'file.path.startsWith("docs/adr/0")'
+    - 'file.ext == "md"'
+formulas:
+  id: 'note.id'
+  title: 'note.title'
+  status: 'note.status'
+  date: 'note.date'
+  supersedes: 'note.supersedes'
+  superseded_by: 'note["superseded-by"]'
+properties:
+  formula.id:
+    displayName: ADR
+  formula.title:
+    displayName: Title
+  formula.status:
+    displayName: Status
+  formula.date:
+    displayName: Date
+  formula.supersedes:
+    displayName: Supersedes
+  formula.superseded_by:
+    displayName: Superseded by
+views:
+  - type: table
+    name: ADRs
+    order:
+      - formula.id
+      - formula.title
+      - formula.status
+      - formula.date
+      - formula.supersedes
+      - formula.superseded_by
