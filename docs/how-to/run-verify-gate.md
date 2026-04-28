@@ -29,4 +29,8 @@ The final line of the verify output reads `verify: OK` (or your project's equiva
 - Reference — [`docs/verify-gate.md`](../verify-gate.md) — what each phase checks and how to extend it.
 - Reference — [`docs/branching.md`](../branching.md) — branch naming and protected branches.
 - Reference — [`docs/worktrees.md`](../worktrees.md) — running parallel branches without trashing caches.
+- How-to — [`run-doctor.md`](./run-doctor.md) — preflight check when verify reports environment errors.
 - How-to — [`add-adr.md`](./add-adr.md) — record a decision if you change what the gate checks.
+
+---
+*Last desk-checked 2026-04-28 against commit `81ef60a`.*

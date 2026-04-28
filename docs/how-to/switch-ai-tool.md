@@ -29,3 +29,6 @@ The destination tool successfully advances one stage and updates `workflow-state
 - Reference — [`AGENTS.md`](../../AGENTS.md) — cross-tool root context every supported tool reads.
 - Reference — [`.codex/`](../../.codex/) — Codex-specific instructions.
 - Explanation — [`docs/specorator.md`](../specorator.md) — why the workflow is tool-agnostic.
+
+---
+*Last desk-checked 2026-04-28 against commit `81ef60a`.*

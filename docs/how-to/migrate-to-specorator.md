@@ -30,3 +30,6 @@
 - Reference — [`docs/specorator.md`](../specorator.md) — the workflow being adopted.
 - Explanation — [ADR-0007](../adr/0007-add-stock-taking-track-for-legacy-projects.md) — why brownfield gets its own track.
 - How-to — [`fork-and-personalize.md`](./fork-and-personalize.md), [`adapt-steering.md`](./adapt-steering.md), [`add-adr.md`](./add-adr.md).
+
+---
+*Last desk-checked 2026-04-28 against commit `81ef60a`.*

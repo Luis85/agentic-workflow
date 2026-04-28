@@ -23,7 +23,9 @@ If you are new to the project, start with the tutorial. If you already know the 
 
 Learning-oriented. You follow them step by step; you reach a known end state.
 
-- **[Drive your first feature end-to-end](./tutorials/first-feature.md)** — 60–90 minutes. Add a single term to the README glossary, walking every Specorator stage from Idea to Retrospective. The point is to internalise the lifecycle, not the change.
+- **[Drive your first feature end-to-end](./tutorials/first-feature.md)** — 60–90 minutes. Add the glossary entry `docs/glossary/tracer-bullet.md`, walking every Specorator stage from Idea to Retrospective. The point is to internalise the lifecycle, not the change.
+
+*Quadrant last reviewed: 2026-04-28.*
 
 ---
 
@@ -31,15 +33,16 @@ Learning-oriented. You follow them step by step; you reach a known end state.
 
 Task-oriented recipes — *how do I do X?* You arrive knowing the goal; you leave with the steps.
 
-The MVP set:
+Seventeen recipes are available. Four common starting points:
 
-- [How to fork and personalize the template](./how-to/fork-and-personalize.md)
-- [How to resume a paused feature](./how-to/resume-paused-feature.md)
-- [How to file a new Architecture Decision Record](./how-to/add-adr.md)
-- [How to write a requirement in EARS notation](./how-to/write-ears-requirement.md)
-- [How to run the verify gate](./how-to/run-verify-gate.md)
+- [How to fork and personalize the template](./how-to/fork-and-personalize.md) — first-clone setup.
+- [How to run the verify gate](./how-to/run-verify-gate.md) — `npm run verify` green before pushing.
+- [How to file a new Architecture Decision Record](./how-to/add-adr.md) — capture an irreversible decision.
+- [How to resume a paused feature](./how-to/resume-paused-feature.md) — pick up an in-progress feature at the right stage.
 
-For the planned recipes (🚧) and the recipe template, see the [how-to index](./how-to/README.md).
+For the full set grouped by intent (Onboarding / Day-to-day / Quality and release / Tooling and extensibility), see the [how-to index](./how-to/README.md).
+
+*Quadrant last reviewed: 2026-04-28.*
 
 ### Operational runbooks
 
@@ -65,11 +68,16 @@ Look-it-up, normative. Authoritative; not narrative.
 
 ### Reference + How-to (dual-purpose)
 
-These three are policy on one read, procedure on another:
+These three docs answer two questions side-by-side: *what is the rule?* (Reference) and *how do I follow it?* (How-to). Read the Reference first when you want to know the contract; read the How-to first when you want to do the task.
 
-- [`verify-gate.md`](./verify-gate.md) — *policy* lives here; *procedure* is in [`how-to/run-verify-gate.md`](./how-to/run-verify-gate.md).
-- [`branching.md`](./branching.md) — *policy* lives here; *procedure* (when relevant) is in the resume / verify recipes.
-- [`worktrees.md`](./worktrees.md) — *policy* lives here; *procedure* is in the resume recipe.
+| Topic | Reference (the rule) | How-to (the procedure) |
+|---|---|---|
+| Pre-PR gate | [`verify-gate.md`](./verify-gate.md) | [`how-to/run-verify-gate.md`](./how-to/run-verify-gate.md) |
+| Branch shapes and prefixes | [`branching.md`](./branching.md) | [`how-to/open-pr.md`](./how-to/open-pr.md) |
+| Worktree lifecycle | [`worktrees.md`](./worktrees.md) | [`how-to/resume-paused-feature.md`](./how-to/resume-paused-feature.md), [`how-to/open-pr.md`](./how-to/open-pr.md) |
+| Doctor preflight | [`scripts/doctor/`](./scripts/doctor/) | [`how-to/run-doctor.md`](./how-to/run-doctor.md) |
+
+*Quadrant last reviewed: 2026-04-28.*
 
 ---
 
@@ -84,6 +92,8 @@ Understanding-oriented. Background, rationale, and the *why* behind decisions.
 - [`portfolio-track.md`](./portfolio-track.md) — why portfolios sit above the Specorator lifecycle.
 - [`stock-taking-track.md`](./stock-taking-track.md) — why brownfield projects need a separate inventory step.
 - [`adr/`](./adr/) — the rationale half of each ADR file. (The index lives under Reference above.)
+
+*Quadrant last reviewed: 2026-04-28.*
 
 ---
 

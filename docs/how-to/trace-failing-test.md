@@ -16,15 +16,19 @@
 2. Open `specs/<slug>/traceability.md`. Find the row whose Test column contains your ID. Note the linked `T-<AREA>-NNN` (task) and `REQ-<AREA>-NNN` (requirement).
 3. Open the test source. Re-read the assertion. Ask: does it actually verify the requirement, or does it test something close-but-different? If close-but-different, the defect is in the **test** — fix the test.
 4. Open the code under test. Step through the assertion mentally. Does the code do what the test expects? If no, the defect is in the **code** — fix the code, leave the test.
-5. Open the originating `REQ-<AREA>-NNN` in `requirements.md`. Does the requirement actually say what the test is checking? If no, the defect is in the **requirement** — escalate per [Article IV](../../memory/constitution.md): update `requirements.md` first, then re-spec, re-task, re-implement, re-test.
-6. Document your finding in the test report's `Notes:` field for the failure, with a one-liner naming the layer.
+5. Open the originating `REQ-<AREA>-NNN` in `requirements.md`. Does the requirement actually say what the test is checking? If no, the defect is in the **requirement** — escalate per Article IV (Quality Gates) of [`memory/constitution.md`](../../memory/constitution.md): update `requirements.md` first, then re-spec, re-task, re-implement, re-test.
+6. Update the failure block in `test-report.md`. The template shape is `### TEST-<AREA>-NNN — <short title>` followed by bullets `Requirement`, `Expected`, `Actual`, `Reproduction`, `Severity` (S1–S4), `Suspected root cause`, `Owner`. Set `Suspected root cause` to one of *test layer*, *code layer*, or *requirement layer* — that is your finding.
 
 ## Verify
 
-`grep "<TEST-ID>" specs/<slug>/test-report.md` shows your finding line, and `git diff` shows the fix at exactly one layer (test, code, or requirement chain) — not all three.
+`grep -nE "TEST-[A-Z]+-[0-9]{3}|Suspected root cause" specs/<slug>/test-report.md` shows the failure heading and your updated `Suspected root cause:` line, and `git diff` shows the fix at exactly one layer (test, code, or requirement chain) — not all three.
 
 ## Related
 
+- Reference — [`templates/test-report-template.md`](../../templates/test-report-template.md) — the failure-block field list.
 - Reference — [`docs/traceability.md`](../traceability.md) — the chain of IDs.
 - Reference — [`docs/quality-framework.md`](../quality-framework.md) — gates per stage.
-- Explanation — [`memory/constitution.md`](../../memory/constitution.md) — Article IV on resolving defects at the earliest stage.
+- Explanation — [`memory/constitution.md`](../../memory/constitution.md) — Article IV (Quality Gates) on resolving defects at the earliest stage.
+
+---
+*Last desk-checked 2026-04-28 against commit `81ef60a`.*

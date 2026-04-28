@@ -29,3 +29,6 @@
 - Reference — [`docs/steering/`](../steering/) — the files an agent reads.
 - How-to — [`fork-and-personalize.md`](./fork-and-personalize.md) — first-time personalization.
 - Explanation — [`docs/specorator.md`](../specorator.md) — how steering plugs into stage agents.
+
+---
+*Last desk-checked 2026-04-28 against commit `81ef60a`.*

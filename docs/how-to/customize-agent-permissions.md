@@ -28,5 +28,8 @@ The previously-failing operation now succeeds in the agent's session, AND `npm r
 
 - Reference — [`.claude/settings.json`](../../.claude/settings.json) — permission baseline.
 - Reference — [`.claude/agents/`](../../.claude/agents/) — per-agent tool lists.
-- Explanation — [`AGENTS.md`](../../AGENTS.md) — why tool restrictions are deliberate.
+- Explanation — [`AGENTS.md`](../../AGENTS.md) — why tool restrictions are deliberate (Article VI — Agent Specialisation).
 - How-to — [`add-adr.md`](./add-adr.md) — file the ADR when loosening.
+
+---
+*Last desk-checked 2026-04-28 against commit `81ef60a`.*

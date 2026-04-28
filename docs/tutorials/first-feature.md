@@ -68,6 +68,23 @@ The first argument is the feature slug; the optional second is the area code tha
 
 **What happens:** Claude Code creates `specs/glossary-term/` and copies `templates/workflow-state-template.md` into it as `workflow-state.md`, filling `feature: glossary-term` and `area: DOCS` in the frontmatter.
 
+**Sample `workflow-state.md` — frontmatter excerpt** *(yours will look like this after Stage 0):*
+
+```yaml
+---
+feature: glossary-term
+area: DOCS
+current_stage: idea
+status: active
+last_updated: 2026-04-28
+last_agent: spec-start
+artifacts:
+  idea.md: pending
+  research.md: pending
+  …
+---
+```
+
 **If you see this, you are on track:** `ls specs/glossary-term/` shows exactly one file — `workflow-state.md`. Open it. Frontmatter has `current_stage: idea`, `status: active`, and an `artifacts:` map listing every future artifact as `pending`. Below the frontmatter is a `## Stage progress` table showing each stage with its expected artifact and status `pending`.
 
 ---
@@ -77,6 +94,31 @@ The first argument is the feature slug; the optional second is the area code tha
 **Command:** `/spec:idea`. Or in plain language: *"I want to add a glossary entry for **Tracer Bullet**, the term defined by Hunt and Thomas in *The Pragmatic Programmer*."*
 
 **What happens:** the `analyst` agent asks a few clarifying questions about the brief, then writes `specs/glossary-term/idea.md` from `templates/idea-template.md`.
+
+**Sample answers to the analyst's gate questions** *(use these verbatim; the analyst is asking what would normally be a one-paragraph brief):*
+
+- *Who's the target reader?* — *"Anyone using this template who hasn't met the term before — primarily new contributors and AI agents reading our skills."*
+- *What's the desired outcome?* — *"A canonical one-sentence definition lives at `docs/glossary/tracer-bullet.md`, linked from the related entry on Spike."*
+- *Any constraints I should respect?* — *"Markdown only. Use `templates/glossary-entry-template.md`. Keep the definition aligned with Hunt & Thomas's original."*
+- *What's out of scope?* — *"Renaming or merging existing glossary entries. Adding more than one term."*
+
+**Sample `idea.md` excerpt** *(after the analyst writes it):*
+
+```markdown
+---
+id: IDEA-DOCS-001
+stage: idea
+status: draft
+---
+
+## Problem statement
+The term *Tracer Bullet* is referenced in our `tracer-bullet` skill but has no canonical
+definition in `docs/glossary/`. Readers must infer the meaning from context.
+
+## Open questions
+- OQ-001: Should the definition follow Hunt & Thomas verbatim or be paraphrased for our context?
+- OQ-002: Which existing entries should bidirectionally link?
+```
 
 **If you see this, you are on track:** `idea.md` exists with frontmatter `id: IDEA-DOCS-001`, `stage: idea`, `status: draft`. Body has these sections: `## Problem statement`, `## Target users`, `## Desired outcome`, `## Constraints`, `## Open questions`. The Open questions section becomes the research agenda for Stage 2. `workflow-state.md`'s frontmatter has advanced to `current_stage: research` and the Stage 1 row in the progress table is now `complete`.
 
@@ -97,6 +139,24 @@ The first argument is the feature slug; the optional second is the area code tha
 **Command:** `/spec:requirements`.
 
 **What happens:** the `pm` agent writes a PRD at `requirements.md` from `templates/prd-template.md`. The document's own ID is `PRD-DOCS-001`; functional requirements inside it use **EARS notation** with stable IDs `REQ-DOCS-NNN`. For this feature you should expect one or two requirements — e.g. *"Where the `docs/glossary/` directory is read, the system shall include a `tracer-bullet.md` entry with a one-sentence canonical definition."*
+
+**Sample `requirements.md` — Functional requirements excerpt** *(showing the `### REQ-…` heading and bullet shape from `templates/prd-template.md`):*
+
+```markdown
+## Functional requirements (EARS)
+
+### REQ-DOCS-001 — Tracer Bullet glossary entry exists
+
+- **Pattern:** ubiquitous
+- **Statement:** *The system shall include a `docs/glossary/tracer-bullet.md` entry whose
+  Definition section names the term in the sense of Hunt and Thomas (1999).*
+- **Acceptance:**
+  - Given a fresh checkout
+  - When `docs/glossary/tracer-bullet.md` is read
+  - Then it parses, has `term: Tracer Bullet`, and the Definition section is non-empty
+- **Priority:** must
+- **Satisfies:** IDEA-DOCS-001
+```
 
 **If you see this, you are on track:** `requirements.md` has frontmatter `id: PRD-DOCS-001`. Body has `## Summary`, `## Goals`, `## Non-goals`, `## Personas / stakeholders`, `## Jobs to be done`, and a `## Functional requirements (EARS)` section listing at least one `REQ-DOCS-NNN` line that uses one of the EARS keywords (`When`, `Where`, `While`, `If`, the optional-feature pattern, or the ubiquitous `the system shall` form). Further sections — `## Non-functional requirements`, `## Success metrics`, `## Release criteria`, `## Open questions / clarifications`, `## Out of scope`, `## Quality gate` — round out the PRD shape. For the EARS reference, see [`docs/ears-notation.md`](../ears-notation.md).
 
@@ -129,6 +189,18 @@ The first argument is the feature slug; the optional second is the area code tha
 **Command:** `/spec:tasks`.
 
 **What happens:** the `planner` decomposes the spec into a tasks list at `tasks.md` from `templates/tasks-template.md`. Each task carries a `T-DOCS-NNN` ID, an emoji marker (🧪 test, 🔨 implementation, 📐 design/scaffolding, 📚 documentation, 🚀 release/ops), an owner from the closed set `dev | qa | sre | human`, and references at least one `REQ-DOCS-NNN`. **TDD ordering** is enforced — the test task for a requirement comes *before* the implementation task for that requirement.
+
+**Sample `tasks.md` excerpt** *(showing TDD ordering — test before implementation):*
+
+```markdown
+- **T-DOCS-001** 🧪 Write a parser test for `docs/glossary/tracer-bullet.md`
+  - Owner: qa · Estimate: S · Satisfies: REQ-DOCS-001
+  - Definition of done: failing test asserts the file's frontmatter and Definition section.
+
+- **T-DOCS-002** 🔨 Create `docs/glossary/tracer-bullet.md` from the template
+  - Owner: dev · Estimate: S · Satisfies: REQ-DOCS-001 · Depends on: T-DOCS-001
+  - Definition of done: T-DOCS-001 passes; entry's `related:` points to `spike`.
+```
 
 **If you see this, you are on track:** `tasks.md` lists at least one 🧪 test task (owner=`qa`) followed by one 🔨 implementation task (owner=`dev`). Each row has `Satisfies: REQ-DOCS-NNN`, a `Definition of done:` checkbox list, and an estimate of S or M.
 
@@ -185,7 +257,30 @@ What it would do, if you did run it: invoke the `release-manager` agent to write
 
 **What happens:** the `retrospective` agent reads every artifact in `specs/glossary-term/` and walks you through the questions. The retrospective is **mandatory**, not optional — even on a tutorial — running it once now is the easiest way to internalise that.
 
-**If you see this, you are on track:** `retrospective.md` has frontmatter `id: RETRO-DOCS-001`, `stage: learning`. Body has the sections from `templates/retrospective-template.md` filled in: `## Outcome`, `## What worked`, `## What didn't work`, `## Spec adherence`, `## Process observations`. The agent also surfaces proposed amendments — to templates, agents, or the constitution — for you to accept or reject. Even a one-line *"none — feature shipped clean"* counts as an answer.
+**Sample answers to the retrospective gate** *(short and honest beats long and performative):*
+
+- *Did we drift from spec?* — *"No. The spec named the file path, frontmatter, and Definition; the implementation matched."*
+- *What worked?* — *"TDD ordering caught a missing `aliases` field before the file was written."*
+- *What didn't?* — *"Stage 4 (Design) felt like overhead for a markdown-only change. Note for `/spec:retro` to suggest a `light` mode for trivial subjects."*
+- *Actions?* — *"None for this feature; one constitution-level note logged for review."*
+
+**Sample `retrospective.md` excerpt:**
+
+```markdown
+---
+id: RETRO-DOCS-001
+stage: learning
+status: complete
+---
+
+## Outcome
+Shipped on plan. No surprises. `docs/glossary/tracer-bullet.md` exists; cross-link added.
+
+## Lessons (one-liners worth remembering)
+- TDD on a markdown change still catches frontmatter drift.
+```
+
+**If you see this, you are on track:** `retrospective.md` has frontmatter `id: RETRO-DOCS-001`, `stage: learning`. Body has the seven sections from `templates/retrospective-template.md`: `## Outcome`, `## What worked`, `## What didn't work`, `## Spec adherence`, `## Process observations`, `## Actions` (table with `Action / Type / Owner / Due`), and `## Lessons` (one-liners). The agent also surfaces proposed amendments — to templates, agents, or the constitution — as rows in the Actions table for you to accept or reject. Even a one-line *"none — feature shipped clean"* counts as an answer.
 
 ---
 
