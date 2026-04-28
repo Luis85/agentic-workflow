@@ -37,11 +37,14 @@ Before *any* change to a file under version control:
 4. Verify, push the branch, open a PR.
 5. The maintainer (or the autonomous-merge rule per [`feedback_autonomous_merge.md`](./feedback_autonomous_merge.md)) merges — never the author from inside the same change.
 
-If you discover that work has accidentally landed on `main` locally:
+If you discover that work has accidentally landed on the integration branch locally — `main` in Shape A, `develop` in Shape B — substitute `<integration-branch>` below for whichever applies in your repo:
 
-1. Create a topic branch at HEAD: `git branch <prefix>/<slug>`.
-2. Reset `main` back to the upstream tip: `git fetch origin && git reset --hard origin/main`. This is the *only* sanctioned use of `git reset --hard` against `main` and only because the work is preserved on the new branch.
-3. Push the topic branch and open the PR there.
+1. Confirm which branch is the integration target — `git config --get init.defaultBranch` plus `cat docs/branching.md` (look for "integration branch" or the table that distinguishes Shape A from Shape B). Don't guess.
+2. From the integration branch, create a topic branch at HEAD: `git branch <prefix>/<slug>`.
+3. Reset the integration branch back to the upstream tip: `git fetch origin && git reset --hard origin/<integration-branch>`. This is the *only* sanctioned use of `git reset --hard` against an integration branch and only because the work is preserved on the new branch from step 2.
+4. Push the topic branch and open the PR there.
+
+**Never** run `git reset --hard origin/main` reflexively in a Shape B repo — `main` there is the release branch, not the integration branch, and resetting it would discard release-tagged commits that were promoted from `develop`.
 
 ## Exceptions
 
