@@ -5,6 +5,7 @@ flowchart TD
     scaffold["Project Scaffolding Track<br/>Intake -> Extract -> Assemble -> Handoff<br/>Owner: project-scaffolder<br/>Output: starter-pack.md + handoff.md"]
     stock["Stock-taking Track<br/>Scope -> Audit -> Synthesize -> Handoff<br/>Owner: legacy-auditor<br/>Output: stock-taking-inventory.md"]
     discovery["Discovery Track<br/>Frame -> Diverge -> Converge -> Prototype -> Validate -> Handoff<br/>Owners: facilitator + discovery specialists<br/>Output: chosen-brief.md"]
+    quality["Quality Assurance Track<br/>Start -> Plan -> Check -> Review -> Improve<br/>Owner: quality-assurance skill<br/>Output: quality review + improvement plan"]
 
     idea["1. Idea<br/>analyst"]
     research["2. Research<br/>analyst"]
@@ -32,6 +33,8 @@ flowchart TD
     testing --> review
     review --> release
     release --> retro
+    quality -.->|checks execution health and readiness| review
+    quality -.->|corrective actions feed learning| retro
 ```
 
 ## At each stage
@@ -77,6 +80,8 @@ Optional gates `/spec:clarify` and `/spec:analyze` may be inserted between any t
 
 Use `/scaffold:start <slug> <source>` before the other tracks when a fresh template install should be seeded from existing folders or Markdown files.
 
+Use `/quality:start <slug> [scope]` when a project, portfolio, feature, release, supplier, or internal process needs an ISO 9001-aligned quality assurance review.
+
 ## State file (`specs/<feature>/workflow-state.md`)
 
 ```yaml
@@ -119,6 +124,10 @@ Plus body sections (Skips, Blocks, Hand-off notes, Open clarifications). Canonic
 /project:change    /project:close     /project:initiate
 /project:post      /project:report    /project:start
 /project:weekly
+
+# Quality Assurance Track:
+/quality:check    /quality:improve  /quality:plan
+/quality:review   /quality:start
 
 # Sales Cycle Track:
 /sales:estimate  /sales:order     /sales:propose
