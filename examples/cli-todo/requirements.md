@@ -3,7 +3,7 @@ id: PRD-CLI-001
 title: CLI Todo App — v1
 stage: requirements
 feature: cli-todo
-status: draft
+status: complete
 owner: pm
 inputs:
   - IDEA-CLI-001

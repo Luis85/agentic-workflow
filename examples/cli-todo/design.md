@@ -3,7 +3,7 @@ id: DESIGN-CLI-001
 title: CLI Todo App — Design
 stage: design
 feature: cli-todo
-status: draft
+status: complete
 owner: architect
 collaborators:
   - ux-designer
