@@ -49,7 +49,7 @@ Reversibility note (Constitution Article IX): phase 1 is fully reversible. Remov
 ## Goals
 
 1. From `git clone` to a rendered `Specs Base` showing ≥1 row, with Bases and Canvas plugins enabled and `home.canvas` opened, in under 10 minutes — without the user manually editing any JSON, YAML, or symlinks.
-2. The repo's canonical artifacts and frontmatter schema are unchanged. Bases consume existing frontmatter; the Obsidian layer introduces no new required keys.
+2. The repo's canonical artifacts and frontmatter schema have **no required schema change**. Bases consume existing frontmatter; the Obsidian layer introduces no new required keys. Users may add optional keys via Bases' property editor — those are user-owned and ignored by agents until promoted via ADR.
 3. Per-user vault state never leaks into git.
 4. Future additions (more Bases, more Canvases, additional followup queries) ship as their own PRs without touching unrelated parts of the template.
 
@@ -119,7 +119,7 @@ No copy step. Files live where they are committed; Obsidian opens them in place.
 |---|---|---|
 | Setup guide | `docs/obsidian/README.md` | Folder entry point with required frontmatter (`title`, `folder`, `description`, `entry_point: true`). Install steps, Obsidian version pin, plugin list, opening instructions, screenshot, manual acceptance checklist (rows for the 10-minute target), link to ADR-0013. |
 | Specs Base | `docs/obsidian/bases/specs.base` | Table over `specs/*/workflow-state.md`. Columns: `feature`, `area`, `current_stage`, `status`, `last_updated`, `last_agent`. Default filter: `status == "active"`. |
-| ADRs Base | `docs/obsidian/bases/adrs.base` | Table over `docs/adr/*.md`. Columns: `id`, `title`, `status`, `date`, `supersedes`, `superseded-by`. Default sort: `id` asc. |
+| ADRs Base | `docs/obsidian/bases/adrs.base` | Table over `docs/adr/*.md`. Columns: `id`, `title`, `status`, `date`, `supersedes`, `superseded-by`. Default sort: `id` asc. **Plan-stage prerequisite:** audit existing ADR-0001…0012 frontmatter to confirm every accepted ADR carries an `id: ADR-NNNN` key (sample of ADR-0012 confirms; full audit owned by the planner before writing the Base). |
 | Glossary Base | `docs/obsidian/bases/glossary.base` | Table over `docs/glossary/*.md` per ADR-0010. Columns: `term`, `aliases`, `status`, `last-updated`, `tags`. Default sort: `term` asc. |
 | Project Followups Base | `docs/obsidian/bases/project-followups.base` | Table over `projects/*/followup-register.md`. Columns: `id`, `type`, `owner`, `status`, `due`. **Scope is explicit:** Project Manager Track only. Out of scope for phase 1: `roadmaps/<*>/decision-log.md`, `quality/<*>/improvement-plan.md`, `sales/<*>/revisions/`. Empty until Project Manager Track is in use. |
 | Home Canvas | `docs/obsidian/canvas/home.canvas` | Landing hub. Cards link to README, AGENTS, constitution, MEMORY index, sink, traceability docs, ADR index, glossary index, each Base, each track doc. |
@@ -257,7 +257,7 @@ Phase 1 has no runtime — only markdown, git, and CI. "Errors" are misuse and d
 
 | Layer | What | How |
 |---|---|---|
-| Existing frontmatter check | `docs/obsidian/README.md` validates against folder entry-point rules | `npm run check:frontmatter` (already wired). New setup guide must include `title`, `folder: docs/obsidian`, `description`, `entry_point: true`. The `bases/` and `canvas/` subdirectories ship no README and so are not flagged. |
+| Existing frontmatter check | `docs/obsidian/README.md` validates against folder entry-point rules | `npm run check:frontmatter` (already wired) must exit 0 with the new README in place. New setup guide must include `title`, `folder: docs/obsidian`, `description`, `entry_point: true`. The `bases/` and `canvas/` subdirectories ship no README and so are not flagged. Test plan must include a positive run of `npm run check:frontmatter` post-merge to prove the new README satisfies the existing checker. |
 | New CI guard | No `.obsidian/` or `.trash/` paths are tracked; shipped `.base` parses as YAML; shipped `.canvas` parses as JSON | `scripts/check-obsidian-assets.ts` + `tests/scripts/obsidian-assets.test.ts`. Wired into the verify gate via `package.json` (`check:obsidian-assets`) and `scripts/lib/tasks.ts` (`checkTasks` array). |
 | Manual acceptance | Vault opens, plugins enable, four Bases render rows, two Canvases open with resolvable links, end-to-end under 10 minutes | Checklist in `docs/obsidian/README.md`; PR description must record the time-to-first-render to confirm the goal. |
 | ADR acceptance criterion | Onboarding takes ≤10 minutes from clone to populated dashboard | Recorded in ADR-0013 consequences; revisited at next retrospective if the layer ships. |
