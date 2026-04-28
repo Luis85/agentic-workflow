@@ -48,6 +48,13 @@ Use JSON when another tool needs to consume the metrics:
 npm run quality:metrics -- --json
 ```
 
+Persist and compare trend snapshots:
+
+```bash
+npm run quality:metrics -- --save
+npm run quality:metrics -- --compare
+```
+
 Metric interpretation guidance lives in `docs/quality-metrics.md`. The stage score is stage-aware: future lifecycle evidence is not treated as a defect while a workflow is still in progress. The maturity assessment is evidence-backed adoption guidance, not certification.
 
 ## Roadmap Evidence

@@ -28,6 +28,13 @@ For machine-readable output:
 npm run quality:metrics -- --json
 ```
 
+For a trend baseline or comparison:
+
+```bash
+npm run quality:metrics -- --save
+npm run quality:metrics -- --compare
+```
+
 ## What It Measures
 
 - Workflow deliverable completion from `specs/*/workflow-state.md` and `examples/*/workflow-state.md`.
@@ -39,6 +46,7 @@ npm run quality:metrics -- --json
 - QA checklist volume and gap/nonconformity counts under `quality/`.
 - Stage-aware score so future lifecycle evidence is not treated as a defect while work is still in progress.
 - Evidence-backed maturity level with evidence, gaps, and next-step guidance.
+- Optional saved trend snapshots under `quality/metrics/` for score, maturity, blocker, clarification, frontmatter, and QA-gap deltas.
 
 ## Reporting
 
@@ -50,6 +58,7 @@ Summarize:
 - active blockers and open clarifications,
 - missing frontmatter or documentation hygiene signals,
 - QA checklist gaps and nonconformities,
+- trend deltas when `--compare` is used,
 - whether the result is a deterministic KPI snapshot or a full QA readiness review.
 
 Use `docs/quality-metrics.md` when explaining what a metric means, what action it supports, and what it must not be used to infer.

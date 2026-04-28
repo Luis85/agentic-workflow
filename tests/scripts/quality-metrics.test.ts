@@ -2,11 +2,14 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   assessMaturity,
+  compareQualityMetrics,
   collectQualityMetrics,
   completeCanonicalArtifacts,
   expectedArtifactsForStage,
   markdownTableCells,
+  qualityMetricsSnapshotPath,
   renderQualityMetrics,
+  renderQualityTrend,
   rtmLinksFromRow,
   stageTraceabilityCoverage,
   traceabilityExpectation,
@@ -102,6 +105,35 @@ test("assessMaturity distinguishes unreadable workflow states from missing workf
   assert.match(assessment.evidence.join("\n"), /1 workflow state file/);
   assert.match(assessment.gaps.join("\n"), /could not be read as workflow evidence/);
   assert.match(assessment.nextStep, /Fix workflow-state.md YAML frontmatter/);
+});
+
+test("compareQualityMetrics reports trend deltas against a baseline", () => {
+  const previous = collectQualityMetrics({ feature: "quality-metrics-reporting" });
+  previous.generatedAt = "2026-04-01T00:00:00.000Z";
+  previous.summary.overallScore = 80;
+  previous.summary.maturity.level = 3;
+  previous.signals.openClarifications = ["old clarification"];
+
+  const current = collectQualityMetrics({ feature: "quality-metrics-reporting" });
+  current.generatedAt = "2026-04-02T00:00:00.000Z";
+  current.summary.overallScore = 90;
+  current.summary.maturity.level = 4;
+  current.signals.openClarifications = [];
+
+  const trend = compareQualityMetrics(current, previous, "quality/metrics/feature-quality-metrics-reporting/baseline.json");
+  assert.equal(trend.deltas.find((delta) => delta.metric === "Overall workflow score")?.delta, 10);
+  assert.equal(trend.deltas.find((delta) => delta.metric === "Maturity level")?.delta, 1);
+  assert.match(renderQualityTrend(trend), /Quality trend/);
+  assert.match(renderQualityTrend(trend), /Overall workflow score changed by \+10.0%/);
+});
+
+test("qualityMetricsSnapshotPath uses a filesystem-safe scoped timestamp", () => {
+  const metrics = collectQualityMetrics({ feature: "quality-metrics-reporting" });
+  metrics.generatedAt = "2026-04-02T03:04:05.678Z";
+  assert.match(
+    qualityMetricsSnapshotPath(metrics).replace(/\\/g, "/"),
+    /quality\/metrics\/feature-quality-metrics-reporting\/2026-04-02T03-04-05-678Z\.json$/,
+  );
 });
 
 test("rtmLinksFromRow preserves blank interior cells", () => {
