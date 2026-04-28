@@ -17,14 +17,14 @@ updated: 2026-04-28
 ### T-V04-001 — Confirm v0.3 validation baseline
 
 - **Description:** Review the completed v0.3 example and validation work; document which checks are stable enough to become CI gates.
-- **Satisfies:** REQ-V04-001, REQ-V04-002, SPEC-V04-001
+- **Satisfies:** REQ-V04-001, REQ-V04-002, REQ-V04-008, SPEC-V04-001, SPEC-V04-007
 - **Owner:** planner
 - **Estimate:** S
 
 ### T-V04-002 — Define CI gate contract
 
 - **Description:** Decide required versus advisory PR checks and document the local reproduction commands.
-- **Satisfies:** REQ-V04-001, REQ-V04-002, NFR-V04-001, SPEC-V04-001, SPEC-V04-002
+- **Satisfies:** REQ-V04-001, REQ-V04-002, REQ-V04-008, NFR-V04-001, SPEC-V04-001, SPEC-V04-002, SPEC-V04-007
 - **Depends on:** T-V04-001
 - **Owner:** architect
 - **Estimate:** S
@@ -48,7 +48,7 @@ updated: 2026-04-28
 ### T-V04-005 — Add workflow metrics report
 
 - **Description:** Add a deterministic local metrics report for workflow health, with human-readable output and JSON output if useful.
-- **Satisfies:** REQ-V04-003, REQ-V04-004, NFR-V04-002, NFR-V04-003, SPEC-V04-003
+- **Satisfies:** REQ-V04-003, REQ-V04-004, REQ-V04-009, NFR-V04-002, NFR-V04-003, NFR-V04-005, SPEC-V04-003, SPEC-V04-008
 - **Depends on:** T-V04-001
 - **Owner:** dev
 - **Estimate:** M
@@ -56,7 +56,7 @@ updated: 2026-04-28
 ### T-V04-006 — Test CI readiness and metrics behavior
 
 - **Description:** Add focused tests for CI readiness checks and metrics generation, including active, blocked, done, skipped, and open-clarification states.
-- **Satisfies:** REQ-V04-001, REQ-V04-003, REQ-V04-004, NFR-V04-001, NFR-V04-002, SPEC-V04-002, SPEC-V04-003
+- **Satisfies:** REQ-V04-001, REQ-V04-003, REQ-V04-004, REQ-V04-008, REQ-V04-009, NFR-V04-001, NFR-V04-002, NFR-V04-005, SPEC-V04-002, SPEC-V04-003, SPEC-V04-007, SPEC-V04-008
 - **Depends on:** T-V04-004, T-V04-005
 - **Owner:** qa
 - **Estimate:** M
@@ -95,7 +95,15 @@ updated: 2026-04-28
 ### T-V04-011 — Verify v0.4 release readiness
 
 - **Description:** Run targeted tests, CI-readiness checks, metrics checks, link checks, and `npm run verify`; document skipped checks and any deferred scheduled automation.
-- **Satisfies:** REQ-V04-001, REQ-V04-002, REQ-V04-003, REQ-V04-007, SPEC-V04-001, SPEC-V04-002, SPEC-V04-003, SPEC-V04-006
+- **Satisfies:** REQ-V04-001, REQ-V04-002, REQ-V04-003, REQ-V04-007, REQ-V04-008, REQ-V04-009, NFR-V04-005, SPEC-V04-001, SPEC-V04-002, SPEC-V04-003, SPEC-V04-006, SPEC-V04-007, SPEC-V04-008
 - **Depends on:** T-V04-006, T-V04-007, T-V04-008, T-V04-010
 - **Owner:** qa
+- **Estimate:** S
+
+### T-V04-012 — Record v0.5 release-quality handoff
+
+- **Description:** Document the machine-readable quality signals v0.5 should consume before GitHub Release or Package publication.
+- **Satisfies:** REQ-V04-009, NFR-V04-005, SPEC-V04-008
+- **Depends on:** T-V04-011
+- **Owner:** release-manager
 - **Estimate:** S

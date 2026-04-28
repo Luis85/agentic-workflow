@@ -21,7 +21,7 @@ v0.4 has three tracks that share evidence:
 2. **Metrics:** summarize workflow health from checked artifacts.
 3. **Maturity model:** explain progressive adoption levels using observable evidence.
 
-The tracks should be implemented in that order. CI establishes trustworthy evidence, metrics summarize it, and maturity guidance translates it into adoption steps.
+The tracks should be implemented in that order. CI establishes trustworthy evidence, metrics summarize it, and maturity guidance translates it into adoption steps. The release also needs a structured output that v0.5 can reuse for pre-publish release readiness.
 
 ## User path
 
@@ -40,6 +40,15 @@ The tracks should be implemented in that order. CI establishes trustworthy evide
 
 Initial v0.4 scope should prefer required PR gates and local/advisory metrics. Scheduled automation can be included only if it remains read-only and low-noise.
 
+## Cross-version inputs and outputs
+
+| Direction | Contract |
+|---|---|
+| From v0.3 | v0.4 consumes the required/advisory validator baseline from v0.3 release readiness notes. |
+| To v0.5 | v0.4 exposes deterministic quality signals that release readiness can check before GitHub Release or Package publication. |
+
+v0.4 should avoid reimplementing v0.3 validation checks. It should promote, report, or defer them based on the v0.3 handoff.
+
 ## Metrics model
 
 Metrics should be generated from repository artifacts, not external services:
@@ -50,6 +59,7 @@ Metrics should be generated from repository artifacts, not external services:
 - Validation failures by check.
 - Skipped artifacts by reason.
 - ADR, command, and script documentation drift when existing checks expose it.
+- Release-readiness summary fields that v0.5 can consume: required CI status, required validation status, open blockers, open clarifications, and maturity evidence.
 
 Each metric needs an interpretation note: what action it supports and what it must not be used for.
 
@@ -80,6 +90,7 @@ The maturity model should be guidance, not certification. It should avoid per-pe
 | `docs/` | Add CI gate, metrics, and maturity documentation. |
 | `README.md` | Link v0.4 plan and update roadmap status when implemented. |
 | `sites/index.html` | Review product positioning after implementation. |
+| `specs/version-0-5-plan/` | Consume structured release-quality outputs during v0.5 implementation. |
 
 ## ADR impact
 
@@ -91,3 +102,4 @@ No ADR is required for this plan. Implementation may need an ADR if v0.4 introdu
 - RISK-V04-002: Require every metric to map to a maintenance decision.
 - RISK-V04-003: Present maturity as adoption guidance, not compliance scoring.
 - RISK-V04-004: Treat v0.3 validators as inputs and avoid reimplementing them in v0.4.
+- RISK-V04-005: Keep release-readiness output structured so v0.5 does not scrape prose.

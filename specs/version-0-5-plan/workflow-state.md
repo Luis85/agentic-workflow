@@ -49,7 +49,7 @@ artifacts:
 
 ## Hand-off notes
 
-- 2026-04-28 (codex): Planned v0.5 through Stage 6. Recommended implementation order is branch strategy decision, package contract, release notes configuration, release readiness check, manual GitHub Release workflow, package publish path, operator guide, public docs/product page update, dry run, then release readiness verification.
+- 2026-04-28 (codex): Planned v0.5 through Stage 6. Recommended implementation order is branch strategy decision, package contract, release notes configuration, release readiness check that consumes v0.4 quality signals, manual GitHub Release workflow with release-candidate mode, package publish path, operator guide, public docs/product page update, dry run, then release readiness verification.
 
 ## Open clarifications
 

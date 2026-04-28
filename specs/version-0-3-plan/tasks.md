@@ -46,7 +46,7 @@ updated: 2026-04-28
 ### T-V03-005 — Add validator regression tests
 
 - **Description:** Add focused tests for artifact-state and traceability validation edge cases, including pending, skipped, active, done, missing artifact, duplicate ID, and unknown reference cases.
-- **Satisfies:** REQ-V03-002, REQ-V03-003, NFR-V03-003, SPEC-V03-002, SPEC-V03-003
+- **Satisfies:** REQ-V03-002, REQ-V03-003, NFR-V03-003, NFR-V03-004, SPEC-V03-002, SPEC-V03-003
 - **Depends on:** T-V03-003, T-V03-004
 - **Owner:** qa
 - **Estimate:** M
@@ -70,7 +70,15 @@ updated: 2026-04-28
 ### T-V03-008 — Verify v0.3 release readiness
 
 - **Description:** Run targeted validator tests, `npm run check:links`, `npm run check:specs`, `npm run check:traceability`, and `npm run verify`; document any skipped checks or deferred v0.4 work.
-- **Satisfies:** REQ-V03-002, REQ-V03-003, REQ-V03-005, SPEC-V03-002, SPEC-V03-003, SPEC-V03-005
+- **Satisfies:** REQ-V03-002, REQ-V03-003, REQ-V03-005, REQ-V03-007, NFR-V03-004, SPEC-V03-002, SPEC-V03-003, SPEC-V03-005, SPEC-V03-006
 - **Depends on:** T-V03-005, T-V03-006, T-V03-007
 - **Owner:** qa
+- **Estimate:** S
+
+### T-V03-009 — Record v0.4 validation handoff
+
+- **Description:** Add a short handoff note that lists required validators, advisory validators, false-positive risks, and recommended v0.4 CI promotion candidates.
+- **Satisfies:** REQ-V03-007, NFR-V03-004, SPEC-V03-006
+- **Depends on:** T-V03-008
+- **Owner:** release-manager
 - **Estimate:** S

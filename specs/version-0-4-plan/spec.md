@@ -49,6 +49,18 @@ updated: 2026-04-28
 - **Behavior:** README, workflow docs, and product page positioning are reviewed after v0.4 implementation.
 - **Acceptance:** Public docs either describe CI gates, metrics, and maturity model accurately or record why they are unaffected.
 
+### SPEC-V04-007 — v0.3 baseline promotion
+
+- **Satisfies:** REQ-V04-008
+- **Behavior:** CI gate design consumes the v0.3 validation baseline and records each candidate check as required, advisory, or deferred.
+- **Acceptance:** Required CI gates have a documented v0.3 source, local reproduction command, and false-positive decision.
+
+### SPEC-V04-008 — Release-quality output
+
+- **Satisfies:** REQ-V04-009, NFR-V04-005
+- **Behavior:** Metrics or readiness output exposes machine-readable quality signals for required CI status, validation status, open blockers, open clarifications, maturity evidence, and completed examples.
+- **Acceptance:** v0.5 release readiness can consume the output without reimplementing metric collection.
+
 ## Test scenarios
 
 | ID | Requirement | Scenario | Expected result |
@@ -60,3 +72,5 @@ updated: 2026-04-28
 | TEST-V04-005 | REQ-V04-005 | Review the maturity model for a repo at each level. | Each level has criteria, evidence, and next-step guidance. |
 | TEST-V04-006 | REQ-V04-006 | Compare maturity criteria against repository evidence. | Criteria reference observable artifacts or checks. |
 | TEST-V04-007 | REQ-V04-007 | Review public docs after implementation. | README/docs/product page are updated or explicitly unaffected. |
+| TEST-V04-008 | REQ-V04-008 | Compare CI gate choices against the v0.3 validation baseline. | Every baseline check is required, advisory, or explicitly deferred. |
+| TEST-V04-009 | REQ-V04-009 | Generate release-quality output for a repository with blockers. | Output includes machine-readable blockers and validation status. |

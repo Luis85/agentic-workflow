@@ -55,6 +55,18 @@ updated: 2026-04-28
 - **Behavior:** Public docs describe how users consume stable GitHub Releases and, when enabled, GitHub Packages.
 - **Acceptance:** README, workflow docs, and product page language are accurate after v0.5 implementation.
 
+### SPEC-V05-008 — v0.4 quality gate consumption
+
+- **Satisfies:** REQ-V05-010
+- **Behavior:** Release readiness consumes v0.4 quality signals for required CI status, validation status, open blockers, open clarifications, and maturity evidence before publish.
+- **Acceptance:** Publish cannot proceed unless quality signals are green or the human release operator records an explicit waiver.
+
+### SPEC-V05-009 — Release candidate dry run
+
+- **Satisfies:** REQ-V05-011, NFR-V05-005
+- **Behavior:** The release workflow supports dry-run and draft/pre-release candidate paths before stable release and package publication.
+- **Acceptance:** Maintainers can validate release inputs and candidate output without publishing a stable package.
+
 ## Test scenarios
 
 | ID | Requirement | Scenario | Expected result |
@@ -68,3 +80,5 @@ updated: 2026-04-28
 | TEST-V05-007 | REQ-V05-007 | Run release readiness with mismatched version metadata. | Check fails with stable diagnostics. |
 | TEST-V05-008 | REQ-V05-008 | Follow the operator guide for a dry run. | Maintainer reaches a dry-run result without publishing. |
 | TEST-V05-009 | REQ-V05-009 | Review public docs after implementation. | Release and package distribution language is current. |
+| TEST-V05-010 | REQ-V05-010 | Run publish readiness with failed v0.4 quality signals. | Publish is blocked or requires an explicit operator waiver. |
+| TEST-V05-011 | REQ-V05-011 | Run release candidate mode before stable publish. | Candidate can be validated without publishing a stable package. |

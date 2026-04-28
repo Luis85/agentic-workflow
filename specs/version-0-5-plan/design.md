@@ -22,6 +22,8 @@ v0.5 has four connected tracks:
 3. **GitHub Packages workflow:** publish an accepted package type from release authority only.
 4. **Operator documentation:** give maintainers a dry-run, publish, rollback, and recovery playbook.
 
+v0.5 consumes v0.4 quality signals before publishing anything. Release automation should validate release metadata itself, but it should not duplicate CI, metrics, or maturity evidence collection from v0.4.
+
 ## Recommended branch model
 
 Start by documenting both paths, then choose one before implementation:
@@ -39,9 +41,19 @@ For v0.5 planning, Shape A plus an explicit `release/vX.Y.Z` branch is the lower
 2. Release readiness check validates version, changelog, lifecycle release notes, package metadata, and workflow permissions.
 3. PR review and verify pass.
 4. Maintainer merges or promotes the release commit to the release source branch.
-5. Maintainer manually starts a GitHub Actions release workflow with version, tag, draft/pre-release flag, and package publish flag.
-6. Workflow creates or updates the GitHub Release, attaches assets when present, and publishes package only if authorized.
-7. Release notes and post-release cleanup record the result.
+5. Release readiness check consumes v0.4 quality signals and v0.5 release metadata checks.
+6. Maintainer manually starts a GitHub Actions release workflow with version, tag, draft/pre-release flag, package publish flag, and authorization input.
+7. Workflow creates or updates the GitHub Release, attaches assets when present, and publishes package only if authorized.
+8. Release notes and post-release cleanup record the result.
+
+## Release candidate path
+
+The first publish path should support a release candidate before stable publication:
+
+- Dry run: validate inputs without creating shared-state artifacts.
+- Draft/pre-release: create a GitHub Release candidate and optionally skip package publish.
+- Stable release: publish only after the release candidate and v0.4 quality signals are accepted.
+- Recovery: prefer editing drafts, rerunning failed jobs, or superseding bad candidates over force-pushing tags.
 
 ## Package contract model
 
@@ -55,6 +67,7 @@ The first GitHub Package should have an explicit contract before automation exis
 | Visibility | Public/private and repository linkage. |
 | Version source | `package.json`, tag, changelog, or release manifest. |
 | Consumer promise | What downstream users can rely on and what remains template-only. |
+| Install path | The command or URL consumers use to install or fetch the package. |
 
 Given the current Node tooling, the likely first package is an npm package published to GitHub Packages after `private: true`, `name`, `publishConfig`, and files list decisions are resolved.
 
@@ -71,6 +84,7 @@ Given the current Node tooling, the likely first package is an npm package publi
 | `tests/scripts/` | Add release readiness tests. |
 | `CHANGELOG.md` | Align release entries with tags and GitHub Releases. |
 | `README.md`, `docs/specorator.md`, `sites/index.html` | Update public release and package positioning when implemented. |
+| `specs/version-0-4-plan/` | Consume quality-signal handoff from CI/metrics/maturity work. |
 
 ## Authorization boundary
 
@@ -87,3 +101,4 @@ An ADR is likely required if implementation adopts Shape B with `develop`, chang
 - RISK-V05-003: Do not introduce `develop` unless release cadence and maintainer capacity justify it.
 - RISK-V05-004: Treat lifecycle `release-notes.md` as curated input to GitHub Release notes.
 - RISK-V05-005: Add pre-publish release readiness checks before enabling publish.
+- RISK-V05-006: Use release candidates and draft releases to avoid making the first stable package publish the first end-to-end exercise.

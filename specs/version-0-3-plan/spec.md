@@ -43,6 +43,12 @@ updated: 2026-04-28
 - **Behavior:** v0.3 planning and implementation artifacts identify CI gates, metrics, and maturity model work as v0.4 deferrals.
 - **Acceptance:** v0.3 task and release notes separate shipped v0.3 work from deferred v0.4 work.
 
+### SPEC-V03-006 — Validation baseline handoff
+
+- **Satisfies:** REQ-V03-007, NFR-V03-004
+- **Behavior:** The v0.3 release readiness artifact records required checks, advisory checks, known false-positive risks, and recommended v0.4 CI promotion candidates.
+- **Acceptance:** v0.4 planning can consume the handoff without re-auditing every validator from scratch.
+
 ## Test scenarios
 
 | ID | Requirement | Scenario | Expected result |
@@ -52,3 +58,4 @@ updated: 2026-04-28
 | TEST-V03-003 | REQ-V03-003 | Run validation against an artifact that references an unknown requirement ID. | Validation fails with a stable diagnostic. |
 | TEST-V03-004 | REQ-V03-004 | Run link checks after docs updates. | README and examples links resolve. |
 | TEST-V03-005 | REQ-V03-005 | Review v0.3 tasks and release notes. | CI gates, metrics, and maturity model remain deferred. |
+| TEST-V03-006 | REQ-V03-007 | Review v0.3 release readiness notes. | Required and advisory validation checks are separated for v0.4 handoff. |

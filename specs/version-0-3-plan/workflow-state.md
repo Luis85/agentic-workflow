@@ -49,7 +49,7 @@ artifacts:
 
 ## Hand-off notes
 
-- 2026-04-28 (codex): Planned v0.3 through Stage 6. Recommended implementation order is example completion, validation hardening, validator tests, documentation, product-page review, then release readiness verification.
+- 2026-04-28 (codex): Planned v0.3 through Stage 6. Recommended implementation order is example completion, validation hardening, validator tests, documentation, product-page review, release readiness verification, then explicit v0.4 validation handoff.
 
 ## Open clarifications
 
