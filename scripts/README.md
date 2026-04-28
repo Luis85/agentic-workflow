@@ -20,6 +20,7 @@ npm run verify
 | `npm run check:adr-index` | Confirm `docs/adr/README.md` matches the ADR files. |
 | `npm run check:commands` | Confirm generated slash-command inventories are current. |
 | `npm run check:frontmatter` | Validate required frontmatter on state files, ADRs, and review artifacts. |
+| `npm run check:specs` | Validate lifecycle `workflow-state.md` files and their artifact maps. |
 
 ## Generated Repairs
 
