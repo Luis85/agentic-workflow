@@ -6,7 +6,7 @@
 
 # Variable: checkTasks
 
-> `const` **checkTasks**: [`NodeTask`](../interfaces/NodeTask.md)[]
+> `const` **checkTasks**: (\{ `command`: `string`[]; `label`: `string`; `name`: `string`; `script?`: `undefined`; \} \| \{ `command?`: `undefined`; `label`: `string`; `name`: `string`; `script`: `string`; \})[]
 
 Read-only checks executed by `npm run verify`.
 
