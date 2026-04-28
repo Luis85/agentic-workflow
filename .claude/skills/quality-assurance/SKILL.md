@@ -80,6 +80,12 @@ Report:
 - corrective actions opened,
 - remaining evidence gaps.
 
+For a deterministic KPI snapshot before or during the review, use the `quality-metrics` skill or run:
+
+```bash
+npm run quality:metrics
+```
+
 ## Do not
 
 - Do not claim ISO certification or external audit approval.

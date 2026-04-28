@@ -20,6 +20,18 @@
    - **Deterministic checks first** — schema validation, linters, tests, ID uniqueness, cross-ref resolution. Fast, free, reliable.
    - **Critic-agent review second** — judgment calls: "Is this requirement actually testable?", "Does this design honour the constitution?". Returns pass/fail + rationale.
 
+## Quality metrics snapshot
+
+Use the deterministic metrics script when a user asks for current project quality status, workflow KPI reporting, or information-system health signals:
+
+```bash
+npm run quality:metrics
+```
+
+The report summarizes workflow deliverable completion, artifact presence, required frontmatter coverage, requirement downstream coverage, test coverage, EARS usage, QA checklist gaps, blockers, and open clarifications. Scope to one feature with `npm run quality:metrics -- --feature <feature-slug>` or emit machine-readable output with `npm run quality:metrics -- --json`.
+
+The KPI snapshot is evidence for a quality review, not a replacement for the stage quality gate or critic-agent review.
+
 ## Per-stage Definition of Done
 
 ### Idea
