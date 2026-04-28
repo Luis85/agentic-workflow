@@ -2,46 +2,41 @@
 
 One command per workflow phase. Subdirectories namespace commands (`spec/specify.md` → `/spec:specify`, `discovery/frame.md` → `/discovery:frame`).
 
-## `/discovery:*` — pre-stage Discovery Track (opt-in)
+## Command inventory
 
-Run this track when the team has no brief yet — a blank page rather than a defined feature. Output is `chosen-brief.md` which seeds `/spec:idea`. See [`docs/discovery-track.md`](../../docs/discovery-track.md) and [ADR-0005](../../docs/adr/0005-add-discovery-track-before-stage-1.md).
+<!-- BEGIN GENERATED: command-inventory -->
+# Decisions:
+/adr:new
 
-| Command | Phase | Spawns agent |
-|---|---|---|
-| `/discovery:start <sprint-slug>` | bootstrap | — (scaffolds files) |
-| `/discovery:frame` | 1 — Frame | `facilitator` (consults `product-strategist`, `user-researcher`) |
-| `/discovery:diverge` | 2 — Diverge | `facilitator` (consults `divergent-thinker`, `game-designer`) |
-| `/discovery:converge` | 3 — Converge | `facilitator` (consults `critic`, `product-strategist`) |
-| `/discovery:prototype` | 4 — Prototype | `facilitator` (consults `prototyper`, `game-designer`) |
-| `/discovery:validate` | 5 — Validate | `facilitator` (consults `user-researcher`, `critic`) |
-| `/discovery:handoff` | handoff | `facilitator` (consults `product-strategist`) |
+# Discovery Track:
+/discovery:converge   /discovery:diverge    /discovery:frame
+/discovery:handoff    /discovery:prototype  /discovery:start
+/discovery:validate
 
-Conversational entry: the [`discovery-sprint`](../skills/discovery-sprint/SKILL.md) skill.
+# Portfolio Track:
+/portfolio:start  /portfolio:x      /portfolio:y
+/portfolio:z
 
-## `/spec:*` — workflow phases
+# Project Manager Track:
+/project:change    /project:close     /project:initiate
+/project:post      /project:report    /project:start
+/project:weekly
 
-| Command | Stage | Spawns agent |
-|---|---|---|
-| `/spec:start <slug>` | bootstrap | — (scaffolds files) |
-| `/spec:idea` | 1 | `analyst` |
-| `/spec:research` | 2 | `analyst` |
-| `/spec:requirements` | 3 | `pm` |
-| `/spec:design` | 4 | `ux-designer`, `ui-designer`, `architect` (sequenced) |
-| `/spec:specify` | 5 | `architect` |
-| `/spec:tasks` | 6 | `planner` |
-| `/spec:implement [task-id]` | 7 | `dev` |
-| `/spec:test` | 8 | `qa` |
-| `/spec:review` | 9 | `reviewer` |
-| `/spec:release` | 10 | `release-manager` |
-| `/spec:retro` | 11 | `retrospective` |
-| `/spec:clarify` | gate | active stage's agent |
-| `/spec:analyze` | gate | — (in-command consistency checks; no subagent spawned) |
+# Sales Cycle Track:
+/sales:estimate  /sales:order     /sales:propose
+/sales:qualify   /sales:scope     /sales:start
 
-## `/adr:*` — decisions
+# Lifecycle:
+/spec:analyze       /spec:clarify       /spec:design
+/spec:idea          /spec:implement     /spec:release
+/spec:requirements  /spec:research      /spec:retro
+/spec:review        /spec:specify       /spec:start
+/spec:tasks         /spec:test
 
-| Command | Purpose |
-|---|---|
-| `/adr:new "<title>"` | File a new ADR |
+# Stock-taking Track:
+/stock-taking:audit       /stock-taking:handoff     /stock-taking:scope
+/stock-taking:start       /stock-taking:synthesize
+<!-- END GENERATED: command-inventory -->
 
 ## Usage
 
