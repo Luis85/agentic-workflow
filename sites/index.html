@@ -23,7 +23,9 @@
       </a>
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="#features">Features</a>
+        <a href="#fit">Fit</a>
         <a href="#workflow">Workflow</a>
+        <a href="#repo">Repo</a>
         <a href="#start">Start</a>
         <a href="https://github.com/Luis85/agentic-workflow/blob/main/docs/specorator.md">Docs</a>
         <a href="https://github.com/Luis85/agentic-workflow">GitHub</a>
@@ -71,6 +73,33 @@
             <p class="eyebrow">The product</p>
             <h2>Specs first, code second.</h2>
             <p>Specorator turns software work into staged artifacts, specialist roles, quality gates, and traceable decisions so agents can move fast without guessing what humans meant.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section fit-section" id="fit" aria-labelledby="fit-title">
+        <div class="section-header">
+          <h2 id="fit-title">Use it when the work needs memory.</h2>
+          <p class="section-kicker">Specorator is for work where context, decisions, and review history matter more than a one-shot code answer.</p>
+        </div>
+        <div class="fit-grid">
+          <article class="fit-panel good-fit">
+            <h3>Good fit</h3>
+            <ul class="fit-list">
+              <li>Features with unclear requirements or multiple stakeholders.</li>
+              <li>Projects where AI agents need bounded roles and durable hand-offs.</li>
+              <li>Teams that want traceability from requirement to test to PR.</li>
+              <li>Long-lived products where decisions should survive the chat window.</li>
+            </ul>
+          </article>
+          <article class="fit-panel poor-fit">
+            <h3>Probably too much</h3>
+            <ul class="fit-list">
+              <li>Throwaway scripts, tiny bug fixes, or one-person spikes.</li>
+              <li>Work where the correct behavior is already fully specified elsewhere.</li>
+              <li>Teams that need only a prompt library, not a delivery workflow.</li>
+              <li>Situations where no one will maintain the specs after the first pass.</li>
+            </ul>
           </article>
         </div>
       </section>
@@ -172,6 +201,39 @@
         </div>
       </section>
 
+      <section class="section repo-section" id="repo" aria-labelledby="repo-title">
+        <div class="section-header">
+          <h2 id="repo-title">What you get in the repository.</h2>
+          <p class="section-kicker">The repo is the product: prompts, workflows, templates, checks, and examples that make agentic delivery repeatable.</p>
+        </div>
+        <div class="repo-grid" aria-label="Repository contents">
+          <article class="repo-item">
+            <code>.claude/</code>
+            <p>Claude Code agents, commands, skills, and operational prompts.</p>
+          </article>
+          <article class="repo-item">
+            <code>.codex/</code>
+            <p>Codex-specific delivery workflows for worktrees, verification, PRs, and cleanup.</p>
+          </article>
+          <article class="repo-item">
+            <code>docs/</code>
+            <p>The Specorator method, quality gates, how-to recipes, ADRs, and steering context.</p>
+          </article>
+          <article class="repo-item">
+            <code>templates/</code>
+            <p>Reusable Markdown artifact shapes for requirements, design, tasks, tests, and release.</p>
+          </article>
+          <article class="repo-item">
+            <code>specs/</code>
+            <p>Per-feature state and traceable artifacts produced as work moves through the lifecycle.</p>
+          </article>
+          <article class="repo-item">
+            <code>sites/</code>
+            <p>The public product page source, kept directly openable and deployable as static files.</p>
+          </article>
+        </div>
+      </section>
+
       <section class="section example-section" id="example" aria-labelledby="example-title">
         <div class="section-header">
           <h2 id="example-title">See the artifact chain.</h2>
@@ -184,6 +246,14 @@
           <div class="artifact-copy">
             <h3>From brief to reviewed work</h3>
             <p>Each feature carries its own state file and stage artifacts so humans and agents can resume with the same source of truth.</p>
+            <div class="path-list" aria-label="Example delivery path">
+              <span>Idea</span>
+              <span>Requirements</span>
+              <span>Tasks</span>
+              <span>Tests</span>
+              <span>Review</span>
+              <span>Release</span>
+            </div>
             <ol class="artifact-list">
               <li><a href="https://github.com/Luis85/agentic-workflow/tree/main/examples/cli-todo">Example feature artifacts</a></li>
               <li><a href="https://github.com/Luis85/agentic-workflow/blob/main/docs/workflow-overview.md">Workflow cheat sheet</a></li>
@@ -223,10 +293,12 @@
         <div class="quickstart" aria-label="Quickstart commands">
           <div>
             <h3>Quickstart</h3>
-            <p>Clone, personalize the steering docs, then ask Claude Code to start a feature or run discovery.</p>
+            <p>Install dependencies, run the verify gate, then open Claude Code and start from discovery or a feature brief.</p>
           </div>
           <pre><code>git clone https://github.com/Luis85/agentic-workflow.git my-project
 cd my-project
+npm install
+npm run verify
 claude</code></pre>
         </div>
       </section>

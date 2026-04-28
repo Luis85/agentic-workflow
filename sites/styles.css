@@ -299,6 +299,47 @@ h1 {
   font-size: 18px;
 }
 
+.fit-section {
+  background: #f5f7f1;
+}
+
+.fit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.fit-panel {
+  min-height: 340px;
+  padding: clamp(24px, 3.5vw, 38px);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.fit-panel.good-fit {
+  background: var(--soft-green);
+}
+
+.fit-panel.poor-fit {
+  background: #fff5ee;
+}
+
+.fit-panel h3 {
+  margin-bottom: 18px;
+  font-size: clamp(26px, 3vw, 38px);
+  line-height: 1.08;
+}
+
+.fit-list {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted);
+  font-size: 17px;
+}
+
 .feature-grid,
 .audience-grid {
   display: grid;
@@ -384,6 +425,41 @@ h1 {
   background: var(--soft-blue);
 }
 
+.repo-section {
+  background: var(--paper);
+}
+
+.repo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.repo-item {
+  min-height: 170px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.repo-item code {
+  display: inline-flex;
+  margin-bottom: 16px;
+  padding: 6px 9px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--highlighter);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.repo-item p {
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 15px;
+}
+
 .example-section {
   background: #eef1ea;
 }
@@ -420,6 +496,28 @@ h1 {
 .artifact-copy p {
   color: var(--muted);
   font-size: 18px;
+}
+
+.path-list {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.path-list span {
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
 }
 
 .artifact-list {
@@ -528,6 +626,7 @@ h1 {
 @media (max-width: 980px) {
   .hero,
   .split,
+  .fit-grid,
   .example-grid,
   .quickstart,
   .workflow-row {
@@ -536,6 +635,7 @@ h1 {
 
   .feature-grid,
   .audience-grid,
+  .repo-grid,
   .steps {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -577,13 +677,17 @@ h1 {
   .hero-proof,
   .feature-grid,
   .audience-grid,
+  .repo-grid,
   .steps,
+  .path-list,
   .workflow-stages {
     grid-template-columns: 1fr;
   }
 
   .panel,
   .card,
+  .fit-panel,
+  .repo-item,
   .step {
     min-height: auto;
   }
