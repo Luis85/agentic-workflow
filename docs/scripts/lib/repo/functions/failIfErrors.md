@@ -14,9 +14,9 @@ Print accumulated validation errors and terminate the current Node process.
 
 ### errors
 
-`string`[]
+[`DiagnosticInput`](../../diagnostics/type-aliases/DiagnosticInput.md)[]
 
-Human-readable validation errors.
+Human-readable or structured validation errors.
 
 ### heading
 
