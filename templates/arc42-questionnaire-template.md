@@ -456,7 +456,7 @@ Scaling trigger:  _TBD_
 
 ### 12 · Glossary
 
-> _If a `docs/UBIQUITOUS_LANGUAGE.md` already covers these, link it instead of duplicating._
+> _Link to per-term files under `docs/glossary/<slug>.md` instead of duplicating definitions (per [ADR-0010](../docs/adr/0010-shard-glossary-into-one-file-per-term.md)). The legacy `docs/UBIQUITOUS_LANGUAGE.md` may also exist on older forks._
 
 #### 12.1 Domain Terms
 

@@ -209,19 +209,15 @@ This files a permanent Architecture Decision Record (ADR) in `docs/adr/`.
 
 ## Plain-English glossary
 
-New to this kind of workflow? Here's the jargon decoded:
+New to this kind of workflow? See [`docs/glossary/`](docs/glossary/) — one Markdown file per term. Good starting points:
 
-| Term | What it means in practice |
-|---|---|
-| **Spec** | A written description of exactly what to build — no ambiguity, no guessing |
-| **Quality gate** | A short checklist a stage must pass before the next one starts |
-| **Agent** | An AI assistant specialised for one role: PM, designer, developer, QA, and so on |
-| **Artifact** | A Markdown file produced at each stage (`idea.md`, `requirements.md`, `design.md`, …) |
-| **EARS** | A sentence format for requirements that makes them unambiguous and testable (e.g. *"When the user submits the form, the system shall send a confirmation email"*) |
-| **ADR** | A one-page record of an important decision — what was decided, why, and what alternatives were rejected |
-| **Traceability** | Every piece of code traces to a task, every task to a requirement, every requirement to a test |
-| **Retrospective** | A short look-back after every feature: what worked, what didn't, what to change next time |
-| **Discovery Track** | A structured ideation mini-sprint for when you have a problem but no clear solution yet |
+- [Spec](docs/glossary/spec.md) — a written description of exactly what to build.
+- [Agent](docs/glossary/agent.md) — an AI assistant specialised for one role.
+- [Artifact](docs/glossary/artifact.md) — a Markdown file produced at each stage.
+- [Quality gate](docs/glossary/quality-gate.md) — the checklist a stage must pass before the next one starts.
+- [EARS](docs/glossary/ears.md), [ADR](docs/glossary/adr.md), [Traceability](docs/glossary/traceability.md), [Retrospective](docs/glossary/retrospective.md), [Discovery Track](docs/glossary/discovery-track.md).
+
+Add a new term with `/glossary:new "<term>"`. See [ADR-0010](docs/adr/0010-shard-glossary-into-one-file-per-term.md) for the convention.
 
 ---
 

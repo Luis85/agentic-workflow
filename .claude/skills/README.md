@@ -59,7 +59,8 @@ Skills MAY include supporting files (templates, scripts, fixtures) alongside `SK
 | Skill | Triggers when… | Output |
 |---|---|---|
 | [`domain-context/`](domain-context/SKILL.md) | new domain concept; context boundary shifts; "context map" | `docs/CONTEXT.md` (lazy) |
-| [`ubiquitous-language/`](ubiquitous-language/SKILL.md) | new term coined; terminology disagreement; "glossary" | `docs/UBIQUITOUS_LANGUAGE.md` (lazy) |
+| [`new-glossary-entry/`](new-glossary-entry/SKILL.md) | new term coined; terminology disagreement; "glossary"; `/glossary:new "<term>"` | `docs/glossary/<slug>.md` (one file per term, per [ADR-0010](../../docs/adr/0010-shard-glossary-into-one-file-per-term.md)) |
+| [`ubiquitous-language/`](ubiquitous-language/SKILL.md) | **deprecated by [ADR-0010](../../docs/adr/0010-shard-glossary-into-one-file-per-term.md)** — kept for forks on earlier template versions | `docs/UBIQUITOUS_LANGUAGE.md` (frozen for new content) |
 
 ### Operational skills (deterministic procedures)
 
@@ -93,7 +94,7 @@ Stage agents pull a practice skill into their context by referencing it in their
 All skills write to the same sink documented in [`docs/sink.md`](../../docs/sink.md):
 
 - **Workflow-scoped artifacts** — `specs/<slug>/*.md` (managed by `/spec:*` commands).
-- **Cross-cutting artifacts** — `docs/adr/`, `docs/CONTEXT.md`, `docs/UBIQUITOUS_LANGUAGE.md` (lazy, additive).
+- **Cross-cutting artifacts** — `docs/adr/`, `docs/CONTEXT.md`, `docs/glossary/<slug>.md` (one file per term, per [ADR-0010](../../docs/adr/0010-shard-glossary-into-one-file-per-term.md); legacy `docs/UBIQUITOUS_LANGUAGE.md` is deprecated).
 - **Steering** — `docs/steering/*.md` (human-curated).
 
 The orchestrate skill never invents new sink locations. Practice and operational skills only write to the locations their `SKILL.md` declares.

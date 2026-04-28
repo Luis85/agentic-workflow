@@ -35,7 +35,7 @@ For the dispatched task `<T-AREA-NNN>`:
    - Is there duplication? (extract)
    - Is a method too long? (split)
    - Is a module too shallow? (deepen — push more behavior behind a smaller interface)
-   - Is naming honest? (rename to match `docs/UBIQUITOUS_LANGUAGE.md`)
+   - Is naming honest? (rename to match the canonical term in `docs/glossary/<slug>.md`)
    - Is there feature envy / primitive obsession?
 2. Make at most **one** refactor per cycle. Run the suite after each change.
 3. If no refactor needed, say so explicitly and move on. Don't manufacture refactors.

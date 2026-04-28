@@ -34,7 +34,7 @@ Read upstream **before asking the user anything**. Many answers are already sett
 
 - `specs/<slug>/idea.md`, `research.md`, `requirements.md`
 - `docs/steering/product.md`, `docs/steering/tech.md`, `docs/steering/operations.md`, `docs/steering/quality.md`
-- `docs/CONTEXT.md`, `docs/UBIQUITOUS_LANGUAGE.md` (if present)
+- `docs/CONTEXT.md`, `docs/glossary/*.md` (per [ADR-0010](../../../docs/adr/0010-shard-glossary-into-one-file-per-term.md); legacy `docs/UBIQUITOUS_LANGUAGE.md` if present)
 - `docs/adr/` — existing decisions you must respect
 
 Copy `templates/arc42-questionnaire-template.md` to `specs/<slug>/arc42-questionnaire.md` and pre-fill every cell you can from those sources. Leave `_TBD_` only where upstream is genuinely silent. Confirm with the user: "Pre-filled N of M sections from upstream. Walking the remainder now — one section at a time."
@@ -52,7 +52,7 @@ Use the `grill` skill semantics: one question per turn, always with a recommende
 6. **§8 Crosscutting** — auth, observability, error handling, data management.
 7. **§10 Quality requirements** — SLOs, performance budgets, scalability targets.
 8. **§11 Risks and intentional debt** — name three each, minimum.
-9. **§12 Glossary** — only terms not already in `docs/UBIQUITOUS_LANGUAGE.md`. Cross-link instead of duplicating.
+9. **§12 Glossary** — only terms not already in `docs/glossary/`. Cross-link to the per-term file instead of duplicating. (Per [ADR-0010](../../../docs/adr/0010-shard-glossary-into-one-file-per-term.md); legacy `docs/UBIQUITOUS_LANGUAGE.md` may also exist on older forks.)
 10. **Part II — 12-Factor readiness** — mark each factor `Ready` / `Partial` / `Gap`. Every `Partial` or `Gap` becomes a §9.2 row or a §11.2 row.
 
 When a question is fully answered upstream, **state the answer** and confirm with the user — don't ask blind. When the user picks a non-default, capture the rejected alternatives in the same cell so §9 doesn't lose the trade-off context.
@@ -109,5 +109,5 @@ Keep it under 10 lines.
 
 - Do not run after `/spec:design` — the architect has already locked Part C and re-running creates drift.
 - Do not skip Step 4. A questionnaire with `_TBD_` cells and no §9.2 entries is not done; it is hidden tech debt.
-- Do not duplicate domain glossary terms already in `docs/UBIQUITOUS_LANGUAGE.md`. Link.
+- Do not duplicate domain glossary terms already in `docs/glossary/`. Link to the per-term file. (Per [ADR-0010](../../../docs/adr/0010-shard-glossary-into-one-file-per-term.md); legacy `docs/UBIQUITOUS_LANGUAGE.md` may also exist on older forks.)
 - Do not call `/adr:new` — slash commands are not invoked from inside skills. File ADRs directly via the procedure in Step 3.

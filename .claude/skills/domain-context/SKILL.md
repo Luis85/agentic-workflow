@@ -50,7 +50,7 @@ Bulleted list. Who uses it, what they're trying to do, what success looks like.
 
 ## Core concepts
 
-Short glossary of the load-bearing nouns. **Bold** the term, then a one-line definition. Cross-link to `UBIQUITOUS_LANGUAGE.md` for fuller definitions.
+Short glossary of the load-bearing nouns. **Bold** the term, then a one-line definition. Cross-link to the per-term files in [`docs/glossary/`](../../../docs/glossary/) for fuller definitions.
 
 ## Invariants
 
@@ -91,7 +91,7 @@ Run a `grill` session focused on the current state of `CONTEXT.md`:
 - **Lazy creation.** Don't pre-scaffold `docs/CONTEXT.md`. Wait until something needs to land in it.
 - **Additive updates.** Don't rewrite history; document changes in workflows or ADRs.
 - **Plain language.** Avoid framework names, design patterns, or implementation details. The map is about the *domain*, not the system that serves it.
-- **One source of truth.** If a concept appears here and in `UBIQUITOUS_LANGUAGE.md`, the glossary is authoritative for definitions; CONTEXT.md cross-links and uses the term.
+- **One source of truth.** If a concept appears here and in [`docs/glossary/`](../../../docs/glossary/), the glossary is authoritative for definitions; CONTEXT.md cross-links and uses the term. Per [ADR-0010](../../../docs/adr/0010-shard-glossary-into-one-file-per-term.md) the glossary is one file per term.
 - **Don't dump.** A 5-page CONTEXT.md is a sign the domain isn't actually understood. Keep it ≤2 pages.
 
 ## Relationship to steering files
