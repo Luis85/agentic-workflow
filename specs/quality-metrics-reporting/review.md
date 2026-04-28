@@ -28,3 +28,9 @@ Pass.
 
 - `npm run quality:metrics -- --feature=quality-assurance-workflow`
 - `npm run verify`
+
+## Review feedback follow-up
+
+- Addressed RTM parsing feedback by preserving empty table cells before extracting links.
+- Addressed artifact completion feedback by counting only canonical workflow artifacts.
+- Added regression tests for both fixes.

@@ -16,9 +16,13 @@ entry_point: true
 
 - [QualityMetricOptions](type-aliases/QualityMetricOptions.md)
 - [QualityMetrics](type-aliases/QualityMetrics.md)
+- [WorkflowArtifacts](type-aliases/WorkflowArtifacts.md)
 - [WorkflowMetric](type-aliases/WorkflowMetric.md)
 
 ## Functions
 
 - [collectQualityMetrics](functions/collectQualityMetrics.md)
+- [completeCanonicalArtifacts](functions/completeCanonicalArtifacts.md)
+- [markdownTableCells](functions/markdownTableCells.md)
 - [renderQualityMetrics](functions/renderQualityMetrics.md)
+- [rtmLinksFromRow](functions/rtmLinksFromRow.md)

@@ -33,3 +33,9 @@ updated: 2026-04-28
 
 - Added `tests/scripts/quality-metrics.test.ts`.
 - Verified scoped Markdown output and full repository verification.
+
+## Review follow-up
+
+- Limited artifact completion counts to canonical lifecycle artifact keys.
+- Preserved blank interior RTM columns when parsing traceability rows.
+- Added regression tests for both reviewed edge cases.

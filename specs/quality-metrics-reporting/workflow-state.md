@@ -50,6 +50,7 @@ artifacts:
 ## Hand-off notes
 
 - 2026-04-28 (codex): Added deterministic quality metrics reporting as an independent template improvement outside the v0.3 release plan.
+- 2026-04-28 (codex): Addressed PR review feedback for RTM blank-column parsing and canonical artifact completion counts.
 
 ## Open clarifications
 

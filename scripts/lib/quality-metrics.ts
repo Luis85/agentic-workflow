@@ -67,7 +67,7 @@ export type QualityMetrics = {
   };
 };
 
-type WorkflowArtifacts = Record<string, string>;
+export type WorkflowArtifacts = Record<string, string>;
 
 type IdRegistry = {
   reqs: Set<string>;
@@ -230,7 +230,7 @@ function readWorkflowMetric(statePath: string): WorkflowMetric | null {
   const artifactsWithFrontmatter = existingArtifacts.filter((artifact) =>
     Boolean(extractFrontmatter(readText(path.join(featureDir, artifact)))),
   );
-  const completeArtifacts = Object.values(artifacts).filter((status) => status === "complete" || status === "skipped");
+  const completeArtifacts = completeCanonicalArtifacts(artifacts);
   const registry = collectTraceability(featureDir);
   const requirements = [...registry.reqs];
   const requirementsWithSpec = requirements.filter((id) => (registry.specsByReq.get(id)?.size || 0) > 0);
@@ -243,7 +243,7 @@ function readWorkflowMetric(statePath: string): WorkflowMetric | null {
     path: relativeToRoot(statePath),
     status: String(state.status || "unknown"),
     currentStage: String(state.current_stage || "unknown"),
-    artifactCompletion: ratio(completeArtifacts.length, artifactNames.length),
+    artifactCompletion: ratio(completeArtifacts, artifactNames.length),
     artifactPresence: ratio(existingArtifacts.length, artifactNames.length),
     frontmatterCoverage: ratio(artifactsWithFrontmatter.length, existingArtifacts.length),
     requirementCoverage: average([
@@ -257,7 +257,7 @@ function readWorkflowMetric(statePath: string): WorkflowMetric | null {
     blockers: sectionItemCount(text, "Blocks"),
     counts: {
       artifactsExpected: artifactNames.length,
-      artifactsComplete: completeArtifacts.length,
+      artifactsComplete: completeArtifacts,
       artifactsPresent: existingArtifacts.length,
       artifactsWithFrontmatter: artifactsWithFrontmatter.length,
       requirements: requirements.length,
@@ -331,14 +331,61 @@ function collectTraceLinks(text: string, registry: IdRegistry): void {
 function collectRtmLinks(artifact: string, text: string, registry: IdRegistry): void {
   if (artifact !== "traceability.md") return;
   for (const line of text.split(/\r?\n/)) {
-    const cells = line.split("|").map((cell) => cell.trim()).filter(Boolean);
-    if (cells.length < 4 || !/^REQ-|^NFR-/.test(cells[0])) continue;
-    const reqId = cells[0];
-    registry.reqs.add(reqId);
-    addLinks(registry.specsByReq, [reqId], idsIn(cells[1]).filter((id) => id.startsWith("SPEC-")));
-    addLinks(registry.tasksByReq, [reqId], idsIn(cells[2]).filter((id) => id.startsWith("T-")));
-    addLinks(registry.testsByReq, [reqId], idsIn(cells[3]).filter((id) => id.startsWith("TEST-")));
+    const links = rtmLinksFromRow(line);
+    if (!links) continue;
+    registry.reqs.add(links.reqId);
+    addLinks(registry.specsByReq, [links.reqId], links.specIds);
+    addLinks(registry.tasksByReq, [links.reqId], links.taskIds);
+    addLinks(registry.testsByReq, [links.reqId], links.testIds);
   }
+}
+
+/**
+ * Count completed lifecycle artifacts from canonical artifact names only.
+ *
+ * @param artifacts - Workflow-state artifact status map.
+ * @returns Count of canonical artifacts marked `complete` or `skipped`.
+ */
+export function completeCanonicalArtifacts(artifacts: WorkflowArtifacts): number {
+  return canonicalArtifacts.filter((artifact) => {
+    const status = artifacts[artifact];
+    return status === "complete" || status === "skipped";
+  }).length;
+}
+
+/**
+ * Parse a Markdown table row while preserving intentionally blank interior cells.
+ *
+ * @param line - Raw Markdown table row.
+ * @returns Trimmed cell values, excluding only the border pipes.
+ */
+export function markdownTableCells(line: string): string[] {
+  const cells = line.split("|");
+  if (cells[0]?.trim() === "") cells.shift();
+  if (cells[cells.length - 1]?.trim() === "") cells.pop();
+  return cells.map((cell) => cell.trim());
+}
+
+/**
+ * Extract requirement, spec, task, and test links from one RTM table row.
+ *
+ * @param line - Raw Markdown table row from `traceability.md`.
+ * @returns Parsed row links, or null for header/separator/non-RTM rows.
+ */
+export function rtmLinksFromRow(
+  line: string,
+): { reqId: string; specIds: string[]; taskIds: string[]; testIds: string[] } | null {
+  const cells = markdownTableCells(line);
+  if (cells.length < 4 || !/^REQ-|^NFR-/.test(cells[0])) return null;
+
+  const reqId = cells[0];
+  const testCell = cells.length >= 5 ? cells[4] : cells[3];
+  return {
+    reqId,
+    specIds: idsIn(cells[1] || "").filter((id) => id.startsWith("SPEC-")),
+    taskIds: idsIn(cells[2] || "").filter((id) => id.startsWith("T-")),
+    testIds: idsIn(testCell || "").filter((id) => id.startsWith("TEST-")),
+  };
 }
 
 function collectEarsCoverage(featureDir: string): number {
