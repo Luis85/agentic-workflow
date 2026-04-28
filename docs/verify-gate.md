@@ -37,7 +37,7 @@ npm install
 npm run verify
 ```
 
-The check scripts are read-only and live in `scripts/`. `npm run verify` uses a small Node runner that stops on the first failing check and prints the exact `npm run check:*` command to rerun while iterating. The template repo currently checks Markdown links, ADR index drift, command inventory drift, frontmatter conventions, and lifecycle workflow-state consistency. Local repair helpers are intentionally separate: `npm run fix` runs all generated-block repairs, `npm run fix:adr-index` regenerates the ADR index, and `npm run fix:commands` regenerates command inventories.
+The check scripts are read-only and live in `scripts/`. `npm run verify` uses a small Node runner that stops on the first failing check and prints the exact `npm run check:*` command to rerun while iterating. The template repo currently checks Markdown links, ADR index drift, command inventory drift, frontmatter conventions, lifecycle workflow-state consistency, and traceability ID references. Local repair helpers are intentionally separate: `npm run fix` runs all generated-block repairs, `npm run fix:adr-index` regenerates the ADR index, and `npm run fix:commands` regenerates command inventories.
 
 ## Reporting
 
