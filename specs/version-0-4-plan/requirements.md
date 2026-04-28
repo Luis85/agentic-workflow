@@ -24,6 +24,7 @@ Plan v0.4 as the quality-signal release: CI quality gates, evidence-backed metri
 - Provide a small metrics report that summarizes workflow health from existing artifacts.
 - Document a maturity model for progressive adoption of Specorator.
 - Keep CI, metrics, and maturity aligned with local verification and v0.3 artifact validation.
+- Produce release-quality signals that v0.5 can use before publishing releases and packages.
 
 ## Non-goals
 
@@ -91,6 +92,22 @@ Plan v0.4 as the quality-signal release: CI quality gates, evidence-backed metri
 - **Priority:** should
 - **Satisfies:** IDEA-V04-001
 
+### REQ-V04-008 — Consume v0.3 validation baseline
+
+- **Pattern:** event-driven
+- **Statement:** When v0.3 identifies required and advisory validation checks, v0.4 shall use that baseline to choose required CI gates and advisory reports.
+- **Acceptance:** v0.4 CI gate documentation names the v0.3 baseline source and explains any check promoted, deferred, or downgraded.
+- **Priority:** must
+- **Satisfies:** RESEARCH-V04-001
+
+### REQ-V04-009 — Expose release-quality signals for v0.5
+
+- **Pattern:** ubiquitous
+- **Statement:** The repository shall provide quality signals that a later release workflow can use before publishing GitHub Releases or Packages.
+- **Acceptance:** Metrics or readiness output includes CI status, validation status, open blockers, open clarifications, and maturity level evidence in a deterministic format.
+- **Priority:** must
+- **Satisfies:** RESEARCH-V04-001
+
 ## Non-functional requirements
 
 | ID | Category | Requirement | Target |
@@ -99,12 +116,14 @@ Plan v0.4 as the quality-signal release: CI quality gates, evidence-backed metri
 | NFR-V04-002 | maintainability | Metrics and maturity logic must reuse existing parsers and workflow schema where possible. | Shared logic lives under `scripts/lib/`; tests cover non-trivial behavior. |
 | NFR-V04-003 | privacy | Metrics must stay local to the repository and avoid personal performance tracking. | No external telemetry and no per-person productivity metrics. |
 | NFR-V04-004 | usability | Maturity guidance must be actionable for small teams and solo builders. | Each level has next-step guidance and examples. |
+| NFR-V04-005 | machine readability | Release-quality signals must be usable by later automation without parsing prose. | JSON output or structured diagnostics are available for readiness checks. |
 
 ## Success metrics
 
 - Contributors can reproduce CI failures locally with documented commands.
 - Maintainers can see active, blocked, and completed workflow health without manually scanning every spec.
 - Adopters can identify a realistic next maturity step without treating the model as certification.
+- v0.5 release-readiness checks can consume v0.4 quality signals without duplicating metrics logic.
 
 ## Quality gate
 

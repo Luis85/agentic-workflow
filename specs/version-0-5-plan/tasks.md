@@ -39,7 +39,7 @@ updated: 2026-04-28
 ### T-V05-004 — Add release readiness check
 
 - **Description:** Implement a deterministic release readiness check for version, tag, changelog, lifecycle release notes, package metadata, release config, and workflow permissions.
-- **Satisfies:** REQ-V05-007, NFR-V05-003, SPEC-V05-005
+- **Satisfies:** REQ-V05-007, REQ-V05-010, NFR-V05-003, SPEC-V05-005, SPEC-V05-008
 - **Depends on:** T-V05-001, T-V05-002
 - **Owner:** dev
 - **Estimate:** M
@@ -47,7 +47,7 @@ updated: 2026-04-28
 ### T-V05-005 — Test release readiness behavior
 
 - **Description:** Add focused tests for valid releases, missing changelog entries, missing lifecycle release notes, package metadata drift, and unsafe workflow permissions.
-- **Satisfies:** REQ-V05-007, NFR-V05-003, SPEC-V05-005
+- **Satisfies:** REQ-V05-007, REQ-V05-010, NFR-V05-003, SPEC-V05-005, SPEC-V05-008
 - **Depends on:** T-V05-004
 - **Owner:** qa
 - **Estimate:** M
@@ -55,7 +55,7 @@ updated: 2026-04-28
 ### T-V05-006 — Add manual GitHub Release workflow
 
 - **Description:** Add a `workflow_dispatch` release workflow that supports dry run, draft/pre-release mode, release notes generation, and release asset attachment without package publishing by default.
-- **Satisfies:** REQ-V05-002, REQ-V05-003, REQ-V05-004, NFR-V05-001, NFR-V05-002, SPEC-V05-002, SPEC-V05-003
+- **Satisfies:** REQ-V05-002, REQ-V05-003, REQ-V05-004, REQ-V05-011, NFR-V05-001, NFR-V05-002, NFR-V05-005, SPEC-V05-002, SPEC-V05-003, SPEC-V05-009
 - **Depends on:** T-V05-003, T-V05-004
 - **Owner:** dev
 - **Estimate:** M
@@ -71,7 +71,7 @@ updated: 2026-04-28
 ### T-V05-008 — Add release operator guide
 
 - **Description:** Document dry run, authorization, publish, rollback, failed publish recovery, and post-release cleanup for maintainers.
-- **Satisfies:** REQ-V05-008, NFR-V05-004, SPEC-V05-006
+- **Satisfies:** REQ-V05-008, REQ-V05-010, REQ-V05-011, NFR-V05-004, NFR-V05-005, SPEC-V05-006, SPEC-V05-008, SPEC-V05-009
 - **Depends on:** T-V05-006, T-V05-007
 - **Owner:** release-manager
 - **Estimate:** M
@@ -87,7 +87,7 @@ updated: 2026-04-28
 ### T-V05-010 — Run release dry run
 
 - **Description:** Execute the release workflow in dry-run mode and record outputs in implementation and test artifacts without publishing a release or package.
-- **Satisfies:** REQ-V05-002, REQ-V05-003, REQ-V05-007, REQ-V05-008, SPEC-V05-002, SPEC-V05-003, SPEC-V05-005, SPEC-V05-006
+- **Satisfies:** REQ-V05-002, REQ-V05-003, REQ-V05-007, REQ-V05-008, REQ-V05-010, REQ-V05-011, NFR-V05-005, SPEC-V05-002, SPEC-V05-003, SPEC-V05-005, SPEC-V05-006, SPEC-V05-008, SPEC-V05-009
 - **Depends on:** T-V05-006, T-V05-008
 - **Owner:** qa
 - **Estimate:** S
@@ -95,7 +95,7 @@ updated: 2026-04-28
 ### T-V05-011 — Verify v0.5 release readiness
 
 - **Description:** Run release readiness checks, targeted tests, link checks, package dry-run checks, and `npm run verify`; document skipped publish checks and remaining authorization needs.
-- **Satisfies:** REQ-V05-001, REQ-V05-002, REQ-V05-006, REQ-V05-007, REQ-V05-008, REQ-V05-009, SPEC-V05-001, SPEC-V05-002, SPEC-V05-004, SPEC-V05-005, SPEC-V05-006, SPEC-V05-007
+- **Satisfies:** REQ-V05-001, REQ-V05-002, REQ-V05-006, REQ-V05-007, REQ-V05-008, REQ-V05-009, REQ-V05-010, REQ-V05-011, SPEC-V05-001, SPEC-V05-002, SPEC-V05-004, SPEC-V05-005, SPEC-V05-006, SPEC-V05-007, SPEC-V05-008, SPEC-V05-009
 - **Depends on:** T-V05-005, T-V05-009, T-V05-010
 - **Owner:** qa
 - **Estimate:** S

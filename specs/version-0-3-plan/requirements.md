@@ -23,6 +23,7 @@ Plan v0.3 as an adoption-confidence release: one complete end-to-end example plu
 - Make the lifecycle concrete with a complete, readable example.
 - Expand validation around workflow artifacts without changing the lifecycle model.
 - Keep v0.3 small enough to ship as independent PRs.
+- Produce a stable validation baseline that v0.4 can promote into CI gates.
 
 ## Non-goals
 
@@ -81,6 +82,14 @@ Plan v0.3 as an adoption-confidence release: one complete end-to-end example plu
 - **Priority:** should
 - **Satisfies:** RESEARCH-V03-001
 
+### REQ-V03-007 — Publish validation baseline for v0.4
+
+- **Pattern:** event-driven
+- **Statement:** When v0.3 implementation is ready for release, the release shall document which validation checks are required, which remain advisory, and which known false-positive risks are deferred.
+- **Acceptance:** v0.3 release notes and hand-off notes identify the stable checks v0.4 may promote into CI gates.
+- **Priority:** must
+- **Satisfies:** RESEARCH-V03-001
+
 ## Non-functional requirements
 
 | ID | Category | Requirement | Target |
@@ -88,12 +97,14 @@ Plan v0.3 as an adoption-confidence release: one complete end-to-end example plu
 | NFR-V03-001 | maintainability | Validation code must follow the existing TypeScript script conventions. | Shared logic under `scripts/lib/` when reusable; tests under `tests/scripts/` where behavior is non-trivial. |
 | NFR-V03-002 | usability | Example artifacts must stay concise and navigable for first-time readers. | Example overview explains reading order and artifact purpose. |
 | NFR-V03-003 | compatibility | v0.3 must not break active incremental specs. | Validators account for pending, in-progress, complete, skipped, blocked, active, paused, done states. |
+| NFR-V03-004 | diagnostic stability | Validation failures must be stable enough for CI promotion in v0.4. | Diagnostics include file paths, stable wording, and test coverage for expected failures. |
 
 ## Success metrics
 
 - A new reader can follow a complete lifecycle in `examples/` without opening template internals first.
 - `npm run verify` catches missing or inconsistent workflow artifacts.
 - v0.3 implementation can be split into small PRs without stacked branches.
+- v0.4 can identify a named set of v0.3 validation checks to promote into required CI.
 
 ## Quality gate
 

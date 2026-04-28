@@ -20,7 +20,7 @@ v0.3 is a release-planning concern with two implementation tracks:
 1. **Example track:** complete the worked example and make it easy to browse.
 2. **Validation track:** strengthen deterministic artifact checks and verification docs.
 
-The tracks can ship as separate PRs if each keeps docs and verification consistent.
+The tracks can ship as separate PRs if each keeps docs and verification consistent. The final v0.3 release readiness pass must name the validation baseline that v0.4 is allowed to promote into CI.
 
 ## User path
 
@@ -42,6 +42,15 @@ The tracks can ship as separate PRs if each keeps docs and verification consiste
 | `scripts/README.md`, `docs/scripts/` | Document validation commands if script API docs change. |
 | `README.md` | Link v0.3 plan and update release status when implemented. |
 | `sites/index.html` | Review for user-visible positioning drift after v0.3 implementation. |
+
+## Cross-version handoff
+
+v0.3 is the evidence foundation for v0.4:
+
+- Required validators are candidates for v0.4 PR CI gates.
+- Advisory validators remain local or report-only until their false positives are controlled.
+- Example completeness metrics become inputs for v0.4 workflow health reporting.
+- Any skipped artifact rules must be documented clearly enough for v0.4 maturity criteria.
 
 ## Validation behavior
 
@@ -69,3 +78,4 @@ No ADR is required for the plan. v0.3 should only need an ADR if implementation 
 - RISK-V03-002: Keep example prose concise and include an overview instead of repeating method docs.
 - RISK-V03-003: Name v0.4 deferrals in tasks and PR descriptions.
 - RISK-V03-004: Include a product-page review task.
+- RISK-V03-005: Prevent v0.4 from guessing the validation baseline by recording required versus advisory checks in v0.3 release notes.

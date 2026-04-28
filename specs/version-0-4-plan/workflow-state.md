@@ -49,7 +49,7 @@ artifacts:
 
 ## Hand-off notes
 
-- 2026-04-28 (codex): Planned v0.4 through Stage 6. Recommended implementation order is v0.3 validation baseline confirmation, CI gate contract, PR CI workflow, CI readiness checks, metrics report, maturity documentation, public docs/product page review, then release readiness verification.
+- 2026-04-28 (codex): Planned v0.4 through Stage 6. Recommended implementation order is v0.3 validation baseline confirmation, CI gate contract, PR CI workflow, CI readiness checks, metrics report with machine-readable release-quality output, maturity documentation, public docs/product page review, release readiness verification, then v0.5 handoff.
 - 2026-04-28 (codex): Started T-V04-005/T-V04-007 by making quality metrics stage-aware and adding metric interpretation guidance.
 
 ## Open clarifications

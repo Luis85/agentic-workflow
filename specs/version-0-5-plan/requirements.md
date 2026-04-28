@@ -25,6 +25,7 @@ Plan v0.5 as the release and distribution release: define the branching strategy
 - Define a branching and promotion strategy suitable for real releases.
 - Add pre-publish validation so versions, tags, release notes, changelog, and package metadata stay aligned.
 - Keep publish operations manually authorized and auditable.
+- Consume v0.4 quality signals before any release or package publish operation.
 
 ## Non-goals
 
@@ -108,6 +109,22 @@ Plan v0.5 as the release and distribution release: define the branching strategy
 - **Priority:** should
 - **Satisfies:** IDEA-V05-001
 
+### REQ-V05-010 — Consume v0.4 quality gates before publish
+
+- **Pattern:** unwanted behavior
+- **Statement:** When an authorized release workflow is asked to publish a GitHub Release or Package, the workflow shall require v0.4 release-quality signals to be green or explicitly waived by the human release operator.
+- **Acceptance:** Publish documentation and readiness checks require CI status, validation status, open blockers, open clarifications, and maturity evidence before publishing.
+- **Priority:** must
+- **Satisfies:** RESEARCH-V05-001
+
+### REQ-V05-011 — Support release candidate dry runs
+
+- **Pattern:** event-driven
+- **Statement:** When a maintainer prepares the first v0.5 release, the repository shall support a release-candidate dry run before stable publication.
+- **Acceptance:** The operator workflow can create or validate a draft/pre-release candidate without publishing a stable package, and records the result in release artifacts.
+- **Priority:** should
+- **Satisfies:** RESEARCH-V05-001
+
 ## Non-functional requirements
 
 | ID | Category | Requirement | Target |
@@ -116,12 +133,14 @@ Plan v0.5 as the release and distribution release: define the branching strategy
 | NFR-V05-002 | reproducibility | Release artifacts and package versions must be traceable to a tag and commit SHA. | GitHub Release, package version, changelog, and release notes point to the same version. |
 | NFR-V05-003 | maintainability | Release checks and package logic must reuse existing script and workflow conventions. | TypeScript scripts under `scripts/`; tests under `tests/scripts/`; docs generated when script APIs change. |
 | NFR-V05-004 | usability | Release docs must be runnable by a maintainer who has not authored the release. | Step-by-step operator guide with rollback and recovery sections. |
+| NFR-V05-005 | recoverability | Failed release or package publication must have a non-destructive recovery path. | Recovery docs avoid force-pushing protected branches and explain rerun, draft edit, yanking, or superseding options. |
 
 ## Success metrics
 
 - A maintainer can perform a dry-run release without publishing shared state.
 - A publish run creates a GitHub Release and GitHub Package that reference the same version and commit.
 - A failed publish has a documented recovery path that does not require force-pushing protected branches.
+- Release publish readiness can be decided from v0.4 quality signals plus v0.5 release metadata checks.
 
 ## Quality gate
 
