@@ -70,6 +70,8 @@ If resuming, instead ask: `Continue from <next stage>` (Recommended) / `Re-run <
 
 Do not ask "should I proceed?" — proceed once you have answers.
 
+If the prompt starts a new product/project or Stage 1 establishes a public-facing product, recommend `/product:page` so the public page is created or refreshed. This is a parallel product-surface upkeep step; it does not replace any `/spec:*` stage.
+
 ### Step 3 — Bootstrap (fresh start only)
 
 Invoke `/spec:start <slug> [AREA]`. This creates `specs/<slug>/` and `workflow-state.md` with all artifacts set to `pending`. Do not edit those files yourself; the slash command does it.

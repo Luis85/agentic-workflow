@@ -107,6 +107,7 @@
 - [ ] User-visible impact stated.
 - [ ] Known limitations disclosed.
 - [ ] Verification steps documented.
+- [ ] Public product page updated or explicitly marked unaffected when user-visible capabilities, positioning, onboarding, or CTAs change.
 - [ ] Rollback plan documented.
 - [ ] Observability (logs, metrics, alerts) in place.
 - [ ] Communication plan (if user-facing) ready.

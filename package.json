@@ -10,6 +10,7 @@
     "check:adr-index": "node scripts/check-adr-index.js",
     "check:commands": "node scripts/check-command-docs.js",
     "check:script-docs": "node scripts/check-script-docs.js",
+    "check:product-page": "node scripts/check-product-page.js",
     "check:frontmatter": "node scripts/check-frontmatter.js",
     "check:specs": "node scripts/check-spec-state.js",
     "check:traceability": "node scripts/check-traceability.js",

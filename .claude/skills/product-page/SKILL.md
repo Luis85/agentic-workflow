@@ -34,7 +34,16 @@ sites/assets/*                  # optional visuals and media
 3. **Create or update the page.** Include product name, value proposition, problem, target users, core features, proof or workflow visual, getting-started path, and repo/docs/license links.
 4. **Keep it maintainable.** Use plain HTML/CSS by default. Add dependencies only when the project already has a site stack or the page needs a documented capability that static files cannot provide.
 5. **Verify.** Run the project verify gate. Also check that local asset paths resolve, links are current, the page is responsive, and the hosting workflow deploys the correct folder.
-6. **Report upkeep.** In the PR summary, state whether the product page was created, updated, or intentionally unchanged and why.
+6. **Report upkeep.** In the PR summary, state whether the product page was created, updated, or intentionally unchanged and why. If unchanged, name the reason in the PR checkbox line.
+
+## Upkeep checklist
+
+- Product name and value proposition checked against README/steering.
+- Primary CTA checked.
+- User-facing claims checked against repo artifacts.
+- Local CSS and asset references checked.
+- Hosting workflow checked.
+- PR summary says `product page updated` or `product page unaffected: <reason>`.
 
 ## GitHub Pages defaults
 

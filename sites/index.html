@@ -4,12 +4,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Specorator is a spec-driven agentic development workflow that keeps humans in charge of intent while AI agents help move software through quality gates.">
+    <meta property="og:title" content="Specorator - Agentic Development Workflow">
+    <meta property="og:description" content="A spec-first workflow template for building software with humans and AI agents.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://luis85.github.io/agentic-workflow/">
+    <meta property="og:image" content="https://luis85.github.io/agentic-workflow/assets/specorator-workflow.svg">
+    <meta name="twitter:card" content="summary_large_image">
     <title>Specorator - Agentic Development Workflow</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
-      <a class="brand" href="#top" aria-label="Specorator home">
+      <a class="brand" href="#main" aria-label="Specorator home">
         <span class="brand-mark" aria-hidden="true">S</span>
         <span>Specorator</span>
       </a>
@@ -17,19 +25,20 @@
         <a href="#features">Features</a>
         <a href="#workflow">Workflow</a>
         <a href="#start">Start</a>
+        <a href="https://github.com/Luis85/agentic-workflow/blob/main/docs/specorator.md">Docs</a>
         <a href="https://github.com/Luis85/agentic-workflow">GitHub</a>
       </nav>
     </header>
 
-    <main id="top">
+    <main id="main">
       <section class="hero" aria-labelledby="hero-title">
         <div>
           <p class="eyebrow">Spec-driven software with AI agents</p>
           <h1 id="hero-title">Specorator</h1>
           <p class="hero-copy">A ready-to-use workflow template that keeps humans in charge of what to build while AI agents help with the heavy lifting of how.</p>
           <div class="hero-actions" aria-label="Primary actions">
-            <a class="button highlight" href="https://github.com/Luis85/agentic-workflow">View on GitHub</a>
-            <a class="button secondary" href="#start">Get started</a>
+            <a class="button highlight" href="https://github.com/Luis85/agentic-workflow/generate">Use this template</a>
+            <a class="button secondary" href="https://github.com/Luis85/agentic-workflow">View on GitHub</a>
           </div>
           <div class="hero-proof" aria-label="Workflow highlights">
             <span class="proof-item">
@@ -163,6 +172,27 @@
         </div>
       </section>
 
+      <section class="section example-section" id="example" aria-labelledby="example-title">
+        <div class="section-header">
+          <h2 id="example-title">See the artifact chain.</h2>
+          <p class="section-kicker">Specorator is concrete Markdown work, not a hidden process. The example tree shows how intent becomes requirements, tasks, verification, and review.</p>
+        </div>
+        <div class="example-grid">
+          <figure class="artifact-visual">
+            <img src="assets/artifact-chain.svg" alt="A Specorator artifact chain from idea through requirements, design, tasks, tests, and review.">
+          </figure>
+          <div class="artifact-copy">
+            <h3>From brief to reviewed work</h3>
+            <p>Each feature carries its own state file and stage artifacts so humans and agents can resume with the same source of truth.</p>
+            <ol class="artifact-list">
+              <li><a href="https://github.com/Luis85/agentic-workflow/tree/main/examples/cli-todo">Example feature artifacts</a></li>
+              <li><a href="https://github.com/Luis85/agentic-workflow/blob/main/docs/workflow-overview.md">Workflow cheat sheet</a></li>
+              <li><a href="https://github.com/Luis85/agentic-workflow/blob/main/docs/quality-framework.md">Quality gates</a></li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
       <section class="section dark" id="start" aria-labelledby="start-title">
         <div class="section-header">
           <h2 id="start-title">Get started in one repository.</h2>
@@ -172,7 +202,7 @@
           <article class="step">
             <span class="step-number">1</span>
             <h3>Use the template</h3>
-            <p>Clone or create a repo from <code>github.com/Luis85/agentic-workflow</code>.</p>
+            <p>Create a repository from the template, or clone it locally when you want to inspect first.</p>
           </article>
           <article class="step">
             <span class="step-number">2</span>
@@ -189,6 +219,15 @@
             <h3>Verify and PR</h3>
             <p>Keep every concern on its own branch, run <code>npm run verify</code>, and ship through review.</p>
           </article>
+        </div>
+        <div class="quickstart" aria-label="Quickstart commands">
+          <div>
+            <h3>Quickstart</h3>
+            <p>Clone, personalize the steering docs, then ask Claude Code to start a feature or run discovery.</p>
+          </div>
+          <pre><code>git clone https://github.com/Luis85/agentic-workflow.git my-project
+cd my-project
+claude</code></pre>
         </div>
       </section>
     </main>

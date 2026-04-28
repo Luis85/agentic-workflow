@@ -37,6 +37,11 @@ export const checkTasks = [
     script: "scripts/check-script-docs.js",
   },
   {
+    name: "check:product-page",
+    label: "Product page",
+    script: "scripts/check-product-page.js",
+  },
+  {
     name: "check:frontmatter",
     label: "Frontmatter conventions",
     script: "scripts/check-frontmatter.js",
