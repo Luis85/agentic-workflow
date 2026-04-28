@@ -35,7 +35,7 @@ Concretely:
 | **Tighten an existing template.** | PR under `docs(templates): …`. Describe what was missing and why the template now catches it. |
 | **Add a new template / slash command / agent role.** | Open an ADR first. The constitution makes new roles ADR‑gated. |
 | **Add a new operational bot.** | Add `agents/operational/<name>/PROMPT.md` and `README.md`. Must follow the eight‑section common shape (see `agents/operational/README.md`). |
-| **Regenerate ADR or command inventories.** | Run `npm run fix` for all generated inventories, or `npm run fix:adr-index` / `npm run fix:commands` for one surface, review the generated block, then run `npm run verify`. |
+| **Regenerate generated docs.** | Run `npm run fix` for all generated surfaces, or `npm run fix:adr-index` / `npm run fix:commands` / `npm run fix:script-docs` for one surface, review the generated output, then run `npm run verify`. |
 | **Replace a stage in the workflow.** | ADR. Stages map 1:1 to quality gates and IDs; replacing one is a constitutional‑level change. |
 | **Tweak `.claude/settings.json` defaults.** | PR. Loosening a deny rule needs an ADR; tightening one does not. |
 

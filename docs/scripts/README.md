@@ -1,3 +1,7 @@
+**agentic-workflow**
+
+***
+
 # Repository Scripts
 
 The scripts in this directory provide the template repository's local and CI integrity checks.

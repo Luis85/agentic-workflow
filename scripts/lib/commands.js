@@ -11,6 +11,20 @@ const labels = new Map([
   ["stock-taking", "Stock-taking Track"],
 ]);
 
+/**
+ * Slash-command metadata discovered from `.claude/commands`.
+ *
+ * @typedef {object} CommandRecord
+ * @property {string} namespace - Command namespace, such as `spec` or `adr`.
+ * @property {string} name - Command name without the `.md` extension.
+ * @property {string} command - Slash-command invocation, such as `/spec:idea`.
+ */
+
+/**
+ * Discover slash-command Markdown files under `.claude/commands`.
+ *
+ * @returns {CommandRecord[]} Command records sorted by slash-command name.
+ */
 export function getCommands() {
   return walkFiles(".claude/commands", (file) => file.endsWith(".md"))
     .filter((file) => path.basename(file) !== "README.md")
@@ -28,6 +42,13 @@ export function getCommands() {
     .sort((a, b) => a.command.localeCompare(b.command));
 }
 
+/**
+ * Render the slash-command inventory block used in generated documentation.
+ *
+ * @param {{ fenced?: boolean }} [options] - Rendering options.
+ * @param {boolean} [options.fenced=false] - Wrap the inventory in a Markdown code fence.
+ * @returns {string} Markdown inventory grouped by command namespace.
+ */
 export function renderCommandInventory({ fenced = false } = {}) {
   const groups = new Map();
   for (const command of getCommands()) {
