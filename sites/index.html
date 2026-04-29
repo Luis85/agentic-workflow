@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Specorator is a spec-driven agentic development workflow that keeps humans in charge of intent while AI agents help move software through quality gates.">
-    <meta property="og:title" content="Specorator - Agentic Development Workflow">
-    <meta property="og:description" content="A spec-first workflow template for building software with humans and AI agents.">
+    <meta name="description" content="Specs first. Code second. Specorator is an open-source workflow template that keeps humans in charge of what to build while specialist AI agents handle how.">
+    <meta property="og:title" content="Specorator — Specs first. Code second.">
+    <meta property="og:description" content="An open-source, spec-driven workflow template for building software with humans and AI agents. v0.2 Foundation release.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://luis85.github.io/agentic-workflow/">
     <meta property="og:image" content="https://luis85.github.io/agentic-workflow/assets/specorator-workflow.svg">
@@ -35,25 +35,33 @@
     <main id="main">
       <section class="hero" aria-labelledby="hero-title">
         <div>
-          <p class="eyebrow">Spec-driven software with AI agents</p>
-          <h1 id="hero-title">Specorator</h1>
-          <p class="hero-copy">A ready-to-use workflow template that keeps humans in charge of what to build while AI agents help with the heavy lifting of how.</p>
+          <p class="eyebrow">
+            <span class="status-pill">v0.2 · Foundation release</span>
+            <span class="eyebrow-meta">Open-source · MIT · the <code>agentic-workflow</code> repo</span>
+          </p>
+          <h1 id="hero-title">Specs first.<br>Code second.</h1>
+          <p class="hero-copy">Most AI coding tools jump straight to writing code &mdash; often the <em>wrong</em> code. <strong>Specorator</strong> is a ready-to-use workflow template that flips it: you stay in charge of <em>what</em> to build, specialist AI agents handle <em>how</em>, and every decision is traceable.</p>
           <div class="hero-actions" aria-label="Primary actions">
-            <a class="button highlight" href="https://github.com/Luis85/agentic-workflow/blob/main/docs/specorator.md">Read the workflow</a>
-            <a class="button secondary" href="https://github.com/Luis85/agentic-workflow">View on GitHub</a>
+            <a class="button highlight" href="#start">Get started</a>
+            <a class="button secondary" href="https://github.com/Luis85/agentic-workflow/blob/main/docs/specorator.md">Read the workflow</a>
+            <a class="button ghost" href="https://github.com/Luis85/agentic-workflow" aria-label="View on GitHub">GitHub &rarr;</a>
           </div>
-          <div class="hero-proof" aria-label="Workflow highlights">
+          <div class="hero-quickstart" aria-label="One-line quickstart">
+            <span class="quickstart-prompt" aria-hidden="true">$</span>
+            <code>git clone https://github.com/Luis85/agentic-workflow.git my-project &amp;&amp; cd my-project &amp;&amp; claude</code>
+          </div>
+          <div class="hero-proof" aria-label="At a glance">
             <span class="proof-item">
               <span class="proof-value">11</span>
-              <span class="proof-label">Lifecycle stages</span>
+              <span class="proof-label">stages, idea&nbsp;&rarr;&nbsp;retro</span>
             </span>
             <span class="proof-item">
-              <span class="proof-value">1:1</span>
-              <span class="proof-label">Requirements to tests</span>
+              <span class="proof-value">10</span>
+              <span class="proof-label">conductor skills, pick your fit</span>
             </span>
             <span class="proof-item">
-              <span class="proof-value">PR</span>
-              <span class="proof-label">Worktree to verify gate</span>
+              <span class="proof-value">0</span>
+              <span class="proof-label">vendor lock-in &mdash; fork &amp; own</span>
             </span>
           </div>
         </div>
@@ -177,8 +185,8 @@
         </div>
         <div class="workflow" aria-label="Specorator workflow stages">
           <div class="workflow-row">
-            <div class="workflow-label">Discovery</div>
-            <div class="workflow-stages">
+            <div class="workflow-label">Discovery <span class="workflow-label-meta">optional</span></div>
+            <div class="workflow-stages discovery-stages">
               <span class="stage discovery">Frame</span>
               <span class="stage discovery">Diverge</span>
               <span class="stage discovery">Converge</span>
@@ -188,14 +196,19 @@
             </div>
           </div>
           <div class="workflow-row">
-            <div class="workflow-label">Lifecycle</div>
-            <div class="workflow-stages">
-              <span class="stage lifecycle">Idea</span>
-              <span class="stage lifecycle">Requirements</span>
-              <span class="stage lifecycle">Design</span>
-              <span class="stage lifecycle">Tasks</span>
-              <span class="stage lifecycle">Build + test</span>
-              <span class="stage gate">Review + release</span>
+            <div class="workflow-label">Lifecycle <span class="workflow-label-meta">11 stages</span></div>
+            <div class="workflow-stages lifecycle-stages">
+              <span class="stage lifecycle">1. Idea</span>
+              <span class="stage lifecycle">2. Research</span>
+              <span class="stage lifecycle">3. Requirements</span>
+              <span class="stage lifecycle">4. Design</span>
+              <span class="stage lifecycle">5. Specification</span>
+              <span class="stage lifecycle">6. Tasks</span>
+              <span class="stage lifecycle">7. Implementation</span>
+              <span class="stage lifecycle">8. Testing</span>
+              <span class="stage lifecycle">9. Review</span>
+              <span class="stage lifecycle">10. Release</span>
+              <span class="stage lifecycle">11. Retrospective</span>
             </div>
           </div>
         </div>

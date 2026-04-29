@@ -142,6 +142,17 @@ button:focus-visible {
   color: var(--ink);
 }
 
+.button.ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--ink);
+  padding: 0 12px;
+}
+
+.button.ghost:hover {
+  background: #eef1ea;
+}
+
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 0.82fr) minmax(360px, 1fr);
@@ -152,12 +163,53 @@ button:focus-visible {
 }
 
 .eyebrow {
-  margin: 0 0 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 18px;
   color: var(--accent-strong);
   font-size: 13px;
   font-weight: 800;
   letter-spacing: 0.11em;
   text-transform: uppercase;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--soft-green);
+  color: var(--accent-strong);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+.status-pill::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.eyebrow-meta {
+  color: var(--muted);
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-size: 12px;
+}
+
+.eyebrow-meta code {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(23, 32, 27, 0.06);
+  color: var(--ink);
+  font-size: 11px;
 }
 
 h1,
@@ -168,33 +220,74 @@ p {
 }
 
 h1 {
-  max-width: 11ch;
+  max-width: 14ch;
   margin-bottom: 22px;
-  font-size: clamp(52px, 8vw, 104px);
-  line-height: 0.93;
-  letter-spacing: 0;
+  font-size: clamp(48px, 7.4vw, 96px);
+  line-height: 0.95;
+  letter-spacing: -0.01em;
 }
 
 .hero-copy {
-  max-width: 690px;
+  max-width: 640px;
   color: var(--muted);
-  font-size: clamp(20px, 2.2vw, 28px);
-  line-height: 1.3;
+  font-size: clamp(18px, 1.9vw, 24px);
+  line-height: 1.4;
+}
+
+.hero-copy strong {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.hero-copy em {
+  color: var(--accent-strong);
+  font-style: normal;
+  font-weight: 700;
 }
 
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 12px;
-  margin-top: 32px;
+  margin-top: 28px;
+}
+
+.hero-quickstart {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  max-width: 720px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #0e1512;
+  color: #e6f6ef;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 13px;
+  overflow-x: auto;
+}
+
+.hero-quickstart code {
+  background: transparent;
+  color: #e6f6ef;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.quickstart-prompt {
+  color: var(--highlighter);
+  font-weight: 800;
+  flex-shrink: 0;
 }
 
 .hero-proof {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
-  max-width: 650px;
-  margin-top: 42px;
+  max-width: 720px;
+  margin-top: 38px;
 }
 
 .proof-item {
@@ -384,7 +477,8 @@ h1 {
 
 .workflow-label {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
   padding: 20px;
   border-radius: 8px;
   background: var(--ink);
@@ -392,25 +486,40 @@ h1 {
   font-weight: 800;
 }
 
+.workflow-label-meta {
+  margin-top: 6px;
+  color: rgba(248, 250, 245, 0.65);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .workflow-stages {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 10px;
 }
 
 .stage {
   display: flex;
-  min-height: 74px;
+  flex: 1 1 130px;
+  min-height: 64px;
   align-items: center;
   justify-content: center;
-  padding: 14px 10px;
+  padding: 12px 10px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
   color: var(--ink);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 760;
   text-align: center;
+}
+
+.lifecycle-stages .stage {
+  flex: 1 1 100px;
+  font-size: 12px;
 }
 
 .stage.gate {
@@ -640,10 +749,6 @@ h1 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .workflow-stages {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
   .section-header {
     display: block;
   }
@@ -671,7 +776,21 @@ h1 {
   }
 
   h1 {
-    font-size: 56px;
+    font-size: 52px;
+  }
+
+  .eyebrow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hero-quickstart {
+    font-size: 12px;
+  }
+
+  .hero-quickstart code {
+    white-space: pre-wrap;
+    word-break: break-all;
   }
 
   .hero-proof,
@@ -679,8 +798,7 @@ h1 {
   .audience-grid,
   .repo-grid,
   .steps,
-  .path-list,
-  .workflow-stages {
+  .path-list {
     grid-template-columns: 1fr;
   }
 
