@@ -10,8 +10,6 @@
 
 Product page: <https://luis85.github.io/agentic-workflow/>
 
-The page source lives in [`sites/index.html`](sites/index.html). The `product-page` skill and `product-page-designer` agent keep that page current when a project starts, positioning changes, or user-visible releases would make the page stale.
-
 ---
 
 ## What is this?
