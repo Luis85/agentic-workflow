@@ -16,11 +16,37 @@ The page source lives in [`sites/index.html`](sites/index.html). The `product-pa
 
 ## What is this?
 
-Most AI coding tools jump straight to writing code — often the wrong code. Specorator flips that: **specs first, code second**.
+Specorator is an opinionated, file-based workflow template for **spec-driven, agentic software development**. It is not a product you run — it is a folder of conventions, prompts, agents, skills, and slash commands that you drop into your repository (or fork as a starting point) so an AI coding tool — primarily [Claude Code](https://claude.ai/code) — can help you build real software predictably.
 
-Every feature follows a structured journey — understand the problem, research the options, write clear requirements, design a solution, *then* build it. AI agents (powered by Claude) assist at every step while staying in their lane. You remain in charge of intent, priorities, and sign-off.
+The workflow itself is the deliverable. Everything else (your code, your features) is what you produce *with* it.
 
-The result: fewer dead ends, less rework, and software that does what you actually needed.
+---
+
+## The problem it solves
+
+Most AI coding tools jump straight to writing code — and produce confidently wrong code, scattered context, and rework that erases the time they were supposed to save. The common failure modes:
+
+- **Vague briefs become vague code.** "Add login" turns into three different login implementations across one repo.
+- **No memory between sessions.** Each new chat re-discovers the same constraints and re-makes the same mistakes.
+- **Quality is a vibe, not a gate.** "Looks good" merges; the bug shows up in production.
+- **No traceability.** You cannot tell which line of code answers which requirement, or why a decision was made six months ago.
+- **One agent does everything.** The same prompt writes the PRD, designs the system, codes it, and reviews itself — with no separation of concerns.
+
+Specorator addresses these by enforcing **specs first, code second**, **one agent per stage**, **quality gates between stages**, and **persistent traceability from idea to test**.
+
+---
+
+## How this helps you
+
+Adopt the template and you get:
+
+- **A predictable lifecycle** — Idea → Research → Requirements → Design → Specification → Tasks → Implementation → Testing → Review → Release → Retrospective. Every stage has one owner, one output, one gate.
+- **Specialist AI agents** — narrow-scoped roles (analyst, pm, architect, dev, qa, reviewer, …) that stay in their lane instead of writing the whole feature in one shot.
+- **Conversational entry points** — natural-language skills like `orchestrate`, `discovery-sprint`, and `tdd-cycle` you can trigger by talking, not by remembering commands.
+- **Built-in quality gates** — EARS-formatted requirements, traceability IDs, ADRs for irreversible decisions, a `verify` gate before every PR.
+- **Optional tracks** — Discovery (when you have a blank page), Stock-taking (legacy/brownfield), Sales Cycle (service providers), Project Manager, Roadmap, Portfolio, Quality Assurance. Pick what fits; skip what does not.
+- **Tool-agnostic artifacts** — Markdown only. Works with Claude Code first-class, but Cursor / Aider / Copilot / Codex can read the same files.
+- **Resumable state** — every feature's progress lives in `specs/<feature>/workflow-state.md`, so any agent (or you) can pick up where the last session left off.
 
 ---
 
@@ -30,6 +56,7 @@ The result: fewer dead ends, less rework, and software that does what you actual
 - **Developers** — implement from clear specs with AI assistance; no more guessing what the PM meant.
 - **Team leads** — coordinate humans and AI agents across a full release cycle with built-in quality checks.
 - **Solo builders** — run the whole workflow yourself, with AI agents filling every specialist role.
+- **Service providers** — qualify, scope, estimate, propose, and deliver client work with the optional Sales Cycle and Project Manager tracks.
 
 ---
 
@@ -94,6 +121,29 @@ Tip: even alone, don't skip the Retrospective at the end. It's where the process
 ---
 
 ## How it works
+
+Specorator is built as a layered set of plain-Markdown artifacts and prompt-driven roles. There is no runtime to deploy and no service to host — everything lives in your repository.
+
+**The building blocks**
+
+- **Constitution** (`memory/constitution.md`) — governing principles loaded ahead of every command.
+- **Steering** (`docs/steering/`) — scoped context (product, tech, ux, quality, ops) that agents read so they know your project.
+- **Specs** (`specs/<feature-slug>/`) — one folder per feature; each stage drops one Markdown artifact here.
+- **Agents** (`.claude/agents/`) — one specialist per role, with deliberately narrow tool permissions.
+- **Skills** (`.claude/skills/`) — reusable how-tos that auto-trigger from natural language or run via `/<skill-name>`.
+- **Slash commands** (`.claude/commands/`) — explicit per-stage entry points (`/spec:idea`, `/spec:design`, …).
+- **Templates** (`templates/`) — blank starting points for every artifact you produce.
+- **ADRs** (`docs/adr/`) — immutable Architecture Decision Records for anything load-bearing.
+
+**How you are meant to use it**
+
+1. **Adopt** — fork the repo (or click "Use this template"), then personalise `memory/constitution.md` and fill `docs/steering/`.
+2. **Pick the right entry point** — Discovery (blank page), Stock-taking (legacy system), Sales Cycle (client work), or jump straight into the Lifecycle (you have a brief).
+3. **Drive conversationally** — open Claude Code and say *"let's start a feature"* or *"drive this end-to-end"*. The `orchestrate` skill walks you stage-by-stage, gating with you between each one.
+4. **Or drive manually** — run the slash commands yourself in stage order. State lives in `specs/<feature>/workflow-state.md`.
+5. **Gate every stage** — review the artifact, push back on anything wrong, sign off, then move on. No stage is skipped; quality gates are non-negotiable.
+6. **Implement against the spec** — the dev agent only writes code that matches `tasks.md`. The qa agent verifies every EARS requirement has a test. The reviewer audits traceability.
+7. **Ship and learn** — `/spec:release` produces release notes; `/spec:retro` is mandatory and feeds improvements back into the template.
 
 The workflow has source-led onboarding plus two core delivery tracks:
 
@@ -190,16 +240,20 @@ Claude guides you through the rest — asking the right questions, running the r
 
 ---
 
-## Documentation
+## Where to learn more
 
-The full user guide lives in [`docs/`](docs/README.md), organized by what you need:
+The full user guide lives in [`docs/`](docs/README.md), organised by what you need at the moment (Diátaxis):
 
-- **Learning** → [tutorials](docs/README.md#tutorials)
-- **Doing** → [how-to recipes](docs/README.md#how-to-guides)
-- **Looking up** → [reference](docs/README.md#reference)
-- **Understanding** → [explanation](docs/README.md#explanation)
+- **Learning** → [tutorials](docs/README.md#tutorials) — start with the [first-feature tutorial](docs/tutorials/first-feature.md), 60–90 minutes end-to-end on a tiny example.
+- **Doing** → [how-to recipes](docs/README.md#how-to-guides) — task-oriented walkthroughs for common operations.
+- **Looking up** → [reference](docs/README.md#reference) — the [workflow overview](docs/workflow-overview.md), [quality framework](docs/quality-framework.md), [EARS notation](docs/ears-notation.md), [traceability](docs/traceability.md), and the artifact [sink catalog](docs/sink.md).
+- **Understanding** → [explanation](docs/README.md#explanation) — the *why* behind the design choices, plus every [ADR](docs/adr/).
 
-If you are completely new to the project, the [first-feature tutorial](docs/tutorials/first-feature.md) walks the entire workflow on a tiny example in 60–90 minutes.
+Other useful pages:
+
+- **Worked examples** → [`examples/`](examples/) shows what a project using this template actually produces.
+- **Public product page** → <https://luis85.github.io/agentic-workflow/> ([source](sites/index.html)).
+- **Contribute** → [`CONTRIBUTING.md`](CONTRIBUTING.md) for how to improve the template itself.
 
 ---
 
