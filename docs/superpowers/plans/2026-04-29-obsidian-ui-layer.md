@@ -66,7 +66,7 @@
 ## Recommended next steps
 
 - **Run the verification steps above.** If anything fails, that becomes the actual implementation plan: a small follow-up PR fixing the gap.
-- **Close this PR** if all verification steps pass (the plan-as-verification artifact has served its purpose; it is preserved in git history without merging).
+- **Merge this PR** once all verification steps pass — this artifact belongs on `main` so future readers can find the spec ↔ shipment mapping and drift notes from `git log`. Closing without merge would lose the traceability the artifact exists to provide.
 - **Run `/spec:retro` for the Obsidian UI layer feature** to capture the "we wrote a plan after implementation" lesson and propose a process amendment (e.g., the writing-plans skill should check `git log` for in-flight implementation before producing a forward plan).
 - **Schedule a one-time agent in ~3 months** to revisit ADR-0014's `proposed` status — does any track still want sharded follow-ups, or should the ADR be superseded?
 
