@@ -39,7 +39,7 @@ function requireIndexMarkup(html: string) {
     ['rel="icon"', "sites/index.html must include a favicon"],
     ['property="og:title"', "sites/index.html must include Open Graph metadata"],
     ['name="twitter:card"', "sites/index.html must include Twitter card metadata"],
-    ["assets/artifact-chain.svg", "sites/index.html should include the artifact-chain visual"],
+    ['class="artifact-chain"', "sites/index.html should include the artifact-chain example block"],
     ["Quickstart", "sites/index.html should include a quickstart section"],
   ];
   for (const [needle, message] of required) {
@@ -85,7 +85,8 @@ function checkCss(text: string) {
     [".skip-link", "sites/styles.css must style the skip link"],
     [":focus-visible", "sites/styles.css must define visible focus styles"],
     [".quickstart", "sites/styles.css must style the quickstart block"],
-    [".example-grid", "sites/styles.css must style the example section"],
+    [".artifact-chain", "sites/styles.css must style the example section (artifact chain)"],
+    [".artifact-card", "sites/styles.css must style each artifact card"],
   ];
   for (const [needle, message] of required) {
     if (!text.includes(needle)) errors.push(message);
