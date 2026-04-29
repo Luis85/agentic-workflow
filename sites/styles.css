@@ -142,17 +142,6 @@ button:focus-visible {
   color: var(--ink);
 }
 
-.button.ghost {
-  border-color: transparent;
-  background: transparent;
-  color: var(--ink);
-  padding: 0 12px;
-}
-
-.button.ghost:hover {
-  background: #eef1ea;
-}
-
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 0.82fr) minmax(360px, 1fr);
@@ -220,11 +209,11 @@ p {
 }
 
 h1 {
-  max-width: 14ch;
+  max-width: 17ch;
   margin-bottom: 22px;
-  font-size: clamp(48px, 7.4vw, 96px);
-  line-height: 0.95;
-  letter-spacing: -0.01em;
+  font-size: clamp(44px, 6.6vw, 84px);
+  line-height: 0.98;
+  letter-spacing: -0.015em;
 }
 
 .hero-copy {
@@ -253,41 +242,12 @@ h1 {
   margin-top: 28px;
 }
 
-.hero-quickstart {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 20px;
-  max-width: 720px;
-  padding: 14px 16px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: #0e1512;
-  color: #e6f6ef;
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 13px;
-  overflow-x: auto;
-}
-
-.hero-quickstart code {
-  background: transparent;
-  color: #e6f6ef;
-  font-size: 13px;
-  white-space: nowrap;
-}
-
-.quickstart-prompt {
-  color: var(--highlighter);
-  font-weight: 800;
-  flex-shrink: 0;
-}
-
 .hero-proof {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
   max-width: 720px;
-  margin-top: 38px;
+  margin-top: 42px;
 }
 
 .proof-item {
@@ -776,21 +736,12 @@ h1 {
   }
 
   h1 {
-    font-size: 52px;
+    font-size: 46px;
   }
 
   .eyebrow {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .hero-quickstart {
-    font-size: 12px;
-  }
-
-  .hero-quickstart code {
-    white-space: pre-wrap;
-    word-break: break-all;
   }
 
   .hero-proof,
