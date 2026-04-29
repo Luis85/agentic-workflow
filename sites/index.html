@@ -419,30 +419,69 @@
 
       <section class="section example-section" id="example" aria-labelledby="example-title">
         <div class="section-header">
-          <h2 id="example-title">See the artifact chain.</h2>
-          <p class="section-kicker">Specorator is concrete Markdown work, not a hidden process. The example tree shows how intent becomes requirements, tasks, verification, and review.</p>
+          <h2 id="example-title">From a one-line brief to working code.</h2>
+          <p class="section-kicker">A walk-through of one fabricated feature &mdash; password reset by email. Each stage produces a Markdown artifact with stable IDs that flow forward to the next.</p>
         </div>
-        <div class="example-grid">
-          <figure class="artifact-visual">
-            <img src="assets/artifact-chain.svg" alt="A Specorator artifact chain from idea through requirements, design, tasks, tests, and review.">
+        <div class="artifact-chain" aria-label="Three example artifacts produced in sequence">
+          <figure class="artifact-card">
+            <header class="artifact-card-head">
+              <span class="artifact-step">Stage 1 &middot; Idea</span>
+              <code class="artifact-path">specs/password-reset/idea.md</code>
+            </header>
+<pre class="artifact-source"><span class="md-h1"># Idea: Password reset</span>
+
+<span class="md-h2">## Brief</span>
+Users who forget their password should
+recover access without a support ticket.
+
+<span class="md-h2">## User</span>
+Existing account holders, locked out.
+
+<span class="md-h2">## Outcome</span>
+Self-service via a one-time link expiring
+in 30 minutes.</pre>
           </figure>
-          <div class="artifact-copy">
-            <h3>From brief to reviewed work</h3>
-            <p>Each feature carries its own state file and stage artifacts so humans and agents can resume with the same source of truth.</p>
-            <div class="path-list" aria-label="Example delivery path">
-              <span>Idea</span>
-              <span>Requirements</span>
-              <span>Tasks</span>
-              <span>Tests</span>
-              <span>Review</span>
-              <span>Release</span>
-            </div>
-            <ol class="artifact-list">
-              <li><a href="https://github.com/Luis85/agentic-workflow/tree/main/examples/cli-todo">Example feature artifacts</a></li>
-              <li><a href="https://github.com/Luis85/agentic-workflow/blob/main/docs/workflow-overview.md">Workflow cheat sheet</a></li>
-              <li><a href="https://github.com/Luis85/agentic-workflow/blob/main/docs/quality-framework.md">Quality gates</a></li>
-            </ol>
-          </div>
+          <figure class="artifact-card">
+            <header class="artifact-card-head">
+              <span class="artifact-step">Stage 3 &middot; Requirements</span>
+              <code class="artifact-path">specs/password-reset/requirements.md</code>
+            </header>
+<pre class="artifact-source"><span class="md-h1"># Requirements: Password reset</span>
+
+<span class="md-id">REQ-AUTH-001</span>
+<span class="md-em">While</span> the user is signed out,
+<span class="md-em">when</span> they tap &ldquo;Forgot password,&rdquo;
+<span class="md-em">the system shall</span> open the email form.
+
+<span class="md-id">REQ-AUTH-002</span>
+<span class="md-em">When</span> an email matching a known account
+is submitted, <span class="md-em">the system shall</span>
+send a one-time link valid for 30 minutes.</pre>
+          </figure>
+          <figure class="artifact-card">
+            <header class="artifact-card-head">
+              <span class="artifact-step">Stage 6 &middot; Tasks</span>
+              <code class="artifact-path">specs/password-reset/tasks.md</code>
+            </header>
+<pre class="artifact-source"><span class="md-h1"># Tasks: Password reset</span>
+
+<span class="md-id">T-AUTH-014</span>  Email-entry form
+  owner: dev   &rarr; <span class="md-id">REQ-AUTH-001</span>
+
+<span class="md-id">T-AUTH-015</span>  One-time token issuer
+  owner: dev   &rarr; <span class="md-id">REQ-AUTH-002</span>
+
+<span class="md-id">T-AUTH-016</span>  Tests for above
+  owner: qa    &rarr; <span class="md-id">TEST-AUTH-014..15</span></pre>
+          </figure>
+        </div>
+        <div class="artifact-meta">
+          <p>Every requirement carries a stable ID that flows forward &mdash; <code>REQ</code> to <code>T</code> to <code>TEST</code>. The traceability matrix is regenerable from the artifacts; nothing ships without a chain.</p>
+          <ul class="artifact-list">
+            <li><a href="https://github.com/Luis85/agentic-workflow/tree/main/examples/cli-todo">Real example feature &rarr;</a></li>
+            <li><a href="https://github.com/Luis85/agentic-workflow/blob/main/docs/workflow-overview.md">Workflow cheat sheet &rarr;</a></li>
+            <li><a href="https://github.com/Luis85/agentic-workflow/blob/main/docs/quality-framework.md">Quality gates &rarr;</a></li>
+          </ul>
         </div>
       </section>
 

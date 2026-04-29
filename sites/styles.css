@@ -742,76 +742,132 @@ h1 {
   background: #eef1ea;
 }
 
-.example-grid {
+.artifact-chain {
   display: grid;
-  grid-template-columns: minmax(320px, 0.95fr) minmax(0, 1fr);
-  gap: clamp(24px, 5vw, 56px);
-  align-items: center;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
 }
 
-.artifact-visual {
-  margin: 0;
-}
-
-.artifact-visual img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 18px;
-  box-shadow: var(--shadow);
-}
-
-.artifact-copy {
-  max-width: 590px;
-}
-
-.artifact-copy h3 {
-  margin-bottom: 12px;
-  font-size: clamp(26px, 3vw, 42px);
-  line-height: 1.08;
-}
-
-.artifact-copy p {
-  color: var(--muted);
-  font-size: 18px;
-}
-
-.path-list {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 24px;
-}
-
-.path-list span {
+.artifact-card {
   display: flex;
-  min-height: 46px;
-  align-items: center;
-  justify-content: center;
-  padding: 8px;
+  flex-direction: column;
+  margin: 0;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 12px;
+  background: var(--surface);
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(23, 32, 27, 0.04);
+}
+
+.artifact-card-head {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(23, 32, 27, 0.04);
+}
+
+.artifact-step {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--accent-strong);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.artifact-path {
+  padding: 0;
+  background: transparent;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.artifact-source {
+  flex: 1 1 auto;
+  margin: 0;
+  padding: 18px 20px;
   background: var(--surface);
   color: var(--ink);
-  font-size: 13px;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+.artifact-source .md-h1 {
+  color: var(--ink);
   font-weight: 800;
-  text-align: center;
+}
+
+.artifact-source .md-h2 {
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+
+.artifact-source .md-id {
+  display: inline-block;
+  padding: 0 5px;
+  border-radius: 3px;
+  background: rgba(27, 111, 85, 0.1);
+  color: var(--accent-strong);
+  font-weight: 800;
+}
+
+.artifact-source .md-em {
+  color: #8a4a00;
+  font-weight: 700;
+}
+
+.artifact-meta {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: clamp(20px, 4vw, 44px);
+  align-items: start;
+  padding: clamp(20px, 3vw, 28px);
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.artifact-meta p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.artifact-meta p code {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(23, 32, 27, 0.06);
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .artifact-list {
   display: grid;
-  gap: 10px;
-  margin: 24px 0 0;
+  gap: 8px;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .artifact-list a {
   display: inline-flex;
-  min-height: 42px;
   align-items: center;
-  font-weight: 800;
   color: var(--accent-strong);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.artifact-list a:hover {
+  color: var(--ink);
 }
 
 .steps {
@@ -905,7 +961,8 @@ h1 {
   .hero,
   .split,
   .fit-grid,
-  .example-grid,
+  .artifact-chain,
+  .artifact-meta,
   .quickstart,
   .workflow-row {
     grid-template-columns: 1fr;
@@ -963,7 +1020,6 @@ h1 {
   .audience-grid,
   .repo-grid,
   .steps,
-  .path-list,
   .team-grid {
     grid-template-columns: 1fr;
   }
