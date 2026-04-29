@@ -525,15 +525,15 @@ h1 {
 }
 
 .team-card[data-lane="define"]::before {
-  background: var(--accent);
+  background: #159166;
 }
 
 .team-card[data-lane="build"]::before {
-  background: #4a6fa8;
+  background: #365fa3;
 }
 
 .team-card[data-lane="ship"]::before {
-  background: #c9a227;
+  background: #d49a14;
 }
 
 .team-card:hover {
@@ -565,17 +565,17 @@ h1 {
   color: var(--accent-strong);
   padding: 3px 9px;
   border-radius: 999px;
-  background: var(--soft-green);
+  background: #bce5d2;
 }
 
 .team-card[data-lane="build"] .team-lane {
   color: #2d4a73;
-  background: var(--soft-blue);
+  background: #cbd9f7;
 }
 
 .team-card[data-lane="ship"] .team-lane {
   color: #6b5400;
-  background: var(--soft-yellow);
+  background: #f9e3a0;
 }
 
 .team-card h3 {
