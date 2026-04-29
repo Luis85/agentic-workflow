@@ -39,13 +39,14 @@ These prefixes match the allowlist in `.claude/settings.json` and the regexes in
 
 ## Rules
 
-1. **One concern per topic branch.** See [`feedback_pr_hygiene.md`](../.claude/memory/feedback_pr_hygiene.md).
-2. **Cut every topic branch fresh** from the integration branch. Don't pull one PR into another. See [`feedback_pr_workflow.md`](../.claude/memory/feedback_pr_workflow.md).
-3. **Topic branches live in worktrees** under `.worktrees/<slug>/`. See [`docs/worktrees.md`](./worktrees.md).
-4. **Verify before push.** See [`docs/verify-gate.md`](./verify-gate.md).
-5. **Resolve conflicts via merge, not rebase**, once a PR has open review threads. See [`feedback_parallel_pr_conflicts.md`](../.claude/memory/feedback_parallel_pr_conflicts.md).
-6. **Maintainer (or autonomous‑merge rule) merges**, not the author. See [`feedback_autonomous_merge.md`](../.claude/memory/feedback_autonomous_merge.md).
-7. **Codex opens the PR when it makes the change.** See [`.codex/workflows/pr-delivery.md`](../.codex/workflows/pr-delivery.md) for the expected worktree → verify → push → PR → next-step loop.
+1. **No direct commits on `main` (or `develop`)** — *ever*. Every change lands via a topic branch and a merged PR. This applies to code, docs, ADRs, glossary entries, memory files, brainstorm output, planning artifacts, and generated docs. There is no "small enough" exception. The `.claude/settings.json` push deny is a backstop; the rule applies even to local commits, because extracting a stray `main` commit into a topic branch later costs more than cutting the branch up front. See [`feedback_no_main_commits.md`](../.claude/memory/feedback_no_main_commits.md).
+2. **One concern per topic branch.** See [`feedback_pr_hygiene.md`](../.claude/memory/feedback_pr_hygiene.md).
+3. **Cut every topic branch fresh** from the integration branch. Don't pull one PR into another. See [`feedback_pr_workflow.md`](../.claude/memory/feedback_pr_workflow.md).
+4. **Topic branches live in worktrees** under `.worktrees/<slug>/`. See [`docs/worktrees.md`](./worktrees.md).
+5. **Verify before push.** See [`docs/verify-gate.md`](./verify-gate.md).
+6. **Resolve conflicts via merge, not rebase**, once a PR has open review threads. See [`feedback_parallel_pr_conflicts.md`](../.claude/memory/feedback_parallel_pr_conflicts.md).
+7. **Maintainer (or autonomous‑merge rule) merges**, not the author. See [`feedback_autonomous_merge.md`](../.claude/memory/feedback_autonomous_merge.md).
+8. **Codex opens the PR when it makes the change.** See [`.codex/workflows/pr-delivery.md`](../.codex/workflows/pr-delivery.md) for the expected worktree → verify → push → PR → next-step loop.
 
 ## Why `develop` exists in Shape B
 
