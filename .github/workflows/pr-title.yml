@@ -17,10 +17,8 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
-# pull-requests: read — the action queries the PR title via the API.
-# Nothing else is needed; no write surface is granted.
 permissions:
-  pull-requests: read
+  pull-requests: read # Required to read the PR title through the API.
 
 jobs:
   conventional-commits:
