@@ -22,10 +22,10 @@
         <span>Specorator</span>
       </a>
       <nav class="nav-links" aria-label="Primary navigation">
-        <a href="#features">Features</a>
+        <a href="#team">Team</a>
         <a href="#fit">Fit</a>
         <a href="#workflow">Workflow</a>
-        <a href="#repo">Repo</a>
+        <a href="#roster">Roster</a>
         <a href="#start">Start</a>
         <a href="https://github.com/Luis85/agentic-workflow/blob/main/docs/specorator.md">Docs</a>
         <a href="https://github.com/Luis85/agentic-workflow">GitHub</a>
@@ -78,6 +78,88 @@
             <p>Specorator turns software work into staged artifacts, specialist roles, quality gates, and traceable decisions so agents can move fast without guessing what humans meant.</p>
           </article>
         </div>
+      </section>
+
+      <section class="section team-section" id="team" aria-labelledby="team-title">
+        <div class="section-header">
+          <h2 id="team-title">A specialist for every stage.</h2>
+          <p class="section-kicker">Eight role families backed by the agents in this repo. Each one owns a stage, produces an artifact, passes a quality gate, and hands off cleanly. You stay in charge of intent.</p>
+        </div>
+        <div class="team-grid" aria-label="Specialist roles">
+          <article class="team-card" data-lane="define">
+            <header class="team-card-head">
+              <span class="team-num">01</span>
+              <span class="team-lane">Define</span>
+            </header>
+            <h3>Analyst</h3>
+            <p class="team-agents"><code>analyst</code></p>
+            <p class="team-desc">Frames the problem. Runs idea capture, research, and discovery sprints. Produces the brief that seeds everything downstream.</p>
+          </article>
+          <article class="team-card" data-lane="define">
+            <header class="team-card-head">
+              <span class="team-num">02</span>
+              <span class="team-lane">Define</span>
+            </header>
+            <h3>Product Manager</h3>
+            <p class="team-agents"><code>pm</code></p>
+            <p class="team-desc">Owns the requirements. Writes EARS-format specs, manages scope, and keeps intent sharp through the lifecycle.</p>
+          </article>
+          <article class="team-card" data-lane="define">
+            <header class="team-card-head">
+              <span class="team-num">03</span>
+              <span class="team-lane">Define</span>
+            </header>
+            <h3>Designer</h3>
+            <p class="team-agents"><code>ux-designer</code> &middot; <code>ui-designer</code></p>
+            <p class="team-desc">Shapes the experience. UX produces flows, IA, and state coverage; UI picks tokens, components, and microcopy.</p>
+          </article>
+          <article class="team-card" data-lane="define">
+            <header class="team-card-head">
+              <span class="team-num">04</span>
+              <span class="team-lane">Define</span>
+            </header>
+            <h3>Architect</h3>
+            <p class="team-agents"><code>architect</code></p>
+            <p class="team-desc">Designs the system. Makes structural decisions, files ADRs, and produces the implementation-ready spec.</p>
+          </article>
+          <article class="team-card" data-lane="build">
+            <header class="team-card-head">
+              <span class="team-num">05</span>
+              <span class="team-lane">Build</span>
+            </header>
+            <h3>Planner</h3>
+            <p class="team-agents"><code>planner</code></p>
+            <p class="team-desc">Breaks work down. Turns the spec into TDD-ordered tasks (~&frac12; day each) with dependencies and definitions of done.</p>
+          </article>
+          <article class="team-card" data-lane="build">
+            <header class="team-card-head">
+              <span class="team-num">06</span>
+              <span class="team-lane">Build</span>
+            </header>
+            <h3>Developer</h3>
+            <p class="team-agents"><code>dev</code></p>
+            <p class="team-desc">Writes the code. Implements from task specs with TDD discipline. Never invents requirements; escalates if a gap appears.</p>
+          </article>
+          <article class="team-card" data-lane="build">
+            <header class="team-card-head">
+              <span class="team-num">07</span>
+              <span class="team-lane">Build</span>
+            </header>
+            <h3>QA</h3>
+            <p class="team-agents"><code>qa</code></p>
+            <p class="team-desc">Validates the build. Authors the test plan, runs the suite, and checks that every EARS clause has a matching test.</p>
+          </article>
+          <article class="team-card" data-lane="ship">
+            <header class="team-card-head">
+              <span class="team-num">08</span>
+              <span class="team-lane">Ship</span>
+            </header>
+            <h3>Reviewer &amp; Release</h3>
+            <p class="team-agents"><code>reviewer</code> &middot; <code>release-manager</code> &middot; <code>retrospective</code></p>
+            <p class="team-desc">Closes the loop. Reviews the diff with traceability, drafts release notes, and runs the mandatory retro.</p>
+          </article>
+        </div>
+        <p class="team-footnote">Plus an <code>orchestrator</code> that routes between them and an <code>sre</code> for post-release operability. <a href="#roster">See the full 30-agent roster &rarr;</a></p>
       </section>
 
       <section class="section fit-section" id="fit" aria-labelledby="fit-title">
@@ -206,6 +288,99 @@
               <span class="stage lifecycle">11. Retrospective</span>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section class="section dark roster-section" id="roster" aria-labelledby="roster-title">
+        <div class="section-header">
+          <h2 id="roster-title">All 30 agents in the repo.</h2>
+          <p class="section-kicker">The eight roles above are how the team thinks. Here's every agent the workflow actually ships, grouped by what it helps you do.</p>
+        </div>
+        <div class="roster-grid" aria-label="Full agent roster">
+          <article class="roster-group">
+            <header>
+              <h3>Build a feature</h3>
+              <span class="roster-count">13 agents</span>
+            </header>
+            <p class="roster-desc">The 11-stage lifecycle, the conductor that drives it, and ops support.</p>
+            <ul class="roster-list">
+              <li><code>analyst</code></li>
+              <li><code>pm</code></li>
+              <li><code>ux-designer</code></li>
+              <li><code>ui-designer</code></li>
+              <li><code>architect</code></li>
+              <li><code>planner</code></li>
+              <li><code>dev</code></li>
+              <li><code>qa</code></li>
+              <li><code>reviewer</code></li>
+              <li><code>release-manager</code></li>
+              <li><code>retrospective</code></li>
+              <li><code>sre</code></li>
+              <li><code>orchestrator</code></li>
+            </ul>
+          </article>
+          <article class="roster-group">
+            <header>
+              <h3>Run a discovery sprint</h3>
+              <span class="roster-count">7 agents</span>
+            </header>
+            <p class="roster-desc">Frame to validate, before a brief exists.</p>
+            <ul class="roster-list">
+              <li><code>facilitator</code></li>
+              <li><code>product-strategist</code></li>
+              <li><code>user-researcher</code></li>
+              <li><code>game-designer</code></li>
+              <li><code>divergent-thinker</code></li>
+              <li><code>critic</code></li>
+              <li><code>prototyper</code></li>
+            </ul>
+          </article>
+          <article class="roster-group">
+            <header>
+              <h3>Audit a legacy system</h3>
+              <span class="roster-count">1 agent</span>
+            </header>
+            <p class="roster-desc">Inventory what's already there before changing anything.</p>
+            <ul class="roster-list">
+              <li><code>legacy-auditor</code></li>
+            </ul>
+          </article>
+          <article class="roster-group">
+            <header>
+              <h3>Win a deal</h3>
+              <span class="roster-count">4 agents</span>
+            </header>
+            <p class="roster-desc">Service-provider opt-in: qualify to order.</p>
+            <ul class="roster-list">
+              <li><code>sales-qualifier</code></li>
+              <li><code>scoping-facilitator</code></li>
+              <li><code>estimator</code></li>
+              <li><code>proposal-writer</code></li>
+            </ul>
+          </article>
+          <article class="roster-group">
+            <header>
+              <h3>Govern delivery</h3>
+              <span class="roster-count">4 agents</span>
+            </header>
+            <p class="roster-desc">Project, portfolio, roadmap, and source-led onboarding.</p>
+            <ul class="roster-list">
+              <li><code>project-manager</code></li>
+              <li><code>portfolio-manager</code></li>
+              <li><code>roadmap-manager</code></li>
+              <li><code>project-scaffolder</code></li>
+            </ul>
+          </article>
+          <article class="roster-group">
+            <header>
+              <h3>Maintain the kit</h3>
+              <span class="roster-count">1 agent</span>
+            </header>
+            <p class="roster-desc">Keeps the public product page current.</p>
+            <ul class="roster-list">
+              <li><code>product-page-designer</code></li>
+            </ul>
+          </article>
         </div>
       </section>
 

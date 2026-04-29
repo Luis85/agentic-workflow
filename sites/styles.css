@@ -494,6 +494,215 @@ h1 {
   background: var(--soft-blue);
 }
 
+.team-section {
+  background: #f5f7f1;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.team-card {
+  position: relative;
+  padding: clamp(22px, 2.6vw, 28px);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+}
+
+.team-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--accent);
+}
+
+.team-card[data-lane="define"]::before {
+  background: var(--accent);
+}
+
+.team-card[data-lane="build"]::before {
+  background: #4a6fa8;
+}
+
+.team-card[data-lane="ship"]::before {
+  background: #c9a227;
+}
+
+.team-card:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(23, 32, 27, 0.08);
+}
+
+.team-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.team-num {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+.team-lane {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-strong);
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--soft-green);
+}
+
+.team-card[data-lane="build"] .team-lane {
+  color: #2d4a73;
+  background: var(--soft-blue);
+}
+
+.team-card[data-lane="ship"] .team-lane {
+  color: #6b5400;
+  background: var(--soft-yellow);
+}
+
+.team-card h3 {
+  margin: 0 0 8px;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+}
+
+.team-agents {
+  margin: 0 0 14px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.team-agents code {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: rgba(23, 32, 27, 0.06);
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.team-desc {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.team-footnote {
+  margin: 28px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.team-footnote code {
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: rgba(23, 32, 27, 0.06);
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.team-footnote a {
+  color: var(--accent-strong);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.team-footnote a:hover {
+  color: var(--ink);
+}
+
+.roster-section {
+  background: var(--ink);
+}
+
+.roster-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.roster-group {
+  padding: clamp(22px, 3vw, 30px);
+  border: 1px solid rgba(248, 250, 245, 0.08);
+  border-radius: 12px;
+  background: rgba(248, 250, 245, 0.03);
+}
+
+.roster-group header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.roster-group h3 {
+  margin: 0;
+  color: #f8faf5;
+  font-size: 20px;
+  letter-spacing: -0.01em;
+}
+
+.roster-count {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  color: rgba(248, 250, 245, 0.55);
+  letter-spacing: 0.04em;
+}
+
+.roster-desc {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: rgba(248, 250, 245, 0.7);
+}
+
+.roster-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.roster-list li {
+  margin: 0;
+}
+
+.roster-list code {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(230, 255, 112, 0.1);
+  color: var(--highlighter);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .repo-section {
   background: var(--paper);
 }
@@ -705,8 +914,13 @@ h1 {
   .feature-grid,
   .audience-grid,
   .repo-grid,
-  .steps {
+  .steps,
+  .team-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .roster-grid {
+    grid-template-columns: 1fr;
   }
 
   .section-header {
@@ -749,7 +963,8 @@ h1 {
   .audience-grid,
   .repo-grid,
   .steps,
-  .path-list {
+  .path-list,
+  .team-grid {
     grid-template-columns: 1fr;
   }
 
