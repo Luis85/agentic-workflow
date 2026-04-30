@@ -12,6 +12,8 @@ entry_point: true
 
 # check-spec-state
 
-## Functions
+## References
 
-- [parseStageProgressTable](functions/parseStageProgressTable.md)
+### parseStageProgressTable
+
+Re-exports [parseStageProgressTable](../lib/spec-state/functions/parseStageProgressTable.md)

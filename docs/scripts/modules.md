@@ -36,6 +36,7 @@
 - [lib/repo](lib/repo/README.md)
 - [lib/roadmaps](lib/roadmaps/README.md)
 - [lib/runner](lib/runner/README.md)
+- [lib/spec-state](lib/spec-state/README.md)
 - [lib/tasks](lib/tasks/README.md)
 - [lib/workflow-schema](lib/workflow-schema/README.md)
 - [quality-metrics](quality-metrics/README.md)
