@@ -618,6 +618,39 @@ send a one-time link valid for 30 minutes.</pre>
         </div>
       </section>
 
+      <section class="section faq-section" id="faq" aria-labelledby="faq-title">
+        <div class="section-header">
+          <h2 id="faq-title">Questions you probably have.</h2>
+          <p class="section-kicker">Six honest answers for evaluators &mdash; positioning, prerequisites, scope, and friction.</p>
+        </div>
+        <div class="faq-grid">
+          <article class="faq-item">
+            <h3>How is this different from spec-kit, Aider, or Copilot Workspace?</h3>
+            <p>They're tools; Specorator is a <strong>process</strong> you can run on top of them. The 11-stage lifecycle, named specialist agents, quality gates, and trace IDs are the real differentiators. Claude Code gets first-class slash commands, but the workflow itself is described in <code>AGENTS.md</code> and works with Codex, Cursor, Aider, Copilot, and Gemini.</p>
+          </article>
+          <article class="faq-item">
+            <h3>Do I have to use Claude Code?</h3>
+            <p>No. Claude Code gets first-class commands and the skills layer is Claude-specific, but the workflow itself is described in <code>AGENTS.md</code> and runs with any agent that can read Markdown. The artifacts, IDs, and quality gates are tool-agnostic.</p>
+          </article>
+          <article class="faq-item">
+            <h3>Is this a library or a template?</h3>
+            <p>A template. Fork the repo, replace <code>docs/steering/</code> with your own product context, adapt <code>memory/constitution.md</code> to your team's principles, and start a feature. The default content is intentionally generic &mdash; every project will overwrite parts of it.</p>
+          </article>
+          <article class="faq-item">
+            <h3>Can I use it without GitHub?</h3>
+            <p>Yes for the lifecycle. Verify gate, agents, skills, and artifacts all run locally. Some optional bits lean on GitHub (Pages deploy, Actions for typos / spell-check / verify CI), but the core workflow doesn't depend on it. Local hooks deny direct <code>main</code> pushes the same way branch protection would.</p>
+          </article>
+          <article class="faq-item">
+            <h3>Is the 11-stage lifecycle overkill for a one-person project?</h3>
+            <p>For a throwaway script, yes. For anything you'll maintain past the first commit, no &mdash; stages move in minutes when there's no stakeholder cycle to run. Solo builders use the <code>orchestrate</code> skill and gate themselves between stages. The mandatory retrospective at the end is what compounds the value over time.</p>
+          </article>
+          <article class="faq-item">
+            <h3>Do I have to learn the slash commands?</h3>
+            <p>No. The conductor skills (<code>orchestrate</code>, <code>discovery-sprint</code>, <code>project-run</code>, etc.) auto-trigger on natural language. Slash commands are the manual escape hatch when you want precise control. Every entry point in the audience cards above shows the natural-language form.</p>
+          </article>
+        </div>
+      </section>
+
       <section class="section dark" id="start" aria-labelledby="start-title">
         <div class="section-header">
           <h2 id="start-title">Get started in one repository.</h2>
