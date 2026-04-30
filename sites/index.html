@@ -237,21 +237,29 @@
           <p class="section-kicker">The repository gives each role an entry point without turning the process into a separate product to maintain.</p>
         </div>
         <div class="audience-grid">
-          <article class="card light">
-            <h3>Product managers and designers</h3>
-            <p>Run discovery, shape requirements, review designs, and keep intent explicit.</p>
+          <article class="audience-card" data-num="01">
+            <h3>Product managers &amp; designers</h3>
+            <p>Run discovery, shape requirements, review designs, and keep intent explicit. No code required.</p>
+            <p class="audience-say">You'd say</p>
+            <code class="audience-cta">&ldquo;let's start a feature: user auth&rdquo;</code>
           </article>
-          <article class="card light">
+          <article class="audience-card" data-num="02">
             <h3>Developers</h3>
-            <p>Implement from clear tasks and specs instead of reverse-engineering stakeholder intent.</p>
+            <p>Implement from clear task specs with TDD discipline. No more reverse-engineering stakeholder intent from a Slack thread.</p>
+            <p class="audience-say">You'd say</p>
+            <code class="audience-cta">&ldquo;continue the user-auth feature&rdquo;</code>
           </article>
-          <article class="card light">
+          <article class="audience-card" data-num="03">
             <h3>Team leads</h3>
-            <p>Coordinate humans and agents across a release cycle with visible gates and artifacts.</p>
+            <p>Coordinate humans and agents across a release cycle with visible gates, owned artifacts, and quality checks you can enforce.</p>
+            <p class="audience-say">You'd type</p>
+            <code class="audience-cta">/adr:new &quot;Switch to Postgres&quot;</code>
           </article>
-          <article class="card light">
+          <article class="audience-card" data-num="04">
             <h3>Solo builders</h3>
-            <p>Use the same lifecycle while AI agents fill specialist roles one stage at a time.</p>
+            <p>Run the entire workflow yourself. Specialist agents fill every role &mdash; analyst, architect, dev, QA &mdash; while you keep the vision.</p>
+            <p class="audience-say">You'd say</p>
+            <code class="audience-cta">&ldquo;drive this end-to-end: magic-link login&rdquo;</code>
           </article>
         </div>
       </section>
@@ -638,15 +646,23 @@ send a one-time link valid for 30 minutes.</pre>
           </article>
         </div>
         <div class="quickstart" aria-label="Quickstart commands">
-          <div>
+          <div class="quickstart-intro">
             <h3>Quickstart</h3>
             <p>Install dependencies, run the verify gate, then open Claude Code and start from discovery or a feature brief.</p>
           </div>
-          <pre><code>git clone https://github.com/Luis85/agentic-workflow.git my-project
+          <figure class="terminal">
+            <header class="terminal-chrome" aria-hidden="true">
+              <span class="terminal-dot terminal-dot-red"></span>
+              <span class="terminal-dot terminal-dot-yellow"></span>
+              <span class="terminal-dot terminal-dot-green"></span>
+              <span class="terminal-title">my-project &mdash; claude</span>
+            </header>
+            <pre><code>git clone https://github.com/Luis85/agentic-workflow.git my-project
 cd my-project
 npm install
 npm run verify
 claude</code></pre>
+          </figure>
         </div>
       </section>
     </main>
