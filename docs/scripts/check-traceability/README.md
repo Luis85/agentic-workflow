@@ -12,12 +12,26 @@ entry_point: true
 
 # check-traceability
 
-## Type Aliases
+## References
 
-- [ArtifactRecord](type-aliases/ArtifactRecord.md)
-- [ItemSection](type-aliases/ItemSection.md)
+### ArtifactRecord
 
-## Functions
+Re-exports [ArtifactRecord](../lib/traceability/type-aliases/ArtifactRecord.md)
 
-- [idsIn](functions/idsIn.md)
-- [splitItemSections](functions/splitItemSections.md)
+***
+
+### idsIn
+
+Re-exports [idsIn](../lib/traceability/functions/idsIn.md)
+
+***
+
+### ItemSection
+
+Re-exports [ItemSection](../lib/traceability/type-aliases/ItemSection.md)
+
+***
+
+### splitItemSections
+
+Re-exports [splitItemSections](../lib/traceability/functions/splitItemSections.md)
