@@ -61,7 +61,7 @@ export function traceabilityDiagnosticsForFeature(
 
   for (const record of artifactRecords) {
     validateDocumentFrontmatter(record, state, errors);
-    collectDocumentDefinition(record, area, registry);
+    collectDocumentDefinition(record, area, registry, errors);
     collectHeadingDefinitions(record, area, registry, errors);
     collectTableDefinitions(record, area, registry, errors);
     validateIdAreas(record, area, errors);
@@ -129,6 +129,7 @@ function collectDocumentDefinition(
   record: ArtifactRecord,
   area: string,
   registry: Map<string, DefinitionRecord>,
+  errors: string[],
 ): void {
   const frontmatter = extractFrontmatter(record.text);
   if (!frontmatter) return;
@@ -141,7 +142,7 @@ function collectDocumentDefinition(
 
   const [, kind, idArea] = match;
   if (idArea !== area) return;
-  addDefinition(registry, String(data.id), kind, record, []);
+  addDefinition(registry, String(data.id), kind, record, errors);
 }
 
 function collectHeadingDefinitions(

@@ -156,6 +156,27 @@ id: SPECDOC-FEAT-001
   );
 });
 
+test("duplicate frontmatter id across files is reported", () => {
+  const second = record(
+    "spec.md",
+    `---
+feature: feat
+id: PRD-FEAT-001
+---
+
+## SPEC-FEAT-001 — Title
+
+- **Satisfies:** REQ-FEAT-001
+`,
+  );
+  const diagnostics = diagnose(cleanState, [cleanRequirements, second]);
+  assert.ok(
+    diagnostics.includes(
+      `specs/feat/spec.md duplicates PRD-FEAT-001; first defined in specs/feat/requirements.md`,
+    ),
+  );
+});
+
 test("REQ section without Satisfies field is reported", () => {
   const wrong = record(
     "requirements.md",
