@@ -14,14 +14,19 @@ on:
   schedule:
     - cron: '23 5 * * 1'
 
-permissions:
-  contents: read
-  security-events: write
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   zizmor:
     name: zizmor static analysis
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write # Required to upload Zizmor SARIF results to code scanning.
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
