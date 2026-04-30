@@ -655,6 +655,120 @@ h1 {
   color: var(--ink);
 }
 
+.tracks-section {
+  background: var(--paper);
+}
+
+.track-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.track-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: clamp(20px, 2.4vw, 26px);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.track-card:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(23, 32, 27, 0.07);
+}
+
+.track-card-head {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.track-when {
+  align-self: flex-start;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--soft-green);
+  color: var(--accent-strong);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.track-card h3 {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: -0.01em;
+}
+
+.track-phases {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.track-phases li {
+  display: inline-flex;
+  align-items: center;
+}
+
+.track-phases li::after {
+  content: "\2027";
+  margin: 0 8px;
+  color: rgba(89, 100, 94, 0.45);
+}
+
+.track-phases li:last-child::after {
+  content: "";
+  margin: 0;
+}
+
+.track-purpose {
+  margin: 0;
+  flex: 1 1 auto;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.track-cmd {
+  align-self: flex-start;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: rgba(27, 111, 85, 0.08);
+  color: var(--accent-strong);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.track-footnote {
+  margin: 28px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.track-footnote a {
+  color: var(--accent-strong);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.track-footnote a:hover {
+  color: var(--ink);
+}
+
 .roster-section {
   background: var(--ink);
 }
@@ -993,7 +1107,8 @@ h1 {
   .audience-grid,
   .repo-grid,
   .steps,
-  .team-grid {
+  .team-grid,
+  .track-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -1041,7 +1156,8 @@ h1 {
   .audience-grid,
   .repo-grid,
   .steps,
-  .team-grid {
+  .team-grid,
+  .track-grid {
     grid-template-columns: 1fr;
   }
 
