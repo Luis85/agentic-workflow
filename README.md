@@ -525,6 +525,7 @@ Full version in [`memory/constitution.md`](memory/constitution.md).
 | v0.4 | Planned | [CI quality gates, metrics, maturity model](specs/version-0-4-plan/tasks.md) |
 | v0.5 | Planned | [Release workflow, branching strategy, GitHub Releases and Packages](specs/version-0-5-plan/tasks.md) |
 | v0.6 | Planned | [Productization, cross-tool adapters, live proof, hooks, and agentic security](specs/version-0-6-plan/tasks.md) |
+| v0.7 | Planned | [Automation quality hardening for agents and humans](https://github.com/Luis85/agentic-workflow/issues/98) |
 
 ---
 

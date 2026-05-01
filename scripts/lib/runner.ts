@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import type { CheckResult } from "./diagnostics.js";
+import type { CheckResult, Diagnostic } from "./diagnostics.js";
 import { formatDiagnostic, formatGitHubAnnotation } from "./diagnostics.js";
 
 export type NodeTask = {
@@ -55,6 +55,58 @@ export function runNodeTasks(
   console.log(`${heading}: ok in ${formatDuration(Date.now() - startedAt)}`);
 }
 
+/**
+ * Run repository tasks and emit one machine-readable aggregate result.
+ *
+ * JSON-capable script tasks are invoked with `--json`; other tasks are reported
+ * with a stable rerun command when they fail. This command is intended for
+ * agents and CI adapters, while `npm run verify` remains the human default.
+ *
+ * @param {NodeTask[]} tasks - Tasks to execute.
+ * @param {{ heading?: string }} [options] - Runner behavior.
+ */
+export function runNodeTasksJson(tasks: NodeTask[], options: { heading?: string } = {}): void {
+  const { heading = "runner" } = options;
+  const results: CheckResult[] = [];
+
+  for (const task of tasks) {
+    const invocation = taskInvocation(task);
+    const args = task.script && task.jsonDiagnostics ? [...invocation.args, "--json"] : invocation.args;
+    const result = spawnSync(invocation.command, args, {
+      encoding: "utf8",
+      stdio: "pipe",
+      windowsHide: true,
+    });
+    const rerun = `npm run ${task.name}`;
+
+    if (result.status === 0) {
+      results.push({ check: task.name, status: "pass", errors: [], rerun });
+      continue;
+    }
+
+    const parsed = task.script && task.jsonDiagnostics ? parseCheckResult(String(result.stdout || "").trim()) : null;
+    if (parsed) {
+      results.push({
+        ...parsed,
+        rerun,
+        errors: parsed.errors.map((error) => ({ ...error, rerun: error.rerun || rerun })),
+      });
+      continue;
+    }
+
+    results.push({
+      check: task.name,
+      status: "fail",
+      rerun,
+      errors: [fallbackDiagnostic(task, result.stdout, result.stderr, rerun)],
+    });
+  }
+
+  const status = results.every((result) => result.status === "pass") ? "pass" : "fail";
+  console.log(JSON.stringify({ check: heading, status, results }, null, 2));
+  if (status === "fail") process.exit(1);
+}
+
 function taskInvocation(task: NodeTask): { command: string; args: string[] } {
   if (task.command) {
     const [command, ...args] = task.command;
@@ -90,10 +142,33 @@ function renderAnnotatedFailure(task: NodeTask, stdout: string | Buffer | null, 
 function parseCheckResult(raw: string): CheckResult | null {
   if (!raw) return null;
   try {
-    return JSON.parse(raw) as CheckResult;
+    const parsed = JSON.parse(raw) as Partial<CheckResult>;
+    if (
+      typeof parsed.check !== "string" ||
+      (parsed.status !== "pass" && parsed.status !== "fail") ||
+      !Array.isArray(parsed.errors)
+    ) {
+      return null;
+    }
+    return parsed as CheckResult;
   } catch {
     return null;
   }
+}
+
+function fallbackDiagnostic(
+  task: NodeTask,
+  stdout: string | Buffer | null,
+  stderr: string | Buffer | null,
+  rerun: string,
+): Diagnostic {
+  const output = [String(stderr || "").trim(), String(stdout || "").trim()].filter(Boolean).join("\n");
+  const firstLine = output.split(/\r?\n/).find((line) => line.trim()) || `${task.name} failed`;
+  return {
+    code: "TASK_FAILED",
+    message: firstLine,
+    rerun,
+  };
 }
 
 function commandInvocation(command: string | undefined, args: string[]): { command: string; args: string[] } {

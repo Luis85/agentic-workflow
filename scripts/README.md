@@ -28,6 +28,45 @@ npm run verify
 
 `verify` runs script typechecking, script unit tests, and each `check:*` task in order. It stops at the first failure and prints the command to rerun while iterating.
 
+Use the tiered gates when iterating on a narrower surface:
+
+```bash
+npm run check:fast
+npm run check:content
+npm run check:workflow
+npm run verify:changed
+```
+
+`check:fast` runs script typechecking, script tests, automation registry validation, and agent artifact validation. `check:content` covers Markdown, generated docs, frontmatter, Obsidian metadata/assets, and product-page drift. `check:workflow` covers workflow docs, spec state, roadmaps, traceability, automation registry, and agent artifacts. `verify:changed` currently uses the same fast gate as a safe local default.
+
+Agents and CI adapters can request a machine-readable aggregate report:
+
+```bash
+npm run verify:json
+```
+
+The JSON report includes the failing check, diagnostics, and rerun command for each task.
+
+## Automation Registry
+
+The canonical inventory of local scripts, checks, fixers, workflows, skills, and operational agents lives in [`tools/automation-registry.yml`](../tools/automation-registry.yml). Validate it with:
+
+```bash
+npm run check:automation-registry
+```
+
+Registry entries record the command or path, purpose, read-only status, local safety, JSON support, intended users, and rerun command. Add or update the registry in the same PR as any new package script, GitHub workflow, skill, or operational agent.
+
+## Agent Artifacts
+
+Validate lifecycle agents, reusable skills, and operational agent prompts as product artifacts:
+
+```bash
+npm run check:agents
+```
+
+The check verifies required frontmatter and prompt sections so automation surfaces remain discoverable and consistent for humans and agents.
+
 ## Quality Metrics
 
 Report deterministic quality KPIs for workflow deliverables, documentation, traceability, and QA checklists:
@@ -119,6 +158,11 @@ In GitHub Actions, `verify` requests JSON diagnostics from supported check scrip
 
 | Script | Purpose |
 | --- | --- |
+| `npm run check:fast` | Run the fast local iteration gate. |
+| `npm run check:content` | Run content and generated documentation integrity checks. |
+| `npm run check:workflow` | Run workflow state, traceability, roadmap, and agent contract checks. |
+| `npm run check:automation-registry` | Validate `tools/automation-registry.yml` against package scripts, workflows, skills, and operational agents. |
+| `npm run check:agents` | Validate lifecycle agents, skills, and operational agents as product artifacts. |
 | `npm run check:links` | Validate local Markdown links and anchors. |
 | `npm run check:adr-index` | Confirm `docs/adr/README.md` matches the ADR files. |
 | `npm run check:commands` | Confirm generated slash-command inventories are current. |

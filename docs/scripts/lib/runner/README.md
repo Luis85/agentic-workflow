@@ -19,3 +19,4 @@ entry_point: true
 ## Functions
 
 - [runNodeTasks](functions/runNodeTasks.md)
+- [runNodeTasksJson](functions/runNodeTasksJson.md)

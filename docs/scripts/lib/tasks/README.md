@@ -15,4 +15,7 @@ entry_point: true
 ## Variables
 
 - [checkTasks](variables/checkTasks.md)
+- [contentCheckTasks](variables/contentCheckTasks.md)
+- [fastCheckTasks](variables/fastCheckTasks.md)
 - [fixTasks](variables/fixTasks.md)
+- [workflowCheckTasks](variables/workflowCheckTasks.md)

@@ -31,3 +31,9 @@
 ### path?
 
 > `optional` **path?**: `string`
+
+***
+
+### rerun?
+
+> `optional` **rerun?**: `string`
