@@ -5,7 +5,7 @@
 ## Tokens & values
 
 - [ ] No literal hex outside `:root` in `sites/styles.css` — covers 3-digit (`#fff`), 4-digit (`#fff8`), 6-digit (`#17201b`), and 8-digit (`#17201bff`) hex in any case.
-- [ ] No literal hex (any form above) in **any changed** (new *or* modified) CSS/JSX/HTML file in `sites/` or `.claude/skills/specorator-design/ui_kits/`. Adding a literal hex to an existing file is just as blocking as adding a new file with one. Inline `style="…"` attributes in changed JSX/HTML are in scope.
+- [ ] No literal hex (any form above) in **any changed** (new *or* modified) CSS/JSX/HTML file in `sites/` or anywhere under `.claude/skills/specorator-design/` (not just `ui_kits/` — `slides/`, `preview/`, and other UI subfolders all qualify). Adding a literal hex to an existing file is just as blocking as adding a new file with one. Inline `style="…"` attributes in changed JSX/HTML are in scope.
 - [ ] No redefinition of `--ink`, `--paper`, `--accent`, `--accent-strong`, `--highlighter`, or `--lane-*` outside `colors_and_type.css`.
 - [ ] Page background is `var(--paper)`. White is reserved for cards (`--surface`).
 - [ ] Font stacks are tokenized — `var(--font-sans)`, `var(--font-mono)`. No literal `Inter, ui-sans-serif, …` or `ui-monospace, SFMono-Regular, …`.
