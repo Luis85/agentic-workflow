@@ -112,13 +112,16 @@ Extended `scripts/lib/doctor.ts` with the readiness contract for `.github/workfl
 
 ### What's checked
 
-`workflowReadinessCheck` already short-circuited on missing files and on missing string markers. Two additions:
+`workflowReadinessCheck` already short-circuited on missing files and on missing string markers. Three additions:
 
-1. **`requiredPatterns`** added to the `WorkflowContract` type. Each entry is `{ description, pattern: RegExp }`. `workflowReadinessCheck` now collects missing-marker substrings *and* missing-pattern descriptions into a single `missing` list and surfaces them in the failure detail.
-2. **verify.yml contract entry expanded** with:
-   - New string markers `pull_request:` and `push:` (covers the "trigger contains `pull_request` and `push`" half of the contract — both must exist as YAML keys in the workflow).
-   - New regex pattern `push:\s*[\s\S]*?branches:[\s\S]*?-\s*main\b` enforcing that the `push:` block specifically covers the `main` branch. (PR #149 round 1 review found that a substring match on `- main` alone could pass when `- main` appears under a *different* trigger — e.g. a workflow that only runs on `pull_request: branches: [main]` and never on push to main. The regex anchors `main` to the `push:` block.)
+1. **`requiredPatterns`** added to the `WorkflowContract` type. Each entry is `{ description, pattern: RegExp }`. Used for textual structural checks (e.g. SHA-pin format) where regex is sufficient and a YAML parse would be overkill.
+2. **`requiredEvaluators`** added to the `WorkflowContract` type. Each entry is `{ description, evaluate: (text: string) => boolean }`. Used for semantic checks that need YAML structure — currently the "push trigger covers main branch" check parses the file with the `yaml` package (already a project dep), reads `on.push.branches`, and confirms `"main"` is in the array. This handles all valid YAML forms — block list (`- main`) and flow list (`[main]`) — and refuses to be fooled by a `push:` key that precedes a `pull_request: branches: [main]` block (PR #149 round 2 review caught both bypass paths).
+3. **verify.yml contract entry expanded** with:
+   - New string markers `pull_request:` and `push:` (catch the "trigger key missing entirely" case).
+   - The push-covers-main evaluator described above.
    - New regex patterns enforcing SHA-pin format on `actions/checkout` and `actions/setup-node`: `actions\/<action>@[0-9a-f]{40}\b`. A 40-character lowercase hex commit SHA is the deterministic shape used by GitHub for commit-pinned actions; this matches the existing `chore(ci): pin all action references to commit SHA` policy.
+
+`workflowReadinessCheck` now collects missing markers, missing patterns, and missing evaluators into a single `missing` list (markers first, then patterns, then evaluators) and surfaces them in the failure detail.
 
 The pages.yml contract entry is unchanged. The pages workflow does not need PR-trigger or SHA-pin enforcement at this readiness level (the `check:product-page` and `zizmor` jobs cover Pages-specific concerns).
 
@@ -131,26 +134,28 @@ Per the §Workflow file contract scope, the doctor check does not enforce:
 
 ### Tests
 
-Added five focused tests under `tests/scripts/doctor.test.ts`:
+Added seven focused tests under `tests/scripts/doctor.test.ts`:
 
 | Test | Scenario | Expected fail detail |
 |---|---|---|
 | pull_request trigger missing | verify.yml without `pull_request:` | `... missing pull_request:` |
-| push trigger does not cover main | verify.yml `branches: [- develop]` (push: present, but main missing) | `... missing push trigger covers main branch` |
+| push trigger does not cover main | push.branches list is `- develop` | `... missing push trigger covers main branch` |
 | push trigger missing entirely | verify.yml triggers only on `pull_request: branches: [main]` (no push: at all) | `... missing push:, push trigger covers main branch` |
+| push: empty / main only under pull_request | `push:` (null) precedes `pull_request: branches: [main]` — the round 2 P1 bypass case | `... missing push trigger covers main branch` |
+| inline flow form `branches: [main]` is accepted | YAML flow form for the push trigger — round 2 P2 false-positive case | `pass` |
 | checkout not SHA-pinned | `actions/checkout@v6` instead of 40-hex | `... missing actions/checkout SHA-pinned` |
 | setup-node not SHA-pinned | `actions/setup-node@v6` instead of 40-hex | `... missing actions/setup-node SHA-pinned` |
 
 The two existing tests ("validates verify and Pages workflow contracts" / "reports missing workflow contract markers") were updated. The valid-workflow fixture now includes the new markers + SHA-pinned actions; the missing-markers fixture now expects all ten missing items in the failure detail. A `validVerifyWorkflow()` helper holds the fixture.
 
-Test count: 150 → 155.
+Test count: 150 → 157.
 
 Resolves SPEC-V04-002 (CI readiness contract). Satisfies REQ-V04-001 (PR CI gates), REQ-V04-002 (preserve local-first), NFR-V04-002 (deterministic + low-noise readiness signal).
 
 ### Verification
 
 - `npm run typecheck:scripts`
-- `npm run test:scripts` (155 pass, 0 fail)
+- `npm run test:scripts` (157 pass, 0 fail)
 - `npm run doctor` (passes against the real `.github/workflows/verify.yml`)
 - `npm run verify`
 

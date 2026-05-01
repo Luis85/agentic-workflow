@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import YAML from "yaml";
 
 export type CheckStatus = "pass" | "warn" | "fail";
 
@@ -35,11 +36,17 @@ type WorkflowPattern = {
   pattern: RegExp;
 };
 
+type WorkflowEvaluator = {
+  description: string;
+  evaluate: (text: string) => boolean;
+};
+
 type WorkflowContract = {
   name: string;
   filePath: string;
   requiredMarkers: string[];
   requiredPatterns?: WorkflowPattern[];
+  requiredEvaluators?: WorkflowEvaluator[];
   hint: string;
 };
 
@@ -57,12 +64,14 @@ const workflowContracts: WorkflowContract[] = [
       "npm run verify",
     ],
     requiredPatterns: [
-      {
-        description: "push trigger covers main branch",
-        pattern: /push:\s*[\s\S]*?branches:[\s\S]*?-\s*main\b/,
-      },
       { description: "actions/checkout SHA-pinned", pattern: /actions\/checkout@[0-9a-f]{40}\b/ },
       { description: "actions/setup-node SHA-pinned", pattern: /actions\/setup-node@[0-9a-f]{40}\b/ },
+    ],
+    requiredEvaluators: [
+      {
+        description: "push trigger covers main branch",
+        evaluate: pushTriggerCoversMain,
+      },
     ],
     hint: "restore the verify workflow contract so CI mirrors the local verify gate (see docs/pr-ci-gate.md)",
   },
@@ -222,7 +231,12 @@ function workflowReadinessCheck(root: string, contract: WorkflowContract): Check
   const text = fs.readFileSync(absolutePath, "utf8");
   const missingMarkers = contract.requiredMarkers.filter((marker) => !text.includes(marker));
   const missingPatterns = (contract.requiredPatterns ?? []).filter((entry) => !entry.pattern.test(text));
-  const missing = [...missingMarkers, ...missingPatterns.map((entry) => entry.description)];
+  const missingEvaluators = (contract.requiredEvaluators ?? []).filter((entry) => !entry.evaluate(text));
+  const missing = [
+    ...missingMarkers,
+    ...missingPatterns.map((entry) => entry.description),
+    ...missingEvaluators.map((entry) => entry.description),
+  ];
   if (missing.length > 0) {
     return {
       name: contract.name,
@@ -241,4 +255,19 @@ function workflowReadinessCheck(root: string, contract: WorkflowContract): Check
 
 function normalizeWorktreeName(worktreePath: string): string {
   return path.basename(worktreePath.replace(/[/\\]$/, ""));
+}
+
+function pushTriggerCoversMain(text: string): boolean {
+  let parsed: unknown;
+  try {
+    parsed = YAML.parse(text);
+  } catch {
+    return false;
+  }
+  const on = (parsed as { on?: unknown } | null)?.on;
+  if (on == null || typeof on !== "object") return false;
+  const push = (on as { push?: unknown }).push;
+  if (push == null || typeof push !== "object") return false;
+  const branches = (push as { branches?: unknown }).branches;
+  return Array.isArray(branches) && branches.includes("main");
 }
