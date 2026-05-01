@@ -210,6 +210,38 @@ test("missing required section is reported", () => {
   assert.ok(diagnostics.includes(`${REL} missing section: Skips`));
 });
 
+test("skipped artifact without mention in Skips section is reported", () => {
+  const text = cleanText
+    .replace("research.md: pending", "research.md: skipped")
+    .replace(
+      "| 2. Research | `research.md` | pending |",
+      "| 2. Research | `research.md` | skipped |",
+    );
+  const diagnostics = diagnose(text);
+  assert.ok(
+    diagnostics.includes(
+      `${REL} marks research.md as skipped, but Skips section does not document it`,
+    ),
+  );
+});
+
+test("skipped artifact mentioned in Skips section passes the skip-doc check", () => {
+  const text = cleanText
+    .replace("research.md: pending", "research.md: skipped")
+    .replace(
+      "| 2. Research | `research.md` | pending |",
+      "| 2. Research | `research.md` | skipped |",
+    )
+    .replace("## Skips\n\n> None.", "## Skips\n\n- `research.md` skipped because no upstream sources required.");
+  const diagnostics = diagnose(text);
+  assert.equal(
+    diagnostics.some((message) =>
+      message.includes("Skips section does not document"),
+    ),
+    false,
+  );
+});
+
 test("parseStageProgressTable extracts artifact-status pairs", () => {
   const table = parseStageProgressTable(`
 | Stage | Artifact | Status |

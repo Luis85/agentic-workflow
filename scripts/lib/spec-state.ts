@@ -49,6 +49,7 @@ export function specStateDiagnosticsForText(
   validateArtifactMap(rel, data, artifactExists, errors);
   validateStageProgress(rel, frontmatter.body, data, errors);
   validateRequiredSections(rel, frontmatter.body, errors);
+  validateSkipsDocumentation(rel, frontmatter.body, data, errors);
   return errors;
 }
 
@@ -221,6 +222,36 @@ function validateRequiredSections(rel: string, body: string, errors: string[]): 
       errors.push(`${rel} missing section: ${heading}`);
     }
   }
+}
+
+function validateSkipsDocumentation(
+  rel: string,
+  body: string,
+  data: Record<string, unknown>,
+  errors: string[],
+): void {
+  const artifacts = data.artifacts;
+  if (!artifacts || typeof artifacts !== "object" || Array.isArray(artifacts)) return;
+
+  const skipsBody = extractSectionBody(body, "Skips");
+  if (skipsBody === null) return;
+
+  for (const [artifact, status] of Object.entries(artifacts as Record<string, unknown>)) {
+    if (status !== "skipped") continue;
+    if (!skipsBody.includes(artifact)) {
+      errors.push(`${rel} marks ${artifact} as skipped, but Skips section does not document it`);
+    }
+  }
+}
+
+function extractSectionBody(body: string, heading: string): string | null {
+  const headingPattern = new RegExp(`^##\\s+${escapeRegExp(heading)}\\s*$`, "m");
+  const match = headingPattern.exec(body);
+  if (!match) return null;
+
+  const start = match.index + match[0].length;
+  const nextHeading = body.slice(start).search(/^##\s+/m);
+  return nextHeading === -1 ? body.slice(start) : body.slice(start, start + nextHeading);
 }
 
 function escapeRegExp(value: string): string {
