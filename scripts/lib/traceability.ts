@@ -71,6 +71,8 @@ export function traceabilityDiagnosticsForFeature(
     validateTraceFields(record, registry, errors);
   }
 
+  validateTestCoverage(artifactRecords, registry, errors);
+
   return errors;
 }
 
@@ -220,6 +222,46 @@ function validateTraceFields(
   for (const section of sections) {
     validateSectionFields(record, section, registry, errors);
   }
+}
+
+function validateTestCoverage(
+  records: ArtifactRecord[],
+  registry: Map<string, DefinitionRecord>,
+  errors: string[],
+): void {
+  const recordsByRel = new Map(records.map((record) => [record.rel, record]));
+
+  for (const [id, definition] of registry) {
+    if (definition.kind !== "TEST") continue;
+    const source = recordsByRel.get(definition.rel);
+    if (!source) continue;
+    if (testIsCoveredInDefinitionSource(id, source)) continue;
+    errors.push(`${definition.rel} ${id} has no covering REQ or NFR reference`);
+  }
+}
+
+function testIsCoveredInDefinitionSource(id: string, source: ArtifactRecord): boolean {
+  for (const section of splitItemSections(source)) {
+    if (section.id === id && section.kind === "TEST" && mentionsReqOrNfr(section.body)) {
+      return true;
+    }
+  }
+
+  if (!definitionTableKinds(source.artifact).has("TEST")) return false;
+
+  const rowPrefix = new RegExp(`^\\|\\s*${escapeRegExp(id)}\\s*\\|`);
+  for (const line of source.text.split(/\r?\n/)) {
+    if (rowPrefix.test(line) && mentionsReqOrNfr(line)) return true;
+  }
+  return false;
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function mentionsReqOrNfr(text: string): boolean {
+  return idsIn(text).some((id) => id.startsWith("REQ-") || id.startsWith("NFR-"));
 }
 
 function validateSectionFields(
