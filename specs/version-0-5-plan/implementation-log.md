@@ -28,6 +28,35 @@ A running record of *what* was implemented, *why* a deviation was taken, and *wh
 - **Deviation from spec:** none
 - **Notes:** Adopted Shape A with explicit `release/vX.Y.Z` branches; `main` remains the canonical release source and tag origin; `develop` is not introduced. Resolves CLAR-V05-001. ADR-0020 captures the decision; `docs/branching.md` updated to name the release branch shape, promotion path, tag source, and cleanup rules.
 
+### 2026-05-02 — Implementation escalation — REQ-V05-012 fresh-surface contract (Article X iteration)
+
+- **Files changed:** `specs/version-0-5-plan/requirements.md`, `specs/version-0-5-plan/spec.md`, `specs/version-0-5-plan/design.md`, `specs/version-0-5-plan/tasks.md`, `docs/adr/0021-release-package-fresh-surface.md` (new), `docs/adr/README.md`, `docs/release-package-contents.md` (new), `docs/specorator.md`, `docs/sink.md`, `templates/release-package-stub.md` (new)
+- **Commit:** PR #157 — fe0bed0 (architect surface + template-wide docs).
+- **Spec reference:** ADR-0021, REQ-V05-012 (new), SPEC-V05-010 (new), TEST-V05-012 (new); satisfies user-introduced template-wide release-package-contents requirement.
+- **Owner:** architect
+- **Outcome:** done
+- **Deviation from spec:** none — Article X (Iteration) of the constitution permits stage revisits when implementation surfaces a missing requirement; the requirement was added to upstream artifacts before the contract document was written.
+- **Notes:** Three sub-rules: (1) released package documentation = stubs only; (2) ADRs do not ship in the released package; (3) intake folders ship empty (10 enumerated). `docs/adr/README.md` ships as a stub trailer in the released package; `templates/adr-template.md` ships unchanged. `docs/release-package-contents.md` is the canonical methodology page.
+
+### 2026-05-02 — T-V05-002 — Define package contract
+
+- **Files changed:** `specs/version-0-5-plan/package-contract.md` (new); `specs/version-0-5-plan/requirements.md` (REQ-V05-012 added); `specs/version-0-5-plan/tasks.md` (T-V05-002 broadened, T-V05-012 added); `specs/version-0-5-plan/workflow-state.md`
+- **Commit:** PR #157 — e74d448.
+- **Spec reference:** SPEC-V05-004 (REQ-V05-005, NFR-V05-002), SPEC-V05-010 (REQ-V05-012)
+- **Owner:** pm
+- **Outcome:** done (status `draft` until OQ-V05-001/002/003 close)
+- **Deviation from spec:** none
+- **Notes:** Package = `@luis85/agentic-workflow` on GitHub Packages (npm registry endpoint), public visibility (subject to OQ-V05-001 confirmation), version source = `package.json#version` mirrored to git tag (per ADR-0020). Three open questions logged: repo visibility (OQ-V05-001), final `package.json#files` glob (OQ-V05-002), manual stub-form packaging step until T-V05-012 automates it (OQ-V05-003). Resolves CLAR-V05-002.
+
+### 2026-05-02 — Review fix — Codex round 1 on PR #157
+
+- **Files changed:** `docs/adr/0021-release-package-fresh-surface.md` (Errata appended), `specs/version-0-5-plan/requirements.md`, `specs/version-0-5-plan/spec.md`, `specs/version-0-5-plan/design.md`, `specs/version-0-5-plan/tasks.md`, `specs/version-0-5-plan/package-contract.md`, `docs/release-package-contents.md`, `docs/sink.md`, `templates/release-package-stub.md`
+- **Spec reference:** REQ-V05-012, SPEC-V05-010 (notation correction; decision unchanged); T-V05-004, T-V05-012 (DAG correction)
+- **Owner:** orchestrator
+- **Outcome:** done
+- **Deviation from spec:** none (typo correction; DAG correction; install-instruction completion; doc-link correction)
+- **Notes:** Four Codex findings addressed in one commit. (1) **P1 ADR glob.** Replaced `0\d{3}-*.md` (which is neither valid regex nor valid glob for the intended pattern) with the unambiguous shell glob `[0-9][0-9][0-9][0-9]-*.md` across all operational specs. ADR-0021 body kept unmodified per the constitution's ADR-immutability rule; an Errata section was appended at the bottom calling out the canonical operational form. (2) **P1 install instructions.** Added GitHub Packages prerequisites to `package-contract.md` §7 — `read:packages` PAT, `~/.npmrc` `_authToken`, scope-to-registry mapping in consumer `.npmrc`. The bare `npm install` no longer fails with `401 Unauthorized`. (3) **P2 stub link.** Removed the released-stub's link to the excluded ADR; trailer now points at `docs/release-package-contents.md` (which ships in stub form). (4) **P2 DAG.** Inverted the dependency between T-V05-012 (fresh-surface check script) and T-V05-004 (release readiness check) so that readiness composes the fresh-surface assertions. T-V05-012 → depends on T-V05-002 only; T-V05-004 → depends on T-V05-001, T-V05-002, T-V05-012. T-V05-004 satisfies expanded to include REQ-V05-012 / SPEC-V05-010.
+
 ### 2026-05-02 — T-V05-003 — Add `.github/release.yml` for generated release notes
 
 - **Files changed:** `.github/release.yml` (new)
