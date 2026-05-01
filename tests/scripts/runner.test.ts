@@ -160,10 +160,15 @@ test("runNodeTasksJson falls back when JSON diagnostics have the wrong shape", (
 
   const output = JSON.parse(logs.join("\n")) as {
     status: string;
-    results: Array<{ errors: Array<{ code: string; message: string; rerun: string }> }>;
+    results: Array<{
+      errors: Array<{ code: string; message: string; rerun: string; stdout_tail: string; command: string; exit_code: number }>;
+    }>;
   };
   assert.equal(output.status, "fail");
   assert.equal(output.results[0].errors[0].code, "TASK_FAILED");
   assert.match(output.results[0].errors[0].message, /"status":"fail"/);
   assert.equal(output.results[0].errors[0].rerun, "npm run check:fixture");
+  assert.match(output.results[0].errors[0].stdout_tail, /"status":"fail"/);
+  assert.match(output.results[0].errors[0].command, /bad-json-check/);
+  assert.equal(output.results[0].errors[0].exit_code, 1);
 });
