@@ -33,6 +33,7 @@
     "check:specs": "tsx scripts/check-spec-state.ts",
     "check:roadmaps": "tsx scripts/check-roadmaps.ts",
     "check:traceability": "tsx scripts/check-traceability.ts",
+    "check:token-budget": "tsx scripts/check-token-budget.ts",
     "docs:scripts": "typedoc --options typedoc.json",
     "fix": "tsx scripts/fix-generated.ts",
     "fix:obsidian": "tsx scripts/fix-obsidian.ts",
