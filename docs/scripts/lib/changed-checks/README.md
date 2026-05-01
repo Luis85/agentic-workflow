@@ -16,6 +16,10 @@ entry_point: true
 
 - [ChangedCheckPlan](type-aliases/ChangedCheckPlan.md)
 
+## Variables
+
+- [trackedDiffFilter](variables/trackedDiffFilter.md)
+
 ## Functions
 
 - [changedCheckPlan](functions/changedCheckPlan.md)

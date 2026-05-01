@@ -9,6 +9,7 @@ export type ChangedCheckPlan = {
 };
 
 const taskByName = new Map(checkTasks.map((task) => [task.name, task]));
+export const trackedDiffFilter = "--diff-filter=ACDMRTUXB";
 
 /**
  * Build the changed-file verification plan for the current git checkout.
@@ -42,6 +43,7 @@ export function tasksForChangedFiles(files: string[]): NodeTask[] {
     if (isObsidianAsset(file)) add(selected, "check:obsidian-assets");
     if (isProductPageSurface(file)) add(selected, "check:product-page");
     if (isGeneratedOrCommandSurface(file)) add(selected, "check:commands", "check:script-docs");
+    if (isAdrSurface(file)) add(selected, "check:adr-index");
     if (isWorkflowSurface(file)) add(selected, "check:workflow-docs", "check:automation-registry");
     if (isSpecSurface(file)) add(selected, "check:specs", "check:traceability");
     if (isRoadmapSurface(file)) add(selected, "check:roadmaps");
@@ -53,9 +55,9 @@ export function tasksForChangedFiles(files: string[]): NodeTask[] {
 function changedFiles(baseRef: string): string[] {
   const files = new Set<string>();
   for (const args of [
-    ["diff", "--name-only", "--diff-filter=ACMRTUXB", `${baseRef}...HEAD`],
-    ["diff", "--name-only", "--diff-filter=ACMRTUXB"],
-    ["diff", "--cached", "--name-only", "--diff-filter=ACMRTUXB"],
+    ["diff", "--name-only", trackedDiffFilter, `${baseRef}...HEAD`],
+    ["diff", "--name-only", trackedDiffFilter],
+    ["diff", "--cached", "--name-only", trackedDiffFilter],
     ["ls-files", "--others", "--exclude-standard"],
   ]) {
     const result = spawnSync("git", args, { cwd: repoRoot, encoding: "utf8", windowsHide: true });
@@ -108,8 +110,22 @@ function isGeneratedOrCommandSurface(file: string): boolean {
   return file.startsWith(".claude/commands/") || file.startsWith("docs/scripts/");
 }
 
+function isAdrSurface(file: string): boolean {
+  return file.startsWith("docs/adr/") && file.endsWith(".md");
+}
+
 function isWorkflowSurface(file: string): boolean {
-  return file.startsWith(".github/workflows/") || file === ".github/dependabot.yml" || file === "docs/ci-automation.md" || file === "docs/security-ci.md";
+  return (
+    file.startsWith(".github/workflows/") ||
+    file === ".github/dependabot.yml" ||
+    file === ".github/PULL_REQUEST_TEMPLATE.md" ||
+    file === ".codex/instructions.md" ||
+    file.startsWith(".codex/workflows/") ||
+    file === "docs/branching.md" ||
+    file === "docs/ci-automation.md" ||
+    file === "docs/security-ci.md" ||
+    file === "docs/verify-gate.md"
+  );
 }
 
 function isSpecSurface(file: string): boolean {
