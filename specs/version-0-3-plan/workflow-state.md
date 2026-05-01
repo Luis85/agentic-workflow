@@ -3,8 +3,8 @@ feature: version-0-3-plan
 area: V03
 current_stage: implementation
 status: active
-last_updated: 2026-04-28
-last_agent: planner
+last_updated: 2026-05-01
+last_agent: release-manager
 artifacts:
   idea.md: complete
   research.md: complete
@@ -17,7 +17,7 @@ artifacts:
   test-report.md: pending
   review.md: pending
   traceability.md: pending
-  release-notes.md: pending
+  release-notes.md: in-progress
   retrospective.md: pending
 ---
 
@@ -36,7 +36,7 @@ artifacts:
 | 7. Implementation | `implementation-log.md` + code | pending |
 | 8. Testing | `test-plan.md`, `test-report.md` | pending |
 | 9. Review | `review.md`, `traceability.md` | pending |
-| 10. Release | `release-notes.md` | pending |
+| 10. Release | `release-notes.md` | in-progress |
 | 11. Learning | `retrospective.md` | pending |
 
 ## Skips
@@ -50,6 +50,7 @@ artifacts:
 ## Hand-off notes
 
 - 2026-04-28 (codex): Planned v0.3 through Stage 6. Recommended implementation order is example completion, validation hardening, validator tests, documentation, product-page review, release readiness verification, then explicit v0.4 validation handoff.
+- 2026-05-01 (claude): T-V03-001/002/003/005/007 shipped. Drafted `release-notes.md` for T-V03-006. T-V03-004 satisfied by existing checks plus T-V03-003 slice 3. T-V03-008 (release readiness) and T-V03-009 (v0.4 handoff) remain.
 
 ## Open clarifications
 
