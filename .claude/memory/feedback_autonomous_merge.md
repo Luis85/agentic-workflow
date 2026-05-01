@@ -4,7 +4,7 @@
 
 In **agent‑driven** runs (where a coding agent owns the PR end‑to‑end), self‑merge is allowed *only* when **all** of these are true:
 
-1. The configured automated reviewer (Codex, Copilot review, Claude review, internal critic, …) has signalled approval — usually a `+1` reaction or an issue‑level "approved" comment, not the absence of new findings.
+1. The configured automated reviewer (Codex, Copilot review, Claude review, internal critic, …) has signalled approval **on the latest review round** — usually a `+1` reaction or an issue‑level "approved" comment, not the absence of new findings, and not a stale approval that predates the most recent push. See [`feedback_pr_review_loop.md`](./feedback_pr_review_loop.md) — every push requires a fresh review request, so approval must be from the *latest* round on the head SHA.
 2. CI is green on the head SHA.
 3. The PR's mergeable state is `CLEAN` (not `BLOCKED`, not `BEHIND`).
 4. No human review is currently requested.
@@ -26,6 +26,7 @@ The `mergeStateStatus == CLEAN` clause matters: a `BEHIND` PR can still pass CI 
 ## Hard stops
 
 - Do **not** self‑merge if the automated reviewer's last action was a finding, even one you addressed in a follow‑up commit. Wait for the next review pass.
+- Do **not** self‑merge on a stale approval. If commits have landed since the latest reviewer approval, re-request review and wait for a fresh approval on the new head SHA.
 - Do **not** self‑merge a PR that has a "request changes" review from a human, ever. Human review supersedes the automated path.
 - Do **not** disable required status checks to unblock a self‑merge. If a check is wrong, fix the check.
 
