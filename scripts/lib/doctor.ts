@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import YAML from "yaml";
 
 export type CheckStatus = "pass" | "warn" | "fail";
 
@@ -30,10 +31,22 @@ type PackageJson = {
   optionalDependencies?: Record<string, string>;
 };
 
+type WorkflowPattern = {
+  description: string;
+  pattern: RegExp;
+};
+
+type WorkflowEvaluator = {
+  description: string;
+  evaluate: (text: string) => boolean;
+};
+
 type WorkflowContract = {
   name: string;
   filePath: string;
   requiredMarkers: string[];
+  requiredPatterns?: WorkflowPattern[];
+  requiredEvaluators?: WorkflowEvaluator[];
   hint: string;
 };
 
@@ -41,8 +54,30 @@ const workflowContracts: WorkflowContract[] = [
   {
     name: "verify workflow",
     filePath: ".github/workflows/verify.yml",
-    requiredMarkers: ["actions/checkout", "actions/setup-node", "cache: npm", "npm ci", "npm run verify"],
-    hint: "restore the verify workflow contract so CI mirrors the local verify gate",
+    requiredMarkers: [
+      "pull_request:",
+      "push:",
+      "actions/checkout",
+      "actions/setup-node",
+      "cache: npm",
+      "npm ci",
+      "npm run verify",
+    ],
+    requiredEvaluators: [
+      {
+        description: "push trigger covers main branch",
+        evaluate: pushTriggerCoversMain,
+      },
+      {
+        description: "actions/checkout SHA-pinned",
+        evaluate: (text) => verifyJobActionPinned(text, "actions/checkout"),
+      },
+      {
+        description: "actions/setup-node SHA-pinned",
+        evaluate: (text) => verifyJobActionPinned(text, "actions/setup-node"),
+      },
+    ],
+    hint: "restore the verify workflow contract so CI mirrors the local verify gate (see docs/pr-ci-gate.md)",
   },
   {
     name: "pages workflow",
@@ -199,11 +234,18 @@ function workflowReadinessCheck(root: string, contract: WorkflowContract): Check
 
   const text = fs.readFileSync(absolutePath, "utf8");
   const missingMarkers = contract.requiredMarkers.filter((marker) => !text.includes(marker));
-  if (missingMarkers.length > 0) {
+  const missingPatterns = (contract.requiredPatterns ?? []).filter((entry) => !entry.pattern.test(text));
+  const missingEvaluators = (contract.requiredEvaluators ?? []).filter((entry) => !entry.evaluate(text));
+  const missing = [
+    ...missingMarkers,
+    ...missingPatterns.map((entry) => entry.description),
+    ...missingEvaluators.map((entry) => entry.description),
+  ];
+  if (missing.length > 0) {
     return {
       name: contract.name,
       status: "fail",
-      detail: `${contract.filePath} missing ${missingMarkers.join(", ")}`,
+      detail: `${contract.filePath} missing ${missing.join(", ")}`,
       hint: contract.hint,
     };
   }
@@ -217,4 +259,47 @@ function workflowReadinessCheck(root: string, contract: WorkflowContract): Check
 
 function normalizeWorktreeName(worktreePath: string): string {
   return path.basename(worktreePath.replace(/[/\\]$/, ""));
+}
+
+function pushTriggerCoversMain(text: string): boolean {
+  let parsed: unknown;
+  try {
+    parsed = YAML.parse(text);
+  } catch {
+    return false;
+  }
+  const on = (parsed as { on?: unknown } | null)?.on;
+  if (on == null || typeof on !== "object") return false;
+  const push = (on as { push?: unknown }).push;
+  if (push == null || typeof push !== "object") return false;
+  const branches = (push as { branches?: unknown }).branches;
+  return Array.isArray(branches) && branches.includes("main");
+}
+
+function verifyJobActionPinned(text: string, actionName: string): boolean {
+  let parsed: unknown;
+  try {
+    parsed = YAML.parse(text);
+  } catch {
+    return false;
+  }
+  const jobs = (parsed as { jobs?: unknown } | null)?.jobs;
+  if (jobs == null || typeof jobs !== "object") return false;
+  const verifyJob = (jobs as { verify?: unknown }).verify;
+  if (verifyJob == null || typeof verifyJob !== "object") return false;
+  const steps = (verifyJob as { steps?: unknown }).steps;
+  if (!Array.isArray(steps)) return false;
+
+  const usesEntries = steps
+    .filter(
+      (step): step is { uses: string } =>
+        step != null &&
+        typeof step === "object" &&
+        typeof (step as { uses?: unknown }).uses === "string",
+    )
+    .map((step) => step.uses)
+    .filter((uses) => uses.startsWith(`${actionName}@`));
+
+  if (usesEntries.length === 0) return false;
+  return usesEntries.every((uses) => /^[^@]+@[0-9a-f]{40}$/.test(uses));
 }
