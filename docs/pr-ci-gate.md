@@ -109,7 +109,7 @@ T-V04-004 readiness check (extends `scripts/doctor.ts`) verifies:
 
 CLAR-V04-002 asked whether v0.4 includes scheduled read-only health reporting. **Answer: deferred to v0.5 or later.**
 
-- The v0.4 PRD §Non-goals explicitly excludes "external telemetry, hosted dashboard, or analytics service" and a "mandatory new lifecycle stage."
+- The v0.4 PRD [§Non-goals](../specs/version-0-4-plan/requirements.md#non-goals) explicitly excludes "external telemetry, hosted dashboard, or analytics service" and a "mandatory new lifecycle stage."
 - v0.4 produces local + machine-readable signals: `npm run quality:metrics` (T-V04-005, ships JSON output) and the v0.5 release-quality handoff record (T-V04-012). A scheduled job consuming those signals is the natural shape for v0.5.
 - A scheduled workflow today would add an unsupervised surface, contrary to NFR-V04-003 (privacy — keep local) and the process-light posture.
 
