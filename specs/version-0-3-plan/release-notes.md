@@ -73,13 +73,12 @@ The release is intentionally non-breaking. No new lifecycle stage. No constituti
 After pulling v0.3:
 
 1. `npm ci` — installs dependencies with the lockfile.
-2. `npm run verify` — full local verify gate. Expect `verify: ok`.
+2. `npm run verify` — full local verify gate (formatter + linter + types + `test:scripts` + checks + build). Expect `verify: ok`.
 3. `npm run check:specs` — workflow-state validation. Expect `check:specs: ok`.
 4. `npm run check:traceability` — traceability validation. Expect `check:traceability: ok`.
-5. `npm test -- --test tests/scripts/spec-state.test.ts` — 24 spec-state characterization tests pass.
-6. `npm test -- --test tests/scripts/traceability.test.ts` — 23 traceability characterization tests pass.
-7. Open `examples/cli-todo/workflow-state.md` and read artifacts in stage order.
-8. Open `https://luis85.github.io/agentic-workflow/` and confirm the example section references `examples/cli-todo/` (not the legacy `password-reset` placeholder).
+5. `npm run test:scripts` — runs every file under `tests/scripts/`, including the 24 spec-state and 23 traceability characterization tests. Expect all pass. (Already run as part of step 2; this step is for narrower iteration.)
+6. Open `examples/cli-todo/workflow-state.md` and read artifacts in stage order.
+7. Open `https://luis85.github.io/agentic-workflow/` and confirm the example section references `examples/cli-todo/` (not the legacy `password-reset` placeholder).
 
 ## Rollback plan
 
