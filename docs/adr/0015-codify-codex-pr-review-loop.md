@@ -44,7 +44,7 @@ This decision codifies the loop so that all PRs follow the same shape.
 
 We adopt a bounded **Codex review loop** that applies to every pull request opened in this repository.
 
-1. **Trigger.** Marking a PR `ready_for_review` (or pushing to a PR already in that state) requests a Codex review.
+1. **Trigger.** Marking a PR `ready_for_review` requests the first Codex review automatically. **Subsequent pushes do not auto-trigger a re-review** — the PR author must explicitly re-request a Codex review on each push (see step 2's last sub-bullet). Treating a post-push state as "review requested" without an explicit re-request is the failure mode this rule prevents.
 2. **Per-iteration contract for the PR author** (human or agent):
    - Read every Codex comment and CI failure.
    - Resolve merge conflicts in-loop with `git merge origin/<integration-branch>` (never rebase a PR with open review threads — see `feedback_parallel_pr_conflicts.md`).

@@ -38,6 +38,23 @@ Fixed in `<sha>`. I changed <file/behavior> so <result>, and verified with <chec
 
 Do not mark a thread resolved if the fix is only planned or local.
 
+## Staying alive between rounds
+
+After re-requesting Codex review (step 11) the agent does **not** idle until the next user message. It actively watches the PR until something actionable arrives. Two mechanisms, in preference order:
+
+1. **Event listening (preferred).** If the harness exposes GitHub webhooks, an MCP-style event subscription, or `gh pr view --watch`, listen for `pull_request_review`, `check_run`, and `pull_request` (synchronize, edited) events and act the moment one lands. Zero polling overhead.
+2. **Self-paced polling (fallback, default).** Poll the PR every **~5 minutes** with:
+
+   ```bash
+   gh pr view <num> --json reviews,statusCheckRollup,mergeStateStatus,mergeable,comments
+   ```
+
+   Compare against the previous snapshot. Act when **any** of these change: a new Codex review submission, a new comment, `statusCheckRollup` flips to a terminal state, or `mergeStateStatus` transitions (e.g. `UNSTABLE → CLEAN`, or `→ BEHIND`).
+
+Use the harness's loop primitive (e.g. `/loop 5m <recheck>`) rather than ad-hoc sleeps — it survives session restarts and is observable. ~5 minutes matches typical CI runtime and Codex review latency in this repo; tighter polling burns context for no signal, longer polling adds wall-clock latency.
+
+Stop polling on any of: loop exit conditions met (merge eligible), human review requested, soft cap reached and escalated, or the human explicitly tells the agent to stand down. Full rule in [`feedback_pr_review_loop.md`](../../.claude/memory/feedback_pr_review_loop.md).
+
 ## Soft-cap warning template
 
 When you reach the third round on the same PR without converging, leave a single comment in the PR conversation:

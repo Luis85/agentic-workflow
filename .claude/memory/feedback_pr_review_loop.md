@@ -40,6 +40,25 @@ The cap is soft because the project is process-light by design ([`AGENTS.md`](..
 - Track loop rounds informally — count threads resolved across pushes. If you reach round 3 and findings keep regenerating, that is the escalation signal.
 - Lightweight PRs (typo fix, memory edit) typically clear in one round. The rule is uniform so authors never have to ask whether the loop applies.
 
+## Staying alive while waiting
+
+After re-requesting Codex review, the author **does not idle until the next user message**. While Codex's review is pending, the author actively watches the PR until something actionable arrives.
+
+Two mechanisms, in order of preference:
+
+1. **Event listening (preferred when available).** If the harness exposes a GitHub webhook, MCP-style event subscription, or `gh pr view --watch` style stream, listen for `pull_request_review`, `check_run`, and `pull_request` (synchronize, edited) events on the PR. Act the moment an event lands. Zero polling overhead.
+2. **Self-paced polling (fallback, default).** When event listening is not wired, poll the PR every **~5 minutes** with `gh pr view <num> --json reviews,statusCheckRollup,mergeStateStatus,mergeable,comments`. Compare against the previous snapshot; act when *any* of these change:
+   - new Codex review submission (approval or comments),
+   - new comment from Codex or human,
+   - `statusCheckRollup` flips to a terminal state (success, failure, timed out),
+   - `mergeStateStatus` transitions (e.g. `UNSTABLE` → `CLEAN`, or → `BEHIND`).
+
+Polling cadence guidance:
+
+- **~5 minutes** matches the typical CI run time and Codex review latency in this repo. Tighter polling burns context for no signal; longer polling adds wall-clock latency for converging PRs.
+- Use the harness's loop primitive (e.g. `/loop 5m <re-check command>`) rather than ad-hoc sleeps. It survives session restarts and is observable.
+- Stop polling on any of: loop exit conditions met (merge eligible), human review requested, soft cap reached and escalated, or the human explicitly tells the agent to stand down.
+
 ## Hard stops
 
 - Do **not** treat absence of new findings as approval. Approval must be a positive signal (reaction, label, "approved" comment) on the head SHA. See [`feedback_autonomous_merge.md`](./feedback_autonomous_merge.md).
