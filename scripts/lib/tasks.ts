@@ -29,6 +29,18 @@ export const checkTasks = [
     command: ["npm", "run", "test:scripts"],
   },
   {
+    name: "check:automation-registry",
+    label: "Automation registry",
+    script: "scripts/check-automation-registry.ts",
+    jsonDiagnostics: true,
+  },
+  {
+    name: "check:agents",
+    label: "Agent artifacts",
+    script: "scripts/check-agents.ts",
+    jsonDiagnostics: true,
+  },
+  {
     name: "check:links",
     label: "Markdown links",
     script: "scripts/check-markdown-links.ts",
@@ -94,6 +106,50 @@ export const checkTasks = [
     script: "scripts/check-traceability.ts",
   },
 ];
+
+/**
+ * Fast local iteration gate for script and automation-contract changes.
+ *
+ * @type {NodeTask[]}
+ */
+export const fastCheckTasks = checkTasks.filter((task) =>
+  ["typecheck:scripts", "test:scripts", "check:automation-registry", "check:agents"].includes(task.name),
+);
+
+/**
+ * Content integrity checks for Markdown and generated documentation drift.
+ *
+ * @type {NodeTask[]}
+ */
+export const contentCheckTasks = checkTasks.filter((task) =>
+  [
+    "check:links",
+    "check:adr-index",
+    "check:commands",
+    "check:script-docs",
+    "check:workflow-docs",
+    "check:product-page",
+    "check:frontmatter",
+    "check:obsidian",
+    "check:obsidian-assets",
+  ].includes(task.name),
+);
+
+/**
+ * Workflow consistency checks for state, roadmap, traceability, and agent contracts.
+ *
+ * @type {NodeTask[]}
+ */
+export const workflowCheckTasks = checkTasks.filter((task) =>
+  [
+    "check:automation-registry",
+    "check:agents",
+    "check:workflow-docs",
+    "check:specs",
+    "check:roadmaps",
+    "check:traceability",
+  ].includes(task.name),
+);
 
 /**
  * Deterministic repair tasks executed by `npm run fix`.

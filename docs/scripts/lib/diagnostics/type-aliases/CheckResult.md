@@ -22,6 +22,12 @@
 
 ***
 
+### rerun?
+
+> `optional` **rerun?**: `string`
+
+***
+
 ### status
 
 > **status**: `"pass"` \| `"fail"`

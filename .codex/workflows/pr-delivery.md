@@ -15,7 +15,7 @@ This repo treats Codex as an autonomous topic-branch contributor. When a human a
 
 4. Work only inside that worktree.
 5. Keep the change to one concern and update the corresponding docs, state files, or issue records in the same branch.
-6. Run the relevant verification gate before pushing. In this template, use `npm run verify`. If a downstream project has no single `verify` command for the change type, run targeted checks and say exactly what passed.
+6. Run the relevant verification gate before pushing. In this template, use `npm run verify` as the final gate. During iteration, `npm run check:fast`, `npm run check:content`, `npm run check:workflow`, and `npm run verify:changed` are available for narrower feedback; use `npm run verify:json` when structured diagnostics are needed. If a downstream project has no single `verify` command for the change type, run targeted checks and say exactly what passed.
 7. Commit with an imperative message that references relevant IDs or issue paths.
 8. Push the topic branch to `origin`.
 9. Open a pull request against the integration branch.

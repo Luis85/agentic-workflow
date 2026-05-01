@@ -3,12 +3,14 @@ export type Diagnostic = {
   path?: string;
   line?: number;
   code?: string;
+  rerun?: string;
 };
 
 export type CheckResult = {
   check: string;
   status: "pass" | "fail";
   errors: Diagnostic[];
+  rerun?: string;
 };
 
 export type DiagnosticInput = string | Diagnostic;

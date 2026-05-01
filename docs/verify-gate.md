@@ -37,7 +37,19 @@ npm install
 npm run verify
 ```
 
-The check scripts are read-only TypeScript files and live in `scripts/`. `npm run verify` uses a small task runner that stops on the first failing check and prints the exact command to rerun while iterating. The template repo currently typechecks and tests the script tooling, then checks Markdown links, ADR index drift, command inventory drift, TypeDoc-generated script documentation drift, workflow documentation contract drift, frontmatter conventions, Obsidian-compatible Markdown metadata, committed Obsidian vault assets, lifecycle workflow-state consistency, and traceability ID references. Local repair helpers are intentionally separate: `npm run fix` runs safe metadata repairs and all generated-block repairs, `npm run fix:obsidian` quotes repairable Obsidian scalar wikilinks, `npm run fix:adr-index` regenerates the ADR index, `npm run fix:commands` regenerates command inventories, and `npm run fix:script-docs` regenerates `docs/scripts/` from TypeScript source comments.
+The check scripts are read-only TypeScript files and live in `scripts/`. `npm run verify` uses a small task runner that stops on the first failing check and prints the exact command to rerun while iterating. The template repo currently typechecks and tests the script tooling, validates the automation registry and agent artifacts, then checks Markdown links, ADR index drift, command inventory drift, TypeDoc-generated script documentation drift, workflow documentation contract drift, frontmatter conventions, Obsidian-compatible Markdown metadata, committed Obsidian vault assets, lifecycle workflow-state consistency, roadmap state, and traceability ID references. Local repair helpers are intentionally separate: `npm run fix` runs safe metadata repairs and all generated-block repairs, `npm run fix:obsidian` quotes repairable Obsidian scalar wikilinks, `npm run fix:adr-index` regenerates the ADR index, `npm run fix:commands` regenerates command inventories, and `npm run fix:script-docs` regenerates `docs/scripts/` from TypeScript source comments.
+
+For narrower local iteration, the template exposes tiered read-only gates:
+
+| Command | Purpose |
+| --- | --- |
+| `npm run check:fast` | Script typecheck, script tests, automation registry, and agent artifact checks. |
+| `npm run check:content` | Markdown, generated docs, frontmatter, Obsidian metadata/assets, and product-page checks. |
+| `npm run check:workflow` | Workflow docs, spec state, roadmaps, traceability, automation registry, and agent artifacts. |
+| `npm run verify:changed` | Safe fast gate for changed-work iteration. |
+| `npm run verify:json` | Full gate with machine-readable aggregate diagnostics and rerun commands. |
+
+The automation inventory that backs these commands lives in `tools/automation-registry.yml`; `npm run check:automation-registry` verifies that package scripts, GitHub workflows, skills, and operational agents remain registered.
 
 ## Reporting
 
