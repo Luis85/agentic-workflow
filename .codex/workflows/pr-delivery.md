@@ -18,8 +18,8 @@ This repo treats Codex as an autonomous topic-branch contributor. When a human a
 6. Run the relevant verification gate before pushing. In this template, use `npm run verify` as the final gate. During iteration, `npm run check:fast`, `npm run check:content`, `npm run check:workflow`, and `npm run verify:changed` are available for narrower feedback; use `npm run verify:json` when structured diagnostics are needed. If a downstream project has no single `verify` command for the change type, run targeted checks and say exactly what passed.
 7. Commit with an imperative message that references relevant IDs or issue paths.
 8. Push the topic branch to `origin`.
-9. Open a pull request against the integration branch.
-10. Re-check PR mergeability or CI status when available.
+9. Open a pull request against the integration branch with a Conventional Commits title that matches the CI allowlist. Allowed title types are `feat`, `fix`, `chore`, `docs`, `refactor`, `perf`, `test`, `build`, `ci`, and `revert`; scopes are optional. Do not invent descriptive types such as `plan:` or `release:`. For planning artifacts and documentation-only specs, use `docs: ...`.
+10. After opening the PR, re-check PR mergeability and CI status. If the PR-title check fails, update the PR title immediately instead of pushing a code-only retry.
 11. Final response must include the PR URL, branch, commit, verification result, and any remaining risk.
 12. Ask the human what they want next: review, merge, follow-up changes, or cleanup after merge.
 
@@ -40,5 +40,7 @@ Every Codex-opened PR should include:
 - Verification commands or checks run.
 - Linked requirement, task, ADR, issue, or local issue file when one exists.
 - Known limitations or skipped checks.
+
+The PR title is part of the delivery contract, not cosmetic metadata. Validate it against [`docs/ci-automation.md`](../../docs/ci-automation.md#pr-title-rules) before opening the PR so CI does not fail on a metadata-only error after local `verify` has passed.
 
 Codex should not stop at "pushed a branch" when GitHub access is available. The expected endpoint is an open PR and an explicit next-step prompt for the human.
