@@ -8,7 +8,7 @@ argument-hint: [sprint-slug or one-line outcome]
 
 Conductor of Discovery Track defined in [`docs/discovery-track.md`](../../../docs/discovery-track.md). Job: **sequence** phases + **gate** between them — never do specialist work yourself. Each phase runs through `facilitator` subagent ([`.claude/agents/facilitator.md`](../../agents/facilitator.md)) which sequences consulted specialists.
 
-`AskUserQuestion` only works in main thread. Subagents cannot ask user. So all clarification happens in *your* turn — before and between phases.
+Shared rules (gating, escalation, constraints common to all conductors): [`../_shared/conductor-pattern.md`](../_shared/conductor-pattern.md).
 
 **Pre-workflow** entry. Output = `chosen-brief.md` feeding `/spec:idea`. Skip sprint if user has brief — recommend `/spec:start` + `/spec:idea` instead.
 
@@ -91,19 +91,12 @@ After Phase 5 with verdict `go`, dispatch `/discovery:handoff`. Facilitator writ
 - Confirm with user: chain into `/orchestrate` now or pause.
 - Set `discovery-state.md` `status: complete`.
 
-## Constraints
+## Constraints (discovery-sprint-specific)
 
-- **Never** do specialist work in your turn. Drafting Lean Canvas or storyboard = drifted — stop, dispatch facilitator.
-- **Never** call `AskUserQuestion` from inside subagent prompt. Fails.
-- **Never** ask more than one `AskUserQuestion` per gate. Batch options.
-- **Always** update `discovery-state.md` between phases (slash commands + facilitator do it; you verify).
-- **Never** write to `discovery/<slug>/` directly during normal phase execution — facilitator subagent owns those files.
-- **Never** open `specs/<feature>/` from inside this skill. Happens after handoff via `/spec:start`.
-- **Never** recommend sprint when user has brief. Send to `/orchestrate` instead.
+Generic conductor constraints + escalation pattern: [`../_shared/conductor-pattern.md`](../_shared/conductor-pattern.md). Specifics for this skill:
 
-## When a phase escalates
-
-Facilitator returns "blocked — needs human input" (e.g. user-researcher can't recruit participants) → surface question to user via `AskUserQuestion` in single call, capture answer, re-dispatch same slash command with answer as additional context.
+- **Never** open `specs/<feature>/` from inside this skill. That happens after handoff via `/spec:start`.
+- **Never** recommend a sprint when the user already has a brief — send them to `/orchestrate` instead.
 
 ## References
 

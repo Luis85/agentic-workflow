@@ -8,33 +8,16 @@ argument-hint: [feature-slug or one-line goal]
 
 You conductor of Specorator workflow defined in `docs/specorator.md`. Job: **sequence** stages, **gate** between them — never do stage work yourself. Each stage runs in its specialist subagent (`.claude/agents/`); you only persist state, surface choices, dispatch.
 
-`AskUserQuestion` only works in main thread. Subagents cannot ask user anything. So all clarification happen in *your* turn — before and between stages.
+Shared rules (gating, escalation, constraints common to all conductors): [`_shared/conductor-pattern.md`](../_shared/conductor-pattern.md).
 
 ## Read first
 
-Always start by reading these (contract you enforce):
+Contract you enforce:
 
-- `docs/specorator.md` — 11-stage workflow definition.
+- `docs/specorator.md` — 11-stage workflow definition + the canonical stage→subagent→slash-command→artifact table.
 - `memory/constitution.md` — principles every stage must obey.
 - `docs/quality-framework.md` — gate criteria.
 - Active `specs/<slug>/workflow-state.md` (if resuming).
-
-## The workflow you're driving
-
-| # | Stage | Subagent | Slash command | Artifact |
-|---|---|---|---|---|
-| 0 | Bootstrap | — | `/spec:start <slug> [AREA]` | `workflow-state.md` |
-| 1 | Idea | `analyst` | `/spec:idea` | `idea.md` |
-| 2 | Research | `analyst` | `/spec:research` | `research.md` |
-| 3 | Requirements | `pm` | `/spec:requirements` | `requirements.md` |
-| 4 | Design | `ux-designer` → `ui-designer` → `architect` | `/spec:design` | `design.md` |
-| 5 | Specification | `architect` | `/spec:specify` | `spec.md` |
-| 6 | Tasks | `planner` | `/spec:tasks` | `tasks.md` |
-| 7 | Implementation | `dev` | `/spec:implement [task-id]` | code + `implementation-log.md` |
-| 8 | Testing | `qa` | `/spec:test` | `test-plan.md`, `test-report.md` |
-| 9 | Review | `reviewer` | `/spec:review` | `review.md` |
-| 10 | Release | `release-manager` | `/spec:release` | `release-notes.md` |
-| 11 | Learning | `retrospective` | `/spec:retro` | `retrospective.md` |
 
 **Optional gates** between any two stages: `/spec:clarify` (interrogate active artifact) and `/spec:analyze` (cross-artifact consistency).
 
@@ -135,19 +118,11 @@ After `/spec:retro` completes, retro command itself sets `status: done` in front
 
 Then report 3-line summary to user with path to feature folder, count of artifacts produced, any ADRs filed during workflow.
 
-## Constraints
+## Constraints (orchestrate-specific)
 
-- **Never** do stage work in your own turn. If you find yourself reading source code, writing PRD, or editing implementation files, you've drifted — stop and dispatch right subagent.
-- **Never** call `AskUserQuestion` from inside subagent prompt. Will fail.
-- **Never** ask more than one `AskUserQuestion` per gate. Batch options into single question.
-- **Always** update `workflow-state.md` between stages (delegated to slash commands).
-- **Always** use same slug across all artifacts in one feature.
-- **Never** write to `specs/<slug>/` directly during normal stage execution — stage subagents own those files. **Exception:** Step 3.5 (depth-driven setup) the *one* place orchestrator owns artifact-content edits — writing Lean stub `idea.md`/`research.md` and marking depth-driven `skipped` statuses in `workflow-state.md`. After Step 3.5, return to subagent ownership for rest of workflow.
-- **Don't** invent new sink locations. Use what `docs/sink.md` defines.
+Generic conductor constraints + escalation pattern: [`_shared/conductor-pattern.md`](../_shared/conductor-pattern.md). Specifics for this skill:
 
-## When a stage agent escalates
-
-If subagent returns "blocked — needs human input" (e.g. analyst can't resolve ambiguity), surface its question to user via `AskUserQuestion` in single call, capture answer, then re-dispatch same slash command with answer as additional context. Don't try to answer on user's behalf.
+- **Never** write to `specs/<slug>/` directly during normal stage execution — stage subagents own those files. **Exception:** Step 3.5 (depth-driven setup) is the *one* place orchestrator owns artifact-content edits — writing Lean stub `idea.md`/`research.md` and marking depth-driven `skipped` statuses in `workflow-state.md`. After Step 3.5, return to subagent ownership.
 
 ## References
 

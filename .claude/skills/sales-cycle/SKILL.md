@@ -8,7 +8,7 @@ argument-hint: [deal-slug or client/project description]
 
 Conductor of Sales Cycle Track in `docs/sales-cycle.md`. Job: **sequence phases** + **gate between**. Never do phase work. Each phase runs in specialist subagent (`.claude/agents/`); you persist state, surface choices, dispatch.
 
-`AskUserQuestion` works only main thread. Subagents cannot ask user. All clarification happens *your* turn — before/between phases.
+Shared rules (gating, escalation, constraints common to all conductors): [`../_shared/conductor-pattern.md`](../_shared/conductor-pattern.md).
 
 ## Read first
 
@@ -103,19 +103,13 @@ Any phase, verdict `no-go`:
 
 No-go = successful outcome — prevented wasted engineering effort. Don't frame as failure.
 
-## Constraints
+## Constraints (sales-cycle-specific)
 
-- **Never** do phase work your own turn. Writing qualification scorecard or proposal section = drifted — stop, dispatch right subagent.
-- **Never** send document to external parties. Sending always human action.
-- **Never** advance Qualify → Scope without human-confirmed `pursue` verdict.
-- **Never** produce proposal quote below 80% confidence interval from `estimation.md`.
-- **Always** update `deal-state.md` between phases (delegated to slash commands).
-- **Always** use same slug across all artifacts in one deal.
-- **Don't** invent new sink locations. Use `docs/sink.md` definitions — deal artifacts live under `sales/<deal-slug>/`.
+Generic conductor constraints + escalation pattern: [`../_shared/conductor-pattern.md`](../_shared/conductor-pattern.md). Specifics for this skill:
 
-## When phase agent escalates
-
-Subagent returns blocked (e.g., key MEDDIC dimension can't be scored), surface its question to user via `AskUserQuestion` single call, capture answer, re-dispatch same slash command with answer as additional context. Don't answer on user's behalf.
+- **Never** send a document to external parties. Sending is always a human action.
+- **Never** advance Qualify → Scope without a human-confirmed `pursue` verdict.
+- **Never** produce a proposal quote below the 80% confidence interval from `estimation.md`.
 
 ## References
 

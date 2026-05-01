@@ -447,6 +447,8 @@ Full version in [`memory/constitution.md`](memory/constitution.md).
 | v0.5 | Planned | [Release workflow, branching strategy, GitHub Releases and Packages](specs/version-0-5-plan/tasks.md) |
 | v0.6 | Planned | [Productization, cross-tool adapters, live proof, hooks, and agentic security](specs/version-0-6-plan/tasks.md) |
 | v0.7 | Planned | [Automation quality hardening for agents and humans](https://github.com/Luis85/agentic-workflow/issues/98) |
+| v0.8 | Planned | [Content-driven product page generation](specs/version-0-8-plan/tasks.md) |
+| v0.9 | Planned | [Stakeholder sparring partner for roadmap communication](specs/version-0-9-plan/tasks.md) ([issue #125](https://github.com/Luis85/agentic-workflow/issues/125)) |
 
 ---
 
