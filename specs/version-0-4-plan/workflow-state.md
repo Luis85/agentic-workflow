@@ -4,7 +4,7 @@ area: V04
 current_stage: implementation
 status: active
 last_updated: 2026-05-01
-last_agent: claude-product-page-designer
+last_agent: claude-qa
 artifacts:
   idea.md: complete
   research.md: complete
@@ -13,8 +13,8 @@ artifacts:
   spec.md: complete
   tasks.md: complete
   implementation-log.md: in-progress
-  test-plan.md: pending
-  test-report.md: pending
+  test-plan.md: skipped
+  test-report.md: skipped
   review.md: pending
   traceability.md: pending
   release-notes.md: in-progress
@@ -34,14 +34,17 @@ artifacts:
 | 5. Specification | `spec.md` | complete |
 | 6. Tasks | `tasks.md` | complete |
 | 7. Implementation | `implementation-log.md` + code | in-progress |
-| 8. Testing | `test-plan.md`, `test-report.md` | pending |
+| 8. Testing | `test-plan.md`, `test-report.md` | skipped |
 | 9. Review | `review.md`, `traceability.md` | pending |
 | 10. Release | `release-notes.md` | in-progress |
 | 11. Learning | `retrospective.md` | pending |
 
 ## Skips
 
-- None.
+The v0.4 plan is a meta-feature: each task (T-V04-001 through T-V04-012) ships as its own PR, and testing evidence is scoped to the artifact each PR touches. The plan itself does not have a separate test-plan source tree or rollup test report, so the canonical Stage 8 artifacts are skipped here. Stage 7 implementation evidence still lives in `implementation-log.md` (one §Task entry per T-V04-* task) — not skipped — because the plan's per-task work itself is recorded centrally for cross-task traceability; this is the documented difference from v0.3.
+
+- `test-plan.md` skipped — testing strategy is documented per-task. T-V04-006 added focused tests under `tests/scripts/` (`tests/scripts/doctor.test.ts` for CI-readiness checks, `tests/scripts/quality-metrics.test.ts` for metrics behaviour by state). The v0.4 spec's test scenarios (`spec.md` §Test scenarios, TEST-V04-001 → TEST-V04-009) map onto those files; the canonical "test plan" for v0.4 is the spec's TEST-V04-* table plus the per-test-file naming, not a separate `test-plan.md`.
+- `test-report.md` skipped — test results live in (a) the per-task PR CI runs on GitHub Actions (`.github/workflows/verify.yml`); (b) the local `npm run verify` / `npm run test:scripts` outputs captured in T-V04-011's `implementation-log.md` §Task T-V04-011 entry; (c) the release-readiness command output captured in `release-notes.md` §Readiness summary. No rollup `test-report.md` adds signal beyond what those three already document.
 
 ## Blocks
 
@@ -64,6 +67,7 @@ artifacts:
 - 2026-05-01 (claude, T-V04-006): Completed T-V04-006 focused tests for CI readiness + metrics behaviour by state. Added 5 metrics tests covering the 5 task-named states (active / blocked / done / skipped / open-clarification): stage-aware scoring of an active workflow (already covered, refined with status assertion), `collectQualityMetrics` on a done workflow (`testCoverageExpected` true, `earsExpected` true, `expectedArtifact*` 100), skipped-canonical-artifact accounting (`completeArtifactsFor` counts skipped equivalently to complete), open-clarification surfacing in workflow counts and metrics signals, and pure-helper coverage for `expectedArtifactsForStage` + `traceabilityExpectation` under the blocked status (paused-at-current-stage; same shape as active) and the done status (full canonical set regardless of `currentStage`). Added 2 doctor-readiness tests filling coverage gaps: `dependencyReadinessCheck` happy path (both `node_modules` and lockfile present) and `branchReadinessCheck` topic-branch-ahead warn path (distinct from the integration-branch-ahead failure). Test count 158 → 165. Resolves SPEC-V04-002 (CI readiness contract — test side) and SPEC-V04-003 (metrics — test side); satisfies REQ-V04-001, REQ-V04-003, REQ-V04-004, REQ-V04-008, REQ-V04-009, NFR-V04-001, NFR-V04-002, NFR-V04-005. Unblocks T-V04-011 (qa — release readiness).
 - 2026-05-01 (claude, T-V04-009 pickup): Started substantive T-V04-009 work on `release-notes.md`. Picked up the starter draft authored in PR #163 / #164 (per the pickup checklist in PR #163). Filled non-blocked TODO sections — §Summary (drafted clean prose, no longer "starter draft"), §Improved (stage-aware scoring, trend snapshots, workflow-native quality reporting, doctor reads contract), §Fixed (none — first cycle for these surfaces), §User-visible impact (no action required, no breaking changes), §Known limitations (cross-feature ID rule, IDs-in-fenced-code risk, deferred CLAR-V03-002, doctor substring-marker scope follow-up), §Validation baseline for v0.5 (machine-readable JSON / exit-code surface contract for v0.5 consumption). Updated the §Changes T-V04-004 entry to describe what actually landed via PR #149 (`requiredEvaluators`, YAML-parser-backed push-covers-main, verify-job-scoped SHA-pin) instead of the round-1 description. Quality-gate checklist marked `[x]` for the items now drafted; `[ ]` retained for §Readiness summary (T-V04-011) and §Communication external announcement (T-V04-010). `release-notes.md` flipped from `pending` to `in-progress`; status banner reframed from "starter draft" to "in-progress draft". Remaining T-V04-009 work for the release-manager: cross-check §Changes against the final list of merged PRs at release time, and update README.md §Roadmap row v0.4 from "Planned" to "Done" + `docs/specorator.md` v0.4 references when the release ships (per v0.3 pattern). Closes the bulk of T-V04-009 substantive editing; final close gates on T-V04-010 / T-V04-011.
 - 2026-05-01 (claude, T-V04-010 closeout): Completed T-V04-010 product-page v0.4 positioning. `sites/index.html` §features grid: §Quality gates card now states `npm run verify` runs locally and as required PR CI (CI ≡ local); new §Workflow metrics & maturity card calls out `npm run quality:metrics` with stage-aware scoring, trend snapshots, and the five-level maturity assessment. 9 → 10 cards, no new sections, version-agnostic positioning preserved. Recorded the external-announcement decision in `release-notes.md` §Communication and flipped the matching quality-gate checkbox from `[ ]` to `[x]`. T-V04-010 entry added to `implementation-log.md` with deliberately-not-changed rationale. With T-V04-010 closed, T-V04-009 final close still gates only on T-V04-011 (qa — release readiness verification). Unblocks T-V04-011 (qa — release readiness verification): all upstream slices T-V04-005 / T-V04-007 / T-V04-008 / T-V04-010 are now complete.
+- 2026-05-01 (claude, T-V04-011 closeout): Completed T-V04-011 release-readiness verification. Decision: no separate `release-readiness-guide.md` — v0.4 ships docs / scripts / a CI workflow only, so the per-perspective scaffold in `templates/release-readiness-guide-template.md` is mostly N/A; inline `release-notes.md` §Readiness summary plus §Quality gate is the equivalent decision record (matches v0.3 precedent). Verification suite was green end-to-end on a fresh `npm ci` checkout of `feat/v04-t011-release-readiness` cut from `origin/main` at `e6edc07`: `npm ci` exit 0; `npm test` exit 0 (165/165 pass); `npm run verify` exit 0 (`verify: ok` in 20.5s); `npm run quality:metrics` exit 0 (repo score 91.5%, maturity Level 3 Traceable, 0 active blockers); `npm run quality:metrics -- --feature=version-0-4-plan` exit 0 (v0.4 stage score 97.1%, 0 open clarifications); `npm run doctor` exit 0 (one advisory warning: two merged worktrees `feat/v04-t006-tests`, `feat/v04-t010-product-page` not yet pruned — hygiene only, not a release blocker). Caveat surfaced and added to `release-notes.md` §Verification steps: bare `npm run quality:metrics --feature=...` is silently swallowed by the npm CLI; the script falls back to repo-wide scope. Use `npm run quality:metrics -- --feature=...` (with `--`) or `tsx scripts/quality-metrics.ts --feature=...` directly. Verdict: **go**, with three remaining release-time conditions owned by the release-manager (T-V04-009 final §Changes cross-check + README §Roadmap flip, T-V04-010 §Communication checkbox confirmation, T-V04-012 v0.5 handoff). Stage 8 (Testing) marked `skipped` with rationale under §Skips — meta-feature; canonical test artifacts are `tests/scripts/doctor.test.ts` and `tests/scripts/quality-metrics.test.ts` from T-V04-006 plus the verification commands captured in `implementation-log.md` §Task T-V04-011. `release-notes.md` §Readiness summary filled with verdict + commands + exit codes; quality-gate checkbox `[ ]` Readiness conditions → `[x]`. `implementation-log.md` appended with §Task T-V04-011 (commands, exit codes, decisions, traceability). Stage 10 (Release) stays `in-progress` until T-V04-012 (release-manager — v0.5 release-quality handoff). Unblocks T-V04-012.
 
 ## Open clarifications
 
