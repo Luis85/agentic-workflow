@@ -75,7 +75,7 @@ npm run verify    # full pre-PR gate (read-only)
 
 ## Tier 3 — Full capacity (CI, automation, product page)
 
-You want the whole template firing — CI mirrors local verify, security scans run on every PR, the product page deploys, operational bots can run.
+You want the whole template firing — CI mirrors local verify on every PR, secret + spell scans run on every PR, workflow-file security scans run when `.github/` changes, the product page deploys, operational bots can run.
 
 | Need | Version | Why |
 |---|---|---|
@@ -97,15 +97,15 @@ gh auth login
 
 **CI workflows you get for free** (no local install — they run in Actions):
 
-| Workflow | Tool | Purpose |
-|---|---|---|
-| [`verify.yml`](.github/workflows/verify.yml) | Node + npm | Mirrors `npm run verify` on every PR |
-| [`pr-title.yml`](.github/workflows/pr-title.yml) | — | Enforces Conventional Commits in PR titles |
-| [`pages.yml`](.github/workflows/pages.yml) | — | Deploys [`sites/`](sites/) to GitHub Pages |
-| [`gitleaks.yml`](.github/workflows/gitleaks.yml) | gitleaks | Secret scanning |
-| [`typos.yml`](.github/workflows/typos.yml) | typos | Typo scan |
-| [`actionlint.yml`](.github/workflows/actionlint.yml) | actionlint | Workflow file linter |
-| [`zizmor.yml`](.github/workflows/zizmor.yml) | zizmor | GitHub Actions security audit |
+| Workflow | Tool | Trigger | Purpose |
+|---|---|---|---|
+| [`verify.yml`](.github/workflows/verify.yml) | Node + npm | every PR + push to `main` | Mirrors `npm run verify` |
+| [`pr-title.yml`](.github/workflows/pr-title.yml) | — | every PR | Enforces Conventional Commits in PR titles |
+| [`pages.yml`](.github/workflows/pages.yml) | — | push to `main` | Deploys [`sites/`](sites/) to GitHub Pages |
+| [`gitleaks.yml`](.github/workflows/gitleaks.yml) | gitleaks | every PR + weekly cron | Secret scanning |
+| [`typos.yml`](.github/workflows/typos.yml) | typos | every PR | Typo scan |
+| [`actionlint.yml`](.github/workflows/actionlint.yml) | actionlint | only when `.github/workflows/**` or `.github/actions/**` change | Workflow file linter |
+| [`zizmor.yml`](.github/workflows/zizmor.yml) | zizmor | only when `.github/workflows/**` or `.github/actions/**` change + weekly cron | GitHub Actions security audit (SARIF → Security tab) |
 
 > See [`docs/security-ci.md`](docs/security-ci.md) for the security-CI rationale.
 
