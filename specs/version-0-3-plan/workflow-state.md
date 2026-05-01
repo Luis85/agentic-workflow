@@ -2,9 +2,9 @@
 feature: version-0-3-plan
 area: V03
 current_stage: learning
-status: active
+status: done
 last_updated: 2026-05-01
-last_agent: release-manager
+last_agent: retrospective
 artifacts:
   idea.md: complete
   research.md: complete
@@ -18,7 +18,7 @@ artifacts:
   review.md: skipped
   traceability.md: skipped
   release-notes.md: complete
-  retrospective.md: pending
+  retrospective.md: complete
 ---
 
 # Workflow state — version-0-3-plan
@@ -37,7 +37,7 @@ artifacts:
 | 8. Testing | `test-plan.md`, `test-report.md` | skipped |
 | 9. Review | `review.md`, `traceability.md` | skipped |
 | 10. Release | `release-notes.md` | complete |
-| 11. Learning | `retrospective.md` | pending |
+| 11. Learning | `retrospective.md` | complete |
 
 ## Skips
 
@@ -49,7 +49,7 @@ The v0.3 plan is a meta-feature: each sub-task (T-V03-001 through T-V03-009) shi
 - `review.md` skipped — review findings landed inline on each PR (notably the Codex P1 in PR #94 and Codex P2 reviews in PR #107 / PR #108 / PR #110).
 - `traceability.md` skipped — the v0.3 trace chain is the per-task `Refs:` block in each PR plus `tasks.md` `Satisfies:` fields, not a separate matrix.
 
-The Stage 11 retrospective (`retrospective.md`) remains pending and is the only outstanding artifact for the v0.3 plan.
+The Stage 11 retrospective (`retrospective.md`) ships in this folder and closes the v0.3 plan.
 
 ## Blocks
 
@@ -60,6 +60,7 @@ The Stage 11 retrospective (`retrospective.md`) remains pending and is the only 
 - 2026-04-28 (codex): Planned v0.3 through Stage 6. Recommended implementation order is example completion, validation hardening, validator tests, documentation, product-page review, release readiness verification, then explicit v0.4 validation handoff.
 - 2026-05-01 (claude): T-V03-001/002/003/005/007 shipped. Drafted `release-notes.md` for T-V03-006. T-V03-004 satisfied by existing checks plus T-V03-003 slice 3. T-V03-008 (release readiness) and T-V03-009 (v0.4 handoff) remain.
 - 2026-05-01 (claude, T-V03-008 + T-V03-009): Verified release readiness. `npm run check:links`, `npm run check:specs`, `npm run check:traceability`, `npm run test:scripts` (131 tests), and `npm run verify` all green on `origin/main` at `ef015d3`. README §Roadmap row v0.3 flipped from "Planned" to "Done" with link to `release-notes.md`. `release-notes.md` frontmatter `status: draft` → `complete`. Stage 7–9 artifacts marked `skipped` with rationale under §Skips (meta-feature: per-task PRs ship their own implementation, tests, review, and trace evidence). T-V03-009 (v0.4 validation handoff) is satisfied in-place by §Validation baseline for v0.4 in `release-notes.md`. Only `retrospective.md` (Stage 11) remains; `current_stage` advanced to `learning`.
+- 2026-05-01 (claude, retrospective): RETRO-V03-001 filed. v0.3 plan closes — every canonical artifact is `complete` or documented as `skipped`. Five actions filed for the v0.4 cycle (package.json `test` alias, meta-feature §Skips template guidance, promote v0.3 hard-fail validators to required CI, decide deferred CLAR-V03-002 advisory check, label sliceable tasks in `tasks.md`). `status: active` → `done`.
 
 ## Open clarifications
 
