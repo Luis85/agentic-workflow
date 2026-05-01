@@ -54,6 +54,20 @@ export function specStateDiagnosticsForText(
 }
 
 /**
+ * Emit a diagnostic for each example subdirectory missing a workflow-state.md file.
+ *
+ * The function is pure: directory traversal is the caller's responsibility.
+ * Pass the repository-relative POSIX paths of the offending subdirectories and
+ * receive one diagnostic per path naming the missing artifact.
+ *
+ * @param missingSubdirs - Repository-relative paths of example subdirectories that lack workflow-state.md.
+ * @returns Diagnostic messages, one per missing path.
+ */
+export function examplesCoverageDiagnostics(missingSubdirs: string[]): string[] {
+  return missingSubdirs.map((subdir) => `${subdir} missing workflow-state.md`);
+}
+
+/**
  * Extract artifact-status pairs from the Stage progress Markdown table.
  *
  * @param body - Markdown body after the YAML frontmatter.

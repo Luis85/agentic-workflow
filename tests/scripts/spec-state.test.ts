@@ -1,6 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { parseStageProgressTable, specStateDiagnosticsForText } from "../../scripts/lib/spec-state.js";
+import {
+  examplesCoverageDiagnostics,
+  parseStageProgressTable,
+  specStateDiagnosticsForText,
+} from "../../scripts/lib/spec-state.js";
 
 const REL = "specs/feat/workflow-state.md";
 const FEATURE_DIR = "feat";
@@ -239,6 +243,20 @@ test("skipped artifact mentioned in Skips section passes the skip-doc check", ()
       message.includes("Skips section does not document"),
     ),
     false,
+  );
+});
+
+test("examplesCoverageDiagnostics passes when no example subdirs are missing workflow-state.md", () => {
+  assert.deepEqual(examplesCoverageDiagnostics([]), []);
+});
+
+test("examplesCoverageDiagnostics reports each example subdir missing workflow-state.md", () => {
+  assert.deepEqual(
+    examplesCoverageDiagnostics(["examples/foo", "examples/bar"]),
+    [
+      "examples/foo missing workflow-state.md",
+      "examples/bar missing workflow-state.md",
+    ],
   );
 });
 
