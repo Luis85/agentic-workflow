@@ -3,7 +3,7 @@
 **Status:** Draft for review.
 **Date:** 2026-05-01.
 **Author:** Brainstorming session, Specorator template repo.
-**Related ADR:** `docs/adr/0017-add-product-box-feature.md` (to be filed alongside implementation).
+**Related ADR:** `docs/adr/0019-add-product-box-feature.md` (to be filed alongside implementation).
 **Pairs with:** [`product-page` skill](../../../.claude/skills/product-page/SKILL.md), [`product-page-designer` agent](../../../.claude/agents/product-page-designer.md).
 
 ---
@@ -45,7 +45,7 @@ sites/box/styles.css                        box-specific styles (lifts specorato
 sites/box/og-card.svg                       static SVG mirror of the box front face for og:image
 sites/index.html                            product page; gets <!-- product-box-embed --> slot + card link
 docs/product-box.md                         methodology doc
-docs/adr/0017-add-product-box-feature.md    decision record
+docs/adr/0019-add-product-box-feature.md    decision record
 ```
 
 ### 4.2 Skill-orchestrates / agent-renders split
@@ -243,7 +243,7 @@ sites/box/index.html
 sites/box/styles.css
 sites/box/og-card.svg
 docs/product-box.md
-docs/adr/0017-add-product-box-feature.md
+docs/adr/0019-add-product-box-feature.md
 tests/scripts/product-box/fixtures/*.yml
 tests/scripts/product-box/snapshots/*.html
 tests/scripts/product-box/README.md
@@ -266,7 +266,7 @@ docs/sink.md                           + sites/box/ + box.yml destinations
 
 ## 11. ADR
 
-ADR-0017 records:
+ADR-0019 records:
 
 - Rationale — early-stage envisioned-product visualization fills the gap before product page is grounded.
 - New agent role + new slash namespace `product:box` (load-bearing per AGENTS.md).
