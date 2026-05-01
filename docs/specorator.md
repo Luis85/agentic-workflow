@@ -156,6 +156,7 @@ Quality gates per stage are summarised below; the full Definition of Done lives 
 ### 3.9 Review
 - **Goal:** Ensure correctness, quality, maintainability.
 - **Quality gate:** Requirements satisfied. Risks addressed. No critical findings open. Traceability matrix complete.
+- **Brand review (additive gate):** when the diff touches `sites/`, `.claude/skills/specorator-design/`, or any HTML/CSS/JSX producing user-visible UI, the [`brand-reviewer`](../.claude/agents/brand-reviewer.md) agent runs alongside `reviewer` and posts a PASS line or structured findings against the checks in [`templates/brand-review-checklist.md`](../templates/brand-review-checklist.md). Blocking findings (token literal in changed code, emoji, icon library import without ADR, gradient/texture introduced, page background set to white) must be resolved before merge.
 
 ### 3.10 Release
 - **Goal:** Prepare the feature for delivery.

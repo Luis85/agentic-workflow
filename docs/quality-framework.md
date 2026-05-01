@@ -130,6 +130,7 @@ The KPI snapshot is evidence for a quality review, not a replacement for the sta
 - [ ] Risk assessment current.
 - [ ] Traceability matrix complete and consistent.
 - [ ] Constitution check passes.
+- [ ] **Brand review** — when the diff touches `sites/`, `.claude/skills/specorator-design/`, or any HTML/CSS/JSX producing user-visible UI, the `brand-reviewer` agent posts a PASS line or structured findings. Blocking findings (token literal, emoji, icon import, gradient/texture, white page background) must be resolved before merge. See [`templates/brand-review-checklist.md`](../templates/brand-review-checklist.md) and [`.claude/agents/brand-reviewer.md`](../.claude/agents/brand-reviewer.md).
 
 ### Release
 - [ ] Summary of changes written.
