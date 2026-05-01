@@ -27,23 +27,17 @@ artifacts:
 | 4. Propose | `proposal.md` | pending |
 | 5. Order | `order.md` | pending |
 
-> **Statuses:** `pending` | `in-progress` | `complete` | `skipped` | `blocked`. Use the bare enum value in frontmatter; document skip reasons in **Skips** and blockers in **Blocks**.
+> **Statuses:** `pending` | `in-progress` | `complete` | `skipped` | `blocked`. Section semantics + status enums: see [`_shared/state-file-sections.md`](./_shared/state-file-sections.md).
 
 ## Skips
-
-> Document any skipped phases and why.
 
 - e.g., `scope.md` — RFP included a detailed requirements document; scoping workshop not required.
 
 ## Blocks
 
-> Anything blocking progress.
-
 - e.g., `qualification.md blocked — awaiting budget confirmation from <name>`
 
 ## Hand-off notes
-
-Free-form, append-only. What does the next agent or human need to know?
 
 ```
 YYYY-MM-DD (sales-qualifier): Qualification complete. Win probability 72%. Strong champion in <name>.
@@ -52,8 +46,6 @@ YYYY-MM-DD (scoping-facilitator): Workshop held. Scope bounded. 3 open questions
 ```
 
 ## Open clarifications
-
-> Add and resolve as they come up. Unresolved clarifications block phase transitions.
 
 - [ ] CLAR-001 — …
 - [x] CLAR-002 — … *(resolved YYYY-MM-DD: …)*
