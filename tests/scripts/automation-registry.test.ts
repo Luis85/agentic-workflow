@@ -90,3 +90,14 @@ test("automation registry reports non-string paths without throwing", () => {
     fs.rmSync(root, { recursive: true, force: true });
   }
 });
+
+test("automation registry reports non-object registry input without throwing", () => {
+  const errors = validateAutomationRegistry(null as unknown as Parameters<typeof validateAutomationRegistry>[0]);
+  assert.deepEqual(errors, [
+    {
+      path: "tools/automation-registry.yml",
+      code: "AUTO_REGISTRY",
+      message: "registry must be an object",
+    },
+  ]);
+});

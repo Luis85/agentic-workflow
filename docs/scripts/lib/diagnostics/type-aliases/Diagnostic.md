@@ -16,6 +16,18 @@
 
 ***
 
+### command?
+
+> `optional` **command?**: `string`
+
+***
+
+### exit\_code?
+
+> `optional` **exit\_code?**: `number`
+
+***
+
 ### line?
 
 > `optional` **line?**: `number`
@@ -37,3 +49,15 @@
 ### rerun?
 
 > `optional` **rerun?**: `string`
+
+***
+
+### stderr\_tail?
+
+> `optional` **stderr\_tail?**: `string`
+
+***
+
+### stdout\_tail?
+
+> `optional` **stdout\_tail?**: `string`

@@ -46,7 +46,7 @@ For narrower local iteration, the template exposes tiered read-only gates:
 | `npm run check:fast` | Script typecheck, script tests, automation registry, and agent artifact checks. |
 | `npm run check:content` | Markdown, generated docs, frontmatter, Obsidian metadata/assets, and product-page checks. |
 | `npm run check:workflow` | Workflow docs, spec state, roadmaps, traceability, automation registry, and agent artifacts. |
-| `npm run verify:changed` | Safe fast gate for changed-work iteration. |
+| `npm run verify:changed` | Changed-file gate that selects the smallest mapped read-only checks relative to `origin/main`. |
 | `npm run verify:json` | Full gate with machine-readable aggregate diagnostics and rerun commands. |
 
 The automation inventory that backs these commands lives in `tools/automation-registry.yml`; `npm run check:automation-registry` verifies that package scripts, GitHub workflows, skills, and operational agents remain registered.

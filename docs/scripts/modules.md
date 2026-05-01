@@ -32,6 +32,7 @@
 - [lib/adr](lib/adr/README.md)
 - [lib/agent-artifacts](lib/agent-artifacts/README.md)
 - [lib/automation-registry](lib/automation-registry/README.md)
+- [lib/changed-checks](lib/changed-checks/README.md)
 - [lib/commands](lib/commands/README.md)
 - [lib/diagnostics](lib/diagnostics/README.md)
 - [lib/doctor](lib/doctor/README.md)

@@ -69,6 +69,9 @@ export function validateAutomationRegistry(
 ): DiagnosticInput[] {
   const errors: Diagnostic[] = [];
   const registryPath = "tools/automation-registry.yml";
+  if (!registry || typeof registry !== "object") {
+    return [{ path: registryPath, code: "AUTO_REGISTRY", message: "registry must be an object" }];
+  }
   const entries = Array.isArray(registry.entries) ? registry.entries : [];
   const ids = new Set<string>();
   const commands = new Set<string>();
@@ -232,7 +235,10 @@ function validateRequiredBoolean(
 
 function packageScripts(root: string): string[] {
   const packageJson = JSON.parse(readText(path.join(root, "package.json"))) as PackageJson;
-  return Object.keys(packageJson.scripts || {}).sort();
+  if (!packageJson.scripts || typeof packageJson.scripts !== "object" || Array.isArray(packageJson.scripts)) {
+    return [];
+  }
+  return Object.keys(packageJson.scripts).sort();
 }
 
 function listedFiles(startDir: string, root: string, ...suffixes: string[]): string[] {

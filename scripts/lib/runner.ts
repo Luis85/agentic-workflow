@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { spawnSync, type SpawnSyncReturns } from "node:child_process";
 import type { CheckResult, Diagnostic } from "./diagnostics.js";
 import { formatDiagnostic, formatGitHubAnnotation } from "./diagnostics.js";
 
@@ -98,7 +98,7 @@ export function runNodeTasksJson(tasks: NodeTask[], options: { heading?: string 
       check: task.name,
       status: "fail",
       rerun,
-      errors: [fallbackDiagnostic(task, result.stdout, result.stderr, rerun)],
+      errors: [fallbackDiagnostic(task, result, rerun, [invocation.command, ...args])],
     });
   }
 
@@ -158,17 +158,34 @@ function parseCheckResult(raw: string): CheckResult | null {
 
 function fallbackDiagnostic(
   task: NodeTask,
-  stdout: string | Buffer | null,
-  stderr: string | Buffer | null,
+  result: SpawnSyncReturns<string>,
   rerun: string,
+  command: string[],
 ): Diagnostic {
-  const output = [String(stderr || "").trim(), String(stdout || "").trim()].filter(Boolean).join("\n");
+  const stdout = String(result.stdout || "").trim();
+  const stderr = String(result.stderr || "").trim();
+  const output = [stderr, stdout].filter(Boolean).join("\n");
   const firstLine = output.split(/\r?\n/).find((line) => line.trim()) || `${task.name} failed`;
   return {
     code: "TASK_FAILED",
     message: firstLine,
     rerun,
+    command: command.map(shellQuote).join(" "),
+    exit_code: result.status ?? undefined,
+    stdout_tail: tailLines(stdout),
+    stderr_tail: tailLines(stderr),
   };
+}
+
+function tailLines(value: string, lineCount = 8): string | undefined {
+  const lines = value.split(/\r?\n/).filter((line) => line.trim());
+  if (lines.length === 0) return undefined;
+  return lines.slice(-lineCount).join("\n");
+}
+
+function shellQuote(value: string): string {
+  if (/^[A-Za-z0-9_./:=@-]+$/.test(value)) return value;
+  return JSON.stringify(value);
 }
 
 function commandInvocation(command: string | undefined, args: string[]): { command: string; args: string[] } {
