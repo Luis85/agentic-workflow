@@ -37,6 +37,16 @@ The default `.claude/settings.json` shipped with this template denies pushes to 
 
 These prefixes match the allowlist in `.claude/settings.json` and the regexes in the operational bots' branch‑name idempotency checks. Adding a new prefix means updating both.
 
+## Pull request titles
+
+PR titles are validated by [`.github/workflows/pr-title.yml`](../.github/workflows/pr-title.yml), so every PR title must use a Conventional Commits type from the CI allowlist:
+
+`feat`, `fix`, `chore`, `docs`, `refactor`, `perf`, `test`, `build`, `ci`, or `revert`.
+
+Scopes are optional. The expected shape is `<type>: <subject>` or `<type>(<scope>): <subject>`. The subject must start with an alphanumeric character and must not end with a period.
+
+Use `docs:` for planning artifacts, specs, workflow notes, README changes, and other documentation-only work. Do not use descriptive-but-unsupported types such as `plan:`, `release:`, or `workflow:` unless the CI allowlist is updated in the same concern.
+
 ## Rules
 
 1. **No direct commits on `main` (or `develop`)** — *ever*. Every change lands via a topic branch and a merged PR. This applies to code, docs, ADRs, glossary entries, memory files, brainstorm output, planning artifacts, and generated docs. There is no "small enough" exception. The `.claude/settings.json` push deny is a backstop; the rule applies even to local commits, because extracting a stray `main` commit into a topic branch later costs more than cutting the branch up front. See [`feedback_no_main_commits.md`](../.claude/memory/feedback_no_main_commits.md).

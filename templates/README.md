@@ -21,6 +21,7 @@ Blank artifacts for each workflow stage. Copy into `specs/<feature>/<artifact>.m
 | [`test-plan-template.md`](test-plan-template.md) | 8 — Testing (plan) | `test-plan.md` |
 | [`test-report-template.md`](test-report-template.md) | 8 — Testing (report) | `test-report.md` |
 | [`review-template.md`](review-template.md) | 9 — Review | `review.md` |
+| [`release-readiness-guide-template.md`](release-readiness-guide-template.md) | 10 — Release (optional companion) | `release-readiness-guide.md` |
 | [`release-notes-template.md`](release-notes-template.md) | 10 — Release | `release-notes.md` |
 | [`retrospective-template.md`](retrospective-template.md) | 11 — Learning | `retrospective.md` |
 | [`adr-template.md`](adr-template.md) | (any) — Decision | `docs/adr/NNNN-<title>.md` |

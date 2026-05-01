@@ -53,6 +53,7 @@ Each lifecycle stage has **one owner** (a specialist AI agent), **one output** (
 | [`docs/discovery-track.md`](./discovery-track.md) | Discovery Track detail and phase-by-phase guide |
 | [`docs/roadmap-management-track.md`](./roadmap-management-track.md) | Product/project roadmap management, stakeholder alignment, and team communication workflow |
 | [`docs/quality-assurance-track.md`](./quality-assurance-track.md) | ISO 9001-aligned quality assurance review workflow |
+| [`docs/release-readiness-guide.md`](./release-readiness-guide.md) | Stage 10 go/no-go guide for product perspectives and stakeholder requirements |
 | [`docs/workflow-overview.md`](./workflow-overview.md) | One-page visual + cheat sheet + slash command list |
 | [`docs/quality-framework.md`](./quality-framework.md) | Quality dimensions, gates, and Definition of Done per stage |
 | [`docs/ears-notation.md`](./ears-notation.md) | How to write requirements in EARS format |

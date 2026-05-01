@@ -111,7 +111,7 @@ Each stage **consumes inputs**, **produces a defined artifact**, **is owned by o
 | 7 | Implementation | Dev | code + `implementation-log.md` | [`templates/implementation-log-template.md`](../templates/implementation-log-template.md) |
 | 8 | Testing | QA | `test-plan.md`, `test-report.md` | [`templates/test-plan-template.md`](../templates/test-plan-template.md), [`templates/test-report-template.md`](../templates/test-report-template.md) |
 | 9 | Review | Reviewer | `review.md`, `traceability.md` (RTM) | [`templates/review-template.md`](../templates/review-template.md), [`templates/traceability-template.md`](../templates/traceability-template.md) |
-| 10 | Release | Release Manager | `release-notes.md` | [`templates/release-notes-template.md`](../templates/release-notes-template.md) |
+| 10 | Release | Release Manager | `release-notes.md` (+ optional `release-readiness-guide.md`) | [`templates/release-notes-template.md`](../templates/release-notes-template.md), [`templates/release-readiness-guide-template.md`](../templates/release-readiness-guide-template.md) |
 | 11 | Learning | Retrospective | `retrospective.md` | [`templates/retrospective-template.md`](../templates/retrospective-template.md) |
 
 Quality gates per stage are summarised below; the full Definition of Done lives in [`docs/quality-framework.md`](quality-framework.md).
@@ -158,7 +158,8 @@ Quality gates per stage are summarised below; the full Definition of Done lives 
 
 ### 3.10 Release
 - **Goal:** Prepare the feature for delivery.
-- **Quality gate:** Changelog written. Rollback plan documented. Observability hooks in place. Known limitations disclosed.
+- **Optional companion artifact:** Use `release-readiness-guide.md` when the increment needs an explicit go/no-go packet across product value, user experience, stakeholder approval, engineering, security/privacy/compliance, operations, support, data, commercial, or communications perspectives.
+- **Quality gate:** Changelog written. Release readiness conditions and approvals summarized or the guide is explicitly marked not used. Rollback plan documented. Observability hooks in place. Known limitations disclosed.
 
 ### 3.11 Learning (Retrospective)
 - **Goal:** Capture insights for continuous improvement.
@@ -349,6 +350,8 @@ This track supports internal readiness and audit preparation. It does not grant 
 | Improve | `/quality:improve <slug>` | `improvement-plan.md` |
 
 Use it before release, during project health reviews, before client handoff, for supplier assurance, or after retrospectives reveal recurring quality-system gaps. The full method lives in [`docs/quality-assurance-track.md`](quality-assurance-track.md).
+
+For release-specific go/no-go preparation, use the Stage 10 [`release-readiness-guide.md`](release-readiness-guide.md) reference and [`templates/release-readiness-guide-template.md`](../templates/release-readiness-guide-template.md) to collect product perspectives, stakeholder requirements, release conditions, and approvals before irreversible production actions.
 
 ---
 

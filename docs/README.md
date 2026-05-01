@@ -33,7 +33,7 @@ Learning-oriented. You follow them step by step; you reach a known end state.
 
 Task-oriented recipes — *how do I do X?* You arrive knowing the goal; you leave with the steps.
 
-Seventeen recipes are available. Four common starting points:
+Eighteen recipes are available. Four common starting points:
 
 - [How to fork and personalize the template](./how-to/fork-and-personalize.md) — first-clone setup.
 - [How to run the verify gate](./how-to/run-verify-gate.md) — `npm run verify` green before pushing.
@@ -58,6 +58,7 @@ Look-it-up, normative. Authoritative; not narrative.
 - [`project-scaffolding-track.md`](./project-scaffolding-track.md) — source-led onboarding track for turning collected docs into starter artifacts.
 - [`roadmap-management-track.md`](./roadmap-management-track.md) — product/project roadmap management, stakeholder alignment, and team communication workflow.
 - [`quality-assurance-track.md`](./quality-assurance-track.md) — ISO 9001-aligned quality assurance review workflow.
+- [`release-readiness-guide.md`](./release-readiness-guide.md) — Stage 10 go/no-go guide for product perspectives and stakeholder requirements.
 - [`workflow-overview.md`](./workflow-overview.md) — one-page cheat sheet + slash-command list.
 - [`ears-notation.md`](./ears-notation.md) — the requirement-syntax catalogue.
 - [`traceability.md`](./traceability.md) — the ID scheme and the requirement → spec → task → code → test chain.

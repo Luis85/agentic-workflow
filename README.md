@@ -261,6 +261,15 @@ This files a permanent Architecture Decision Record (ADR) in `docs/adr/`.
 
 The Quality Assurance Track creates ISO 9001-aligned plans, checklists, readiness reviews, and corrective actions. It supports readiness and evidence gathering; it does not grant certification.
 
+### I want to prepare a production release decision
+
+```
+cp templates/release-readiness-guide-template.md specs/my-feature/release-readiness-guide.md
+/spec:release my-feature
+```
+
+Use the Release Readiness Guide when an increment needs product, stakeholder, operational, support, security, privacy, compliance, commercial, or communications evidence before production. It feeds `release-notes.md` and the explicit authorization step; it does not deploy by itself.
+
 ### I want to manage a product or project roadmap
 
 ```
@@ -416,6 +425,7 @@ Full path-by-path map: [`docs/repo-map.md`](docs/repo-map.md). Quick pointers:
 - **Workflow definition** — [`docs/specorator.md`](docs/specorator.md), [`docs/workflow-overview.md`](docs/workflow-overview.md).
 - **Conventions** — [`AGENTS.md`](AGENTS.md), [`CLAUDE.md`](CLAUDE.md), [`memory/constitution.md`](memory/constitution.md).
 - **Quality** — [`docs/quality-framework.md`](docs/quality-framework.md), [`docs/ears-notation.md`](docs/ears-notation.md), [`docs/traceability.md`](docs/traceability.md).
+- **Release readiness** — [`docs/release-readiness-guide.md`](docs/release-readiness-guide.md).
 - **Sink + ADRs** — [`docs/sink.md`](docs/sink.md), [`docs/adr/`](docs/adr/).
 - **Agent and skill libraries** — [`.claude/agents/`](.claude/agents/), [`.claude/skills/`](.claude/skills/), [`agents/operational/`](agents/operational/).
 - **Worked examples** — [`examples/`](examples/) (top-level files are trimmed excerpts; `examples/<slug>/full/` holds the unabridged historical mirror).
