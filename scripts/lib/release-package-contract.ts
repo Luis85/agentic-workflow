@@ -65,6 +65,51 @@ export type ReleasePackageReport = {
   diagnostics: Diagnostic[];
 };
 
+export type ParsedReleasePackageArgs =
+  | { archive: string; archiveSource: "argv" | "env" }
+  | { archiveSource: "none" }
+  | { archiveSource: "argv-empty"; rawFlag: string };
+
+/**
+ * Parse CLI arguments for the fresh-surface packaging check.
+ *
+ * Recognises `--archive <value>` and `--archive=<value>`. Falls back to the
+ * `RELEASE_PACKAGE_ARCHIVE` environment variable when no flag is present.
+ *
+ * `argv-empty` is reported when the `--archive` flag is present without a
+ * non-empty value (for example a shell variable that expanded to the empty
+ * string, or a trailing `--archive` with no following token). The CLI must
+ * treat that case as an argument error rather than falling through to the
+ * skip path; otherwise release automation can silently bypass all three
+ * fresh-surface assertions.
+ *
+ * @param argv Arguments after `process.argv.slice(2)`.
+ * @param env Optional environment object (defaults to `process.env`).
+ */
+export function parseReleasePackageArgs(
+  argv: readonly string[],
+  env: NodeJS.ProcessEnv = process.env,
+): ParsedReleasePackageArgs {
+  for (let i = 0; i < argv.length; i += 1) {
+    const arg = argv[i];
+    if (arg === "--archive") {
+      const value = argv[i + 1];
+      if (value === undefined || value === "" || value.startsWith("--")) {
+        return { archiveSource: "argv-empty", rawFlag: arg };
+      }
+      return { archive: value, archiveSource: "argv" };
+    }
+    if (arg.startsWith("--archive=")) {
+      const value = arg.slice("--archive=".length);
+      if (value === "") return { archiveSource: "argv-empty", rawFlag: arg };
+      return { archive: value, archiveSource: "argv" };
+    }
+  }
+  const envValue = env.RELEASE_PACKAGE_ARCHIVE;
+  if (envValue) return { archive: envValue, archiveSource: "env" };
+  return { archiveSource: "none" };
+}
+
 /**
  * Validate a candidate published archive against the fresh-surface contract
  * (ADR-0021 / SPEC-V05-010 / `package-contract.md`).
@@ -111,7 +156,16 @@ function checkIntakeFoldersEmpty(archive: string): Diagnostic[] {
   for (const folder of INTAKE_FOLDERS) {
     const folderPath = path.join(archive, folder);
     if (!fs.existsSync(folderPath)) continue;
-    if (!fs.statSync(folderPath).isDirectory()) continue;
+
+    const stat = fs.statSync(folderPath);
+    if (!stat.isDirectory()) {
+      diagnostics.push({
+        code: RELEASE_PACKAGE_DIAGNOSTIC_CODES.Intake,
+        path: toPosix(folder),
+        message: `intake folder \`${folder}/\` must be a directory (or absent), got non-directory occupant — must contain only \`README.md\` (ADR-0021 §Decision.3 / SPEC-V05-010 assertion 2)`,
+      });
+      continue;
+    }
 
     const entries = fs
       .readdirSync(folderPath, { withFileTypes: true })

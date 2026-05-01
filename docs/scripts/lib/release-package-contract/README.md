@@ -14,6 +14,7 @@ entry_point: true
 
 ## Type Aliases
 
+- [ParsedReleasePackageArgs](type-aliases/ParsedReleasePackageArgs.md)
 - [ReleasePackageReport](type-aliases/ReleasePackageReport.md)
 
 ## Variables
@@ -27,3 +28,4 @@ entry_point: true
 ## Functions
 
 - [checkReleasePackageContents](functions/checkReleasePackageContents.md)
+- [parseReleasePackageArgs](functions/parseReleasePackageArgs.md)

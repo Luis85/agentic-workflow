@@ -9,6 +9,7 @@ import {
   INTAKE_FOLDERS,
   RELEASE_PACKAGE_DIAGNOSTIC_CODES,
   checkReleasePackageContents,
+  parseReleasePackageArgs,
 } from "../../scripts/lib/release-package-contract.js";
 
 const STUB_DOC = `---
@@ -128,15 +129,8 @@ test("non-empty intake folder fails assertion 2 with a deterministic diagnostic"
 test("non-README file directly under an intake folder fails assertion 2", () => {
   const archive = createCleanArchive();
   try {
-    fs.writeFileSync(
-      path.join(archive, "sales"),
-      "should be a directory but treat any leftover as violation",
-    );
-    // The above writes a file at sales — adjust by rewriting as folder with a non-README file
-    fs.unlinkSync(path.join(archive, "sales"));
     fs.mkdirSync(path.join(archive, "sales"), { recursive: true });
     fs.writeFileSync(path.join(archive, "sales", "deal-state.md"), "leftover");
-
     const report = checkReleasePackageContents(archive);
     const intake = report.diagnostics.find(
       (d) =>
@@ -144,6 +138,27 @@ test("non-README file directly under an intake folder fails assertion 2", () => 
         d.path === "sales/deal-state.md",
     );
     assert.ok(intake, "expected RELEASE_PKG_INTAKE diagnostic for sales/deal-state.md");
+  } finally {
+    cleanup(archive);
+  }
+});
+
+test("non-directory intake path fails assertion 2 (Codex P2 regression)", () => {
+  const archive = createCleanArchive();
+  try {
+    // Adversary case: an archive ships `sales` as a file rather than a folder.
+    // Without the fix, statSync().isDirectory() === false skipped silently.
+    fs.writeFileSync(path.join(archive, "sales"), "not a directory");
+    const report = checkReleasePackageContents(archive);
+    const intake = report.diagnostics.find(
+      (d) =>
+        d.code === RELEASE_PACKAGE_DIAGNOSTIC_CODES.Intake && d.path === "sales",
+    );
+    assert.ok(
+      intake,
+      "expected RELEASE_PKG_INTAKE diagnostic for non-directory intake path",
+    );
+    assert.match(intake.message, /must be a directory/);
   } finally {
     cleanup(archive);
   }
@@ -286,6 +301,60 @@ test("missing stub template fails closed before doc inspection", () => {
   } finally {
     cleanup(archive);
   }
+});
+
+test("parseReleasePackageArgs accepts `--archive <dir>` and `--archive=<dir>`", () => {
+  assert.deepEqual(parseReleasePackageArgs(["--archive", "/tmp/pkg"], {}), {
+    archive: "/tmp/pkg",
+    archiveSource: "argv",
+  });
+  assert.deepEqual(parseReleasePackageArgs(["--archive=/tmp/pkg"], {}), {
+    archive: "/tmp/pkg",
+    archiveSource: "argv",
+  });
+});
+
+test("parseReleasePackageArgs falls back to RELEASE_PACKAGE_ARCHIVE env", () => {
+  assert.deepEqual(
+    parseReleasePackageArgs([], { RELEASE_PACKAGE_ARCHIVE: "/tmp/env-pkg" }),
+    { archive: "/tmp/env-pkg", archiveSource: "env" },
+  );
+});
+
+test("parseReleasePackageArgs returns `none` when nothing is provided", () => {
+  assert.deepEqual(parseReleasePackageArgs([], {}), { archiveSource: "none" });
+});
+
+test("parseReleasePackageArgs flags empty `--archive` value (Codex P1 regression)", () => {
+  // Trailing flag: argv variant
+  assert.deepEqual(parseReleasePackageArgs(["--archive"], {}), {
+    archiveSource: "argv-empty",
+    rawFlag: "--archive",
+  });
+  // Empty value via shell expansion: --archive ""
+  assert.deepEqual(parseReleasePackageArgs(["--archive", ""], {}), {
+    archiveSource: "argv-empty",
+    rawFlag: "--archive",
+  });
+  // Followed by another flag: --archive --json
+  assert.deepEqual(parseReleasePackageArgs(["--archive", "--json"], {}), {
+    archiveSource: "argv-empty",
+    rawFlag: "--archive",
+  });
+  // `--archive=` with empty RHS
+  assert.deepEqual(parseReleasePackageArgs(["--archive="], {}), {
+    archiveSource: "argv-empty",
+    rawFlag: "--archive=",
+  });
+});
+
+test("parseReleasePackageArgs argv beats env", () => {
+  assert.deepEqual(
+    parseReleasePackageArgs(["--archive", "/tmp/argv"], {
+      RELEASE_PACKAGE_ARCHIVE: "/tmp/env",
+    }),
+    { archive: "/tmp/argv", archiveSource: "argv" },
+  );
 });
 
 test("violations across all three assertions are reported together", () => {

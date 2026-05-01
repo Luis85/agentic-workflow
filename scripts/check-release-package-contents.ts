@@ -1,6 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
-import { checkReleasePackageContents } from "./lib/release-package-contract.js";
+import {
+  checkReleasePackageContents,
+  parseReleasePackageArgs,
+} from "./lib/release-package-contract.js";
 import { failIfErrors, repoRoot } from "./lib/repo.js";
 
 /**
@@ -30,46 +33,40 @@ import { failIfErrors, repoRoot } from "./lib/repo.js";
  * the fresh-surface contract together.
  */
 
-type ParsedArgs = {
-  archive?: string;
-  archiveSource: "argv" | "env" | "none";
-};
-
-function parseArgs(argv: string[]): ParsedArgs {
-  for (let i = 0; i < argv.length; i += 1) {
-    const arg = argv[i];
-    if (arg === "--archive") {
-      return { archive: argv[i + 1], archiveSource: "argv" };
-    }
-    if (arg.startsWith("--archive=")) {
-      return { archive: arg.slice("--archive=".length), archiveSource: "argv" };
-    }
-  }
-  const envValue = process.env.RELEASE_PACKAGE_ARCHIVE;
-  if (envValue) return { archive: envValue, archiveSource: "env" };
-  return { archiveSource: "none" };
-}
-
-const args = parseArgs(process.argv.slice(2));
+const args = parseReleasePackageArgs(process.argv.slice(2));
 const heading = "check:release-package-contents";
 
-if (!args.archive) {
+if (args.archiveSource === "argv-empty") {
+  failIfErrors(
+    [
+      {
+        code: "RELEASE_PKG_ARCHIVE",
+        message: `\`${args.rawFlag}\` requires a non-empty value (path to candidate archive directory). Refusing to fall through to the skip path so release automation cannot silently bypass the fresh-surface assertions.`,
+      },
+    ],
+    heading,
+  );
+  process.exit(1); // unreachable: failIfErrors exits on non-empty diagnostics; kept for control-flow narrowing.
+}
+
+if (args.archiveSource === "none") {
   console.log(
     `${heading}: skipped (no candidate archive provided; pass --archive <dir> or set RELEASE_PACKAGE_ARCHIVE)`,
   );
   process.exit(0);
 }
 
-const archivePath = path.isAbsolute(args.archive)
-  ? args.archive
-  : path.resolve(repoRoot, args.archive);
+const rawArchive = args.archive;
+const archivePath = path.isAbsolute(rawArchive)
+  ? rawArchive
+  : path.resolve(repoRoot, rawArchive);
 
 if (!fs.existsSync(archivePath) || !fs.statSync(archivePath).isDirectory()) {
   failIfErrors(
     [
       {
         code: "RELEASE_PKG_ARCHIVE",
-        path: args.archive,
+        path: rawArchive,
         message: `candidate archive does not exist or is not a directory (resolved: ${archivePath})`,
       },
     ],
