@@ -95,7 +95,7 @@ After pulling v0.4:
 ## Communication
 
 - **Internal announcement:** issue #89 (the v0.4 tracking issue) closes when this release ships and gets a final comment summarizing what landed.
-- **External announcement:** TODO — confirm in T-V04-010 whether `sites/index.html` needs a v0.4 pivot (CI gates / metrics positioning).
+- **External announcement:** `sites/index.html` updated in T-V04-010: §Quality gates feature card now states `npm run verify` runs locally and as required PR CI (CI ≡ local), and a new §Workflow metrics & maturity card calls out `npm run quality:metrics` with stage-aware scoring, trend snapshots, and the five-level maturity assessment. No new sections; positioning thesis (specs first, traceable, agent-specialised) unchanged.
 - **Support / docs updates:** `docs/pr-ci-gate.md` (new), `docs/quality-metrics.md` (new), `docs/quality-framework.md` (cross-link added).
 
 ## Validation baseline for v0.5
@@ -119,4 +119,4 @@ This subsection feeds T-V04-012 (v0.5 release-quality handoff). v0.5 release-rea
 - [x] Verification steps documented (T-V04-011 may add more).
 - [x] Rollback plan documented.
 - [x] Observability hooks in place (or correctly marked N/A).
-- [ ] Communication plan ready. *(External-announcement decision pending T-V04-010.)*
+- [x] Communication plan ready. *(T-V04-010: `sites/index.html` lift landed; external decision recorded above.)*

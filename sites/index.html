@@ -210,7 +210,11 @@
           </article>
           <article class="card">
             <h3>Quality gates</h3>
-            <p>Each stage has acceptance criteria so defects are caught where they are cheapest to fix.</p>
+            <p>Each stage has acceptance criteria so defects are caught where they are cheapest to fix. <code>npm run verify</code> runs the full gate locally and as required PR CI &mdash; CI &equiv; local.</p>
+          </article>
+          <article class="card">
+            <h3>Workflow metrics &amp; maturity</h3>
+            <p>Stage-aware <code>npm run quality:metrics</code> reports score, blockers, frontmatter / QA gaps, optional trend snapshots, and a five-level evidence-backed maturity assessment in JSON and rendered form.</p>
           </article>
           <article class="card">
             <h3>Release readiness</h3>

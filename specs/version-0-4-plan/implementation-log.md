@@ -183,6 +183,25 @@ Resolves SPEC-V04-002 (CI readiness contract). Satisfies REQ-V04-001 (PR CI gate
 - Documented maturity levels in `docs/quality-metrics.md`.
 - Updated the `quality-metrics` skill to report maturity without presenting it as certification or people scoring.
 
+## Task T-V04-010 - Product page v0.4 positioning
+
+Decision: minimal-lift positioning update on `sites/index.html`. Page is positioning-level and version-agnostic — v0.4 thesis (specs first, traceable, agent-specialised) unchanged — but the headline v0.4 shift (CI-enforced quality gate, workflow metrics + maturity) was not reflected in the §features grid.
+
+| Card | Before | After |
+|---|---|---|
+| §Quality gates | Stage-gate framing only ("acceptance criteria so defects are caught where they are cheapest to fix") | Adds `npm run verify` runs locally and as required PR CI — CI ≡ local. |
+| §Workflow metrics & maturity (new) | — | Stage-aware `npm run quality:metrics` with score, blockers, frontmatter / QA gaps, optional trend snapshots, five-level evidence-backed maturity assessment in JSON and rendered form. |
+
+§features grid: 9 → 10 cards. No new sections. Quickstart already shows `npm run verify`; no further changes needed there. Recorded the external-announcement decision in `release-notes.md` §Communication; flipped the matching quality-gate checkbox to `[x]`.
+
+### Deliberately not changed
+
+- Hero, problem/solution, team-grid, audience-grid, workflow-diagram, 8-track grid, 30-agent roster, repo contents, FAQ, get-started: positioning stays valid; v0.4 is non-breaking and ships only optional surfaces.
+- No version banner, no v0.4 callout strip — landing page remains version-agnostic by design.
+- `npm run quality:metrics` and `npm run doctor` are operator commands, not prospect-facing CTAs; left out of the §start quickstart on purpose.
+
+Satisfies T-V04-010 release task; satisfies the §Communication TODO that the v0.4 release notes flagged.
+
 ## Verification
 
 - `npm run typecheck:scripts`
