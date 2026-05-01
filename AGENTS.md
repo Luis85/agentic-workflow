@@ -36,6 +36,7 @@ Repo = **template for spec-driven, agentic software development**. Defines workf
 
 - Markdown for all artifacts. Concise; precision over completeness in early iterations.
 - File names = kebab-case. Per-feature work under `specs/<feature-slug>/`.
+- **Searching the repo:** when using Glob or Grep, exclude `.worktrees/**` unless you explicitly need it. Each worktree is a full repo copy — searching them inflates results, slows the search, and burns tokens. See [`docs/worktrees.md`](docs/worktrees.md#search-hygiene).
 - One `README.md` per folder max. Folders below the repo root start with frontmatter (`title`, `folder`, `description`, `entry_point: true`); root `README.md` is exempt.
 - Glossary terms one-per-file under `docs/glossary/<slug>.md` via `/glossary:new "<term>"`. Legacy single-file `docs/UBIQUITOUS_LANGUAGE.md` deprecated by [ADR-0010](docs/adr/0010-shard-glossary-into-one-file-per-term.md).
 - Commit messages: imperative, reference IDs (`feat(auth): add T-AUTH-014 password reset`).

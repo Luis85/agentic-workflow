@@ -44,6 +44,16 @@ git worktree prune                   # if needed
 - **Don't commit anything from `.worktrees/`.** The directory is gitignored on purpose.
 - **Don't symlink dependency trees** (`node_modules`, `.venv`) between worktrees. The whole point is isolation.
 
+## Search hygiene
+
+When using **Glob** or **Grep** across the repo, exclude `.worktrees/**` unless you explicitly need to search inside one. Each worktree is a full repo copy — searching all of them inflates results, slows the search, and burns tokens. Examples:
+
+- `Glob` — pass a project-relative path (e.g. `docs/**/*.md`) instead of an open `**/*.md`, or set `path: docs/`.
+- `Grep` — pass `path: <subdir>` for a scoped search; avoid running at the repo root without a glob filter.
+- Bash `find` — start the path inside a known subtree, or add `-not -path './.worktrees/*'`.
+
+Multiplied across a session, this is a meaningful chunk of the token budget. (A repo-wide budget policy will land at `docs/token-budget.md` in a follow-up.)
+
 ## When to skip the worktree
 
 For a one‑line typo fix or a docs‑only PR you'll merge in 30 seconds, the worktree overhead isn't worth it. Cut a topic branch in the main checkout, push, merge, switch back to the integration branch.
