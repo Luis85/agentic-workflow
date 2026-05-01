@@ -9,7 +9,7 @@ model: sonnet
 
 Run **Phase 3 — Mock** of the Design Track. Read [`docs/design-track.md`](../../../docs/design-track.md) §3.3. State machine and field names live in [`templates/design-state-template.md`](../../../templates/design-state-template.md).
 
-1. Resolve the slug from `$1` or by inspecting `designs/` for a `design-state.md` whose `status` is `mock-in-progress` (or `sketch-complete` ready to advance).
+1. Resolve the slug from `$1` or by inspecting `designs/` for a `design-state.md` whose `status` is `mock-in-progress`, `mock-in-progress-blocked`, or `sketch-complete` (ready to advance).
 2. Confirm `designs/<slug>/sketch.md` exists; if not, route to `/design:sketch` first.
 3. If `status` is `sketch-complete`, advance it to `mock-in-progress` before starting the phase.
 4. **Spawn the `design-lead` subagent** with the slug. The design-lead will:

@@ -9,7 +9,7 @@ model: sonnet
 
 Run **Phase 1 — Frame** of the Design Track. Read [`docs/design-track.md`](../../../docs/design-track.md) §3.1.
 
-1. Resolve the design slug from `$1` or by inspecting `designs/` for a `design-state.md` whose `status` is `frame-in-progress` (or `frame-in-progress-blocked`). State machine and field names live in [`templates/design-state-template.md`](../../../templates/design-state-template.md).
+1. Resolve the design slug from `$1` or by inspecting `designs/` for a `design-state.md` whose `status` is `frame-in-progress` or `frame-in-progress-blocked`. State machine, blocked-state convention, and field names live in [`templates/design-state-template.md`](../../../templates/design-state-template.md).
 2. Confirm `designs/<slug>/design-state.md` exists; if not, propose `/design:start <slug>` first.
 3. **Spawn the `design-lead` subagent** with the user's brief and the slug. The design-lead will:
    - Read `.claude/skills/specorator-design/SKILL.md` and `colors_and_type.css` before any visual output.

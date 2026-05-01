@@ -9,7 +9,7 @@ model: sonnet
 
 Run **Phase 4 — Handoff** of the Design Track. Read [`docs/design-track.md`](../../../docs/design-track.md) §3.4. State machine and field names live in [`templates/design-state-template.md`](../../../templates/design-state-template.md).
 
-1. Resolve the slug from `$1` or by inspecting `designs/` for a `design-state.md` whose `status` is `handoff-in-progress` (or `mock-complete` ready to advance).
+1. Resolve the slug from `$1` or by inspecting `designs/` for a `design-state.md` whose `status` is `handoff-in-progress`, `handoff-in-progress-blocked`, or `mock-complete` (ready to advance).
 2. Confirm `designs/<slug>/sketch.md` and Phase 3 mock decisions in `design-state.md` exist; if not, route to `/design:mock` first.
 3. If `status` is `mock-complete`, advance it to `handoff-in-progress` before starting the phase.
 4. **Spawn the `design-lead` subagent** with the slug. The design-lead will:
