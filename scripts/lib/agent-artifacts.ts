@@ -194,22 +194,39 @@ function isConcretePathReference(candidate: string): boolean {
       candidate.startsWith(".codex/") ||
       candidate.startsWith(".github/") ||
       candidate.startsWith("agents/") ||
+      candidate.startsWith("discovery/") ||
       candidate.startsWith("docs/") ||
       candidate.startsWith("memory/") ||
+      candidate.startsWith("portfolio/") ||
+      candidate.startsWith("projects/") ||
+      candidate.startsWith("quality/") ||
+      candidate.startsWith("roadmaps/") ||
+      candidate.startsWith("scaffolding/") ||
       candidate.startsWith("scripts/") ||
       candidate.startsWith("sites/") ||
+      candidate.startsWith("specs/") ||
       candidate.startsWith("templates/") ||
       candidate.startsWith("tools/"),
   );
 }
 
 function isDocumentedExampleReference(candidate: string, text: string, index: number): boolean {
-  if (/[A-Z]{2,}/.test(candidate)) return true;
+  if (isOptionalLegacyReference(candidate)) return true;
+  if (candidate.endsWith("/")) return true;
+  if (hasPlaceholderSegment(candidate)) return true;
   if (/(^|\/)(foo|bar|example|sample)(\.|\/|$)/i.test(candidate)) return true;
   const context = lineContextAt(text, index, 2);
   return /\b(e\.g\.|example|sample|placeholder|template|lazy|lazily|if present|not included|not checked|does not|expected to rot|link rot|create|creates|created|scaffold|produces?|outputs?)\b/i.test(
     context,
   );
+}
+
+function hasPlaceholderSegment(candidate: string): boolean {
+  return candidate.split("/").some((segment) => /(YYYY|MM|DD|NNNN|\d{4}-\d{2}-\d{2})/.test(segment));
+}
+
+function isOptionalLegacyReference(candidate: string): boolean {
+  return candidate === "docs/CONTEXT.md" || candidate === "docs/CONTEXT-MAP.md" || candidate === "docs/UBIQUITOUS_LANGUAGE.md";
 }
 
 function resolveReferencePath(root: string, sourcePath: string, candidate: string): string {

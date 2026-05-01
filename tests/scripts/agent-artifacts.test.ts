@@ -102,3 +102,57 @@ test("agent artifact validation ignores examples and placeholders", () => {
     fs.rmSync(root, { recursive: true, force: true });
   }
 });
+
+test("agent artifact validation checks workflow-root and uppercase file paths", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "agentic-workflow-agent-workflow-path-test-"));
+  try {
+    fs.mkdirSync(path.join(root, ".claude", "skills", "paths"), { recursive: true });
+    fs.writeFileSync(path.join(root, "package.json"), JSON.stringify({ scripts: {} }), "utf8");
+    fs.writeFileSync(
+      path.join(root, ".claude", "skills", "paths", "SKILL.md"),
+      [
+        "---",
+        "name: paths",
+        "description: Path validation.",
+        "---",
+        "# Paths",
+        "",
+        "Read `specs/missing/workflow-state.md`, `roadmaps/missing/roadmap-state.md`, and `docs/MISSING.md`.",
+      ].join("\n"),
+      "utf8",
+    );
+
+    const errors = validateAgentArtifacts(root);
+    const messages = errors.filter((error) => typeof error !== "string").map((error) => error.message);
+    assert.equal(messages.some((message) => message.includes("specs/missing/workflow-state.md")), true);
+    assert.equal(messages.some((message) => message.includes("roadmaps/missing/roadmap-state.md")), true);
+    assert.equal(messages.some((message) => message.includes("docs/MISSING.md")), true);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("agent artifact validation ignores lazy roots and optional legacy references", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "agentic-workflow-agent-lazy-path-test-"));
+  try {
+    fs.mkdirSync(path.join(root, ".claude", "skills", "lazy"), { recursive: true });
+    fs.writeFileSync(path.join(root, "package.json"), JSON.stringify({ scripts: {} }), "utf8");
+    fs.writeFileSync(
+      path.join(root, ".claude", "skills", "lazy", "SKILL.md"),
+      [
+        "---",
+        "name: lazy",
+        "description: Lazy references.",
+        "---",
+        "# Lazy",
+        "",
+        "Optional workspaces may include `discovery/`, `portfolio/`, `docs/CONTEXT.md`, and `docs/UBIQUITOUS_LANGUAGE.md`.",
+      ].join("\n"),
+      "utf8",
+    );
+
+    assert.deepEqual(validateAgentArtifacts(root), []);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
