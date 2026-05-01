@@ -113,7 +113,7 @@ CI readiness + branch / worktree hygiene check. v0.5 invokes it before publish.
 | Check | Source | Status when degraded |
 |---|---|---|
 | Node / npm / git availability and Node ≥ 20 | `scripts/doctor.ts` | `fail` |
-| Branch readiness (ahead / behind / topic vs. integration) | `scripts/lib/doctor.ts` `branchReadinessCheck` | `warn` (most cases) or `fail` (no upstream / git error) |
+| Branch readiness (ahead / behind / topic vs. integration) | `scripts/lib/doctor.ts` `branchReadinessCheck` | `warn` (most cases) or `fail` (only when `git branch --show-current` fails — i.e. not in a git checkout). A topic branch with no upstream returns `pass` (`scripts/doctor.ts` `checkGitBranch`); divergence vs. upstream returns `warn`. |
 | Working tree clean | `scripts/doctor.ts` `checkGitStatus` | `warn` |
 | Worktree hygiene (no merged-but-stale registrations) | `scripts/lib/doctor.ts` `worktreeHygieneCheck` | `warn` |
 | Dependency readiness (`node_modules` + lockfile) | `scripts/lib/doctor.ts` `dependencyReadinessCheck` | `warn` (missing / drift) |
