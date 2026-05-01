@@ -48,7 +48,7 @@ Before doing any non-trivial work, read:
 
 ## When the harness gets in your way
 
-This repo is **process-light by design** for v0.1: no required CI, no PR checks, no enforced branch protection. If you find yourself fighting tooling, prefer fixing the process to working around it.
+This repo is **process-light by design**, but it now has local and CI quality signals: `npm run verify`, PR-title checks, spell check, Pages deployment, workflow/security scans, and dependency bump automation. Branch protection may still be intentionally light for early template adoption; if you find yourself fighting tooling, prefer fixing the process to working around it.
 
 ## Four classes of agent
 

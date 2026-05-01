@@ -1,17 +1,17 @@
 ---
 title: CI automation
 folder: docs
-description: GitHub Actions workflows and Dependabot config that automate hygiene tasks — PR-title lint, spell check, Markdown style lint, and pinned-action bumps.
+description: GitHub Actions workflows and Dependabot config that automate hygiene tasks — PR-title lint, spell check, and pinned-action bumps.
 entry_point: false
 ---
 
 # CI automation
 
-Companion to [`verify-gate.md`](verify-gate.md) and [`security-ci.md`](security-ci.md). Documents the workflows that automate routine hygiene the [`verify`](verify-gate.md) gate is intentionally too narrow to enforce: convention checks against PR metadata, spell / Markdown style checks across docs, and dependency bump automation.
+Companion to [`verify-gate.md`](verify-gate.md) and [`security-ci.md`](security-ci.md). Documents the workflows that automate routine hygiene the [`verify`](verify-gate.md) gate is intentionally too narrow to enforce: convention checks against PR metadata, spell checks across docs, and dependency bump automation.
 
 | Workflow | File | Trigger | What it does |
 | --- | --- | --- | --- |
-| **pr-title** | [`.github/workflows/pr-title.yml`](../.github/workflows/pr-title.yml) | `pull_request_target` opened / edited / reopened / synchronize | Validates PR title against Conventional Commits (`feat`, `fix`, `chore`, `docs`, `refactor`, `perf`, `test`, `build`, `ci`, `revert`). Mirrors the [AGENTS.md](../AGENTS.md) commit convention. |
+| **pr-title** | [`.github/workflows/pr-title.yml`](../.github/workflows/pr-title.yml) | `pull_request` opened / edited / reopened / synchronize | Validates PR title against Conventional Commits (`feat`, `fix`, `chore`, `docs`, `refactor`, `perf`, `test`, `build`, `ci`, `revert`). Mirrors the [AGENTS.md](../AGENTS.md) commit convention. |
 | **typos** | [`.github/workflows/typos.yml`](../.github/workflows/typos.yml) | PR + push to `main` | Spell-check across the repo. Allowlist in [`_typos.toml`](../_typos.toml). |
 | **dependabot** | [`.github/dependabot.yml`](../.github/dependabot.yml) | Weekly (Monday 06:00 UTC) | Opens PRs for new versions of pinned GitHub Actions and npm dev-dependencies. Groups patches and minors to keep PR volume low. |
 
@@ -27,7 +27,7 @@ Companion to [`verify-gate.md`](verify-gate.md) and [`security-ci.md`](security-
 
 ## PR-title rules
 
-The PR-title check runs as `pull_request_target` so external contributors can be validated without granting write tokens. The action only reads the title — it does not run repo code.
+The PR-title check runs as `pull_request`, not `pull_request_target`. The action reads PR metadata through the GitHub API and never checks out PR content, so it does not need an elevated token.
 
 Allowed types are intentionally narrow:
 
