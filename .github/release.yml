@@ -1,0 +1,71 @@
+# Generated release notes configuration for GitHub Releases.
+#
+# Consumed by GitHub's auto-generated release notes during the v0.5 manual
+# release workflow (T-V05-006). Categories map merged-PR labels to the public
+# release-note sections defined for v0.5.
+#
+# Satisfies REQ-V05-003, REQ-V05-004, SPEC-V05-003.
+# See:
+#   - ADR-0020 (docs/adr/0020-v05-release-branch-strategy.md)
+#   - specs/version-0-5-plan/spec.md
+#   - https://docs.github.com/en/repos/releases/automatically-generated-release-notes
+#
+# Note on bot exclusions: dependabot and github-actions are excluded so their
+# routine PRs do not crowd the public-facing notes. Operational bots under
+# `agents/operational/` open PRs through human or `github-actions[bot]`
+# identities and can be tuned here once their author handles are verified.
+
+changelog:
+  exclude:
+    labels:
+      - release
+      - chore-release
+      - skip-changelog
+    authors:
+      - dependabot
+      - github-actions
+      - dependabot[bot]
+      - github-actions[bot]
+  categories:
+    - title: Breaking Changes
+      labels:
+        - breaking
+        - breaking-change
+    - title: Features
+      labels:
+        - feat
+        - enhancement
+    - title: Bug Fixes
+      labels:
+        - fix
+        - bug
+    - title: Documentation
+      labels:
+        - docs
+        - documentation
+    - title: Performance
+      labels:
+        - perf
+        - performance
+    - title: Refactor
+      labels:
+        - refactor
+    - title: Tests
+      labels:
+        - test
+        - tests
+    - title: Build & CI
+      labels:
+        - build
+        - ci
+    - title: Reverts
+      labels:
+        - revert
+    - title: Chores & Dependencies
+      labels:
+        - chore
+        - dependencies
+        - deps
+    - title: Other Changes
+      labels:
+        - "*"
