@@ -22,7 +22,7 @@
 
 ### expectedPackageFiles?
 
-> `optional` **expectedPackageFiles?**: `string`[]
+> `optional` **expectedPackageFiles?**: readonly `string`[]
 
 ***
 

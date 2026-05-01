@@ -6,6 +6,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  EXPECTED_PACKAGE_FILES,
   EXPECTED_PACKAGE_NAME,
   EXPECTED_PACKAGE_REGISTRY,
   EXPECTED_PACKAGE_REPOSITORY,
@@ -53,7 +54,7 @@ const VALID_PACKAGE_JSON = {
   version: VERSION,
   publishConfig: { registry: EXPECTED_PACKAGE_REGISTRY },
   repository: EXPECTED_PACKAGE_REPOSITORY,
-  files: ["scripts/", "templates/", "README.md"],
+  files: [...EXPECTED_PACKAGE_FILES],
 };
 
 const VALID_RELEASE_YML = `
@@ -225,6 +226,38 @@ test("Scenario 3b — release.yml missing changelog block fails ReleaseNotesShap
   }
 });
 
+test("Scenario 3c — release.yml `exclude: {}` fails ReleaseNotesShape (Codex round-3 P2)", () => {
+  // T-V05-003 contract requires both `exclude.labels` and `exclude.authors`
+  // arrays so generated release notes filter maintenance/bot entries.
+  // Previously, `exclude: {}` passed because only the block's existence was
+  // checked.
+  const releaseYml = `
+changelog:
+  exclude: {}
+  categories:
+    - title: Features
+      labels: [feat]
+`;
+  const repoRoot = createFixture({ releaseYml });
+  try {
+    const report = run(repoRoot);
+    const labels = report.diagnostics.find(
+      (x) =>
+        x.code === RELEASE_READINESS_DIAGNOSTIC_CODES.ReleaseNotesShape &&
+        /changelog\.exclude\.labels/.test(x.message),
+    );
+    const authors = report.diagnostics.find(
+      (x) =>
+        x.code === RELEASE_READINESS_DIAGNOSTIC_CODES.ReleaseNotesShape &&
+        /changelog\.exclude\.authors/.test(x.message),
+    );
+    assert.ok(labels, "expected diagnostic for missing exclude.labels");
+    assert.ok(authors, "expected diagnostic for missing exclude.authors");
+  } finally {
+    cleanup(repoRoot);
+  }
+});
+
 test("Scenario 4 — package metadata drift fails per drifting field", () => {
   const repoRoot = createFixture({
     packageJson: {
@@ -232,7 +265,7 @@ test("Scenario 4 — package metadata drift fails per drifting field", () => {
       version: VERSION,
       publishConfig: { registry: "https://registry.npmjs.org" },
       repository: "https://github.com/someone-else/agentic-workflow",
-      files: ["README.md"],
+      files: [...EXPECTED_PACKAGE_FILES],
     },
   });
   try {
@@ -247,12 +280,32 @@ test("Scenario 4 — package metadata drift fails per drifting field", () => {
       codes.has(RELEASE_READINESS_DIAGNOSTIC_CODES.PkgRepository),
       "expected PkgRepository drift",
     );
-    // version still aligned, but PkgFiles only fails if expectedFiles supplied OR files empty
-    // — here files is non-empty, so PkgFiles should NOT fire by default
-    assert.ok(
-      !codes.has(RELEASE_READINESS_DIAGNOSTIC_CODES.PkgFiles),
-      "PkgFiles should not fire when files array is non-empty and no expected list given",
+  } finally {
+    cleanup(repoRoot);
+  }
+});
+
+test("Scenario 4d — missing entries in package.json#files fail PkgFiles (Codex round-3 P1)", () => {
+  // Codex round-3 P1 on PR #158: previously, any non-empty `files` array was
+  // accepted because the CLI did not pass `expectedPackageFiles`. The lib
+  // now defaults to EXPECTED_PACKAGE_FILES (derived from
+  // package-contract.md §3) so a `files` array missing required shipping
+  // paths fails readiness.
+  const repoRoot = createFixture({
+    packageJson: {
+      ...VALID_PACKAGE_JSON,
+      files: ["README.md"], // only README.md — most contract entries missing
+    },
+  });
+  try {
+    const report = run(repoRoot);
+    const d = report.diagnostics.find(
+      (x) => x.code === RELEASE_READINESS_DIAGNOSTIC_CODES.PkgFiles,
     );
+    assert.ok(d, "expected PkgFiles diagnostic when files omits contract entries");
+    assert.match(d.message, /missing required entries/);
+    assert.match(d.message, /scripts\//);
+    assert.match(d.message, /templates\//);
   } finally {
     cleanup(repoRoot);
   }
@@ -343,6 +396,69 @@ jobs:
     );
     assert.ok(d, "expected WorkflowPermissions diagnostic for write-all");
     assert.match(d.message, /write-all/);
+  } finally {
+    cleanup(repoRoot);
+  }
+});
+
+test("Scenario 5d — job-level permissions widen scope fails (Codex round-3 P1)", () => {
+  // GitHub Actions applies job-level permissions after workflow-level, so a
+  // compliant top-level can be widened by a job override. Layer 1 must scan
+  // `jobs.<job>.permissions` to catch this.
+  const widenedJob = `
+name: Release
+on: workflow_dispatch
+permissions:
+  contents: write
+  packages: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      actions: write
+    steps:
+      - run: echo release
+`;
+  const repoRoot = createFixture({ releaseWorkflow: widenedJob });
+  try {
+    const report = run(repoRoot);
+    const d = report.diagnostics.find(
+      (x) =>
+        x.code === RELEASE_READINESS_DIAGNOSTIC_CODES.WorkflowPermissions &&
+        /jobs\.release\.permissions\.actions/.test(x.message),
+    );
+    assert.ok(d, "expected diagnostic for job-level `actions: write` override");
+  } finally {
+    cleanup(repoRoot);
+  }
+});
+
+test("Scenario 5e — job-level `permissions: write-all` fails (Codex round-3 P1)", () => {
+  const repoRoot = createFixture({
+    releaseWorkflow: `
+name: Release
+on: workflow_dispatch
+permissions:
+  contents: write
+  packages: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - run: echo release
+`,
+  });
+  try {
+    const report = run(repoRoot);
+    const d = report.diagnostics.find(
+      (x) =>
+        x.code === RELEASE_READINESS_DIAGNOSTIC_CODES.WorkflowPermissions &&
+        /jobs\.release\.permissions: write-all/.test(x.message),
+    );
+    assert.ok(d, "expected diagnostic for job-level write-all override");
   } finally {
     cleanup(repoRoot);
   }

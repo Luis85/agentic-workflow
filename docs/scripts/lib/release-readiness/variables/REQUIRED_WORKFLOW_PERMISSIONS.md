@@ -13,4 +13,7 @@ per ADR-0020 / SPEC-V05-002 / NFR-V05-001.
 
 The set is exhaustive — any other key (for example `actions: write`,
 `id-token: write`, `pull-requests: write`) is a violation, and any value
-other than the one below for a permitted key is a violation.
+other than the one below for a permitted key is a violation. The check
+applies to both the workflow-level `permissions:` block and any
+`jobs.<job>.permissions` block so a compliant top-level cannot be widened
+by a job override (Codex round-3 P1 on PR #158).

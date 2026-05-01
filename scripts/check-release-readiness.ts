@@ -133,13 +133,24 @@ failIfErrors(report.diagnostics, heading);
 function realGit(): GitInterface {
   return {
     resolveRef(ref: string): string | null {
+      // Codex P1 (PR #158, round 3): peel annotated tags via `^{commit}` so
+      // the readiness check compares the commit SHA on both sides. Without
+      // peeling, `git rev-parse` returns the tag-object SHA for annotated
+      // tags (e.g. `git tag -a vX.Y.Z`) while `main` returns a commit SHA,
+      // and the comparison would falsely report TAG_NOT_AT_MAIN. The
+      // `^{commit}` suffix is a no-op for refs that already point at a
+      // commit (lightweight tags, branches, raw SHAs).
       try {
-        const out = execFileSync("git", ["rev-parse", "--verify", "--quiet", ref], {
-          cwd: repoRoot,
-          encoding: "utf8",
-          windowsHide: true,
-          stdio: ["ignore", "pipe", "ignore"],
-        });
+        const out = execFileSync(
+          "git",
+          ["rev-parse", "--verify", "--quiet", `${ref}^{commit}`],
+          {
+            cwd: repoRoot,
+            encoding: "utf8",
+            windowsHide: true,
+            stdio: ["ignore", "pipe", "ignore"],
+          },
+        );
         const sha = out.trim();
         return sha === "" ? null : sha;
       } catch {

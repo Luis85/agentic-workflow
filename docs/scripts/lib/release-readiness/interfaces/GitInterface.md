@@ -8,8 +8,12 @@
 
 Minimal git facade for tag-readiness assertions.
 
-Real callers wire this with `git rev-parse <ref>`. Tests inject a stub
-mapping to avoid spawning git.
+Implementations must return a **commit SHA** for the supplied ref,
+dereferencing (peeling) annotated tags so an annotated `vX.Y.Z` and
+`refs/heads/main` are comparable. Real callers wire this with
+`git rev-parse <ref>^{commit}` so annotated and lightweight tags resolve
+the same way (Codex round-3 P1 on PR #158). Tests inject a stub mapping
+directly to commit SHAs.
 
 ## Methods
 

@@ -53,12 +53,41 @@ export const EXPECTED_PACKAGE_REPOSITORY = "https://github.com/Luis85/agentic-wo
  *
  * The set is exhaustive — any other key (for example `actions: write`,
  * `id-token: write`, `pull-requests: write`) is a violation, and any value
- * other than the one below for a permitted key is a violation.
+ * other than the one below for a permitted key is a violation. The check
+ * applies to both the workflow-level `permissions:` block and any
+ * `jobs.<job>.permissions` block so a compliant top-level cannot be widened
+ * by a job override (Codex round-3 P1 on PR #158).
  */
 export const REQUIRED_WORKFLOW_PERMISSIONS: Readonly<Record<string, string>> = {
   contents: "write",
   packages: "write",
 };
+
+/**
+ * Default `package.json#files` include list derived from
+ * `specs/version-0-5-plan/package-contract.md` §3.
+ *
+ * Each entry must appear in `package.json#files` for readiness to pass. The
+ * list is the conservative, contract-aligned shape; OQ-V05-002 may refine the
+ * exact glob form as v0.5 settles. Callers (tests, alternative consumers) can
+ * override via `expectedPackageFiles` in {@link ReleaseReadinessOptions}.
+ */
+export const EXPECTED_PACKAGE_FILES: readonly string[] = [
+  ".claude/",
+  ".codex/",
+  ".github/",
+  "agents/",
+  "docs/",
+  "examples/",
+  "memory/",
+  "scripts/",
+  "sites/",
+  "templates/",
+  "tests/",
+  "AGENTS.md",
+  "CHANGELOG.md",
+  "CLAUDE.md",
+];
 
 /**
  * Minimum maturity level required by SPEC-V05-008 before publish.
@@ -68,8 +97,12 @@ export const MIN_QUALITY_MATURITY_LEVEL = 3;
 /**
  * Minimal git facade for tag-readiness assertions.
  *
- * Real callers wire this with `git rev-parse <ref>`. Tests inject a stub
- * mapping to avoid spawning git.
+ * Implementations must return a **commit SHA** for the supplied ref,
+ * dereferencing (peeling) annotated tags so an annotated `vX.Y.Z` and
+ * `refs/heads/main` are comparable. Real callers wire this with
+ * `git rev-parse <ref>^{commit}` so annotated and lightweight tags resolve
+ * the same way (Codex round-3 P1 on PR #158). Tests inject a stub mapping
+ * directly to commit SHAs.
  */
 export interface GitInterface {
   resolveRef(ref: string): string | null;
@@ -104,7 +137,7 @@ export interface ReleaseReadinessOptions {
   expectedPackageName?: string;
   expectedPackageRegistry?: string;
   expectedPackageRepository?: string;
-  expectedPackageFiles?: string[];
+  expectedPackageFiles?: readonly string[];
   git?: GitInterface;
   qualitySignals?: QualitySignals;
 }
@@ -233,7 +266,7 @@ export function checkReleaseReadiness(opts: ReleaseReadinessOptions): ReleaseRea
       name: expectedName,
       registry: expectedRegistry,
       repository: expectedRepository,
-      files: opts.expectedPackageFiles,
+      files: opts.expectedPackageFiles ?? EXPECTED_PACKAGE_FILES,
     }),
   );
   diagnostics.push(...checkWorkflowPermissions(opts.repoRoot, releaseWorkflowPath));
@@ -399,13 +432,32 @@ function checkReleaseNotesConfig(repoRoot: string, relPath: string): Diagnostic[
       message: `\`changelog.categories\` must be a non-empty array (T-V05-003 shape)`,
     });
   }
-  const exclude = changelog.exclude;
+  const exclude = changelog.exclude as Record<string, unknown> | undefined;
   if (!exclude || typeof exclude !== "object") {
     out.push({
       code: RELEASE_READINESS_DIAGNOSTIC_CODES.ReleaseNotesShape,
       path: relPath,
       message: `\`changelog.exclude\` block missing — T-V05-003 requires label and author exclusions`,
     });
+  } else {
+    // Codex round-3 P2 on PR #158: an `exclude: {}` block previously passed
+    // readiness because only the block's existence was checked. T-V05-003
+    // requires both `labels` and `authors` arrays to filter maintenance and
+    // bot entries from generated release notes.
+    if (!Array.isArray(exclude.labels)) {
+      out.push({
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.ReleaseNotesShape,
+        path: relPath,
+        message: `\`changelog.exclude.labels\` must be an array — T-V05-003 requires label exclusions`,
+      });
+    }
+    if (!Array.isArray(exclude.authors)) {
+      out.push({
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.ReleaseNotesShape,
+        path: relPath,
+        message: `\`changelog.exclude.authors\` must be an array — T-V05-003 requires bot author exclusions`,
+      });
+    }
   }
   return out;
 }
@@ -414,7 +466,7 @@ interface ExpectedPackage {
   name: string;
   registry: string;
   repository: string;
-  files?: string[];
+  files?: readonly string[];
 }
 
 function checkPackageMetadata(
@@ -506,16 +558,42 @@ function checkWorkflowPermissions(repoRoot: string, relPath: string): Diagnostic
       },
     ];
   }
-  return diagnosticsForPermissions(parsed.permissions, relPath);
+  const out: Diagnostic[] = [];
+  // Top-level `permissions:` must be present and least-privilege.
+  out.push(...diagnosticsForPermissions(parsed.permissions, relPath, "permissions", true));
+  // Codex round-3 P1 on PR #158: scan `jobs.<job>.permissions` too.
+  // GitHub Actions applies job-level permissions after workflow-level, so a
+  // compliant top-level can be widened by a job override (e.g. `actions:
+  // write` in a publish job). Each job-level block — if present — must also
+  // be a subset of the least-privilege set.
+  const jobs = parsed.jobs as Record<string, unknown> | undefined;
+  if (jobs && typeof jobs === "object") {
+    for (const jobId of Object.keys(jobs).sort()) {
+      const job = jobs[jobId];
+      if (!job || typeof job !== "object") continue;
+      const jobPerms = (job as Record<string, unknown>).permissions;
+      if (jobPerms === undefined) continue; // job inherits top-level — already validated
+      out.push(
+        ...diagnosticsForPermissions(jobPerms, relPath, `jobs.${jobId}.permissions`, false),
+      );
+    }
+  }
+  return out;
 }
 
-function diagnosticsForPermissions(permissions: unknown, relPath: string): Diagnostic[] {
+function diagnosticsForPermissions(
+  permissions: unknown,
+  relPath: string,
+  location: string,
+  requirePresence: boolean,
+): Diagnostic[] {
   if (permissions === undefined || permissions === null) {
+    if (!requirePresence) return [];
     return [
       {
         code: RELEASE_READINESS_DIAGNOSTIC_CODES.WorkflowPermissions,
         path: relPath,
-        message: `top-level \`permissions:\` block missing — must declare exactly { contents: write, packages: write } (REQ-V05-002 / NFR-V05-001)`,
+        message: `${location === "permissions" ? "top-level " : ""}\`${location}:\` block missing — must declare exactly { contents: write, packages: write } (REQ-V05-002 / NFR-V05-001)`,
       },
     ];
   }
@@ -524,7 +602,7 @@ function diagnosticsForPermissions(permissions: unknown, relPath: string): Diagn
       {
         code: RELEASE_READINESS_DIAGNOSTIC_CODES.WorkflowPermissions,
         path: relPath,
-        message: `\`permissions: ${permissions}\` is broader than least-privilege — must be { contents: write, packages: write } (REQ-V05-002 / NFR-V05-001)`,
+        message: `\`${location}: ${permissions}\` is broader than least-privilege — must be { contents: write, packages: write } (REQ-V05-002 / NFR-V05-001)`,
       },
     ];
   }
@@ -533,7 +611,7 @@ function diagnosticsForPermissions(permissions: unknown, relPath: string): Diagn
       {
         code: RELEASE_READINESS_DIAGNOSTIC_CODES.WorkflowPermissions,
         path: relPath,
-        message: `\`permissions\` must be a mapping; got ${typeof permissions}`,
+        message: `\`${location}\` must be a mapping; got ${typeof permissions}`,
       },
     ];
   }
@@ -545,17 +623,30 @@ function diagnosticsForPermissions(permissions: unknown, relPath: string): Diagn
       out.push({
         code: RELEASE_READINESS_DIAGNOSTIC_CODES.WorkflowPermissions,
         path: relPath,
-        message: `\`permissions.${key}\` not allowed — release workflow must grant only ${Object.keys(REQUIRED_WORKFLOW_PERMISSIONS).map((k) => `\`${k}\``).join(" + ")}`,
+        message: `\`${location}.${key}\` not allowed — release workflow must grant only ${Object.keys(REQUIRED_WORKFLOW_PERMISSIONS).map((k) => `\`${k}\``).join(" + ")}`,
       });
     }
   }
+  // Top-level must explicitly declare each required permission. Job-level
+  // blocks may legitimately scope down (e.g. only `contents: read`) but if a
+  // required key is present its value must match exactly.
   for (const [key, expected] of Object.entries(REQUIRED_WORKFLOW_PERMISSIONS)) {
+    if (!(key in map)) {
+      if (requirePresence) {
+        out.push({
+          code: RELEASE_READINESS_DIAGNOSTIC_CODES.WorkflowPermissions,
+          path: relPath,
+          message: `\`${location}.${key}\` missing — must be \`${expected}\``,
+        });
+      }
+      continue;
+    }
     const actual = map[key];
     if (actual !== expected) {
       out.push({
         code: RELEASE_READINESS_DIAGNOSTIC_CODES.WorkflowPermissions,
         path: relPath,
-        message: `\`permissions.${key}\` is \`${String(actual)}\` but must be \`${expected}\``,
+        message: `\`${location}.${key}\` is \`${String(actual)}\` but must be \`${expected}\``,
       });
     }
   }
