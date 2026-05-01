@@ -40,7 +40,7 @@ test("renderQualityMetrics includes the headline KPIs and attention signals", ()
 });
 
 test("collectQualityMetrics scores active workflows by current stage", () => {
-  const metrics = collectQualityMetrics({ feature: "version-0-4-plan" });
+  const metrics = collectQualityMetrics({ feature: "version-0-5-plan" });
   const workflow = metrics.workflows[0];
   assert.equal(workflow.status, "active");
   assert.equal(workflow.currentStage, "implementation");
