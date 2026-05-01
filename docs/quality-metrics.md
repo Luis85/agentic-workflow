@@ -102,6 +102,8 @@ Stage score avoids false negatives while a workflow is legitimately in progress:
 
 The lifecycle artifact percentage remains visible so readers can still see total progress across all 11 stages.
 
+Open clarification signals count only unresolved checklist entries (`- [ ]`) under `## Open clarifications`. Resolved entries (`- [x]`) remain in the artifact history but do not count as active risks. Active workflows may carry unresolved clarifications as advisory signals; workflows marked `status: done` fail deterministic validation until all clarification checkboxes are resolved.
+
 ## Maturity model
 
 The maturity assessment is an adoption guide. It uses observable repository evidence and reports the highest level currently supported by that evidence.

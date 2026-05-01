@@ -50,6 +50,7 @@ export function specStateDiagnosticsForText(
   validateStageProgress(rel, frontmatter.body, data, errors);
   validateRequiredSections(rel, frontmatter.body, errors);
   validateSkipsDocumentation(rel, frontmatter.body, data, errors);
+  validateDoneClarifications(rel, frontmatter.body, data.status, errors);
   return errors;
 }
 
@@ -241,6 +242,25 @@ function validateSkipsDocumentation(
     if (!skipsBody.includes(artifact)) {
       errors.push(`${rel} marks ${artifact} as skipped, but Skips section does not document it`);
     }
+  }
+}
+
+function validateDoneClarifications(
+  rel: string,
+  body: string,
+  workflowStatus: unknown,
+  errors: string[],
+): void {
+  if (workflowStatus !== "done") return;
+  const clarificationsBody = extractSectionBody(body, "Open clarifications");
+  if (clarificationsBody === null) return;
+
+  const unresolvedCount = clarificationsBody
+    .split(/\r?\n/)
+    .filter((line) => /^-\s+\[\s\]\s+/.test(line.trim()))
+    .length;
+  if (unresolvedCount > 0) {
+    errors.push(`${rel} status is done, but Open clarifications has ${unresolvedCount} unresolved item(s)`);
   }
 }
 
