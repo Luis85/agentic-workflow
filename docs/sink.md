@@ -20,6 +20,7 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │   ├── traceability.md                      # ID scheme REQ → SPEC → T → code → TEST
 │   ├── ears-notation.md                     # EARS reference
 │   ├── sink.md                              # this file
+│   ├── inputs-ingestion.md                  # cross-track contract for inputs/ ingestion folder (per ADR-0017)
 │   ├── steering/                            # persistent scoped context
 │   │   ├── product.md
 │   │   ├── tech.md
@@ -145,6 +146,8 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │       ├── idea.md, research.md, …          # same artifact set as specs/<slug>/
 │       └── adr/                             # project-local ADRs for the example (NOT docs/adr/)
 │           └── NNNN-<slug>.md               # project-local sequence, e.g. ADR-CLI-0001
+├── inputs/                                  # canonical ingestion folder for new work packages (per ADR-0017)
+│   └── README.md                            # purpose, retention rules, what does/does not belong here
 ├── sites/                                   # public product page (directly openable static entrypoint)
 │   ├── index.html
 │   ├── styles.css                           # optional
@@ -358,6 +361,20 @@ This is a lazy companion artifact, not a new lifecycle stage. `release-notes.md`
 When a team needs to manage **multiple parallel features** or operates as a **service provider**, the Portfolio Track adds a management layer above the Specorator. It lives at `portfolio/<portfolio-slug>/` parallel to `specs/` and `discovery/`. See [`docs/portfolio-track.md`](portfolio-track.md) for the methodology and [ADR-0009](adr/0009-add-portfolio-manager-role.md) for the rationale.
 
 A portfolio is bootstrapped with `/portfolio:start <slug>`. The three cycle commands populate the five management documents. The portfolio track is **read-only on the `specs/` side** — it never modifies spec artifacts.
+
+## Inputs sub-tree
+
+`inputs/` is the **canonical ingestion folder** for new work packages — files, folders, or archives that drive a piece of work but are not themselves canonical artifacts. Adopted by [ADR-0017](adr/0017-adopt-inputs-folder-as-canonical-ingestion-zone.md). Full contract: [`docs/inputs-ingestion.md`](inputs-ingestion.md).
+
+- **Tracked, not gitignored.** Items committed alongside the work that consumes them. Sensitive material excluded by per-file `.gitignore` rules, never stored in `inputs/`.
+- **No automatic extraction.** Conductors list `inputs/` and ask which items are relevant; archives are extracted only after explicit human approval.
+- **Source, not truth.** Once consumed, content lives in the canonical artifact (`idea.md`, `chosen-brief.md`, `scope.md`, `stock-taking-inventory.md`, `intake.md`, …). Items in `inputs/` are cited by relative path so source lineage stays auditable.
+- **Retention is per-track.** Default retention rules in [`docs/inputs-ingestion.md`](inputs-ingestion.md). The user always decides keep/delete/move.
+
+| Path | Owned by | Mutability |
+|---|---|---|
+| `inputs/README.md` | Human (template maintainer) | Updated when convention or retention rules change |
+| `inputs/<file>` or `inputs/<folder>/` | Human (work-package contributor) | Append-on-drop, delete-on-consumption |
 
 ## Examples sub-tree
 

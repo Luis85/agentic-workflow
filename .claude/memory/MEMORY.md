@@ -23,6 +23,7 @@ One-line pointers into `.claude/memory/`. Read first. See [`README.md`](./README
 - **PR title CI** — title metadata must use the allowed Conventional Commit type before handoff. See [`feedback_pr_title_ci.md`](./feedback_pr_title_ci.md).
 - **Memory edits are docs-only** — no changeset, no bundling with code. See [`feedback_memory_edits.md`](./feedback_memory_edits.md).
 - **Token-budget review** — quarterly or pre-release: `/token-review` runs the audit + emits a per-area cleanup plan. See [`token-budget-review`](../skills/token-budget-review/SKILL.md).
+- **Inputs ingestion** — work packages land in `inputs/`; every conductor consults it at intake; no auto-extract. See [`docs/inputs-ingestion.md`](../../docs/inputs-ingestion.md) ([ADR-0017](../../docs/adr/0017-adopt-inputs-folder-as-canonical-ingestion-zone.md)).
 
 ## How this index is maintained
 

@@ -30,6 +30,7 @@ Do not run when:
 
 ## Procedure
 
+0. **Intake gate.** List `inputs/` non-recursively before scoping. Surface every item via a single `AskUserQuestion`: "I see N items in `inputs/`. Which are relevant for this roadmap work?" Common roadmap inputs: stakeholder briefs, prior roadmap exports, OKRs, customer feedback bundles, leadership memos. If `inputs/` is empty, print one line and proceed. Never auto-extract archives. Cite paths into `inputs/` from `roadmap-board.md` and `stakeholder-map.md`. Full contract: [`docs/inputs-ingestion.md`](../../../docs/inputs-ingestion.md). Decision: [ADR-0017](../../../docs/adr/0017-adopt-inputs-folder-as-canonical-ingestion-zone.md).
 1. Detect roadmaps by scanning for `roadmaps/*/roadmap-state.md`.
 2. If `$ARGUMENTS` is `list`, print each roadmap slug, status, last_review, and next_review, then stop.
 3. If no roadmap exists, ask for a roadmap slug and run `/roadmap:start <slug>`.

@@ -29,6 +29,7 @@ This skill is for **the template repository**. If the request is about a product
 
 ## Improvement loop
 
+0. **Intake gate.** List `inputs/` non-recursively before framing. Surface every item via a single `AskUserQuestion`: "I see N items in `inputs/`. Which are relevant for this improvement?" Improvement work often arrives as a pre-staged zip (design system, plugin pack, vendor handoff) — those are exactly the work packages this gate is for. Never auto-extract archives — extraction is a separate, explicitly approved step. Cite paths into `inputs/` from the lifecycle artifact at step 2. Full contract: [`docs/inputs-ingestion.md`](../../../docs/inputs-ingestion.md). Decision: [ADR-0017](../../../docs/adr/0017-adopt-inputs-folder-as-canonical-ingestion-zone.md).
 1. **Frame the improvement.** State the problem, user scenario, non-goals, and the expected artifact or automation. Example: "When an active contributor changes workflow docs, the template should detect quality drift before PR."
 2. **Trace it.** Find or create the lifecycle artifact under `specs/<feature>/` that owns the change. Requirements and tasks must use stable IDs when the change is non-trivial.
 3. **Classify scope.** Decide whether the change touches scripts, tooling, workflow, docs, agents, skills, templates, state/schema, product page, operational agents, or ADRs.

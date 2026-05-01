@@ -1,10 +1,21 @@
 # Conductor pattern (shared)
 
-> Shared scaffolding for workflow-conductor skills. Linked from `orchestrate`, `discovery-sprint`, `sales-cycle`, `stock-taking`. Not auto-loaded — the linking skill keeps trigger logic inline; this file owns the gating + escalation rules.
+> Shared scaffolding for workflow-conductor skills. Linked from `orchestrate`, `discovery-sprint`, `sales-cycle`, `stock-taking`, `portfolio-track`. Not auto-loaded — the linking skill keeps trigger logic inline; this file owns the gating + escalation rules. Conductors that do not link this file (`project-run`, `project-scaffolding`, `roadmap-management`, `quality-assurance`, `specorator-improvement`) carry the intake gate inline by reference.
 
 ## AskUserQuestion is main-thread only
 
 `AskUserQuestion` works only in the main thread. Subagents cannot ask the user anything. Every clarification happens in the conductor's turn — before, between, or after a phase — never inside a dispatched specialist.
+
+## Intake gate — consult `inputs/` first
+
+Before scoping any new work package, **list `inputs/` non-recursively** and surface every item to the user in a single `AskUserQuestion` (multi-select): "I see N items in `inputs/`. Which are relevant for this work?"
+
+- If `inputs/` is empty, print one line ("`inputs/` is empty — no source material to consult") and proceed.
+- **Never auto-extract** zips, PDFs, or compressed archives. If a relevant item is an archive, run a separate `AskUserQuestion` asking for explicit approval to extract.
+- Read selected items at depth appropriate to the track. Cite paths into `inputs/` from the canonical artifact (`idea.md`, `chosen-brief.md`, `scope.md`, …) so source lineage stays auditable.
+- After the work package is consumed, recommend a retention action (per-track default in [`docs/inputs-ingestion.md`](../../../docs/inputs-ingestion.md)) and let the user decide. Never delete from `inputs/` without confirmation.
+
+Full contract: [`docs/inputs-ingestion.md`](../../../docs/inputs-ingestion.md). Decision: [ADR-0017](../../../docs/adr/0017-adopt-inputs-folder-as-canonical-ingestion-zone.md).
 
 ## Detect resume vs. fresh start
 

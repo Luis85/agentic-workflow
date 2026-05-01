@@ -26,6 +26,7 @@ Repo = **template for spec-driven, agentic software development**. Defines workf
 - **ADRs for irreversible decisions.** Architecturally load-bearing → ADR in `docs/adr/`. Use `templates/adr-template.md`. ADR bodies are immutable; supersede to change.
 - **Update workflow state.** Hand off a stage → update `specs/<feature>/workflow-state.md`.
 - **Keep a product page alive.** Public page at `sites/index.html`; prefer GitHub Pages. Update in the same PR as user-visible changes.
+- **Consult `inputs/` at intake.** Every conductor's scope phase lists `inputs/` and asks the user which items are relevant. Never auto-extract zips or archives — extraction is always a confirmed step. See [`docs/inputs-ingestion.md`](docs/inputs-ingestion.md) and [ADR-0017](docs/adr/0017-adopt-inputs-folder-as-canonical-ingestion-zone.md).
 - **Escalate ambiguity.** No guessing. Ask the human or open a `clarifications` block.
 - **No direct commits on `main` / `develop`.** Every change lands via topic branch + merged PR. Push deny is the backstop, not the gate. See [`.claude/memory/feedback_no_main_commits.md`](.claude/memory/feedback_no_main_commits.md).
 - **Branch per concern; verify before push.** One concern per PR; `verify` green locally; never `--no-verify`. See [`docs/branching.md`](docs/branching.md), [`docs/worktrees.md`](docs/worktrees.md), [`docs/verify-gate.md`](docs/verify-gate.md).

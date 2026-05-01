@@ -36,6 +36,7 @@ Run when:
 
 ### Phase 0 — Orientation
 
+0. **Intake gate.** Before asking the user to describe the engagement, list `inputs/` non-recursively and surface every item via a single `AskUserQuestion`: "I see N items in `inputs/`. Which are relevant for this engagement?" If `inputs/` is empty, print one line ("`inputs/` is empty — no source material to consult") and proceed. Never auto-extract zips or archives — extraction is a separate, explicitly approved step. Cite paths into `inputs/` from `project-description.md` and other canonical artifacts. Full contract: [`docs/inputs-ingestion.md`](../../../docs/inputs-ingestion.md). Decision: [ADR-0017](../../../docs/adr/0017-adopt-inputs-folder-as-canonical-ingestion-zone.md).
 1. Ask the user to describe the engagement in one paragraph: who is the client, what are they getting, when, and at what cost (if known).
 2. Confirm the user wants the full project management layer (not just a Specorator feature). If they're uncertain, explain the difference (see `docs/project-track.md` §1).
 3. Ask for a project slug (engagement-level name, not solution name). Suggest corrections if needed.
