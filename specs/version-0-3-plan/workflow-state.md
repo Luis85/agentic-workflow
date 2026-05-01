@@ -62,6 +62,8 @@ The Stage 11 retrospective (`retrospective.md`) ships in this folder and closes 
 - 2026-05-01 (claude, T-V03-008 + T-V03-009): Verified release readiness. `npm run check:links`, `npm run check:specs`, `npm run check:traceability`, `npm run test:scripts` (131 tests), and `npm run verify` all green on `origin/main` at `ef015d3`. README §Roadmap row v0.3 flipped from "Planned" to "Done" with link to `release-notes.md`. `release-notes.md` frontmatter `status: draft` → `complete`. Stage 7–9 artifacts marked `skipped` with rationale under §Skips (meta-feature: per-task PRs ship their own implementation, tests, review, and trace evidence). T-V03-009 (v0.4 validation handoff) is satisfied in-place by §Validation baseline for v0.4 in `release-notes.md`. Only `retrospective.md` (Stage 11) remains; `current_stage` advanced to `learning`.
 - 2026-05-01 (claude, retrospective): RETRO-V03-001 filed. v0.3 plan closes — every canonical artifact is `complete` or documented as `skipped`. Five actions filed for the v0.4 cycle (package.json `test` alias, meta-feature §Skips template guidance, promote v0.3 hard-fail validators to required CI, decide deferred CLAR-V03-002 advisory check, label sliceable tasks in `tasks.md`). `status: active` → `done`.
 
+- 2026-05-01 (codex, issue closeout): Added `issue-88-closeout.md` with a closure checklist and a ready-to-post final GitHub issue comment for #88 so maintainers can close the tracking issue with deterministic release evidence.
+
 ## Open clarifications
 
 - [x] CLAR-V03-001 — Confirm whether `examples/cli-todo` remains the selected complete example for v0.3 or whether a different example should replace it.
