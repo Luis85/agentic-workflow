@@ -1,6 +1,6 @@
 ---
 name: quality-metrics
-description: Present deterministic quality KPIs for workflow deliverables, documentation, traceability, QA checklists, blockers, clarifications, maturity, and trend snapshots. Use when the user asks for current quality status, project KPIs, workflow deliverable health, quality metrics, quality trend, or an information-system quality report.
+description: Report deterministic quality KPIs — deliverables, traceability, QA checklists, blockers, maturity, trends. Triggers "quality status", "project KPIs", "quality metrics", "quality trend".
 argument-hint: "[--feature <slug>] [--json] [--compare] [--save]"
 ---
 

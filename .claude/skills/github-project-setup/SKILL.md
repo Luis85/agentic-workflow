@@ -1,6 +1,6 @@
 ---
 name: github-project-setup
-description: Set up a new GitHub repository as a manageable product/project workspace by creating labels, milestones, and baseline issues for repo setup, product vision, PRDs, use cases, UX/design, architecture, traceability, optional plugin shell work, and P3.express initiation up to kickoff. Use when a user asks to prepare a new repo, create a GitHub-backed project setup, make a product setup repeatable, or scaffold project-management issues for a new project.
+description: Scaffold a new GitHub repo as a project workspace — labels, milestones, baseline issues for vision, PRD, UX, architecture, traceability, P3.express kickoff. Triggers "prepare new repo", "scaffold project setup", "GitHub project setup".
 argument-hint: owner/repo [project name]
 ---
 

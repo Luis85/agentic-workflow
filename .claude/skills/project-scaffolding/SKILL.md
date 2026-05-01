@@ -1,6 +1,6 @@
 ---
 name: project-scaffolding
-description: Drive the Project Scaffolding Track end-to-end by gathering source pointers up front, dispatching the project-scaffolder through Intake -> Extract -> Assemble -> Handoff, and producing a reviewable starter pack from existing folders or Markdown documentation. Use when a fresh template install should be seeded from collected docs, meeting notes, briefs, or general project documentation.
+description: Drive Project Scaffolding Track end-to-end. Dispatches project-scaffolder through Intake -> Extract -> Assemble -> Handoff to seed a fresh install from collected docs, briefs, or notes.
 argument-hint: [project-slug or source pointer]
 ---
 
