@@ -37,7 +37,7 @@ v0.4 promotes the v0.3 hard-fail validators into a required PR CI quality gate. 
 - **Stage-aware quality scoring.** `scripts/lib/quality-metrics.ts` excludes future-stage evidence from the current-stage score and renders test / EARS coverage as `not expected yet` for workflows that have not reached the relevant stage. Replaces the previous all-or-nothing artifact gating (T-V04-005).
 - **Trend snapshots.** `npm run quality:metrics --save` and `--compare` persist metric runs under `quality/metrics/<scope>/` and report deltas across score, maturity, blockers, clarifications, frontmatter gaps, and QA checklist gaps cycle-over-cycle (T-V04-005).
 - **Workflow-native quality reporting.** `/quality:status` is the workflow-native command entry point; orchestration, QA, review, release, retrospective, project, roadmap, and portfolio agent guidance all surface the metrics report at handoff (T-V04-005).
-- **Doctor reads the contract.** `npm run doctor` now reads the verify.yml contract directly from `docs/pr-ci-gate.md`-style structured contracts, so contract drift surfaces locally before CI rather than landing as a CI surprise (T-V04-004).
+- **Doctor enforces the verify.yml contract locally.** `npm run doctor` now runs the `workflowContracts` readiness checks in `scripts/lib/doctor.ts` against `.github/workflows/verify.yml`, so contract drift surfaces locally before CI rather than landing as a CI surprise (T-V04-004). The executable contract in `scripts/lib/doctor.ts` mirrors the human-readable contract in [`docs/pr-ci-gate.md`](../../docs/pr-ci-gate.md) §Workflow file contract; keeping the two in sync is a reviewer responsibility, not an automated bind.
 
 ### Fixed
 
