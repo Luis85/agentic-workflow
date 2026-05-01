@@ -11,6 +11,9 @@ One command per workflow phase. Subdirectories namespace commands (`spec/specify
 ## Command inventory
 
 <!-- BEGIN GENERATED: command-inventory -->
+# Top-level:
+/token-review
+
 # Decisions:
 /adr:new
 

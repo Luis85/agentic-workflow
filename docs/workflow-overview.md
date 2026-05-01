@@ -107,6 +107,9 @@ Plus body sections (Skips, Blocks, Hand-off notes, Open clarifications). Canonic
 
 <!-- BEGIN GENERATED: slash-commands -->
 ```
+# Top-level:
+/token-review
+
 # Decisions:
 /adr:new
 

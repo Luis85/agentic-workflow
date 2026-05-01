@@ -13,6 +13,7 @@ const labels = new Map([
   ["spec", "Lifecycle"],
   ["specorator", "Specorator Improvements"],
   ["stock-taking", "Stock-taking Track"],
+  ["", "Top-level"],
 ]);
 
 export type CommandRecord = {
@@ -41,8 +42,12 @@ export function getCommands(): CommandRecord[] {
     .map((file) => {
       const rel = path.relative(path.join(repoRoot, ".claude/commands"), file);
       const parts = rel.split(path.sep);
+      if (parts.length === 1) {
+        const name = path.basename(parts[0], ".md");
+        return { namespace: "", name, command: `/${name}` };
+      }
       const namespace = parts[0];
-      const name = path.basename(parts[1] || parts[0], ".md");
+      const name = path.basename(parts[1], ".md");
       return {
         namespace,
         name,
