@@ -12,35 +12,12 @@ created: 2026-04-29
 updated: 2026-04-29
 ---
 
-# Test plan — CLI Todo App
+# Test plan — CLI Todo App — excerpt
 
-## Strategy
+> Trimmed top-level excerpt. Full plan with per-test scenarios, fixtures, and EARS coverage: [`full/test-plan.md`](./full/test-plan.md).
 
-The test plan follows the 33 scenarios already defined in `spec.md` and uses three layers:
+## Coverage approach
 
-- **Unit:** dispatcher parsing, path resolution, store validation, task model invariants.
-- **Integration:** real filesystem storage, atomic rename behavior, SIGKILL mid-write simulation, performance budget.
-- **E2E:** built binary invoked as a subprocess with stdout, stderr, exit code, and data file assertions.
+One command-level integration test per requirement. Storage module unit-tested in isolation. Concurrent-write edge case covered with a deliberate race scenario.
 
-## Coverage groups
-
-- Command happy paths: TEST-CLI-001 through TEST-CLI-005.
-- Help and dispatch: TEST-CLI-006 through TEST-CLI-009.
-- Empty and validation errors: TEST-CLI-010 through TEST-CLI-017.
-- Durability and path resolution: TEST-CLI-018 through TEST-CLI-027 and TEST-CLI-033.
-- ID, routing, exit-code, performance, and text preservation: TEST-CLI-028 through TEST-CLI-032.
-
-## Required gates
-
-- Every REQ-CLI-NNN has at least one test scenario in `spec.md`.
-- Every data-accessing error path proves the data store is unchanged.
-- Atomic-write compliance cannot be waived; TEST-CLI-018 is the ADR-CLI-0001 gate.
-- Help paths must pass even with a corrupt store.
-- Performance test runs against a 10,000-task store.
-
-## Quality gate
-
-- [x] Every EARS clause has at least one test scenario.
-- [x] Critical paths cover happy and edge cases.
-- [x] Non-functional checks include durability and performance.
-- [x] Failures are reproducible from this plan.
+See [`full/test-plan.md`](./full/test-plan.md) for the full test scenario list and the requirement-to-test map.

@@ -358,12 +358,14 @@ A portfolio is bootstrapped with `/portfolio:start <slug>`. The three cycle comm
 - **Simulates an adopting project.** Each `examples/<slug>/` mirrors the shape of `specs/<slug>/` exactly, so a reader can see every artifact a real feature produces without running the workflow themselves.
 - **Project-local ADRs.** Each example has its own `examples/<slug>/adr/` directory. The numbering (`ADR-CLI-0001`, `ADR-AUTH-0001`, …) is independent of `docs/adr/` and uses the example's `<AREA>` prefix. This deliberately models what ADR naming looks like inside an adopting project, where the template's global `ADR-0001…0005` would not be inherited.
 - **Read-only for agents.** Agents may read example artifacts for reference (e.g. "what does a complete design.md look like?") but must never write to `examples/` as part of a workflow run.
+- **Trimmed top-level + full mirror.** Within an `examples/<slug>/` folder, the top-level artifact files are trimmed one-page excerpts so agents that scan the directory load tens of KB, not hundreds. The unabridged versions live in `examples/<slug>/full/` for human reference and remain a complete validatable workflow (own `workflow-state.md`, own ADR sequence). Agents should prefer the trimmed top-level files; the `full/` siblings are human-only reference.
 
 | Path | Owned by | Mutability |
 |---|---|---|
 | `examples/README.md` | Human | Updated as examples are added |
-| `examples/<slug>/` | Human (example maintainer) | Mirrors `specs/<slug>/` shape; updated as the example progresses |
-| `examples/<slug>/adr/` | Human (example maintainer) | Same immutability rules as `docs/adr/`; project-local sequence |
+| `examples/<slug>/` | Human (example maintainer) | Trimmed one-page top-level mirror of `specs/<slug>/` shape |
+| `examples/<slug>/full/` | Human (example maintainer) | Unabridged historical mirror (human reference only) |
+| `examples/<slug>/full/adr/` | Human (example maintainer) | Same immutability rules as `docs/adr/`; project-local sequence |
 
 ## Don't put in the sink
 
