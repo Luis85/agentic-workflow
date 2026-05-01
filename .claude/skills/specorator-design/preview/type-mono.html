@@ -1,0 +1,16 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css"><style>
+body { width: 700px; padding: 22px 28px;}
+.row { display: flex; align-items: baseline; gap: 16px; padding: 8px 0; border-bottom: 1px dashed var(--line); }
+.lbl { font-family: var(--font-mono); font-size: 10px; color: var(--muted); width: 80px; flex: 0 0 80px; }
+.mono { font-family: var(--font-mono); font-size: 14px; color: var(--ink); }
+.idtok { display: inline-block; padding: 0 5px; border-radius: 3px; background: rgba(27, 111, 85, 0.1); color: var(--accent-strong); font-family: var(--font-mono); font-weight: 800; font-size: 13px; }
+.chip { display: inline-block; padding: 2px 7px; border-radius: 6px; background: rgba(23,32,27,0.06); color: var(--ink); font-family: var(--font-mono); font-size: 12px; font-weight: 700; }
+.chipd { display: inline-block; padding: 4px 10px; border-radius: 6px; background: rgba(230,255,112,0.1); color: var(--highlighter); font-family: var(--font-mono); font-size: 12px; font-weight: 700; }
+.dark { background: var(--ink); padding: 8px 12px; border-radius: 6px; display: inline-block;}
+</style></head><body>
+<div class="row"><span class="lbl">mono</span><span class="mono">JetBrains Mono · 12–14</span></div>
+<div class="row"><span class="lbl">command</span><span class="chip">/spec:start</span> <span class="chip">/discovery:converge</span></div>
+<div class="row"><span class="lbl">id token</span><span class="idtok">REQ-CLI-001</span> <span class="idtok">T-AUTH-014</span> <span class="idtok">ADR-0009</span></div>
+<div class="row"><span class="lbl">file path</span><span class="mono" style="color:var(--muted); font-size: 12px;">specs/&lt;feature&gt;/workflow-state.md</span></div>
+<div class="row"><span class="lbl">on dark</span><span class="dark"><span class="chipd">analyst</span></span> <span class="dark"><span class="chipd">orchestrator</span></span></div>
+</body></html>

@@ -20,6 +20,11 @@ You create and maintain the project's public product page. The canonical static 
 - `docs/steering/ux.md` — visual direction, accessibility, content rules.
 - `docs/steering/tech.md` and `docs/steering/operations.md` — hosting and build constraints.
 - `.claude/skills/product-page/SKILL.md`
+- `.claude/skills/specorator-design/SKILL.md` — brand source of truth (tokens, voice, iconography rules)
+
+## Brand dependency
+
+Before editing `sites/` or generating any user-visible HTML/CSS, **invoke the `specorator-design` skill**. Lift values from `colors_and_type.css` by token name (`var(--ink)`, `var(--paper)`, `var(--accent)`, `var(--highlighter)`, …); never invent new colors, weights, radii, or shadows. If a token is missing for the work in front of you, propose an addition to `colors_and_type.css` via a separate PR before using it. The non-negotiable rules in the skill's README (no emoji, no icons, cream paper not white, chartreuse as a pop not a wash, sentence-case headlines that end with a period, lane coding Define = green / Build = blue / Ship = gold) are load-bearing — do not relax them.
 
 ## Procedure
 

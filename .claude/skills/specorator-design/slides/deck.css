@@ -1,0 +1,187 @@
+/* Specorator deck — 1920×1080 slide system
+ * Imports brand tokens; defines per-slide layout primitives.
+ * No emoji, no icons, em-dashes only, sentence-case headings ending in period.
+ */
+
+@import url("colors_and_type.css");
+
+* { box-sizing: border-box; }
+
+deck-stage { background: #0a0e0c; }
+
+deck-stage > section {
+  width: 1920px;
+  height: 1080px;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Surfaces ─── */
+.bg-paper    { background: var(--paper); }
+.bg-surface2 { background: var(--surface-2); }
+.bg-surface3 { background: var(--surface-3); }
+.bg-ink      { background: var(--ink); color: var(--on-ink); }
+
+/* ─── Slide chrome ─── */
+.slide-pad {
+  padding: 96px 128px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.slide-corner {
+  position: absolute;
+  top: 56px; left: 128px; right: 128px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.bg-ink .slide-corner { color: var(--on-ink-dim); }
+
+.brand-mini {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: inherit;
+}
+.brand-mini .glyph {
+  width: 28px; height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+  color: var(--highlighter);
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-weight: 850;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+.bg-ink .brand-mini .glyph {
+  background: var(--highlighter); color: var(--ink);
+}
+
+.slide-foot {
+  position: absolute;
+  bottom: 56px; left: 128px; right: 128px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.bg-ink .slide-foot { color: var(--on-ink-dim); }
+
+/* ─── Eyebrow ─── */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-strong);
+  margin: 0 0 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+.bg-ink .eyebrow { color: var(--highlighter); }
+.eyebrow .dot {
+  width: 8px; height: 8px; border-radius: 999px;
+  background: currentColor;
+}
+
+/* ─── Type ─── */
+h1, h2, h3, p { margin: 0; }
+
+.h-display {
+  font-size: 168px;
+  line-height: 0.92;
+  letter-spacing: -0.025em;
+  font-weight: 850;
+  text-wrap: balance;
+}
+.h-section {
+  font-size: 132px;
+  line-height: 0.94;
+  letter-spacing: -0.022em;
+  font-weight: 800;
+  text-wrap: balance;
+}
+.h-title {
+  font-size: 96px;
+  line-height: 0.98;
+  letter-spacing: -0.018em;
+  font-weight: 800;
+  text-wrap: balance;
+}
+.h-sub {
+  font-size: 48px;
+  line-height: 1.1;
+  letter-spacing: -0.012em;
+  font-weight: 700;
+}
+.lead {
+  font-size: 32px;
+  line-height: 1.4;
+  font-weight: 400;
+  color: var(--muted);
+  max-width: 1200px;
+}
+.bg-ink .lead { color: var(--on-ink-mute); }
+
+.mono { font-family: var(--font-mono); }
+
+/* ─── Pills & chips ─── */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--soft-green);
+  color: var(--accent-strong);
+  font-family: var(--font-mono);
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.status-pill .pill-dot {
+  width: 10px; height: 10px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.lane-chip {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.lane-define { background: var(--lane-define-soft); color: var(--lane-define); }
+.lane-build  { background: var(--lane-build-soft);  color: var(--lane-build); }
+.lane-ship   { background: var(--lane-ship-soft);   color: #8a6309; }
+
+/* ─── Slide-foot navigation ─── */
+.slide-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
