@@ -54,4 +54,10 @@ artifacts:
 ## Open clarifications
 
 - [ ] CLAR-V03-001 — Confirm whether `examples/cli-todo` remains the selected complete example for v0.3 or whether a different example should replace it.
-- [ ] CLAR-V03-002 — Confirm which strengthened validation checks must fail `npm run verify` in v0.3 versus remain advisory until v0.4.
+- [x] CLAR-V03-002 — Confirm which strengthened validation checks must fail `npm run verify` in v0.3 versus remain advisory until v0.4.
+
+  **Resolved 2026-05-01 (human + claude):** Default is hard-fail; advisory only when format variability creates real false-positive risk. Concrete split for the new T-V03-003 / T-V03-004 checks:
+  - **Hard-fail (v0.3 verify gate):** skipped artifact must appear under `## Skips` section (T-V03-003); examples folders must have a `workflow-state.md` (T-V03-003); every `TEST-*` references back to a `REQ-*` or `NFR-*` (T-V03-004).
+  - **Advisory (deferred to v0.4):** every `REQ-*` / `NFR-*` has at least one covering `TEST-*` — test-plan formats are not yet locked, so a deterministic coverage check would block legitimate PRs. T-V03-009 records this as a v0.4 promotion candidate.
+
+  All previously-shipped checks (current-stage consistency, complete-artifact file presence, done-state rules, duplicate IDs, area mismatches, unknown references, invalid reference kinds, missing `Satisfies`) remain hard-fail and are now covered by regression tests (PR #93 for spec-state, PR #94 for traceability).
