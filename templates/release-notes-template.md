@@ -46,6 +46,12 @@ One paragraph for end users / stakeholders. What's new and why they care.
 - Any action required (e.g., update client, re-authenticate, migrate data).
 - Breaking changes (call out clearly).
 
+## Readiness summary
+
+- Release readiness guide: `release-readiness-guide.md` / not used.
+- Go/no-go verdict:
+- Required conditions or approvals:
+
 ## Known limitations
 
 - …
@@ -83,6 +89,7 @@ How to confirm the release is healthy in production.
 
 - [ ] Summary written for the audience (users / stakeholders, not engineers).
 - [ ] User-visible impact stated.
+- [ ] Readiness conditions and approvals summarized, or guide marked not used.
 - [ ] Known limitations disclosed.
 - [ ] Verification steps documented.
 - [ ] Rollback plan documented.

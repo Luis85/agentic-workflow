@@ -134,6 +134,8 @@ The KPI snapshot is evidence for a quality review, not a replacement for the sta
 ### Release
 - [ ] Summary of changes written.
 - [ ] User-visible impact stated.
+- [ ] Release readiness guide created when the increment has multi-stakeholder, operational, security/privacy/compliance, commercial, or communication risk; otherwise explicitly marked not used.
+- [ ] Product perspectives and stakeholder requirements have an owner, evidence, status, and accepted go/no-go decision when the guide is used.
 - [ ] Known limitations disclosed.
 - [ ] Verification steps documented.
 - [ ] Public product page updated or explicitly marked unaffected when user-visible capabilities, positioning, onboarding, or CTAs change.

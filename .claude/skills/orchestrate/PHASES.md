@@ -62,6 +62,7 @@ Slash commands defined in `.claude/commands/spec/`, own agent invocation. Do **n
 ### Stage 10 — Release (`/spec:release`)
 - **Initial:** dispatch as-is.
 - **Pre-flight check:** confirm `review.md` verdict is `Approved` or `Approved with conditions` (per verdict checkboxes in `templates/review-template.md`). If verdict `Blocked`, return to Stage 9 (Review) — do not dispatch `/spec:release`.
+- **Readiness guide:** if the release has multiple stakeholder approvals, user-visible or commercial impact, operational risk, security/privacy/compliance implications, or conditions, expect the release manager to create `release-readiness-guide.md` from `templates/release-readiness-guide-template.md` before finalizing `release-notes.md`.
 
 ### Stage 11 — Learning (`/spec:retro`)
 - **Mandatory:** runs even on clean ships (per `docs/specorator.md` §3.11).

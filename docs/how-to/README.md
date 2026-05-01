@@ -14,7 +14,7 @@ For the full doc map by Diátaxis quadrant — Tutorials / How-to / Reference / 
 
 ## Available recipes
 
-All recipes below are runnable and link out for the *why*. Each ends with a `Last desk-checked` footer naming the commit it was last validated against — read it as a freshness stamp. Seventeen recipes in five intent groups:
+All recipes below are runnable and link out for the *why*. Each ends with a `Last desk-checked` footer naming the commit it was last validated against — read it as a freshness stamp. Eighteen recipes in five intent groups:
 
 **Onboarding and configuration**
 
@@ -37,6 +37,7 @@ All recipes below are runnable and link out for the *why*. Each ends with a `Las
 **Quality and release**
 
 - [How to trace a failing test back to a requirement](./trace-failing-test.md) — walk the chain to find which layer the defect lives in.
+- [How to prepare release readiness](./prepare-release-readiness.md) — collect product perspectives, stakeholder requirements, conditions, and go/no-go evidence.
 - [How to run a retrospective](./run-retrospective.md) — Stage 11, mandatory before marking a feature complete.
 - [How to authorize a destructive release action](./authorize-destructive-release.md) — scope, approve, log, execute.
 

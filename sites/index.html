@@ -157,7 +157,7 @@
             </header>
             <h3>Reviewer &amp; Release</h3>
             <p class="team-agents"><code>reviewer</code> &middot; <code>release-manager</code> &middot; <code>retrospective</code></p>
-            <p class="team-desc">Closes the loop. Reviews the diff with traceability, drafts release notes, and runs the mandatory retro.</p>
+            <p class="team-desc">Closes the loop. Reviews the diff with traceability, prepares release readiness, drafts release notes, and runs the mandatory retro.</p>
           </article>
         </div>
         <p class="team-footnote">Plus an <code>orchestrator</code> that routes between them and an <code>sre</code> for post-release operability. <a href="#roster">See the full 30-agent roster &rarr;</a></p>
@@ -211,6 +211,10 @@
           <article class="card">
             <h3>Quality gates</h3>
             <p>Each stage has acceptance criteria so defects are caught where they are cheapest to fix.</p>
+          </article>
+          <article class="card">
+            <h3>Release readiness</h3>
+            <p>Stage 10 can collect product perspectives, stakeholder approvals, conditions, and go/no-go evidence before production.</p>
           </article>
           <article class="card">
             <h3>Traceability</h3>
@@ -537,7 +541,7 @@
           </article>
           <article class="repo-item">
             <code>templates/</code>
-            <p>Reusable Markdown artifact shapes for requirements, design, tasks, tests, and release.</p>
+            <p>Reusable Markdown artifact shapes for requirements, design, tasks, tests, release readiness, and release.</p>
           </article>
           <article class="repo-item">
             <code>specs/</code>
