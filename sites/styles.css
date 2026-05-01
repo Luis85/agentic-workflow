@@ -9,18 +9,6 @@
 
 :root {
   color-scheme: light;
-  --ink: #17201b;
-  --muted: #59645e;
-  --paper: #fbfcf8;
-  --surface: #ffffff;
-  --line: #d8ded3;
-  --accent: #1b6f55;
-  --accent-strong: #12543f;
-  --highlighter: #e6ff70;
-  --soft-green: #e6f6ef;
-  --soft-blue: #ebf0ff;
-  --soft-yellow: #fff8d8;
-  --shadow: 0 24px 70px rgba(23, 32, 27, 0.13);
 }
 
 * {
@@ -58,7 +46,7 @@ button:focus-visible {
   padding: 10px 14px;
   border-radius: 8px;
   background: var(--ink);
-  color: #fff;
+  color: var(--on-ink);
   font-weight: 800;
   text-decoration: none;
 }
@@ -126,7 +114,7 @@ button:focus-visible {
   border: 1px solid var(--ink);
   border-radius: 8px;
   background: var(--ink);
-  color: #fff;
+  color: var(--on-ink);
   font-weight: 760;
   text-decoration: none;
   white-space: nowrap;
@@ -286,7 +274,7 @@ h1 {
   width: 100%;
   height: auto;
   border-radius: 28px;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-hero);
 }
 
 .section {
@@ -522,7 +510,7 @@ h1 {
   padding: 20px;
   border-radius: 8px;
   background: var(--ink);
-  color: #fff;
+  color: var(--on-ink);
   font-weight: 800;
 }
 
