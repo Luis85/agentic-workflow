@@ -9,7 +9,7 @@ inputs:
   - PRD-V05-001
   - SPECDOC-V05-001
 created: 2026-04-28
-updated: 2026-04-28
+updated: 2026-05-02
 ---
 
 # Tasks — Version 0.5 release and distribution plan
@@ -23,10 +23,11 @@ updated: 2026-04-28
 
 ### T-V05-002 — Define package contract
 
-- **Description:** Document package registry type, package name, scope, contents, visibility, version source, and support expectations before enabling publish.
-- **Satisfies:** REQ-V05-005, NFR-V05-002, SPEC-V05-004
+- **Description:** Document package registry type, package name, scope, contents (include + exclude lists), visibility, version source, and support expectations before enabling publish. Contract must encode the fresh-surface rule from ADR-0021 (stub-only docs, no built-up ADRs in the released archive, intake folders empty) so that downstream automation in T-V05-004 / T-V05-006 / T-V05-007 has a single, deterministic shape to validate against.
+- **Satisfies:** REQ-V05-005, REQ-V05-012, NFR-V05-002, SPEC-V05-004, SPEC-V05-010
 - **Owner:** pm
 - **Estimate:** M
+- **Deliverable:** `specs/version-0-5-plan/package-contract.md`
 
 ### T-V05-003 — Add release notes configuration
 
@@ -91,6 +92,14 @@ updated: 2026-04-28
 - **Depends on:** T-V05-006, T-V05-008
 - **Owner:** qa
 - **Estimate:** S
+
+### T-V05-012 — Implement fresh-surface packaging step
+
+- **Description:** Add `scripts/check-release-package-contents.ts` (or equivalent) that asserts the published archive matches the fresh-surface contract from ADR-0021 / SPEC-V05-010 / `package-contract.md`: no files matching `docs/adr/0\d{3}-*.md`, every enumerated intake folder is absent or contains only a top-level `README.md`, and every shipping doc under `docs/` matches `templates/release-package-stub.md`. Wire it into the release readiness check (T-V05-004) so the release workflow refuses to publish a non-conformant archive.
+- **Satisfies:** REQ-V05-005, REQ-V05-012, NFR-V05-002, SPEC-V05-004, SPEC-V05-010
+- **Depends on:** T-V05-002, T-V05-004
+- **Owner:** dev
+- **Estimate:** M
 
 ### T-V05-011 — Verify v0.5 release readiness
 

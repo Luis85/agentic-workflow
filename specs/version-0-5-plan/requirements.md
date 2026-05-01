@@ -9,7 +9,7 @@ inputs:
   - IDEA-V05-001
   - RESEARCH-V05-001
 created: 2026-04-28
-updated: 2026-04-28
+updated: 2026-05-02
 ---
 
 # PRD — Version 0.5 release and distribution plan
@@ -125,6 +125,20 @@ Plan v0.5 as the release and distribution release: define the branching strategy
 - **Priority:** should
 - **Satisfies:** RESEARCH-V05-001
 
+### REQ-V05-012 — Released package fresh-surface contract
+
+- **Pattern:** event-driven
+- **Statement:** When the release workflow publishes a versioned package, the published archive shall conform to the fresh-surface contract documented in ADR-0021 and SPEC-V05-010 — documentation in stub form, no built-up ADRs, intake folders empty.
+- **Acceptance:**
+  1. The published archive contains zero files matching `docs/adr/0\d{3}-*.md`.
+  2. Every intake folder enumerated in ADR-0021 (`inputs/`, `specs/`, `discovery/`, `projects/`, `portfolio/`, `roadmaps/`, `quality/`, `scaffolding/`, `stock-taking/`, `sales/`) is either absent from the archive or contains only a top-level `README.md` orientation file — no per-feature subdirectories, no per-deal files, no per-engagement state files.
+  3. Every `docs/` page that ships under `docs/` matches the stub shape defined in `templates/release-package-stub.md` — frontmatter present, top-level headings present, `<!-- TODO: ... -->` markers in place of built-up content.
+- **Owner:** product
+- **Priority:** must — this is a hard release-quality gate; the release readiness check fails closed when any assertion is unmet.
+- **Source:** Implementation escalation, 2026-05-02 — user-introduced requirement during v0.5 implementation (Article X of the constitution permits revisiting earlier stages when implementation surfaces a missing requirement).
+- **Satisfies:** IDEA-V05-001
+- **Downstream:** SPEC-V05-010, ADR-0021, T-V05-004 (release readiness check), T-V05-006 (manual release workflow)
+
 ## Non-functional requirements
 
 | ID | Category | Requirement | Target |
@@ -147,3 +161,9 @@ Plan v0.5 as the release and distribution release: define the branching strategy
 - [x] Functional requirements use EARS and stable IDs.
 - [x] Acceptance criteria are testable.
 - [x] Publishing and shared-state operations require explicit human authorization.
+
+## Change log
+
+| Date | Change | Author |
+|---|---|---|
+| 2026-05-02 | Added REQ-V05-012 (Released package fresh-surface contract) via implementation escalation — user-introduced requirement during v0.5 implementation; Article X revisit. | pm |
