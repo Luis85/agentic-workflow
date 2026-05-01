@@ -51,6 +51,14 @@ For narrower local iteration, the template exposes tiered read-only gates:
 
 The automation inventory that backs these commands lives in `tools/automation-registry.yml`; `npm run check:automation-registry` verifies that package scripts, GitHub workflows, skills, and operational agents remain registered. When a surface is missing, `npm run automation:registry:discover` emits candidate entries for humans or agents to annotate before committing.
 
+For a broader local quality review, run:
+
+```bash
+npm run self-check
+```
+
+`self-check` is read-only and programmatically consumable with `npm run self-check -- --json`. It aggregates `verify:json`, workflow quality metrics, and learning evidence such as retrospectives, quality reviews, and ADRs into one review report. It complements the blocking verify gate; it does not replace review or automatically decide workflow status.
+
 ## Reporting
 
 When an agent runs verify, it reports:

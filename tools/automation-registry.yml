@@ -10,6 +10,16 @@ entries:
     emits_json: false
     used_by: [human, agent]
     rerun_command: npm run doctor
+  - id: script:self-check
+    kind: script
+    command: npm run self-check
+    path: scripts/self-check.ts
+    purpose: Run a local comprehensive quality review by aggregating verify diagnostics, workflow metrics, and learning evidence.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: true
+    used_by: [human, agent]
+    rerun_command: npm run self-check
   - id: script:verify
     kind: script
     command: npm run verify
