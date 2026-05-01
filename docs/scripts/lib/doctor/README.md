@@ -14,10 +14,14 @@ entry_point: true
 
 ## Type Aliases
 
+- [BranchReadinessInput](type-aliases/BranchReadinessInput.md)
 - [CheckResult](type-aliases/CheckResult.md)
 - [CheckStatus](type-aliases/CheckStatus.md)
+- [WorktreeHygieneInput](type-aliases/WorktreeHygieneInput.md)
 
 ## Functions
 
+- [branchReadinessCheck](functions/branchReadinessCheck.md)
 - [dependencyReadinessCheck](functions/dependencyReadinessCheck.md)
 - [workflowReadinessChecks](functions/workflowReadinessChecks.md)
+- [worktreeHygieneCheck](functions/worktreeHygieneCheck.md)

@@ -3,7 +3,12 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { dependencyReadinessCheck, workflowReadinessChecks } from "../../scripts/lib/doctor.js";
+import {
+  branchReadinessCheck,
+  dependencyReadinessCheck,
+  workflowReadinessChecks,
+  worktreeHygieneCheck,
+} from "../../scripts/lib/doctor.js";
 
 test("dependencyReadinessCheck points lockfile installs at npm ci", () => {
   const root = tempRepo();
@@ -152,6 +157,82 @@ test("workflowReadinessChecks requires checkout before uploading Pages artifacts
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
+});
+
+test("branchReadinessCheck passes a clean tracked branch", () => {
+  assert.deepEqual(
+    branchReadinessCheck({
+      branchName: "feat/example",
+      upstreamName: "origin/feat/example",
+      ahead: 0,
+      behind: 0,
+    }),
+    {
+      name: "branch",
+      status: "pass",
+      detail: "feat/example -> origin/feat/example",
+    },
+  );
+});
+
+test("branchReadinessCheck warns when a branch is behind upstream", () => {
+  assert.deepEqual(
+    branchReadinessCheck({
+      branchName: "main",
+      upstreamName: "origin/main",
+      ahead: 0,
+      behind: 3,
+    }),
+    {
+      name: "branch",
+      status: "warn",
+      detail: "main -> origin/main; behind 3",
+      hint: "run git pull --ff-only",
+    },
+  );
+});
+
+test("branchReadinessCheck fails when an integration branch is ahead", () => {
+  assert.deepEqual(
+    branchReadinessCheck({
+      branchName: "develop",
+      upstreamName: "origin/develop",
+      ahead: 1,
+      behind: 0,
+    }),
+    {
+      name: "branch",
+      status: "fail",
+      detail: "develop -> origin/develop; ahead 1",
+      hint: "preserve any work on a topic branch, then reset develop only after confirming it is safe",
+    },
+  );
+});
+
+test("worktreeHygieneCheck warns for unregistered .worktrees directories", () => {
+  const result = worktreeHygieneCheck({
+    registeredWorktrees: ["/repo", "/repo/.worktrees/active"],
+    worktreeDirectories: ["active", "stale-empty"],
+    mergedBranches: ["main"],
+    currentBranch: "feat/current",
+  });
+
+  assert.equal(result.status, "warn");
+  assert.equal(result.detail, "2 registered; 1 hygiene warning(s)");
+  assert.match(result.hint || "", /\.worktrees\/stale-empty is not registered/);
+});
+
+test("worktreeHygieneCheck warns for merged local branches", () => {
+  const result = worktreeHygieneCheck({
+    registeredWorktrees: ["/repo"],
+    worktreeDirectories: [],
+    mergedBranches: ["main", "feat/old", "feat/current"],
+    currentBranch: "feat/current",
+  });
+
+  assert.equal(result.status, "warn");
+  assert.equal(result.detail, "1 registered; 1 hygiene warning(s)");
+  assert.match(result.hint || "", /feat\/old is already merged into origin\/main/);
 });
 
 function tempRepo(): string {

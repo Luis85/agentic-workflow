@@ -31,6 +31,7 @@ cd .worktrees/<slug>
 
 # 3. After the PR merges, clean up
 cd ../..                             # back to the main checkout
+git pull --ff-only                   # bring the integration branch to the merge commit
 git worktree remove .worktrees/<slug>
 git branch -d <prefix>/<slug>
 git worktree prune                   # if needed
@@ -54,6 +55,8 @@ For anything that touches code, runs tests, or is reviewed by an automated revie
 - **`git worktree add` against an existing branch.** Use `-b <new-branch>` to create + switch atomically. If the branch already exists, the prior fix is in flight; don't clobber it.
 - **`git pull` while inside the main checkout's integration branch with worktrees open.** Safe — the worktrees see the new commits the next time they `fetch`.
 - **Deleting a worktree directory with `rm -rf`.** Use `git worktree remove`. A bare `rm -rf` leaves a stale `.git/worktrees/<slug>` administrative entry; `git worktree prune` cleans that up after the fact.
+- **Empty directories left under `.worktrees/`.** `npm run doctor` warns when a directory exists under `.worktrees/` but is not registered as a git worktree. Confirm it is empty and unrelated to active work before deleting it.
+- **Merged local branches piling up.** `npm run doctor` warns when local topic branches are already merged into `origin/main`. Delete them after the PR merge is confirmed and the matching worktree is removed.
 
 ## Settings
 
