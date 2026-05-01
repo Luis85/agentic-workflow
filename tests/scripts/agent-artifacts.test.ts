@@ -156,3 +156,58 @@ test("agent artifact validation ignores lazy roots and optional legacy reference
     fs.rmSync(root, { recursive: true, force: true });
   }
 });
+
+test("agent artifact validation accepts existing paths with Markdown suffixes", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "agentic-workflow-agent-anchor-path-test-"));
+  try {
+    fs.mkdirSync(path.join(root, ".claude", "skills", "anchors"), { recursive: true });
+    fs.mkdirSync(path.join(root, "docs"), { recursive: true });
+    fs.writeFileSync(path.join(root, "package.json"), JSON.stringify({ scripts: {} }), "utf8");
+    fs.writeFileSync(path.join(root, "docs", "verify-gate.md"), "# Verify gate\n", "utf8");
+    fs.writeFileSync(
+      path.join(root, ".claude", "skills", "anchors", "SKILL.md"),
+      [
+        "---",
+        "name: anchors",
+        "description: Anchored references.",
+        "---",
+        "# Anchors",
+        "",
+        "Read `docs/verify-gate.md#run-the-full-gate` and `docs/verify-gate.md?plain=1`.",
+      ].join("\n"),
+      "utf8",
+    );
+
+    assert.deepEqual(validateAgentArtifacts(root), []);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("agent artifact validation ignores tilde fenced examples", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "agentic-workflow-agent-tilde-fence-test-"));
+  try {
+    fs.mkdirSync(path.join(root, ".claude", "skills", "tilde"), { recursive: true });
+    fs.writeFileSync(path.join(root, "package.json"), JSON.stringify({ scripts: {} }), "utf8");
+    fs.writeFileSync(
+      path.join(root, ".claude", "skills", "tilde", "SKILL.md"),
+      [
+        "---",
+        "name: tilde",
+        "description: Tilde fenced examples.",
+        "---",
+        "# Tilde",
+        "",
+        "~~~bash",
+        "npm run missing",
+        "cat docs/missing.md",
+        "~~~",
+      ].join("\n"),
+      "utf8",
+    );
+
+    assert.deepEqual(validateAgentArtifacts(root), []);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});

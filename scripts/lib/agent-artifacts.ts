@@ -151,7 +151,7 @@ function validateInlinePathReferences(
     const candidate = normalizeInlinePathCandidate(match[1]);
     if (!candidate || !isConcretePathReference(candidate)) continue;
     if (isDocumentedExampleReference(candidate, text, match.index || 0)) continue;
-    const resolved = resolveReferencePath(root, record.path, candidate);
+    const resolved = resolveReferencePath(root, record.path, stripReferenceSuffix(candidate));
     if (!fs.existsSync(resolved)) {
       errors.push({
         path: record.path,
@@ -172,7 +172,7 @@ function packageScripts(root: string): Set<string> {
 }
 
 function stripFencedBlocks(text: string): string {
-  return text.replace(/```[\s\S]*?```/g, (block) => "\n".repeat(block.split(/\r?\n/).length - 1));
+  return text.replace(/(```|~~~)[\s\S]*?\1/g, (block) => "\n".repeat(block.split(/\r?\n/).length - 1));
 }
 
 function normalizeInlinePathCandidate(value: string): string | null {
@@ -234,6 +234,10 @@ function resolveReferencePath(root: string, sourcePath: string, candidate: strin
     return path.resolve(path.join(root, path.dirname(sourcePath)), candidate);
   }
   return path.join(root, candidate);
+}
+
+function stripReferenceSuffix(candidate: string): string {
+  return candidate.replace(/[?#].*$/, "");
 }
 
 function lineNumberAt(text: string, index: number): number {
