@@ -99,7 +99,7 @@ test("workflowReadinessChecks reports missing workflow contract markers", () => 
     assert.equal(results[0].status, "fail");
     assert.equal(
       results[0].detail,
-      ".github/workflows/verify.yml missing pull_request:, - main, actions/checkout, actions/setup-node, cache: npm, npm ci, npm run verify, actions/checkout SHA-pinned, actions/setup-node SHA-pinned",
+      ".github/workflows/verify.yml missing pull_request:, push:, actions/checkout, actions/setup-node, cache: npm, npm ci, npm run verify, push trigger covers main branch, actions/checkout SHA-pinned, actions/setup-node SHA-pinned",
     );
     assert.equal(results[1].status, "fail");
     assert.equal(results[1].detail, ".github/workflows/pages.yml missing");
@@ -128,7 +128,7 @@ test("workflowReadinessChecks fails when verify.yml lacks the pull_request trigg
   }
 });
 
-test("workflowReadinessChecks fails when verify.yml does not push to main", () => {
+test("workflowReadinessChecks fails when verify.yml push trigger does not cover main", () => {
   const root = tempRepo();
   try {
     const workflowDir = path.join(root, ".github", "workflows");
@@ -142,7 +142,48 @@ test("workflowReadinessChecks fails when verify.yml does not push to main", () =
 
     const results = workflowReadinessChecks(root);
     assert.equal(results[0].status, "fail");
-    assert.equal(results[0].detail, ".github/workflows/verify.yml missing - main");
+    assert.equal(
+      results[0].detail,
+      ".github/workflows/verify.yml missing push trigger covers main branch",
+    );
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("workflowReadinessChecks fails when verify.yml lacks a push trigger entirely", () => {
+  const root = tempRepo();
+  try {
+    const workflowDir = path.join(root, ".github", "workflows");
+    fs.mkdirSync(workflowDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(workflowDir, "verify.yml"),
+      [
+        "on:",
+        "  pull_request:",
+        "    branches:",
+        "      - main",
+        "jobs:",
+        "  verify:",
+        "    steps:",
+        "      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+        "      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e",
+        "        with:",
+        "          cache: npm",
+        "      - run: npm ci",
+        "      - run: npm run verify",
+        "",
+      ].join("\n"),
+      "utf8",
+    );
+    fs.writeFileSync(path.join(workflowDir, "pages.yml"), validPagesWorkflow(), "utf8");
+
+    const results = workflowReadinessChecks(root);
+    assert.equal(results[0].status, "fail");
+    assert.equal(
+      results[0].detail,
+      ".github/workflows/verify.yml missing push:, push trigger covers main branch",
+    );
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }

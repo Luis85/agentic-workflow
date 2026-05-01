@@ -49,7 +49,7 @@ const workflowContracts: WorkflowContract[] = [
     filePath: ".github/workflows/verify.yml",
     requiredMarkers: [
       "pull_request:",
-      "- main",
+      "push:",
       "actions/checkout",
       "actions/setup-node",
       "cache: npm",
@@ -57,6 +57,10 @@ const workflowContracts: WorkflowContract[] = [
       "npm run verify",
     ],
     requiredPatterns: [
+      {
+        description: "push trigger covers main branch",
+        pattern: /push:\s*[\s\S]*?branches:[\s\S]*?-\s*main\b/,
+      },
       { description: "actions/checkout SHA-pinned", pattern: /actions\/checkout@[0-9a-f]{40}\b/ },
       { description: "actions/setup-node SHA-pinned", pattern: /actions\/setup-node@[0-9a-f]{40}\b/ },
     ],
