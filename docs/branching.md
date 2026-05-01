@@ -33,6 +33,7 @@ The default `.claude/settings.json` shipped with this template denies pushes to 
 | `refactor/` | Internal change, no behaviour change. |
 | `chore/` | Dependencies, tooling, CI, repo maintenance. |
 | `docs/` | Documentation only. |
+| `release/` | Versioned release prep — see [Release branches](#release-branches-releasevxyz). |
 | `claude/` | Agent‑opened branches (this is the convention `Claude Code` uses by default). |
 
 These prefixes match the allowlist in `.claude/settings.json` and the regexes in the operational bots' branch‑name idempotency checks. Adding a new prefix means updating both.
@@ -70,6 +71,47 @@ If your project doesn't ship versioned releases, Shape A is enough. Don't introd
 ## Promotion (Shape B only)
 
 `develop` → `main` is a fast‑forward (or merge commit if you prefer). It happens at release time, not continuously. The release ADR template (`templates/release-notes-template.md`) covers the artifacts.
+
+## Release branches (`release/vX.Y.Z`)
+
+This template uses **Shape A plus an explicit `release/vX.Y.Z` branch** as its release branching strategy ([ADR-0020](adr/0020-v05-release-branch-strategy.md)). It applies whenever you cut a tagged release through the v0.5 release workflow, regardless of whether your project also uses Shape B.
+
+### When to cut a release branch
+
+Cut `release/vX.Y.Z` when you enter the **release prep window** — the moment you start finalizing a specific version for publication. One release branch per planned version. Don't cut a `release/*` branch speculatively, and don't reuse one across versions; if a release is abandoned, delete the branch and start a new one for the next version.
+
+The release branch is cut from the canonical release source:
+
+- **Shape A:** cut from `main`.
+- **Shape B:** cut from `develop` (Shape B users still tag from `main` after promotion — see below).
+
+### What lives on a release branch
+
+Only release-prep work. Everything that is not "this specific version's release prep" belongs on its own topic branch.
+
+- Version bump in `package.json` (and any locked counterparts).
+- `CHANGELOG.md` entry for the new version.
+- Lifecycle release notes finalization in `specs/<feature>/release-notes.md`.
+- Release-only documentation updates (e.g., README install snippets that pin the new version).
+- Generated release-readiness artifacts produced by the v0.5 readiness check.
+
+Do **not** land new features, refactors, or non-release fixes on `release/*`. Those go through ordinary topic branches first; the release branch only collects what they need to ship.
+
+### How a release branch merges back
+
+1. Open a PR from `release/vX.Y.Z` into the canonical release source (`main` in Shape A; `develop`-then-`main` promotion in Shape B).
+2. Run the v0.5 release readiness check on the PR. It must pass before merge.
+3. Reviewer merges the PR like any other PR — no force-push, no direct commit on the protected branch.
+4. **Tag from `main`** after the merge lands. The tag (`vX.Y.Z`) is created on the merge commit on `main`, never on the release branch itself and never on a feature branch. This keeps NFR-V05-002 traceability clean: tag → commit on `main` → merged release PR → changelog → release notes.
+5. Delete the `release/vX.Y.Z` branch locally and on the remote once the tag is cut. Release branches are not reused.
+
+### Authorization boundary
+
+Cutting, pushing, and merging a `release/vX.Y.Z` PR is ordinary topic-branch work and follows the normal review and verify gate. **Publishing** the GitHub Release and (when enabled) the GitHub Package is a separate, manually authorized step: only an authorized maintainer triggers the `workflow_dispatch` release workflow, and only after the readiness check, v0.4 quality signals, and human authorization input are all green ([REQ-V05-002](../specs/version-0-5-plan/requirements.md), SPEC-V05-002). Pre-merge release prep is reversible; tag creation and publish are not.
+
+### Why not `develop` in v0.5
+
+The v0.5 plan keeps Shape A and explicitly does not introduce a permanent `develop` branch ([ADR-0020](adr/0020-v05-release-branch-strategy.md)). The push-deny on `develop` in `.claude/settings.json` stays in place as forward-compatibility insurance — adopting Shape B later is a documentation and settings change, not a history rewrite.
 
 ## Settings
 
