@@ -46,3 +46,59 @@ test("agent artifact validation reports missing required sections", () => {
     fs.rmSync(root, { recursive: true, force: true });
   }
 });
+
+test("agent artifact validation reports missing path and command references", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "agentic-workflow-agent-reference-test-"));
+  try {
+    fs.mkdirSync(path.join(root, ".claude", "skills", "broken"), { recursive: true });
+    fs.writeFileSync(path.join(root, "package.json"), JSON.stringify({ scripts: { verify: "tsx scripts/verify.ts" } }), "utf8");
+    fs.writeFileSync(
+      path.join(root, ".claude", "skills", "broken", "SKILL.md"),
+      [
+        "---",
+        "name: broken",
+        "description: Broken references.",
+        "---",
+        "# Broken",
+        "",
+        "Use `docs/missing.md` and run `npm run missing`.",
+      ].join("\n"),
+      "utf8",
+    );
+
+    const errors = validateAgentArtifacts(root);
+    const codes = errors.filter((error) => typeof error !== "string").map((error) => error.code);
+    assert.equal(codes.includes("AGENT_PATH"), true);
+    assert.equal(codes.includes("AGENT_COMMAND"), true);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("agent artifact validation ignores examples and placeholders", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "agentic-workflow-agent-example-test-"));
+  try {
+    fs.mkdirSync(path.join(root, ".claude", "skills", "example"), { recursive: true });
+    fs.writeFileSync(path.join(root, "package.json"), JSON.stringify({ scripts: { verify: "tsx scripts/verify.ts" } }), "utf8");
+    fs.writeFileSync(
+      path.join(root, ".claude", "skills", "example", "SKILL.md"),
+      [
+        "---",
+        "name: example",
+        "description: Example references.",
+        "---",
+        "# Example",
+        "",
+        "For example, a generated report may be `docs/reports/YYYY-MM-DD.md`.",
+        "```bash",
+        "npm run project-specific-command",
+        "```",
+      ].join("\n"),
+      "utf8",
+    );
+
+    assert.deepEqual(validateAgentArtifacts(root), []);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
