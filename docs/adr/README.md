@@ -27,6 +27,7 @@ Records of architecturally significant decisions. Format follows Michael Nygard'
 | [0012](0012-add-roadmap-management-track.md) | Add a Roadmap Management Track for product and project planning | Proposed |
 | [0013](0013-add-obsidian-as-ui-layer.md) | Add Obsidian as an opt-in UI layer | Proposed |
 | [0014](0014-shard-log-shaped-artifacts-for-bases.md) | Shard log-shaped artifacts for Bases | Proposed |
+| [0015](0015-codify-codex-pr-review-loop.md) | Codify a bounded Codex review loop on every pull request | Proposed |
 <!-- END GENERATED: adr-index -->
 
 ## Conventions
