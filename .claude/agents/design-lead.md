@@ -147,8 +147,8 @@ designs/
    - Asset list (SVGs, images — paths in `assets/` or note "placeholder").
    - Accessibility checklist (contrast, keyboard, ARIA, screen reader copy).
    - Open questions / known gaps (for the engineer to resolve, not ignore).
-3. Update `design-state.md` to `status: complete`.
-4. Recommend next step: `/spec:design` if this feeds a lifecycle feature, or a direct handoff to the engineer if it's a standalone surface.
+3. Update `design-state.md`: set the `design-handoff.md` row in the Artifacts table to `complete`, leave `status: handoff-in-progress`, and append a hand-off note under `### After Handoff`. Do **not** set `status: complete` yet — the human must approve the handoff first. If the human sends it back, leave `status` at `handoff-in-progress` (or `handoff-in-progress-blocked`).
+4. Once the human approves the handoff, advance `status: handoff-in-progress` → `status: complete`. Recommend next step: `/spec:design` if this feeds a lifecycle feature, or a direct handoff to the engineer if it's a standalone surface.
 
 **Quality gate:**
 - Every screen from `sketch.md` has a component assignment.
