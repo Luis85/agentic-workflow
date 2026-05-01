@@ -97,20 +97,38 @@ CI readiness + branch / worktree hygiene check. v0.5 invokes it before publish.
 
 | Exit code | Meaning |
 |---|---|
-| 0 | All checks passed, including the verify.yml workflow contract and `npm run verify` itself (doctor includes verify in its task list — see [`scripts/doctor.ts:33`](../../scripts/doctor.ts)). |
-| Non-zero (1) | At least one check failed. Doctor prints the failing task name and diagnostic output. |
+| 0 | No check returned `fail`. Warnings (status `warn`) do not affect the exit code — the doctor script counts only `fail` results (`scripts/doctor.ts` lines 36–46). v0.5 must read stdout to discover warnings. |
+| Non-zero (1) | At least one check returned `fail`. Doctor prints the failing task name and diagnostic output. |
 
-**What doctor enforces** (per v0.4 §New, §Improved):
+**Status tiers.** Each doctor check emits one of three statuses:
 
-- `.github/workflows/verify.yml` workflow contract: `pull_request:` and `push:` triggers, push-covers-main, SHA-pinned `actions/checkout` + `actions/setup-node` inside the verify job (per `docs/pr-ci-gate.md` §Workflow file contract).
-- Dependency readiness (`node_modules` present, lockfile present).
-- Branch readiness (current branch position relative to upstream / integration branch).
-- Worktree hygiene (no merged-but-stale worktrees registered) — advisory warning, not a hard fail in current implementation.
-- `npm run verify` exit 0.
+| Status | Effect on exit code | What v0.5 should do |
+|---|---|---|
+| `pass` | none | Nothing. Check succeeded. |
+| `warn` | none — exit code stays 0 | Advisory. Surface in release notes; do not block publish by default. |
+| `fail` | counted; exit code becomes 1 if any | Hard publish block. |
 
-**Blocker rule v0.5 should enforce.** `doctor` exit non-zero is a hard publish block. There is no advisory tier here — every doctor task is part of the gate.
+**What doctor enforces** (per v0.4 §New, §Improved). The status column reflects current implementation:
 
-**Operator-waiver caveat.** Worktree hygiene warnings are cosmetic. If the v0.5 release operator has a doctor failure that traces only to a stale worktree warning, it is a defensible waiver. Any other doctor failure is not a defensible waiver: it means the verify gate or workflow contract is broken.
+| Check | Source | Status when degraded |
+|---|---|---|
+| Node / npm / git availability and Node ≥ 20 | `scripts/doctor.ts` | `fail` |
+| Branch readiness (ahead / behind / topic vs. integration) | `scripts/lib/doctor.ts` `branchReadinessCheck` | `warn` (most cases) or `fail` (no upstream / git error) |
+| Working tree clean | `scripts/doctor.ts` `checkGitStatus` | `warn` |
+| Worktree hygiene (no merged-but-stale registrations) | `scripts/lib/doctor.ts` `worktreeHygieneCheck` | `warn` |
+| Dependency readiness (`node_modules` + lockfile) | `scripts/lib/doctor.ts` `dependencyReadinessCheck` | `warn` (missing / drift) |
+| `.github/workflows/verify.yml` workflow contract | `scripts/lib/doctor.ts` `workflowReadinessChecks` | `fail` |
+| ADR index, command inventories, `npm run verify` | `scripts/doctor.ts` `checkTask` | `fail` |
+
+**Blocker rules v0.5 should enforce.**
+
+| Signal | Block publish | Reason |
+|---|---|---|
+| `doctor` exit non-zero | Yes | A `fail` check means the verify gate, workflow contract, or environment is broken. |
+| `doctor` exit 0 with `warn` lines (default) | No, surface only | Warnings are advisory by current implementation. |
+| `doctor` exit 0 with specific `warn` v0.5 elects to gate on | Operator policy | If v0.5 release-readiness chooses to elevate certain warnings (e.g. dirty working tree on the release branch), document the elevation in the release operator guide and parse stdout for the warn line. v0.4 does not enforce; v0.5 owns the policy. |
+
+**Operator-waiver caveat.** Doctor `fail` exits trace to broken gate / contract — not defensible to waive. The advisory warnings (worktree hygiene, branch ahead, dirty tree) do not require waiving because they do not block; if v0.5 elevates one of them to a gate and the operator chooses to waive, the waiver is recorded in the publish artifact.
 
 ### 4. `npm run verify` exit code
 
