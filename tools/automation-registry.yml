@@ -329,6 +329,16 @@ entries:
     emits_json: true
     used_by: [human, agent, ci]
     rerun_command: npm run check:release-package-contents -- --archive <dir>
+  - id: check:release-readiness
+    kind: check
+    command: npm run check:release-readiness
+    path: scripts/check-release-readiness.ts
+    purpose: Validate a v0.5 release candidate against SPEC-V05-005 / SPEC-V05-008 / SPEC-V05-010 — Layer 1 release metadata correctness plus Layer 2 fresh-surface composition when --archive is provided.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: true
+    used_by: [human, agent, ci]
+    rerun_command: npm run check:release-readiness -- --version <X.Y.Z> [--archive <dir>]
   - id: docs:scripts
     kind: script
     command: npm run docs:scripts

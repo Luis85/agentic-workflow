@@ -1,0 +1,607 @@
+import fs from "node:fs";
+import path from "node:path";
+import YAML from "yaml";
+import type { Diagnostic } from "./diagnostics.js";
+import {
+  checkReleasePackageContents,
+  type ReleasePackageReport,
+} from "./release-package-contract.js";
+
+/**
+ * Diagnostic codes emitted by {@link checkReleaseReadiness}.
+ *
+ * Layer 1 codes use the `RELEASE_READINESS_*` namespace, one code per assertion
+ * field. Layer 2 codes (fresh-surface contract) are passed through unchanged
+ * from `RELEASE_PACKAGE_DIAGNOSTIC_CODES` in `release-package-contract.ts` so
+ * downstream T-V05-006 can rely on a single stable namespace per assertion.
+ */
+export const RELEASE_READINESS_DIAGNOSTIC_CODES = {
+  Version: "RELEASE_READINESS_VERSION_MISMATCH",
+  TagMissing: "RELEASE_READINESS_TAG_MISSING",
+  TagNotAtMain: "RELEASE_READINESS_TAG_NOT_AT_MAIN",
+  ChangelogMissing: "RELEASE_READINESS_CHANGELOG_MISSING",
+  ReleaseNotesMissing: "RELEASE_READINESS_RELEASE_YML_MISSING",
+  ReleaseNotesShape: "RELEASE_READINESS_RELEASE_YML_SHAPE",
+  PkgName: "RELEASE_READINESS_PKG_NAME",
+  PkgRegistry: "RELEASE_READINESS_PKG_REGISTRY",
+  PkgRepository: "RELEASE_READINESS_PKG_REPOSITORY",
+  PkgFiles: "RELEASE_READINESS_PKG_FILES",
+  PackageJsonMissing: "RELEASE_READINESS_PACKAGE_JSON_MISSING",
+  WorkflowMissing: "RELEASE_READINESS_WORKFLOW_MISSING",
+  WorkflowPermissions: "RELEASE_READINESS_WORKFLOW_PERMISSIONS",
+  Quality: "RELEASE_READINESS_QUALITY",
+} as const;
+
+/**
+ * Expected `package.json#name` per `specs/version-0-5-plan/package-contract.md` §2.
+ */
+export const EXPECTED_PACKAGE_NAME = "@luis85/agentic-workflow";
+
+/**
+ * Expected `package.json#publishConfig.registry` per package contract §2.
+ */
+export const EXPECTED_PACKAGE_REGISTRY = "https://npm.pkg.github.com";
+
+/**
+ * Expected `package.json#repository` URL per package contract §2.
+ */
+export const EXPECTED_PACKAGE_REPOSITORY = "https://github.com/Luis85/agentic-workflow";
+
+/**
+ * Least-privilege workflow permissions allowed on the manual release workflow
+ * per ADR-0020 / SPEC-V05-002 / NFR-V05-001.
+ *
+ * The set is exhaustive — any other key (for example `actions: write`,
+ * `id-token: write`, `pull-requests: write`) is a violation, and any value
+ * other than the one below for a permitted key is a violation.
+ */
+export const REQUIRED_WORKFLOW_PERMISSIONS: Readonly<Record<string, string>> = {
+  contents: "write",
+  packages: "write",
+};
+
+/**
+ * Minimum maturity level required by SPEC-V05-008 before publish.
+ */
+export const MIN_QUALITY_MATURITY_LEVEL = 3;
+
+/**
+ * Minimal git facade for tag-readiness assertions.
+ *
+ * Real callers wire this with `git rev-parse <ref>`. Tests inject a stub
+ * mapping to avoid spawning git.
+ */
+export interface GitInterface {
+  resolveRef(ref: string): string | null;
+}
+
+/**
+ * v0.4 quality signals consumed by the readiness check (SPEC-V05-008).
+ *
+ * Three repo-derived signals (`openBlockers`, `openClarifications`,
+ * `maturityLevel`) come from `lib/quality-metrics.ts`. The two operator-set
+ * signals (`ciStatus`, `validationStatus`) come from the release operator via
+ * CLI flags. Either every signal is green, or `waiver` records an explicit
+ * operator override.
+ */
+export interface QualitySignals {
+  ciStatus?: string;
+  validationStatus?: string;
+  openBlockers: number;
+  openClarifications: number;
+  maturityLevel: number;
+  waiver?: string;
+}
+
+export interface ReleaseReadinessOptions {
+  version: string;
+  repoRoot: string;
+  archive?: string;
+  releaseWorkflowPath?: string;
+  releaseNotesConfigPath?: string;
+  changelogPath?: string;
+  packageJsonPath?: string;
+  expectedPackageName?: string;
+  expectedPackageRegistry?: string;
+  expectedPackageRepository?: string;
+  expectedPackageFiles?: string[];
+  git?: GitInterface;
+  qualitySignals?: QualitySignals;
+}
+
+export interface ReleaseReadinessReport {
+  version: string;
+  diagnostics: Diagnostic[];
+  freshSurface?: ReleasePackageReport;
+}
+
+export type ParsedReleaseReadinessArgs =
+  | {
+      kind: "args";
+      version?: string;
+      versionSource?: "argv" | "env";
+      archive?: string;
+      archiveSource?: "argv" | "env";
+    }
+  | { kind: "argv-empty"; rawFlag: string };
+
+/**
+ * Parse CLI arguments for the release readiness check.
+ *
+ * Recognises `--version <X.Y.Z>` / `--version=<X.Y.Z>` and
+ * `--archive <dir>` / `--archive=<dir>`. Falls back to the environment
+ * variables `RELEASE_VERSION` and `RELEASE_PACKAGE_ARCHIVE` when no flag is
+ * present. Empty flag values short-circuit with `argv-empty` so release
+ * automation cannot silently bypass the check by passing a shell-expanded
+ * empty string (Codex P1 regression carried from T-V05-012).
+ *
+ * @param argv Arguments after `process.argv.slice(2)`.
+ * @param env Optional environment object (defaults to `process.env`).
+ */
+export function parseReleaseReadinessArgs(
+  argv: readonly string[],
+  env: NodeJS.ProcessEnv = process.env,
+): ParsedReleaseReadinessArgs {
+  const out: ParsedReleaseReadinessArgs = { kind: "args" };
+  for (let i = 0; i < argv.length; i += 1) {
+    const arg = argv[i];
+    if (arg === "--version") {
+      const value = argv[i + 1];
+      if (value === undefined || value === "" || value.startsWith("--")) {
+        return { kind: "argv-empty", rawFlag: "--version" };
+      }
+      out.version = value;
+      out.versionSource = "argv";
+      i += 1;
+      continue;
+    }
+    if (arg.startsWith("--version=")) {
+      const value = arg.slice("--version=".length);
+      if (value === "") return { kind: "argv-empty", rawFlag: "--version=" };
+      out.version = value;
+      out.versionSource = "argv";
+      continue;
+    }
+    if (arg === "--archive") {
+      const value = argv[i + 1];
+      if (value === undefined || value === "" || value.startsWith("--")) {
+        return { kind: "argv-empty", rawFlag: "--archive" };
+      }
+      out.archive = value;
+      out.archiveSource = "argv";
+      i += 1;
+      continue;
+    }
+    if (arg.startsWith("--archive=")) {
+      const value = arg.slice("--archive=".length);
+      if (value === "") return { kind: "argv-empty", rawFlag: "--archive=" };
+      out.archive = value;
+      out.archiveSource = "argv";
+      continue;
+    }
+  }
+  if (!out.version && env.RELEASE_VERSION) {
+    out.version = env.RELEASE_VERSION;
+    out.versionSource = "env";
+  }
+  if (!out.archive && env.RELEASE_PACKAGE_ARCHIVE) {
+    out.archive = env.RELEASE_PACKAGE_ARCHIVE;
+    out.archiveSource = "env";
+  }
+  return out;
+}
+
+/**
+ * Validate a release candidate against the v0.5 readiness contract.
+ *
+ * Runs Layer 1 (release metadata correctness) in fixed order:
+ *
+ * 1. Version alignment — `package.json#version` matches the release version.
+ * 2. Tag readiness — release tag points at `main` HEAD per ADR-0020.
+ * 3. CHANGELOG entry — `CHANGELOG.md` has a `## [vX.Y.Z]` heading.
+ * 4. Lifecycle release notes — `.github/release.yml` shape per T-V05-003.
+ * 5. Package metadata — name, registry, repository, files per package contract.
+ * 6. Workflow permissions — manual release workflow is least-privilege.
+ * 7. v0.4 quality signals — green or explicit operator waiver (SPEC-V05-008).
+ *
+ * Then runs Layer 2 (fresh-surface composition from T-V05-012) when
+ * `archive` is provided. Layer 2 diagnostics are surfaced unchanged so the
+ * `RELEASE_PKG_*` codes downstream consumers rely on stay stable.
+ *
+ * Layer 2 is skipped only when no archive is provided — Layer 1 still runs
+ * because the manual release workflow (T-V05-006) sometimes invokes readiness
+ * before the candidate archive is materialised.
+ */
+export function checkReleaseReadiness(opts: ReleaseReadinessOptions): ReleaseReadinessReport {
+  const diagnostics: Diagnostic[] = [];
+  const expectedName = opts.expectedPackageName ?? EXPECTED_PACKAGE_NAME;
+  const expectedRegistry = opts.expectedPackageRegistry ?? EXPECTED_PACKAGE_REGISTRY;
+  const expectedRepository = opts.expectedPackageRepository ?? EXPECTED_PACKAGE_REPOSITORY;
+  const releaseWorkflowPath = opts.releaseWorkflowPath ?? ".github/workflows/release.yml";
+  const releaseNotesPath = opts.releaseNotesConfigPath ?? ".github/release.yml";
+  const changelogPath = opts.changelogPath ?? "CHANGELOG.md";
+  const packageJsonPath = opts.packageJsonPath ?? "package.json";
+
+  const pkg = readPackageJson(opts.repoRoot, packageJsonPath);
+
+  diagnostics.push(...checkVersionAlignment(pkg, opts.version, packageJsonPath));
+  if (opts.git) diagnostics.push(...checkTagAtMain(opts.git, opts.version));
+  diagnostics.push(...checkChangelog(opts.repoRoot, changelogPath, opts.version));
+  diagnostics.push(...checkReleaseNotesConfig(opts.repoRoot, releaseNotesPath));
+  diagnostics.push(
+    ...checkPackageMetadata(pkg, packageJsonPath, {
+      name: expectedName,
+      registry: expectedRegistry,
+      repository: expectedRepository,
+      files: opts.expectedPackageFiles,
+    }),
+  );
+  diagnostics.push(...checkWorkflowPermissions(opts.repoRoot, releaseWorkflowPath));
+  diagnostics.push(...checkQualitySignals(opts.qualitySignals));
+
+  let freshSurface: ReleasePackageReport | undefined;
+  if (opts.archive) {
+    freshSurface = checkReleasePackageContents(opts.archive);
+    diagnostics.push(...freshSurface.diagnostics);
+  }
+
+  return { version: opts.version, diagnostics, freshSurface };
+}
+
+interface PackageJsonRead {
+  data: Record<string, unknown> | null;
+  missing: boolean;
+  parseError?: string;
+}
+
+function readPackageJson(repoRoot: string, relPath: string): PackageJsonRead {
+  const full = path.join(repoRoot, relPath);
+  if (!fs.existsSync(full)) return { data: null, missing: true };
+  try {
+    return { data: JSON.parse(fs.readFileSync(full, "utf8")), missing: false };
+  } catch (err) {
+    return { data: null, missing: false, parseError: (err as Error).message };
+  }
+}
+
+function checkVersionAlignment(
+  pkg: PackageJsonRead,
+  version: string,
+  packageJsonPath: string,
+): Diagnostic[] {
+  if (pkg.missing) {
+    return [
+      {
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.PackageJsonMissing,
+        path: packageJsonPath,
+        message: `\`${packageJsonPath}\` does not exist; cannot validate release version`,
+      },
+    ];
+  }
+  if (pkg.parseError || !pkg.data) {
+    return [
+      {
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.PackageJsonMissing,
+        path: packageJsonPath,
+        message: `failed to parse \`${packageJsonPath}\`: ${pkg.parseError ?? "unknown error"}`,
+      },
+    ];
+  }
+  const actual = pkg.data.version;
+  if (actual !== version) {
+    return [
+      {
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.Version,
+        path: packageJsonPath,
+        message: `\`package.json#version\` is \`${String(actual)}\` but release version is \`${version}\` — must equal the tag without a leading \`v\` (package-contract.md §5)`,
+      },
+    ];
+  }
+  return [];
+}
+
+function checkTagAtMain(git: GitInterface, version: string): Diagnostic[] {
+  const tagRef = `v${version}`;
+  const tagSha = git.resolveRef(tagRef);
+  if (!tagSha) {
+    return [
+      {
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.TagMissing,
+        message: `release tag \`${tagRef}\` does not exist (ADR-0020 — tag is cut from \`main\` after the release branch merges)`,
+      },
+    ];
+  }
+  const mainSha = git.resolveRef("refs/heads/main") ?? git.resolveRef("main");
+  if (!mainSha) {
+    return [
+      {
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.TagNotAtMain,
+        message: "could not resolve `refs/heads/main`; tag readiness cannot be verified",
+      },
+    ];
+  }
+  if (tagSha !== mainSha) {
+    return [
+      {
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.TagNotAtMain,
+        message: `tag \`${tagRef}\` (${tagSha.slice(0, 7)}) is not at \`main\` HEAD (${mainSha.slice(0, 7)}) — ADR-0020 requires tags cut from \`main\``,
+      },
+    ];
+  }
+  return [];
+}
+
+function checkChangelog(repoRoot: string, relPath: string, version: string): Diagnostic[] {
+  const full = path.join(repoRoot, relPath);
+  if (!fs.existsSync(full)) {
+    return [
+      {
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.ChangelogMissing,
+        path: relPath,
+        message: `\`${relPath}\` does not exist; cannot validate CHANGELOG entry for v${version}`,
+      },
+    ];
+  }
+  const text = fs.readFileSync(full, "utf8");
+  const escaped = version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const heading = new RegExp(`^##\\s+\\[v${escaped}\\]`, "m");
+  if (!heading.test(text)) {
+    return [
+      {
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.ChangelogMissing,
+        path: relPath,
+        message: `no \`## [v${version}]\` heading in \`${relPath}\` — release readiness requires a CHANGELOG entry for the candidate version`,
+      },
+    ];
+  }
+  return [];
+}
+
+function checkReleaseNotesConfig(repoRoot: string, relPath: string): Diagnostic[] {
+  const full = path.join(repoRoot, relPath);
+  if (!fs.existsSync(full)) {
+    return [
+      {
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.ReleaseNotesMissing,
+        path: relPath,
+        message: `\`${relPath}\` does not exist — required by SPEC-V05-003 / T-V05-003`,
+      },
+    ];
+  }
+  let parsed: unknown;
+  try {
+    parsed = YAML.parse(fs.readFileSync(full, "utf8"));
+  } catch (err) {
+    return [
+      {
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.ReleaseNotesShape,
+        path: relPath,
+        message: `failed to parse \`${relPath}\` as YAML: ${(err as Error).message}`,
+      },
+    ];
+  }
+  const out: Diagnostic[] = [];
+  const root = parsed as Record<string, unknown> | null;
+  const changelog = root && typeof root === "object" ? (root.changelog as Record<string, unknown> | undefined) : undefined;
+  if (!changelog || typeof changelog !== "object") {
+    out.push({
+      code: RELEASE_READINESS_DIAGNOSTIC_CODES.ReleaseNotesShape,
+      path: relPath,
+      message: `\`${relPath}\` missing top-level \`changelog\` block — T-V05-003 shape`,
+    });
+    return out;
+  }
+  const categories = changelog.categories;
+  if (!Array.isArray(categories) || categories.length === 0) {
+    out.push({
+      code: RELEASE_READINESS_DIAGNOSTIC_CODES.ReleaseNotesShape,
+      path: relPath,
+      message: `\`changelog.categories\` must be a non-empty array (T-V05-003 shape)`,
+    });
+  }
+  const exclude = changelog.exclude;
+  if (!exclude || typeof exclude !== "object") {
+    out.push({
+      code: RELEASE_READINESS_DIAGNOSTIC_CODES.ReleaseNotesShape,
+      path: relPath,
+      message: `\`changelog.exclude\` block missing — T-V05-003 requires label and author exclusions`,
+    });
+  }
+  return out;
+}
+
+interface ExpectedPackage {
+  name: string;
+  registry: string;
+  repository: string;
+  files?: string[];
+}
+
+function checkPackageMetadata(
+  pkg: PackageJsonRead,
+  packageJsonPath: string,
+  expected: ExpectedPackage,
+): Diagnostic[] {
+  if (!pkg.data) return []; // already reported by checkVersionAlignment
+  const out: Diagnostic[] = [];
+  const data = pkg.data;
+  if (data.name !== expected.name) {
+    out.push({
+      code: RELEASE_READINESS_DIAGNOSTIC_CODES.PkgName,
+      path: packageJsonPath,
+      message: `\`package.json#name\` is \`${String(data.name)}\` but package contract §2 requires \`${expected.name}\``,
+    });
+  }
+  const publishConfig = data.publishConfig as Record<string, unknown> | undefined;
+  const registry = publishConfig?.registry;
+  if (registry !== expected.registry) {
+    out.push({
+      code: RELEASE_READINESS_DIAGNOSTIC_CODES.PkgRegistry,
+      path: packageJsonPath,
+      message: `\`package.json#publishConfig.registry\` is \`${String(registry)}\` but package contract §2 requires \`${expected.registry}\``,
+    });
+  }
+  const repository = data.repository;
+  const repoUrl =
+    typeof repository === "string"
+      ? repository
+      : (repository as Record<string, unknown> | undefined)?.url;
+  if (repoUrl !== expected.repository) {
+    out.push({
+      code: RELEASE_READINESS_DIAGNOSTIC_CODES.PkgRepository,
+      path: packageJsonPath,
+      message: `\`package.json#repository\` is \`${String(repoUrl)}\` but package contract §2 requires \`${expected.repository}\``,
+    });
+  }
+  const files = data.files;
+  if (!Array.isArray(files) || files.length === 0) {
+    out.push({
+      code: RELEASE_READINESS_DIAGNOSTIC_CODES.PkgFiles,
+      path: packageJsonPath,
+      message: `\`package.json#files\` must be a non-empty array — package contract §3 / OQ-V05-002 requires the include list to match the contract`,
+    });
+  } else if (expected.files && expected.files.length > 0) {
+    const set = new Set(files as string[]);
+    const missing = expected.files.filter((entry) => !set.has(entry));
+    if (missing.length > 0) {
+      out.push({
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.PkgFiles,
+        path: packageJsonPath,
+        message: `\`package.json#files\` missing required entries (${missing.join(", ")}) — package contract §3`,
+      });
+    }
+  }
+  return out;
+}
+
+function checkWorkflowPermissions(repoRoot: string, relPath: string): Diagnostic[] {
+  const full = path.join(repoRoot, relPath);
+  if (!fs.existsSync(full)) {
+    return [
+      {
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.WorkflowMissing,
+        path: relPath,
+        message: `manual release workflow \`${relPath}\` does not exist — REQ-V05-002 / SPEC-V05-002 / T-V05-006`,
+      },
+    ];
+  }
+  let parsed: Record<string, unknown> | null;
+  try {
+    parsed = YAML.parse(fs.readFileSync(full, "utf8")) as Record<string, unknown> | null;
+  } catch (err) {
+    return [
+      {
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.WorkflowPermissions,
+        path: relPath,
+        message: `failed to parse \`${relPath}\` as YAML: ${(err as Error).message}`,
+      },
+    ];
+  }
+  if (!parsed || typeof parsed !== "object") {
+    return [
+      {
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.WorkflowPermissions,
+        path: relPath,
+        message: `\`${relPath}\` did not parse to a YAML object`,
+      },
+    ];
+  }
+  return diagnosticsForPermissions(parsed.permissions, relPath);
+}
+
+function diagnosticsForPermissions(permissions: unknown, relPath: string): Diagnostic[] {
+  if (permissions === undefined || permissions === null) {
+    return [
+      {
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.WorkflowPermissions,
+        path: relPath,
+        message: `top-level \`permissions:\` block missing — must declare exactly { contents: write, packages: write } (REQ-V05-002 / NFR-V05-001)`,
+      },
+    ];
+  }
+  if (typeof permissions === "string") {
+    return [
+      {
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.WorkflowPermissions,
+        path: relPath,
+        message: `\`permissions: ${permissions}\` is broader than least-privilege — must be { contents: write, packages: write } (REQ-V05-002 / NFR-V05-001)`,
+      },
+    ];
+  }
+  if (typeof permissions !== "object") {
+    return [
+      {
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.WorkflowPermissions,
+        path: relPath,
+        message: `\`permissions\` must be a mapping; got ${typeof permissions}`,
+      },
+    ];
+  }
+  const out: Diagnostic[] = [];
+  const map = permissions as Record<string, unknown>;
+  const allowedKeys = new Set(Object.keys(REQUIRED_WORKFLOW_PERMISSIONS));
+  for (const key of Object.keys(map)) {
+    if (!allowedKeys.has(key)) {
+      out.push({
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.WorkflowPermissions,
+        path: relPath,
+        message: `\`permissions.${key}\` not allowed — release workflow must grant only ${Object.keys(REQUIRED_WORKFLOW_PERMISSIONS).map((k) => `\`${k}\``).join(" + ")}`,
+      });
+    }
+  }
+  for (const [key, expected] of Object.entries(REQUIRED_WORKFLOW_PERMISSIONS)) {
+    const actual = map[key];
+    if (actual !== expected) {
+      out.push({
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.WorkflowPermissions,
+        path: relPath,
+        message: `\`permissions.${key}\` is \`${String(actual)}\` but must be \`${expected}\``,
+      });
+    }
+  }
+  return out;
+}
+
+function checkQualitySignals(signals: QualitySignals | undefined): Diagnostic[] {
+  if (!signals) {
+    return [
+      {
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.Quality,
+        message: `v0.4 quality signals not provided — pass \`--quality-waiver\` or supply ci/validation status (SPEC-V05-008)`,
+      },
+    ];
+  }
+  if (signals.waiver) return [];
+  const out: Diagnostic[] = [];
+  if (signals.ciStatus !== "green") {
+    out.push({
+      code: RELEASE_READINESS_DIAGNOSTIC_CODES.Quality,
+      message: `CI status not green: \`${String(signals.ciStatus)}\` (SPEC-V05-008)`,
+    });
+  }
+  if (signals.validationStatus !== "green") {
+    out.push({
+      code: RELEASE_READINESS_DIAGNOSTIC_CODES.Quality,
+      message: `validation status not green: \`${String(signals.validationStatus)}\` (SPEC-V05-008)`,
+    });
+  }
+  if (signals.openBlockers > 0) {
+    out.push({
+      code: RELEASE_READINESS_DIAGNOSTIC_CODES.Quality,
+      message: `${signals.openBlockers} open blocker(s) across active features — must be 0 (SPEC-V05-008)`,
+    });
+  }
+  if (signals.openClarifications > 0) {
+    out.push({
+      code: RELEASE_READINESS_DIAGNOSTIC_CODES.Quality,
+      message: `${signals.openClarifications} open clarification(s) across active features — must be 0 (SPEC-V05-008)`,
+    });
+  }
+  if (signals.maturityLevel < MIN_QUALITY_MATURITY_LEVEL) {
+    out.push({
+      code: RELEASE_READINESS_DIAGNOSTIC_CODES.Quality,
+      message: `maturity level ${signals.maturityLevel} below minimum ${MIN_QUALITY_MATURITY_LEVEL} (SPEC-V05-008)`,
+    });
+  }
+  return out;
+}
