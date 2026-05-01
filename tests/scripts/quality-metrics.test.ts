@@ -49,6 +49,16 @@ test("collectQualityMetrics scores active workflows by current stage", () => {
   assert.equal(workflow.stageScore > workflow.artifactCompletion, true);
 });
 
+test("collectQualityMetrics ignores resolved clarification checklist items", () => {
+  const metrics = collectQualityMetrics({ feature: "cli-todo" });
+  const workflow = metrics.workflows[0];
+  assert.equal(workflow.openClarifications, 0);
+  assert.equal(
+    metrics.signals.openClarifications.some((signal) => signal.includes("cli-todo")),
+    false,
+  );
+});
+
 test("completeCanonicalArtifacts ignores non-lifecycle workflow-state keys", () => {
   assert.equal(
     completeCanonicalArtifacts({

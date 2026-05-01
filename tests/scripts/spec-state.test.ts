@@ -180,6 +180,29 @@ test("done status with non-complete artifact is reported", () => {
   );
 });
 
+test("done status with unresolved clarifications is reported", () => {
+  const text = completeWorkflowText().replace(
+    "## Open clarifications\n\n> None.",
+    "## Open clarifications\n\n- [ ] CLAR-FEAT-001 — Resolve before completion.",
+  );
+  const diagnostics = diagnose(text);
+  assert.ok(
+    diagnostics.includes(`${REL} status is done, but Open clarifications has 1 unresolved item(s)`),
+  );
+});
+
+test("done status with only resolved clarifications passes the clarification gate", () => {
+  const text = completeWorkflowText().replace(
+    "## Open clarifications\n\n> None.",
+    "## Open clarifications\n\n- [x] CLAR-FEAT-001 — resolved 2026-05-01.",
+  );
+  const diagnostics = diagnose(text);
+  assert.equal(
+    diagnostics.some((message) => message.includes("Open clarifications has")),
+    false,
+  );
+});
+
 test("missing Stage progress artifact table is reported", () => {
   const text = cleanText.replace(/\| Stage \| Artifact \| Status \|[\s\S]*?Learning \| `retrospective.md` \| pending \|\n/m, "");
   const diagnostics = diagnose(text);
@@ -271,3 +294,13 @@ test("parseStageProgressTable extracts artifact-status pairs", () => {
   assert.equal(table.get("test-plan.md"), "pending");
   assert.equal(table.get("test-report.md"), "pending");
 });
+
+function completeWorkflowText(): string {
+  return cleanText
+    .replace("current_stage: idea", "current_stage: learning")
+    .replace("status: active", "status: done")
+    .replace("idea.md: in-progress", "idea.md: complete")
+    .replaceAll(": pending", ": complete")
+    .replace("| 1. Idea | `idea.md` | in-progress |", "| 1. Idea | `idea.md` | complete |")
+    .replaceAll("| pending |", "| complete |");
+}

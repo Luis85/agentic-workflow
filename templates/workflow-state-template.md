@@ -66,6 +66,7 @@ Free-form. What does the next agent / human need to know? Where did the previous
 ## Open clarifications
 
 > Add and resolve as they come up. Unresolved clarifications block stage transitions.
+> A workflow cannot be marked `status: done` while any `- [ ]` clarification remains. Active workflows may carry unresolved clarifications as visible advisory signals.
 
 - [ ] CLAR-001 — …
 - [x] CLAR-002 — …  *(resolved YYYY-MM-DD: …)*

@@ -680,7 +680,7 @@ function readWorkflowMetric(statePath: string): WorkflowMetric | null {
     testCoverageExpected,
     earsCoverage,
     earsExpected,
-    openClarifications: sectionItemCount(text, "Open clarifications"),
+    openClarifications: unresolvedChecklistItemCount(text, "Open clarifications"),
     blockers: sectionItemCount(text, "Blocks"),
     counts: {
       artifactsExpected: artifactNames.length,
@@ -923,6 +923,16 @@ function sectionItemCount(text: string, heading: string): number {
     .split(/\r?\n/)
     .filter((line) => /^-\s+/.test(line.trim()))
     .filter((line) => !/^-\s+None\.?$/i.test(line.trim()))
+    .length;
+}
+
+function unresolvedChecklistItemCount(text: string, heading: string): number {
+  const pattern = new RegExp(`^## ${escapeRegExp(heading)}\\s*$([\\s\\S]*?)(?=^##\\s+|$(?![\\s\\S]))`, "im");
+  const match = text.match(pattern);
+  if (!match) return 0;
+  return match[1]
+    .split(/\r?\n/)
+    .filter((line) => /^-\s+\[\s\]\s+/.test(line.trim()))
     .length;
 }
 
