@@ -115,6 +115,10 @@ Plus body sections (Skips, Blocks, Hand-off notes, Open clarifications). Canonic
 # Decisions:
 /adr:new
 
+# design:
+/design:frame    /design:handoff  /design:mock
+/design:sketch   /design:start
+
 # Discovery Track:
 /discovery:converge   /discovery:diverge    /discovery:frame
 /discovery:handoff    /discovery:prototype  /discovery:start

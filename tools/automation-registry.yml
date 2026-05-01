@@ -109,6 +109,16 @@ entries:
     emits_json: false
     used_by: [human, agent, ci]
     rerun_command: npm run typecheck:scripts
+  - id: script:test
+    kind: check
+    command: npm run test
+    path: scripts/test-scripts.ts
+    purpose: Standard npm test idiom alias delegating to test:scripts.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: false
+    used_by: [human, agent, ci]
+    rerun_command: npm run test
   - id: script:test-scripts
     kind: check
     command: npm run test:scripts
@@ -309,6 +319,16 @@ entries:
     emits_json: false
     used_by: [human, agent, ci]
     rerun_command: npm run check:token-budget
+  - id: check:release-package-contents
+    kind: check
+    command: npm run check:release-package-contents
+    path: scripts/check-release-package-contents.ts
+    purpose: Assert a candidate published archive matches the v0.5 fresh-surface contract (ADR-0021 / SPEC-V05-010) — no numbered ADRs, intake folders empty, docs in stub form.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: true
+    used_by: [human, agent, ci]
+    rerun_command: npm run check:release-package-contents -- --archive <dir>
   - id: docs:scripts
     kind: script
     command: npm run docs:scripts

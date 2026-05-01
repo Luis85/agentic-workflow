@@ -67,6 +67,22 @@ updated: 2026-04-28
 - **Behavior:** The release workflow supports dry-run and draft/pre-release candidate paths before stable release and package publication.
 - **Acceptance:** Maintainers can validate release inputs and candidate output without publishing a stable package.
 
+### SPEC-V05-010 — Release package fresh-surface contract
+
+- **Satisfies:** REQ-V05-005, REQ-V05-012 (REQ-V05-012 is added by `pm` in the same PR; reciprocal reference)
+- **Surface:** the package-contract document (T-V05-002 deliverable), the release readiness check (T-V05-004 / SPEC-V05-005), and the manual release workflow (T-V05-006 / SPEC-V05-002). Source of truth: [ADR-0021](../../docs/adr/0021-release-package-fresh-surface.md).
+- **Inputs:** the path lists enumerated in ADR-0021 — the 10 intake folders (`inputs/`, `specs/`, `discovery/`, `projects/`, `portfolio/`, `roadmaps/`, `quality/`, `scaffolding/`, `stock-taking/`, `sales/`) and the ADR file glob `docs/adr/[0-9][0-9][0-9][0-9]-*.md`.
+- **Behavior:** the contract is three deterministic assertions evaluated against the candidate published archive before publish:
+  1. **No ADR files ship.** No file matching `docs/adr/[0-9][0-9][0-9][0-9]-*.md` is present in the published archive. `docs/adr/README.md` **does** ship in the archive, rewritten as a stub per `templates/release-package-stub.md` (it explains to the consumer how to file their own ADRs starting at `ADR-0001`). `templates/adr-template.md` ships unchanged.
+  2. **Intake folders ship empty.** Each of the 10 enumerated intake folders is either absent from the archive or contains only a top-level `README.md`. No per-feature subdirectory (e.g. `specs/<slug>/`), no per-deal file (e.g. `sales/<deal>/`), no per-engagement state file (e.g. `projects/<slug>/project-state.md`), and no per-cycle log file (e.g. `portfolio/<slug>/portfolio-log.md`) is present.
+  3. **Docs ship as stubs.** Every `docs/` page that ships in the archive matches the stub shape defined in `templates/release-package-stub.md` — frontmatter present, top-level headings present, no built-up sections beyond the stub shape. The stub shape itself is owned by `pm` (T-V05-002 family); if `templates/release-package-stub.md` has not yet been written when this assertion is enforced, assertion 3 is gated on the stub template existing, and the readiness check fails closed.
+- **Acceptance:** the release readiness check refuses to authorize publish when any of the three assertions fails. The manual release workflow refuses to publish until readiness passes. Successful publish requires all three assertions green or an explicit operator waiver recorded against the run.
+- **Edge cases:**
+  - A maintainer accidentally adds a feature folder under `specs/` (for example forgets to remove `specs/<active-feature>/` before cutting the archive). Caught by assertion 2; readiness check fails before publish.
+  - A new intake folder is added to the template (a new track, a new state-bearing folder). The enumeration in ADR-0021 and `docs/release-package-contents.md` must be updated in the same PR that adds the folder; this is a maintenance rule. Until the enumeration is updated, the new folder will leak into the released archive — readiness will not catch what it does not enumerate. The maintenance rule is the mitigation; the readiness check is the backstop only for the enumerated set.
+  - A `docs/` page is added to the codebase but a stub form is not authored. The packaging step has no stub to ship; assertion 3 fails closed.
+  - An ADR file lands under `docs/adr/` between readiness and publish (race / late merge). Assertion 1 re-runs against the final archive; the publish workflow does not re-use an earlier readiness result.
+
 ## Test scenarios
 
 | ID | Requirement | Scenario | Expected result |
@@ -82,3 +98,4 @@ updated: 2026-04-28
 | TEST-V05-009 | REQ-V05-009 | Review public docs after implementation. | Release and package distribution language is current. |
 | TEST-V05-010 | REQ-V05-010 | Run publish readiness with failed v0.4 quality signals. | Publish is blocked or requires an explicit operator waiver. |
 | TEST-V05-011 | REQ-V05-011 | Run release candidate mode before stable publish. | Candidate can be validated without publishing a stable package. |
+| TEST-V05-012 | REQ-V05-005, REQ-V05-012 | Build a candidate archive that contains a leftover `specs/<feature>/` folder, an `ADR-NNNN-*.md`, and a `docs/` page in built-up form. | Release readiness check fails with stable diagnostics naming each violated fresh-surface assertion (per SPEC-V05-010). |
