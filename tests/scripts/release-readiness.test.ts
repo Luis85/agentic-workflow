@@ -1,8 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   EXPECTED_PACKAGE_NAME,
   EXPECTED_PACKAGE_REGISTRY,
@@ -14,6 +16,18 @@ import {
   type QualitySignals,
 } from "../../scripts/lib/release-readiness.js";
 import { RELEASE_PACKAGE_DIAGNOSTIC_CODES } from "../../scripts/lib/release-package-contract.js";
+
+const SCRIPT_PATH = fileURLToPath(
+  new URL("../../scripts/check-release-readiness.ts", import.meta.url),
+);
+
+function runCli(args: readonly string[], env: NodeJS.ProcessEnv = {}) {
+  return spawnSync(process.execPath, ["--import", "tsx", SCRIPT_PATH, ...args], {
+    encoding: "utf8",
+    windowsHide: true,
+    env: { ...process.env, ...env },
+  });
+}
 
 const VERSION = "0.5.0";
 const TAG_SHA = "0123456789abcdef0123456789abcdef01234567";
@@ -516,4 +530,53 @@ test("parseReleaseReadinessArgs returns no version when nothing provided (skip p
   const out = parseReleaseReadinessArgs([], {});
   assert.equal(out.kind, "args");
   assert.equal((out as { version?: string }).version, undefined);
+});
+
+test("CLI: archive without version fails closed (Codex P1 PR #158 regression)", () => {
+  // Adversary case: release automation passes only `--archive` (or only the
+  // RELEASE_PACKAGE_ARCHIVE env). The CLI must NOT silently skip — supplying
+  // an archive implies a release context, so readiness must run end-to-end.
+  const result = runCli(["--archive", "/nonexistent-archive"], {
+    RELEASE_VERSION: "",
+    RELEASE_PACKAGE_ARCHIVE: "",
+  });
+  assert.equal(
+    result.status,
+    1,
+    `expected non-zero exit, got status=${result.status}; stdout=${result.stdout}; stderr=${result.stderr}`,
+  );
+  assert.match(result.stderr + result.stdout, /RELEASE_READINESS_ARG/);
+  assert.match(
+    result.stderr + result.stdout,
+    /`--archive` provided without `--version`/,
+  );
+});
+
+test("CLI: relative archive path resolves against repoRoot (Codex P2 PR #158 regression)", () => {
+  // Adversary case: caller invokes from a non-repo working directory with a
+  // relative archive path. `check-release-package-contents` resolves relative
+  // paths against repoRoot; this CLI must do the same so Layer 2 behaviour
+  // does not depend on caller CWD.
+  const tmpCwd = fs.mkdtempSync(path.join(os.tmpdir(), "release-readiness-cwd-"));
+  try {
+    const result = runCli(["--version", "0.5.0", "--archive", "./does-not-exist-here"], {
+      // explicit empty env so we don't inherit RELEASE_VERSION from a CI shell
+      RELEASE_VERSION: "",
+      RELEASE_PACKAGE_ARCHIVE: "",
+    });
+    // The path should resolve against repoRoot (the worktree root), so the
+    // resolved absolute path must contain the worktree directory name and
+    // NOT the tmpCwd we are running from.
+    const combined = result.stdout + result.stderr;
+    assert.equal(result.status, 1, `expected non-zero exit; combined=${combined}`);
+    assert.match(combined, /RELEASE_READINESS_ARG/);
+    assert.match(combined, /resolved:.*does-not-exist-here/);
+    assert.doesNotMatch(
+      combined,
+      new RegExp(tmpCwd.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+      "resolved path must not be relative to caller CWD",
+    );
+  } finally {
+    fs.rmSync(tmpCwd, { recursive: true, force: true });
+  }
 });

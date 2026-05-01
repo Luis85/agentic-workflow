@@ -1,4 +1,6 @@
 import { execFileSync } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
 import {
   checkReleaseReadiness,
   parseReleaseReadinessArgs,
@@ -53,6 +55,21 @@ if (parsed.kind === "argv-empty") {
 }
 
 if (!parsed.version) {
+  // Codex P1 (PR #158): an `--archive` (or `RELEASE_PACKAGE_ARCHIVE`) without a
+  // matching version must NOT silently skip — that would let release automation
+  // pass the readiness gate even though a candidate archive was supplied.
+  if (parsed.archive) {
+    failIfErrors(
+      [
+        {
+          code: "RELEASE_READINESS_ARG",
+          message: `\`--archive\` provided without \`--version\` (or \`RELEASE_VERSION\`). Refusing to skip — supplying an archive implies a release context, so readiness must run end-to-end.`,
+        },
+      ],
+      heading,
+    );
+    process.exit(1); // unreachable: failIfErrors exits on non-empty diagnostics; kept for control-flow narrowing.
+  }
   console.log(
     `${heading}: skipped (no release version provided; pass --version <X.Y.Z> or set RELEASE_VERSION)`,
   );
@@ -60,6 +77,30 @@ if (!parsed.version) {
 }
 
 const version = parsed.version;
+
+let archive: string | undefined;
+if (parsed.archive) {
+  // Codex P2 (PR #158): match `check-release-package-contents` — resolve
+  // relative archive paths against `repoRoot` so behaviour is invariant across
+  // caller working directories.
+  const resolved = path.isAbsolute(parsed.archive)
+    ? parsed.archive
+    : path.resolve(repoRoot, parsed.archive);
+  if (!fs.existsSync(resolved) || !fs.statSync(resolved).isDirectory()) {
+    failIfErrors(
+      [
+        {
+          code: "RELEASE_READINESS_ARG",
+          path: parsed.archive,
+          message: `candidate archive does not exist or is not a directory (resolved: ${resolved})`,
+        },
+      ],
+      heading,
+    );
+    process.exit(1); // unreachable: failIfErrors exits on non-empty diagnostics; kept for control-flow narrowing.
+  }
+  archive = resolved;
+}
 
 const ciStatus = readFlagOrEnv(argv, "--ci-status", "RELEASE_CI_STATUS");
 const validationStatus = readFlagOrEnv(argv, "--validation-status", "RELEASE_VALIDATION_STATUS");
@@ -78,7 +119,7 @@ const qualitySignals: QualitySignals = {
 const report = checkReleaseReadiness({
   version,
   repoRoot,
-  archive: parsed.archive,
+  archive,
   git: realGit(),
   qualitySignals,
 });
