@@ -17,7 +17,7 @@ artifacts:
   test-report.md: pending
   review.md: pending
   traceability.md: pending
-  release-notes.md: pending
+  release-notes.md: in-progress
   retrospective.md: pending
 ---
 
@@ -36,7 +36,7 @@ artifacts:
 | 7. Implementation | `implementation-log.md` + code | in-progress |
 | 8. Testing | `test-plan.md`, `test-report.md` | pending |
 | 9. Review | `review.md`, `traceability.md` | pending |
-| 10. Release | `release-notes.md` | pending |
+| 10. Release | `release-notes.md` | in-progress |
 | 11. Learning | `retrospective.md` | pending |
 
 ## Skips
@@ -61,6 +61,7 @@ artifacts:
 - 2026-05-01 (claude, T-V04-005 closeout): Completed T-V04-005 workflow metrics report. Substantive work shipped in codex hand-offs 2026-04-28 / 2026-04-30 and is recorded in `implementation-log.md` §Task T-V04-005: stage-aware scoring in `scripts/lib/quality-metrics.ts`, optional `--save` / `--compare` trend snapshots under `quality/metrics/<scope>/`, trend deltas across score / maturity / blockers / clarifications / frontmatter gaps / QA checklist gaps, `/quality:status` workflow-native command, and agent prompt hooks across orchestration / QA / review / release / retrospective / project / roadmap / portfolio. Satisfies REQ-V04-003, REQ-V04-004, REQ-V04-009, NFR-V04-002, NFR-V04-003, NFR-V04-005, SPEC-V04-003, SPEC-V04-008. With T-V04-004 (closed above) now landed, this closure fully unblocks T-V04-006 (qa — tests for readiness + metrics). T-V04-007 and T-V04-009 also list T-V04-005 as a prerequisite; their unblock state is recorded in the closeout notes below.
 - 2026-05-01 (claude, T-V04-007 closeout): Completed T-V04-007 metrics interpretation documentation. Substantive work shipped in earlier codex hand-offs and is recorded in `implementation-log.md` §Task T-V04-007: `docs/quality-metrics.md` documents each metric's meaning, supported decisions, misuse warnings, and typical actions; linked from `docs/quality-framework.md`, `scripts/README.md`, and the `quality-metrics` skill. Satisfies REQ-V04-004, NFR-V04-003, SPEC-V04-004. T-V04-007's only prerequisite was T-V04-005 (closed above), so this closure fully unblocks T-V04-007 itself. T-V04-007 is in turn a prerequisite for T-V04-011 (qa — release readiness verification).
 - 2026-05-01 (claude, T-V04-008 closeout): Completed T-V04-008 maturity model documentation. Substantive work shipped in codex hand-off 2026-04-29 and is recorded in `implementation-log.md` §Task T-V04-008: five-level evidence-backed maturity assessment in `npm run quality:metrics` with maturity evidence, gaps, and next-step guidance in both rendered and JSON output; documented in `docs/quality-metrics.md`; the `quality-metrics` skill reports maturity without presenting it as certification or people scoring. Satisfies REQ-V04-005, REQ-V04-006, NFR-V04-004, SPEC-V04-005. T-V04-008 has no prerequisites itself. With T-V04-003 (closed earlier 2026-05-01), T-V04-005 (closed above), and now T-V04-008 all closed, T-V04-009 (release-manager — public release documentation) is fully unblocked. T-V04-008 is also a prerequisite for T-V04-011 (qa — release readiness verification).
+- 2026-05-01 (claude, T-V04-009 pickup): Started substantive T-V04-009 work on `release-notes.md`. Picked up the starter draft authored in PR #163 / #164 (per the pickup checklist in PR #163). Filled non-blocked TODO sections — §Summary (drafted clean prose, no longer "starter draft"), §Improved (stage-aware scoring, trend snapshots, workflow-native quality reporting, doctor reads contract), §Fixed (none — first cycle for these surfaces), §User-visible impact (no action required, no breaking changes), §Known limitations (cross-feature ID rule, IDs-in-fenced-code risk, deferred CLAR-V03-002, doctor substring-marker scope follow-up), §Validation baseline for v0.5 (machine-readable JSON / exit-code surface contract for v0.5 consumption). Updated the §Changes T-V04-004 entry to describe what actually landed via PR #149 (`requiredEvaluators`, YAML-parser-backed push-covers-main, verify-job-scoped SHA-pin) instead of the round-1 description. Quality-gate checklist marked `[x]` for the items now drafted; `[ ]` retained for §Readiness summary (T-V04-011) and §Communication external announcement (T-V04-010). `release-notes.md` flipped from `pending` to `in-progress`; status banner reframed from "starter draft" to "in-progress draft". Remaining T-V04-009 work for the release-manager: cross-check §Changes against the final list of merged PRs at release time, and update README.md §Roadmap row v0.4 from "Planned" to "Done" + `docs/specorator.md` v0.4 references when the release ships (per v0.3 pattern). Closes the bulk of T-V04-009 substantive editing; final close gates on T-V04-010 / T-V04-011.
 
 ## Open clarifications
 
