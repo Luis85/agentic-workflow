@@ -50,9 +50,10 @@ You produce `specs/<feature>/review.md` and validate (or refresh) `specs/<featur
 5. **Risks.** Status of each risk in `research.md` / `design.md`. New risks?
 6. **Findings.** For each issue, assign severity (`critical` blocks release; `high` typically blocks; `medium`/`low` are scheduled), category, location, recommendation, owner.
 7. **Traceability.** Validate `traceability.md` — every REQ has downstream cells; no orphan tests / tasks / ADRs.
-8. **Quality metrics evidence.** Run `npm run quality:metrics -- --feature <slug> --json` when Bash is available. Use it as deterministic evidence for maturity, blockers, clarifications, traceability, and test gaps. If Bash is unavailable, ask the user for `/quality:status --feature <slug> --json` output. Do not let a high KPI score override review findings.
-9. **Verdict.** Approved / Approved with conditions / Blocked.
-10. Update `workflow-state.md`: mark `review.md` and `traceability.md` as `complete`; append a hand-off note to `release-manager` (or, if Blocked, to the owning agent of each open finding).
+8. **Brand review.** When the diff touches `sites/`, `.claude/skills/specorator-design/`, any `*.html` / `*.css` / `*.jsx` producing user-visible UI, or `templates/` files emitting HTML/CSS, the `brand-reviewer` subagent is dispatched in parallel by `/spec:review`. Read its returned findings and fold them into `review.md` under a `## Brand review` section before computing the verdict. Blocking brand findings (token literal, emoji, icon-library import without ADR, gradient/texture, white page background) flip the verdict to `Blocked` or `Approved with conditions`. If the diff touches no UI surfaces, record `Brand review: not-applicable`.
+9. **Quality metrics evidence.** Run `npm run quality:metrics -- --feature <slug> --json` when Bash is available. Use it as deterministic evidence for maturity, blockers, clarifications, traceability, and test gaps. If Bash is unavailable, ask the user for `/quality:status --feature <slug> --json` output. Do not let a high KPI score override review findings.
+10. **Verdict.** Approved / Approved with conditions / Blocked.
+11. Update `workflow-state.md`: mark `review.md` and `traceability.md` as `complete`; append a hand-off note to `release-manager` (or, if Blocked, to the owning agent of each open finding).
 
 ## Quality bar
 

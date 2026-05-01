@@ -41,10 +41,10 @@ Run each of these as a deterministic check on the diff. A failure is a finding. 
 ### Tokens & values
 
 1. **No literal hex outside `:root` in `sites/`.**
-   `grep -nE "#[0-9a-f]{6}" sites/styles.css | grep -vE "^\\s*[0-9]+:\\s*--"` must return zero matches.
+   `grep -nEi "#([0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})\\b" sites/styles.css | grep -vE "^\\s*[0-9]+:\\s*--"` must return zero matches. The pattern covers 3-digit (`#fff`), 4-digit alpha (`#fff8`), 6-digit (`#17201b`), and 8-digit alpha (`#17201bff`) hex in any case.
 2. **No literal hex in any new CSS/JSX/HTML file under `sites/` or `.claude/skills/specorator-design/ui_kits/`.** Same grep, scoped to the changed files.
 3. **No re-definition of brand tokens.** Changed CSS files must not declare `--ink`, `--paper`, `--accent`, `--accent-strong`, `--highlighter`, or any `--lane-*` outside `colors_and_type.css`. If a token is missing for the work, the change must add it to `colors_and_type.css`, not redefine it locally.
-4. **Page background is `var(--paper)`.** Any rule with `background: #fff`, `background: white`, or `background: #ffffff` on `body`, `html`, or a top-level page wrapper is a finding. White is for cards (`--surface`), not the page.
+4. **Page background is `var(--paper)`.** Any rule with `background: #fff`, `background: #FFF`, `background: white`, `background: #ffffff`, or `background: #ffffffff` on `body`, `html`, or a top-level page wrapper is a finding. White is for cards (`--surface`), not the page.
 5. **Font stacks are tokenized.** No literal `Inter, ui-sans-serif, …` or `ui-monospace, SFMono-Regular, …` strings in changed files. Use `var(--font-sans)` / `var(--font-mono)`.
 
 ### Iconography & content

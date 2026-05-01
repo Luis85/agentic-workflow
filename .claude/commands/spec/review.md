@@ -20,7 +20,8 @@ Run **stage 9 — Review**.
    - findings (severity, category, location, recommendation, owner),
    - traceability validation,
    - verdict: Approved / Approved with conditions / Blocked.
-4. Update `workflow-state.md`. If Blocked, recommend going back to the owning stage. Else recommend `/spec:release`.
+4. **Spawn the `brand-reviewer` subagent in parallel** when the diff touches `sites/`, `.claude/skills/specorator-design/`, any `*.html` / `*.css` / `*.jsx` producing user-visible UI, or `templates/` files emitting HTML/CSS. Run it as a separate `Agent` call with `subagent_type: brand-reviewer` and pass the same `$BASE` resolution as the reviewer. The brand-reviewer returns a structured findings block; the `reviewer` agent merges any findings into `review.md` under a `## Brand review` section before computing its verdict. **Blocking** brand findings (token literal, emoji, icon-library import without ADR, gradient/texture introduced, white page background) flip the verdict to `Blocked` or `Approved with conditions` per the severity model in `.claude/agents/brand-reviewer.md`. If the diff touches no UI surfaces, skip this step and record `Brand review: not-applicable` in `review.md`.
+5. Update `workflow-state.md`. If Blocked, recommend going back to the owning stage. Else recommend `/spec:release`.
 
 ## Don't
 

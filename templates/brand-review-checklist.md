@@ -4,8 +4,8 @@
 
 ## Tokens & values
 
-- [ ] No literal hex outside `:root` in `sites/styles.css`.
-- [ ] No literal hex in new CSS/JSX/HTML files in `sites/` or `.claude/skills/specorator-design/ui_kits/`.
+- [ ] No literal hex outside `:root` in `sites/styles.css` — covers 3-digit (`#fff`), 4-digit (`#fff8`), 6-digit (`#17201b`), and 8-digit (`#17201bff`) hex in any case.
+- [ ] No literal hex (any form above) in new CSS/JSX/HTML files in `sites/` or `.claude/skills/specorator-design/ui_kits/`.
 - [ ] No redefinition of `--ink`, `--paper`, `--accent`, `--accent-strong`, `--highlighter`, or `--lane-*` outside `colors_and_type.css`.
 - [ ] Page background is `var(--paper)`. White is reserved for cards (`--surface`).
 - [ ] Font stacks are tokenized — `var(--font-sans)`, `var(--font-mono)`. No literal `Inter, ui-sans-serif, …` or `ui-monospace, SFMono-Regular, …`.
@@ -33,8 +33,8 @@
 ## Quick grep recipes
 
 ```bash
-# Hex literals outside :root in sites/styles.css
-grep -nE "#[0-9a-f]{6}" sites/styles.css | grep -vE "^\s*[0-9]+:\s*--"
+# Hex literals outside :root in sites/styles.css — 3/4/6/8-digit, any case
+grep -nEi "#([0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})\b" sites/styles.css | grep -vE "^\s*[0-9]+:\s*--"
 
 # Emoji in changed files
 git diff main...HEAD --name-only | xargs grep -P "[\x{1F300}-\x{1FAFF}\x{2600}-\x{27BF}]" 2>/dev/null
