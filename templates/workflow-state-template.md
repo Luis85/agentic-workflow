@@ -39,23 +39,17 @@ artifacts:              # canonical machine-readable map; the table below is its
 | 10. Release | `release-notes.md` | pending |
 | 11. Learning | `retrospective.md` | pending |
 
-> **Statuses:** `pending` | `in-progress` | `complete` | `skipped` | `blocked`. Use the bare enum value in frontmatter; document skip reasons in the **Skips** section below and blockers in **Blocks**.
+> **Statuses:** `pending` | `in-progress` | `complete` | `skipped` | `blocked`. Section semantics + status enums: see [`_shared/state-file-sections.md`](./_shared/state-file-sections.md).
 
 ## Skips
-
-> Document any skipped stages and why. Trivial work may skip stages; retrospective is never skipped.
 
 - e.g., `idea.md` — trivial copy fix
 
 ## Blocks
 
-> Anything blocking progress.
-
 - e.g., `requirements.md blocked — awaiting compliance signoff from <name>`
 
 ## Hand-off notes
-
-Free-form. What does the next agent / human need to know? Where did the previous agent stop?
 
 ```
 2026-04-26 (analyst): Research complete. Recommend Alternative B (event-sourced).
@@ -64,9 +58,6 @@ Free-form. What does the next agent / human need to know? Where did the previous
 ```
 
 ## Open clarifications
-
-> Add and resolve as they come up. Unresolved clarifications block stage transitions.
-> A workflow cannot be marked `status: done` while any `- [ ]` clarification remains. Active workflows may carry unresolved clarifications as visible advisory signals.
 
 - [ ] CLAR-001 — …
 - [x] CLAR-002 — …  *(resolved YYYY-MM-DD: …)*
