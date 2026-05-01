@@ -1,0 +1,28 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css"><style>
+.lane { padding: 14px 16px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); position: relative; overflow: hidden; }
+.lane::before { content:""; position:absolute; top:0; left:0; right:0; height:3px; }
+.lane.define::before { background: var(--lane-define); }
+.lane.build::before  { background: var(--lane-build); }
+.lane.ship::before   { background: var(--lane-ship); }
+.chip { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+.chip.define { color: var(--accent-strong); background: var(--lane-define-soft); }
+.chip.build  { color: #2d4a73; background: var(--lane-build-soft); }
+.chip.ship   { color: #6b5400; background: var(--lane-ship-soft); }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.swatchrow { display: flex; gap: 6px; margin-top: 10px; }
+.sw { width: 24px; height: 24px; border-radius: 4px; }
+.hex { font-family: var(--font-mono); font-size: 10px; color: var(--muted); display: block; margin-top: 6px; }
+h4 { margin: 6px 0 0; font-size: 14px; }
+</style></head><body class="card">
+<div class="grid">
+  <div class="lane define"><span class="chip define">Define</span><h4>Analyst → Architect</h4>
+    <div class="swatchrow"><div class="sw" style="background:var(--lane-define)"></div><div class="sw" style="background:var(--lane-define-soft)"></div></div>
+    <span class="hex">#159166 · #BCE5D2</span></div>
+  <div class="lane build"><span class="chip build">Build</span><h4>Planner → QA</h4>
+    <div class="swatchrow"><div class="sw" style="background:var(--lane-build)"></div><div class="sw" style="background:var(--lane-build-soft)"></div></div>
+    <span class="hex">#365FA3 · #CBD9F7</span></div>
+  <div class="lane ship"><span class="chip ship">Ship</span><h4>Review → Retro</h4>
+    <div class="swatchrow"><div class="sw" style="background:var(--lane-ship)"></div><div class="sw" style="background:var(--lane-ship-soft)"></div></div>
+    <span class="hex">#D49A14 · #F9E3A0</span></div>
+</div>
+</body></html>

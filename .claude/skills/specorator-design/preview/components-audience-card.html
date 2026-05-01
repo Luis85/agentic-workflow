@@ -1,0 +1,16 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css"><style>
+body { width: 700px; padding: 22px 28px; background: var(--paper); }
+.ac { position: relative; padding: 22px 24px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); overflow: hidden; }
+.ac::before { content: attr(data-num); position: absolute; top: 8px; right: 18px; color: rgba(23,32,27,0.06); font-size: 64px; font-weight: 850; line-height: 1; letter-spacing: -0.04em; }
+h3 { margin: 0; font-size: 18px; letter-spacing: -0.01em; position: relative; }
+.body { margin: 8px 0 10px; color: var(--muted); font-size: 13px; line-height: 1.55; position: relative; }
+.say { margin: 6px 0 4px; color: var(--muted); font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; position: relative; }
+.cta { display: block; padding: 9px 12px; border-radius: 8px; background: rgba(27,111,85,0.08); color: var(--accent-strong); font-family: var(--font-mono); font-size: 12px; font-weight: 700; position: relative; }
+</style></head><body>
+<article class="ac" data-num="01">
+  <h3>Product managers &amp; designers</h3>
+  <p class="body">Run discovery, shape requirements, review designs, and keep intent explicit. No code required.</p>
+  <p class="say">You'd say</p>
+  <code class="cta">"let's start a feature: user auth"</code>
+</article>
+</body></html>

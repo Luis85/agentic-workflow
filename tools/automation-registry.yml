@@ -628,6 +628,15 @@ entries:
     emits_json: false
     used_by: [agent]
     rerun_command: open .claude/skills/sales-cycle/SKILL.md
+  - id: skill:specorator-design
+    kind: skill
+    path: .claude/skills/specorator-design/SKILL.md
+    purpose: Agent-facing brand and design system skill — canonical tokens, voice, iconography rules, UI kit components.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: false
+    used_by: [agent]
+    rerun_command: open .claude/skills/specorator-design/SKILL.md
   - id: skill:specorator-improvement
     kind: skill
     path: .claude/skills/specorator-improvement/SKILL.md

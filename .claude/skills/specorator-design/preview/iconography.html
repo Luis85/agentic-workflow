@@ -1,0 +1,17 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css"><style>
+body { width: 700px; padding: 22px 28px; background: var(--paper); }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+.row:last-child { margin-bottom: 0; }
+.lbl { font-family: var(--font-mono); font-size: 10px; color: var(--muted); width: 90px; flex: 0 0 90px; text-transform: uppercase; letter-spacing: 0.06em; }
+.arrow { font-size: 18px; color: var(--accent-strong); font-weight: 700; }
+.dot { color: rgba(89,100,94,.45); margin: 0 4px; }
+.code { font-family: var(--font-mono); font-size: 12px; color: var(--ink); background: rgba(23,32,27,0.06); padding: 2px 7px; border-radius: 6px; font-weight: 700; }
+.step-num { display: inline-grid; width: 28px; height: 28px; place-items: center; border-radius: 50%; background: var(--highlighter); color: var(--ink); font-weight: 850; font-size: 13px; }
+.note { color: var(--muted); font-size: 11px; }
+</style></head><body>
+<div class="row"><span class="lbl">arrow</span><span class="arrow">→</span><span class="note">U+2192 · used in "more" links and copy</span></div>
+<div class="row"><span class="lbl">middot</span><span class="dot">·</span><span class="note">U+00B7 · separates eyebrow meta items</span></div>
+<div class="row"><span class="lbl">command</span><span class="code">/spec:start</span><span class="code">/discovery:converge</span><span class="note">monospace chip = action</span></div>
+<div class="row"><span class="lbl">step num</span><span class="step-num">1</span><span class="step-num">2</span><span class="step-num">3</span><span class="note">chartreuse circle, 850 weight</span></div>
+<div class="row"><span class="lbl">no emoji</span><span class="note">— intentionally absent. No icon font, no Lucide. The brand voice is the iconography.</span></div>
+</body></html>
