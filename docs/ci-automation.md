@@ -46,6 +46,8 @@ Allowed types are intentionally narrow:
 
 Scopes are optional. The convention recorded in [AGENTS.md](../AGENTS.md) is `<type>(<scope>): <subject>` and that pattern still applies — `requireScope` is set to `false` only because some tracks (e.g. cross-cutting docs PRs) genuinely have no single scope.
 
+Planning work is not a separate PR type. A PR that adds or updates plans, specs, workflow docs, README roadmap rows, or issue-linked planning artifacts should normally use `docs: ...`. Metadata-only CI failures should be fixed by editing the PR title, not by pushing an unrelated retry commit.
+
 ## typos config
 
 `_typos.toml` lives at repo root.
@@ -84,8 +86,9 @@ The cooldown defends against the "compromised release window" supply-chain attac
 # typos
 typos --config _typos.toml
 
-# Conventional Commits PR-title check has no local equivalent — read the
-# rule in AGENTS.md and pick the matching type.
+# Conventional Commits PR-title check has no local equivalent — read
+# the allowed type list above and pick the matching type before opening
+# the PR.
 ```
 
 ## Adopting in a downstream project

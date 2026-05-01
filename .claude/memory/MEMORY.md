@@ -20,6 +20,7 @@ One-line pointers into `.claude/memory/`. Read first. See [`README.md`](./README
 - **Docs ride with their PR** — user-visible change updates the doc in the same PR. See [`feedback_docs_with_pr.md`](./feedback_docs_with_pr.md).
 - **Parallel PRs: merge not rebase** — preserves reviewer line anchors. See [`feedback_parallel_pr_conflicts.md`](./feedback_parallel_pr_conflicts.md).
 - **Autonomous merge** — only after green review + green CI + clean mergeable. See [`feedback_autonomous_merge.md`](./feedback_autonomous_merge.md).
+- **PR title CI** — title metadata must use the allowed Conventional Commit type before handoff. See [`feedback_pr_title_ci.md`](./feedback_pr_title_ci.md).
 - **Memory edits are docs-only** — no changeset, no bundling with code. See [`feedback_memory_edits.md`](./feedback_memory_edits.md).
 - **Token-budget review** — quarterly or pre-release: `/token-review` runs the audit + emits a per-area cleanup plan. See [`token-budget-review`](../skills/token-budget-review/SKILL.md).
 
