@@ -9,6 +9,7 @@
     "verify": "tsx scripts/verify.ts",
     "verify:json": "tsx scripts/verify-json.ts",
     "verify:changed": "tsx scripts/verify-changed.ts",
+    "project:setup:github": "tsx scripts/github-project-setup.ts",
     "automation:registry:discover": "tsx scripts/automation-registry-discover.ts",
     "quality:metrics": "tsx scripts/quality-metrics.ts",
     "roadmap:digest": "tsx scripts/roadmap-digest.ts",
