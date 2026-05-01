@@ -1,17 +1,12 @@
 ---
 description: Audit project token usage by area and emit an area-grouped cleanup plan. Wraps the token-budget-review skill.
-argument-hint: [optional sub-tree slug]
 allowed-tools: [Read, Bash, Glob, Grep, Write]
 model: sonnet
 ---
 
 # /token-review
 
-Run a token-budget audit on the repository (or a scoped sub-tree) and emit a cleanup plan grouped by area.
-
-## Inputs
-
-- `$1` — optional sub-tree slug to scope the audit (e.g. `specs/version-0-3-plan`). Default: whole repo.
+Run a repo-wide token-budget audit and emit a cleanup plan grouped by area.
 
 ## Procedure
 

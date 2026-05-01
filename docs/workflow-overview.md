@@ -107,6 +107,9 @@ Plus body sections (Skips, Blocks, Hand-off notes, Open clarifications). Canonic
 
 <!-- BEGIN GENERATED: slash-commands -->
 ```
+# Top-level:
+/token-review
+
 # Decisions:
 /adr:new
 
@@ -160,9 +163,6 @@ Plus body sections (Skips, Blocks, Hand-off notes, Open clarifications). Canonic
 # Stock-taking Track:
 /stock-taking:audit       /stock-taking:handoff     /stock-taking:scope
 /stock-taking:start       /stock-taking:synthesize
-
-# token-review.md:
-/token-review.md:token-review
 ```
 <!-- END GENERATED: slash-commands -->
 

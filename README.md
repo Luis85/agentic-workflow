@@ -400,6 +400,9 @@ Each arrow is a quality gate. See [`docs/workflow-overview.md`](docs/workflow-ov
 
 <!-- BEGIN GENERATED: slash-commands -->
 ```
+# Top-level:
+/token-review
+
 # Decisions:
 /adr:new
 
@@ -453,9 +456,6 @@ Each arrow is a quality gate. See [`docs/workflow-overview.md`](docs/workflow-ov
 # Stock-taking Track:
 /stock-taking:audit       /stock-taking:handoff     /stock-taking:scope
 /stock-taking:start       /stock-taking:synthesize
-
-# token-review.md:
-/token-review.md:token-review
 ```
 <!-- END GENERATED: slash-commands -->
 
