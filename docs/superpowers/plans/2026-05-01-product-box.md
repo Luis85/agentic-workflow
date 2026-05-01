@@ -87,8 +87,9 @@ package.json                                        + check:product-box npm scri
 
 - [ ] **Step 1: Create the worktree and branch**
 
+From the repository root:
+
 ```bash
-cd D:/Projects/agentic-workflow
 git worktree add -b feat/product-box .worktrees/product-box main
 cd .worktrees/product-box
 ```
@@ -442,7 +443,7 @@ test("validateBoxData rejects emoji in fields", () => {
 - [ ] **Step 2: Run the failing test**
 
 ```bash
-npm run test:scripts -- tests/scripts/product-box/validate.test.ts
+node --test --import tsx tests/scripts/product-box/validate.test.ts
 ```
 
 Expected: FAIL — `validateBoxData` not found.
@@ -536,7 +537,7 @@ export function validateBoxData(input: unknown): ValidationResult {
 - [ ] **Step 4: Run the test, expect pass**
 
 ```bash
-npm run test:scripts -- tests/scripts/product-box/validate.test.ts
+node --test --import tsx tests/scripts/product-box/validate.test.ts
 ```
 
 Expected: PASS, 6/6 tests.
@@ -601,7 +602,7 @@ test("computeSkillHash returns 64-hex sha256", () => {
 - [ ] **Step 2: Run, expect fail**
 
 ```bash
-npm run test:scripts -- tests/scripts/product-box/skill-hash.test.ts
+node --test --import tsx tests/scripts/product-box/skill-hash.test.ts
 ```
 
 Expected: FAIL.
@@ -634,7 +635,7 @@ export function computeSkillHash(content: BoxContent): string {
 - [ ] **Step 4: Run, expect pass**
 
 ```bash
-npm run test:scripts -- tests/scripts/product-box/skill-hash.test.ts
+node --test --import tsx tests/scripts/product-box/skill-hash.test.ts
 ```
 
 Expected: PASS, 5/5.
@@ -1107,7 +1108,7 @@ test("renderBox: only uses canonical brand tokens", () => {
 - [ ] **Step 3: Run, expect fail**
 
 ```bash
-npm run test:scripts -- tests/scripts/product-box/render.test.ts
+node --test --import tsx tests/scripts/product-box/render.test.ts
 ```
 
 Expected: FAIL — `renderBox` not found, snapshot files missing.
@@ -1325,7 +1326,7 @@ git rm --force scripts/lib/product-box/_gen-snapshots.ts 2>/dev/null || rm scrip
 - [ ] **Step 6: Run all renderer tests, expect pass**
 
 ```bash
-npm run test:scripts -- tests/scripts/product-box/render.test.ts
+node --test --import tsx tests/scripts/product-box/render.test.ts
 ```
 
 Expected: PASS — including the brand-token allowlist check.
@@ -2026,7 +2027,7 @@ failIfErrors(errors, "check:product-box");
 - [ ] **Step 4: Run tests, expect pass.**
 
 ```bash
-npm run test:scripts -- tests/scripts/product-box/check-product-box.test.ts
+node --test --import tsx tests/scripts/product-box/check-product-box.test.ts
 ```
 
 - [ ] **Step 5: Register the script**
@@ -2303,7 +2304,7 @@ Expected: exit 0.
 - [ ] **Step 2: All product-box tests**
 
 ```bash
-npm run test:scripts -- tests/scripts/product-box/
+node --test --import tsx tests/scripts/product-box/*.test.ts
 ```
 
 Expected: all pass.
