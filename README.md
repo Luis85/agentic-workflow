@@ -120,82 +120,17 @@ Tip: even alone, don't skip the Retrospective at the end. It's where the process
 
 ## How it works
 
-Specorator is built as a layered set of plain-Markdown artifacts and prompt-driven roles. There is no runtime to deploy and no service to host — everything lives in your repository.
+Plain-Markdown artifacts plus prompt-driven roles — no runtime, no service. Everything lives in your repository. The building blocks: a **constitution** for principles, **steering** for scoped context, **specs** per feature, **agents** per stage, **skills** for reusable how-tos, **slash commands** for explicit entry points, **templates** for blank starting artifacts, and **ADRs** for irreversible decisions.
 
-**The building blocks**
+Three tracks compose the workflow:
 
-- **Constitution** (`memory/constitution.md`) — governing principles loaded ahead of every command.
-- **Steering** (`docs/steering/`) — scoped context (product, tech, ux, quality, ops) that agents read so they know your project.
-- **Specs** (`specs/<feature-slug>/`) — one folder per feature; each stage drops one Markdown artifact here.
-- **Agents** (`.claude/agents/`) — one specialist per role, with deliberately narrow tool permissions.
-- **Skills** (`.claude/skills/`) — reusable how-tos that auto-trigger from natural language or run via `/<skill-name>`.
-- **Slash commands** (`.claude/commands/`) — explicit per-stage entry points (`/spec:idea`, `/spec:design`, …).
-- **Templates** (`templates/`) — blank starting points for every artifact you produce.
-- **ADRs** (`docs/adr/`) — immutable Architecture Decision Records for anything load-bearing.
+- **Project Scaffolding Track** *(optional, source-led onboarding)* — Intake → Extract → Assemble → Handoff.
+- **Discovery Track** *(optional, blank-page ideation)* — Frame → Diverge → Converge → Prototype → Validate → Handoff.
+- **Lifecycle Track** *(11 stages, the core)* — Idea → Research → Requirements → Design → Specification → Tasks → Implementation → Testing → Review → Release → Retrospective.
 
-**How you are meant to use it**
+Each lifecycle stage has **one owner**, **one output**, **one quality gate**. No stage is skipped.
 
-1. **Adopt** — fork the repo (or click "Use this template"), then personalise `memory/constitution.md` and fill `docs/steering/`.
-2. **Pick the right entry point** — Discovery (blank page), Stock-taking (legacy system), Sales Cycle (client work), or jump straight into the Lifecycle (you have a brief).
-3. **Drive conversationally** — open Claude Code and say *"let's start a feature"* or *"drive this end-to-end"*. The `orchestrate` skill walks you stage-by-stage, gating with you between each one.
-4. **Or drive manually** — run the slash commands yourself in stage order. State lives in `specs/<feature>/workflow-state.md`.
-5. **Gate every stage** — review the artifact, push back on anything wrong, sign off, then move on. No stage is skipped; quality gates are non-negotiable.
-6. **Implement against the spec** — the dev agent only writes code that matches `tasks.md`. The qa agent verifies every EARS requirement has a test. The reviewer audits traceability.
-7. **Ship and learn** — `/spec:release` produces release notes; `/spec:retro` is mandatory and feeds improvements back into the template.
-
-The workflow has source-led onboarding plus two core delivery tracks:
-
-**Project Scaffolding Track** *(optional — use this when you have collected docs but no canonical artifacts yet)*
-
-```mermaid
-flowchart LR
-    intake["Intake"]
-    extract["Extract"]
-    assemble["Assemble"]
-    handoff["Handoff"]
-
-    intake --> extract --> assemble --> handoff
-```
-
-Inventory existing folders or Markdown files, extract evidence-backed context, assemble draft steering and workflow seeds, then route to Discovery, Specorator, Project Manager Track, or Stock-taking.
-
-**Discovery Track** *(optional — use this when you don't have a clear brief yet)*
-
-```mermaid
-flowchart LR
-    frame["Frame"]
-    diverge["Diverge"]
-    converge["Converge"]
-    prototype["Prototype"]
-    validate["Validate"]
-    handoff["Handoff"]
-
-    frame --> diverge --> converge --> prototype --> validate --> handoff
-```
-
-Explore ideas, narrow them down, prototype the most promising one, validate assumptions, then produce a brief that feeds the next track.
-
-**Lifecycle Track** *(11 stages — use this when you have a brief)*
-
-```mermaid
-flowchart LR
-    idea["Idea"]
-    research["Research"]
-    requirements["Requirements"]
-    design["Design"]
-    specification["Specification"]
-    tasks["Tasks"]
-    implementation["Implementation"]
-    testing["Testing"]
-    review["Review"]
-    release["Release"]
-    retro["Retro"]
-
-    idea --> research --> requirements --> design --> specification --> tasks
-    tasks --> implementation --> testing --> review --> release --> retro
-```
-
-Each stage has **one owner** (a specialist AI agent), **one output** (a Markdown file in `specs/<feature>/`), and **one quality gate** before the next stage can begin. No stage is skipped; quality gates are non-negotiable.
+→ Long-form building blocks, adoption checklist, and full mermaid diagrams: [`docs/repo-map.md`](docs/repo-map.md) and [`docs/workflow-overview.md`](docs/workflow-overview.md).
 
 ---
 
@@ -476,31 +411,14 @@ The artifact format (Markdown files in `specs/<feature>/`) and the ID scheme (`R
 
 ## What's in the repo
 
-| Path | What it is |
-|---|---|
-| [`docs/specorator.md`](docs/specorator.md) | Full workflow definition — read this before any non-trivial work |
-| [`docs/project-scaffolding-track.md`](docs/project-scaffolding-track.md) | Source-led onboarding detail for turning collected docs into starter artifacts |
-| [`docs/discovery-track.md`](docs/discovery-track.md) | Discovery Track detail and phase-by-phase guide |
-| [`docs/roadmap-management-track.md`](docs/roadmap-management-track.md) | Product/project roadmap management, stakeholder alignment, and team communication workflow |
-| [`docs/quality-assurance-track.md`](docs/quality-assurance-track.md) | ISO 9001-aligned quality assurance review workflow |
-| [`docs/workflow-overview.md`](docs/workflow-overview.md) | One-page visual + cheat sheet + slash command list |
-| [`docs/quality-framework.md`](docs/quality-framework.md) | Quality dimensions, gates, and Definition of Done per stage |
-| [`docs/ears-notation.md`](docs/ears-notation.md) | How to write requirements in EARS format |
-| [`docs/traceability.md`](docs/traceability.md) | ID scheme: requirement → spec → task → code → test |
-| [`docs/sink.md`](docs/sink.md) | Catalog of every artifact: where it lives, who owns it |
-| [`docs/steering/`](docs/steering/) | Scoped context for agents (product, tech, ux, quality, ops) |
-| [`docs/adr/`](docs/adr/) | Architecture Decision Records — start with [ADR-0001](docs/adr/0001-record-architecture-decisions.md) |
-| [`memory/constitution.md`](memory/constitution.md) | Governing principles loaded before every command |
-| [`templates/`](templates/) | Blank artifact templates for each stage |
-| [`.claude/agents/`](.claude/agents/) | One subagent per SDLC role |
-| [`.claude/skills/`](.claude/skills/) | Reusable skill bundles (`orchestrate`, `grill`, `tdd-cycle`, `verify`, …) |
-| [`agents/operational/`](agents/operational/) | Scheduled bots: review-bot, dep-triage-bot, plan-recon-bot, and more |
-| [`CONTRIBUTING.md`](CONTRIBUTING.md) | How to improve this template |
-| [`sites/index.html`](sites/index.html) | Public product page source, deployable through GitHub Pages |
-| [`AGENTS.md`](AGENTS.md) | Cross-tool root context (Codex, Cursor, Aider, Copilot all read this) |
-| [`CLAUDE.md`](CLAUDE.md) | Claude Code entry point — imports `AGENTS.md` |
-| [`.codex/`](.codex/) | Codex-specific instructions and workflow playbooks |
-| [`examples/`](examples/) | Demonstration artifacts — what a project using this template produces. Each `examples/<slug>/` mirrors `specs/<slug>/` shape. Not part of the template's own workflow; agents must not treat these as active features. (`cli-todo`: stages 1–3 complete, stage 4 in-progress) |
+Full path-by-path map: [`docs/repo-map.md`](docs/repo-map.md). Quick pointers:
+
+- **Workflow definition** — [`docs/specorator.md`](docs/specorator.md), [`docs/workflow-overview.md`](docs/workflow-overview.md).
+- **Conventions** — [`AGENTS.md`](AGENTS.md), [`CLAUDE.md`](CLAUDE.md), [`memory/constitution.md`](memory/constitution.md).
+- **Quality** — [`docs/quality-framework.md`](docs/quality-framework.md), [`docs/ears-notation.md`](docs/ears-notation.md), [`docs/traceability.md`](docs/traceability.md).
+- **Sink + ADRs** — [`docs/sink.md`](docs/sink.md), [`docs/adr/`](docs/adr/).
+- **Agent and skill libraries** — [`.claude/agents/`](.claude/agents/), [`.claude/skills/`](.claude/skills/), [`agents/operational/`](agents/operational/).
+- **Worked examples** — [`examples/`](examples/) (top-level files are trimmed excerpts; `examples/<slug>/full/` holds the unabridged historical mirror).
 
 ---
 

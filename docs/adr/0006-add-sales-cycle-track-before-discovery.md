@@ -13,6 +13,10 @@ tags: [process, agents, sales, pre-sales, scoping, proposal, sow]
 
 # ADR-0006 — Add a Sales Cycle Track that precedes the Discovery Track and Stage 1
 
+## Summary
+
+The Lifecycle (Stages 1–11) and Discovery Track both assume a project mandate already exists. Service providers face a structurally prior problem — they first have to *win* the work. This ADR adds an opt-in **Sales Cycle Track** with five phases (Qualify → Scope → Estimate → Propose → Order) plus a Delivery Handoff. Specialist agents (`sales-qualifier`, `scoping-facilitator`, `estimator`, `proposal-writer`) apply BANT/MEDDIC qualification, structured scoping, three-point PERT estimation with a risk multiplier, and proposal writing. Output is `order.md` — the canonical Project Kickoff Brief that feeds `/discovery:start` (exploratory mandate) or `/spec:start` (defined mandate). Triggered via the `sales-cycle` skill or manually via `/sales:start`. Skipped entirely when the user already has a signed contract. Trade-off: significant new surface area for non-service-provider teams — mitigated by opt-in framing and the convention that internal-product teams jump straight to Discovery / Specorator.
+
 ## Status
 
 Accepted

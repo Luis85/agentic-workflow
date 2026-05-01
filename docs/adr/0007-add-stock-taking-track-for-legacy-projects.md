@@ -13,6 +13,10 @@ tags: [process, agents, legacy, inventory, stock-taking]
 
 # ADR-0007 — Add a Stock-taking Track for projects that build on existing systems
 
+## Summary
+
+Both the Lifecycle and the Discovery Track assume blank-canvas inputs. Brownfield work needs an explicit "what do we already have?" stage covering existing processes, use-case inventory, integrations, data landscape, and technical debt. This ADR adds an opt-in **Stock-taking Track** with three phases (Scope → Audit → Synthesize) plus Handoff, all driven by a `legacy-auditor` agent. Output is `stock-taking-inventory.md` — a single consolidated baseline with a Strangler Fig migration map and a recommended next track (Discovery for ambiguous outcomes, Specorator for clear ones). Triggered conversationally via the `stock-taking` skill or manually via `/stock:start`. Skipped entirely on greenfield projects. Trade-off: yet another optional pre-Stage-1 track — mitigated by sharp gating ("is there an existing system to inventory?") and the convention that auditor never invents missing inputs but escalates them as research agenda for the downstream track.
+
 ## Status
 
 Accepted
