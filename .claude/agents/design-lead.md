@@ -1,7 +1,7 @@
 ---
 name: design-lead
 description: Use at the start of the Design Track (/design:start). Orchestrates ux-designer and ui-designer to produce a brand-compliant design brief, sketch, and handoff artifact for a new user-visible surface. Does not replace Stage 4 (/spec:design) for feature work.
-tools: [Read, Edit, Write]
+tools: [Agent, Read, Edit, Write]
 model: sonnet
 color: pink
 ---
