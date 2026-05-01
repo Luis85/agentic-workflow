@@ -553,65 +553,70 @@
       <section class="section example-section" id="example" aria-labelledby="example-title">
         <div class="section-header">
           <h2 id="example-title">From a one-line brief to working code.</h2>
-          <p class="section-kicker">A walk-through of one fabricated feature &mdash; password reset by email. Each stage produces a Markdown artifact with stable IDs that flow forward to the next.</p>
+          <p class="section-kicker">A walk-through of the worked CLI todo example &mdash; the smallest realistic feature you can read end to end. Each stage produces a Markdown artifact with stable IDs that flow forward to the next.</p>
         </div>
         <div class="artifact-chain" aria-label="Three example artifacts produced in sequence">
           <figure class="artifact-card">
             <header class="artifact-card-head">
               <span class="artifact-step">Stage 1 &middot; Idea</span>
-              <code class="artifact-path">specs/password-reset/idea.md</code>
+              <code class="artifact-path">examples/cli-todo/idea.md</code>
             </header>
-<pre class="artifact-source"><span class="md-h1"># Idea: Password reset</span>
+<pre class="artifact-source"><span class="md-h1"># Idea: CLI todo app</span>
 
 <span class="md-h2">## Brief</span>
-Users who forget their password should
-recover access without a support ticket.
+Solo engineers want to capture, list,
+and complete short-lived tasks without
+leaving the shell.
 
 <span class="md-h2">## User</span>
-Existing account holders, locked out.
+Terminal-native engineers; contributors
+reading this kit's worked example.
 
 <span class="md-h2">## Outcome</span>
-Self-service via a one-time link expiring
-in 30 minutes.</pre>
+A `todo` binary with add, list, done,
+rm. First add &rarr; list &rarr; done in
+under two minutes.</pre>
           </figure>
           <figure class="artifact-card">
             <header class="artifact-card-head">
               <span class="artifact-step">Stage 3 &middot; Requirements</span>
-              <code class="artifact-path">specs/password-reset/requirements.md</code>
+              <code class="artifact-path">examples/cli-todo/requirements.md</code>
             </header>
-<pre class="artifact-source"><span class="md-h1"># Requirements: Password reset</span>
+<pre class="artifact-source"><span class="md-h1"># Requirements: CLI todo app</span>
 
-<span class="md-id">REQ-AUTH-001</span>
-<span class="md-em">While</span> the user is signed out,
-<span class="md-em">when</span> they tap &ldquo;Forgot password,&rdquo;
-<span class="md-em">the system shall</span> open the email form.
+<span class="md-id">REQ-CLI-001</span>
+<span class="md-em">When</span> the user invokes `todo add`
+with a non-empty text argument,
+<span class="md-em">the CLI shall</span> create a new task
+with a unique sequential ID and persist
+it for later `todo list` calls.
 
-<span class="md-id">REQ-AUTH-002</span>
-<span class="md-em">When</span> an email matching a known account
-is submitted, <span class="md-em">the system shall</span>
-send a one-time link valid for 30 minutes.</pre>
+<span class="md-id">REQ-CLI-002</span>
+<span class="md-em">When</span> the user invokes `todo list`,
+<span class="md-em">the CLI shall</span> display every open
+task on its own line.</pre>
           </figure>
           <figure class="artifact-card">
             <header class="artifact-card-head">
               <span class="artifact-step">Stage 6 &middot; Tasks</span>
-              <code class="artifact-path">specs/password-reset/tasks.md</code>
+              <code class="artifact-path">examples/cli-todo/tasks.md</code>
             </header>
-<pre class="artifact-source"><span class="md-h1"># Tasks: Password reset</span>
+<pre class="artifact-source"><span class="md-h1"># Tasks: CLI todo app</span>
 
-<span class="md-id">T-AUTH-014</span>  Email-entry form
-  owner: dev   &rarr; <span class="md-id">REQ-AUTH-001</span>
+<span class="md-id">T-CLI-001</span>  Dispatcher and help tests
+  owner: qa    &rarr; <span class="md-id">REQ-CLI-006</span>, <span class="md-id">REQ-CLI-012</span>
 
-<span class="md-id">T-AUTH-015</span>  One-time token issuer
-  owner: dev   &rarr; <span class="md-id">REQ-AUTH-002</span>
+<span class="md-id">T-CLI-002</span>  Scaffold binary and dispatcher
+  owner: dev   &rarr; <span class="md-id">REQ-CLI-006</span>
 
-<span class="md-id">T-AUTH-016</span>  Tests for above
-  owner: qa    &rarr; <span class="md-id">TEST-AUTH-014..15</span></pre>
+<span class="md-id">T-CLI-003</span>  Storage and path tests
+  owner: qa    &rarr; <span class="md-id">REQ-CLI-007</span>, <span class="md-id">REQ-CLI-009</span></pre>
           </figure>
         </div>
         <div class="artifact-meta">
           <p>Every requirement carries a stable ID that flows forward &mdash; <code>REQ</code> to <code>T</code> to <code>TEST</code>. The traceability matrix is regenerable from the artifacts; nothing ships without a chain.</p>
           <ul class="artifact-list">
-            <li><a href="https://github.com/Luis85/agentic-workflow/tree/main/examples/cli-todo">Real example feature &rarr;</a></li>
+            <li><a href="https://github.com/Luis85/agentic-workflow/tree/main/examples/cli-todo">Browse every cli-todo artifact &rarr;</a></li>
             <li><a href="https://github.com/Luis85/agentic-workflow/blob/main/docs/workflow-overview.md">Workflow cheat sheet &rarr;</a></li>
             <li><a href="https://github.com/Luis85/agentic-workflow/blob/main/docs/quality-framework.md">Quality gates &rarr;</a></li>
           </ul>
