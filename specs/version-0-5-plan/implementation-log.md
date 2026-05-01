@@ -9,7 +9,7 @@ inputs:
   - SPECDOC-V05-001
   - TASKS-V05-001
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-05-04
 ---
 
 # Implementation log — Version 0.5 release and distribution plan
@@ -76,6 +76,26 @@ A running record of *what* was implemented, *why* a deviation was taken, and *wh
 - **Outcome:** done
 - **Deviation from spec:** none
 - **Notes:** Configured GitHub's auto-generated release notes for the v0.5 manual release workflow. Categories (top-down): Breaking Changes, Features, Bug Fixes, Documentation, Performance, Refactor, Tests, Build & CI, Reverts, Chores & Dependencies, Other Changes (catch-all `labels: ['*']`). Category labels map onto the Conventional-Commit types enforced by `.github/workflows/pr-title.yml`. `changelog.exclude.labels` covers `release`, `chore-release`, and `skip-changelog` so release-prep PRs don't show up in their own notes. `changelog.exclude.authors` filters `dependabot` and `github-actions` (both bare and `[bot]` forms); the file's leading comment notes that operational-bot author handles can be added once verified. YAML validated locally (parses to 11 categories + 3 excluded labels). The release workflow itself lands in T-V05-006; this PR only configures the notes.
+
+### 2026-05-04 — T-V05-004 — Add release readiness check
+
+- **Files changed:** `scripts/check-release-readiness.ts` (new); `scripts/lib/release-readiness.ts` (new); `package.json` (new `check:release-readiness` npm script); `tools/automation-registry.yml` (new check entry); `docs/scripts/check-release-readiness/`, `docs/scripts/lib/release-readiness/`, `docs/scripts/modules.md` (typedoc regenerated).
+- **Commit:** *(staged in PR #158; commit SHA recorded after `npm run verify`)*
+- **Spec reference:** SPEC-V05-005 (REQ-V05-007), SPEC-V05-008 (REQ-V05-010), SPEC-V05-010 (REQ-V05-005, REQ-V05-012); ADR-0020.
+- **Owner:** dev
+- **Outcome:** done
+- **Deviation from spec:** none.
+- **Notes:** New library `scripts/lib/release-readiness.ts` exposes `checkReleaseReadiness(opts)` with two layers. **Layer 1 — release metadata** runs in fixed order: (1) version alignment — `package.json#version` equals the candidate version (`RELEASE_READINESS_VERSION_MISMATCH`); (2) tag readiness — `vX.Y.Z` resolves and points at `main` HEAD per ADR-0020 (`RELEASE_READINESS_TAG_MISSING`, `RELEASE_READINESS_TAG_NOT_AT_MAIN`); (3) CHANGELOG entry — `## [vX.Y.Z]` heading present in `CHANGELOG.md` (`RELEASE_READINESS_CHANGELOG_MISSING`); (4) lifecycle release notes — `.github/release.yml` exists and matches the T-V05-003 shape (`RELEASE_READINESS_RELEASE_YML_MISSING`, `RELEASE_READINESS_RELEASE_YML_SHAPE`); (5) package metadata — `package.json#name` / `#publishConfig.registry` / `#repository` / `#files` match `package-contract.md` §2–§3 with one stable code per drifting field (`RELEASE_READINESS_PKG_NAME`, `RELEASE_READINESS_PKG_REGISTRY`, `RELEASE_READINESS_PKG_REPOSITORY`, `RELEASE_READINESS_PKG_FILES`); (6) workflow permissions — manual release workflow declares only `contents: write` + `packages: write` (`RELEASE_READINESS_WORKFLOW_MISSING`, `RELEASE_READINESS_WORKFLOW_PERMISSIONS`); (7) v0.4 quality signals — CI status + validation status + open blockers + open clarifications + maturity level all green or operator waiver recorded (`RELEASE_READINESS_QUALITY`). **Layer 2 — fresh-surface composition** imports `checkReleasePackageContents` from T-V05-012 and surfaces its diagnostics unchanged (`RELEASE_PKG_*` codes preserved). Layer 2 runs only when `--archive <dir>` is provided so the readiness check can be invoked before a candidate archive is materialised (T-V05-006 / SPEC-V05-009 dry runs); Layer 1 still runs in that case. The CLI `scripts/check-release-readiness.ts` accepts `--version <X.Y.Z>` (or `RELEASE_VERSION` env), `--archive <dir>` (or `RELEASE_PACKAGE_ARCHIVE` env), `--ci-status`, `--validation-status`, and `--quality-waiver` flags, and exits 0 with a `skipped` notice when neither `--version` nor `RELEASE_VERSION` is supplied so `npm run verify` can host the check. Empty flag values short-circuit with `RELEASE_READINESS_ARG` so release automation cannot silently bypass the check (Codex P1 regression carried from T-V05-012). The script reuses `failIfErrors` for `--json` plumbing. Tag readiness uses an injectable `GitInterface`; the CLI wires the real implementation via `git rev-parse --verify --quiet`. v0.4 quality signal repo-derived inputs (`openBlockers`, `openClarifications`, `maturityLevel`) come from `lib/quality-metrics.ts`; the two operator-set signals (`ciStatus`, `validationStatus`) come from CLI flags or `RELEASE_CI_STATUS` / `RELEASE_VALIDATION_STATUS` env. Satisfies SPEC-V05-005 (REQ-V05-007), SPEC-V05-008 (REQ-V05-010), SPEC-V05-010 (REQ-V05-005, REQ-V05-012); composes T-V05-012; unblocks PR #159 (T-V05-006) and PR #162 (T-V05-010 / T-V05-011).
+
+### 2026-05-04 — T-V05-005 — Test release readiness behavior
+
+- **Files changed:** `tests/scripts/release-readiness.test.ts` (new).
+- **Commit:** *(staged in PR #158; commit SHA recorded after `npm run verify`)*
+- **Spec reference:** SPEC-V05-005 (REQ-V05-007), SPEC-V05-008 (REQ-V05-010), SPEC-V05-010 (REQ-V05-005, REQ-V05-012).
+- **Owner:** qa
+- **Outcome:** done
+- **Deviation from spec:** none.
+- **Notes:** 21 unit tests cover the six required scenarios from the chunk plan plus invariants and Codex P1 regressions. Scenario 1: a fully valid release fixture (aligned version, tag at main HEAD, CHANGELOG entry, valid `release.yml`, contract-aligned package metadata, least-privilege workflow permissions, green quality signals) produces zero diagnostics. Scenario 2: missing `## [vX.Y.Z]` heading and absent `CHANGELOG.md` both fail with `RELEASE_READINESS_CHANGELOG_MISSING`. Scenario 3: absent `.github/release.yml` fails `RELEASE_READINESS_RELEASE_YML_MISSING`; malformed `release.yml` (missing `changelog` block) fails `RELEASE_READINESS_RELEASE_YML_SHAPE`. Scenario 4: package metadata drift fires one diagnostic per drifting field (name, registry, repository); empty `files` array fails `PkgFiles`; version mismatch fails `Version`. Scenario 5: extra workflow permission keys (`actions`, `id-token`) each fire `WorkflowPermissions`; `permissions: write-all` fails; absent workflow file fails `WorkflowMissing`. Scenario 6: numbered ADR + non-empty intake folder + built-up doc in candidate archive fail readiness with the underlying `RELEASE_PKG_ADR`, `RELEASE_PKG_INTAKE`, and `RELEASE_PKG_DOC_STUB` diagnostics surfaced unchanged through Layer 2. Additional tests: missing quality signals fail closed with `Quality`; explicit operator waiver suppresses Quality diagnostics; missing tag fails `TagMissing`; tag SHA != main HEAD fails `TagNotAtMain`; argv parser handles `--version`/`--archive` flags, env fallback, and empty-flag-value rejection. Tests use `node:test` + `node:assert/strict` with fixtures under `fs.mkdtempSync` and a stub `GitInterface` so no real git or filesystem is required. All 21 new tests pass; full suite (203 tests) green.
 
 ## Pull request grouping
 
