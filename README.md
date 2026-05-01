@@ -141,7 +141,7 @@ Specorator is built as a layered set of plain-Markdown artifacts and prompt-driv
 4. **Or drive manually** — run the slash commands yourself in stage order. State lives in `specs/<feature>/workflow-state.md`.
 5. **Gate every stage** — review the artifact, push back on anything wrong, sign off, then move on. No stage is skipped; quality gates are non-negotiable.
 6. **Implement against the spec** — the dev agent only writes code that matches `tasks.md`. The qa agent verifies every EARS requirement has a test. The reviewer audits traceability.
-7. **Ship and learn** — `/spec:release` produces release notes; `/spec:retro` is mandatory and feeds improvements back into the template.
+7. **Ship and learn** — `/spec:release` prepares release readiness, produces release notes, and gates irreversible actions on explicit authorization; `/spec:retro` is mandatory and feeds improvements back into the template.
 
 The workflow has source-led onboarding plus two core delivery tracks:
 
@@ -326,6 +326,15 @@ This files a permanent Architecture Decision Record (ADR) in `docs/adr/`.
 
 The Quality Assurance Track creates ISO 9001-aligned plans, checklists, readiness reviews, and corrective actions. It supports readiness and evidence gathering; it does not grant certification.
 
+### I want to prepare a production release decision
+
+```
+cp templates/release-readiness-guide-template.md specs/my-feature/release-readiness-guide.md
+/spec:release my-feature
+```
+
+Use the Release Readiness Guide when an increment needs product, stakeholder, operational, support, security, privacy, compliance, commercial, or communications evidence before production. It feeds `release-notes.md` and the explicit authorization step; it does not deploy by itself.
+
 ### I want to manage a product or project roadmap
 
 ```
@@ -480,6 +489,7 @@ The artifact format (Markdown files in `specs/<feature>/`) and the ID scheme (`R
 | [`docs/discovery-track.md`](docs/discovery-track.md) | Discovery Track detail and phase-by-phase guide |
 | [`docs/roadmap-management-track.md`](docs/roadmap-management-track.md) | Product/project roadmap management, stakeholder alignment, and team communication workflow |
 | [`docs/quality-assurance-track.md`](docs/quality-assurance-track.md) | ISO 9001-aligned quality assurance review workflow |
+| [`docs/release-readiness-guide.md`](docs/release-readiness-guide.md) | Stage 10 go/no-go guide for product perspectives and stakeholder requirements |
 | [`docs/workflow-overview.md`](docs/workflow-overview.md) | One-page visual + cheat sheet + slash command list |
 | [`docs/quality-framework.md`](docs/quality-framework.md) | Quality dimensions, gates, and Definition of Done per stage |
 | [`docs/ears-notation.md`](docs/ears-notation.md) | How to write requirements in EARS format |

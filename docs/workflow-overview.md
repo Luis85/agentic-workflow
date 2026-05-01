@@ -76,7 +76,7 @@ flowchart LR
     implementation -->|matches spec + lint| testing
     testing -->|every REQ tested| review
     review -->|RTM complete + no criticals| release
-    release -->|changelog + rollback| retro
+    release -->|readiness + changelog + rollback| retro
 ```
 
 Optional gates `/spec:clarify` and `/spec:analyze` may be inserted between any two stages.
@@ -84,6 +84,8 @@ Optional gates `/spec:clarify` and `/spec:analyze` may be inserted between any t
 Use `/scaffold:start <slug> <source>` before the other tracks when a fresh template install should be seeded from existing folders or Markdown files.
 
 Use `/quality:start <slug> [scope]` when a project, portfolio, feature, release, supplier, or internal process needs an ISO 9001-aligned quality assurance review.
+
+Use [`release-readiness-guide.md`](release-readiness-guide.md) during `/spec:release` when production readiness depends on multiple product perspectives, stakeholder requirements, approvals, or conditions.
 
 Use `/roadmap:start <slug>` when product direction, project delivery confidence, stakeholder expectations, and team communication need a shared roadmap artifact.
 
@@ -176,5 +178,5 @@ Plus body sections (Skips, Blocks, Hand-off notes, Open clarifications). Canonic
 | Implementation | Spec-matched, lint+types+units green, log updated |
 | Testing | Every EARS clause tested, failures reproducible |
 | Review | RTM complete, no critical findings, requirements satisfied |
-| Release | Changelog + rollback + observability in place |
+| Release | Readiness conditions, changelog, rollback, and observability in place |
 | Retro | Three buckets (worked / didn't / actions) with owners |

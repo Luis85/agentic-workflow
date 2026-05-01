@@ -16,6 +16,7 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │   ├── workflow-overview.md                 # one-page cheat sheet
 │   ├── quality-framework.md                 # quality dimensions, gates, DoD
 │   ├── quality-metrics.md                   # deterministic KPI interpretation guide
+│   ├── release-readiness-guide.md           # Stage 10 go/no-go guide across product perspectives and stakeholders
 │   ├── traceability.md                      # ID scheme REQ → SPEC → T → code → TEST
 │   ├── ears-notation.md                     # EARS reference
 │   ├── sink.md                              # this file
@@ -127,6 +128,7 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │       ├── test-report.md                   # stage 8 (qa)
 │       ├── review.md                        # stage 9 (reviewer)
 │       ├── traceability.md                  # stage 9 (reviewer) — RTM
+│       ├── release-readiness-guide.md       # stage 10 optional companion (release-manager, LAZY)
 │       ├── release-notes.md                 # stage 10 (release-manager)
 │       └── retrospective.md                 # stage 11 (retrospective)
 ├── portfolio/                               # one folder per portfolio (opt-in, P5 Express track)
@@ -227,6 +229,7 @@ The root `README.md` is the public repository entry point and is exempt from thi
 | `discovery/<sprint>/chosen-brief.md` | `facilitator` (Handoff) | One per surviving concept; mandatory input to `/spec:idea` |
 | `specs/<slug>/workflow-state.md` | `/spec:start`, then `/spec:*` commands on transition | State machine; orchestrator amends final fields |
 | `specs/<slug>/<artifact>.md` | The stage's owning agent (per `docs/specorator.md` §3) | Each stage writes once; later stages **never rewrite** upstream artifacts |
+| `specs/<slug>/release-readiness-guide.md` | `release-manager` (Stage 10, optional) | Lazy go/no-go packet; feeds `release-notes.md`, release authorization, quality review, and retrospective follow-up |
 | `portfolio/<slug>/portfolio-state.md` | `/portfolio:start`, then `/portfolio:*` commands on each cycle | Cycle state machine; portfolio-manager-owned |
 | `portfolio/<slug>/portfolio-definition.md` | `/portfolio:start` (created), Z cycle Z2 (status updates) | Ongoing; X and Y cycles read but do not rewrite |
 | `portfolio/<slug>/portfolio-roadmap.md` | X cycle (X2, X3) | Updated in place each X run; previous exec summaries appended |
@@ -343,6 +346,12 @@ A sprint may emit **0, 1, or N** chosen briefs. Zero is a valid outcome (no-go);
 When a team needs an ISO 9001-aligned readiness check, the Quality Assurance Track creates one `quality/<quality-review-slug>/` folder. It can review a project, portfolio, release, supplier, or active feature. It produces a QA plan, evidence-backed checklist, readiness report, and improvement plan.
 
 The track supports internal readiness and audit preparation, but it does not grant certification or replace an accredited auditor. See [`docs/quality-assurance-track.md`](quality-assurance-track.md) for the methodology.
+
+## Release readiness companion artifact
+
+When a completed increment needs an explicit production go/no-go decision, Stage 10 may create `specs/<feature>/release-readiness-guide.md` from `templates/release-readiness-guide-template.md`. The guide collects product value, user experience, stakeholder, engineering, security/privacy/compliance, operations, support, data, commercial, and communication readiness evidence.
+
+This is a lazy companion artifact, not a new lifecycle stage. `release-notes.md` remains the canonical Stage 10 output, while the readiness guide records conditions, blockers, approvers, and the go/no-go rationale that feed the notes, authorization request, optional Quality Assurance Track review, and retrospective.
 
 ## Portfolio Track sub-tree
 
