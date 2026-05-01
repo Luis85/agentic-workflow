@@ -30,10 +30,16 @@ type PackageJson = {
   optionalDependencies?: Record<string, string>;
 };
 
+type WorkflowPattern = {
+  description: string;
+  pattern: RegExp;
+};
+
 type WorkflowContract = {
   name: string;
   filePath: string;
   requiredMarkers: string[];
+  requiredPatterns?: WorkflowPattern[];
   hint: string;
 };
 
@@ -41,8 +47,20 @@ const workflowContracts: WorkflowContract[] = [
   {
     name: "verify workflow",
     filePath: ".github/workflows/verify.yml",
-    requiredMarkers: ["actions/checkout", "actions/setup-node", "cache: npm", "npm ci", "npm run verify"],
-    hint: "restore the verify workflow contract so CI mirrors the local verify gate",
+    requiredMarkers: [
+      "pull_request:",
+      "- main",
+      "actions/checkout",
+      "actions/setup-node",
+      "cache: npm",
+      "npm ci",
+      "npm run verify",
+    ],
+    requiredPatterns: [
+      { description: "actions/checkout SHA-pinned", pattern: /actions\/checkout@[0-9a-f]{40}\b/ },
+      { description: "actions/setup-node SHA-pinned", pattern: /actions\/setup-node@[0-9a-f]{40}\b/ },
+    ],
+    hint: "restore the verify workflow contract so CI mirrors the local verify gate (see docs/pr-ci-gate.md)",
   },
   {
     name: "pages workflow",
@@ -199,11 +217,13 @@ function workflowReadinessCheck(root: string, contract: WorkflowContract): Check
 
   const text = fs.readFileSync(absolutePath, "utf8");
   const missingMarkers = contract.requiredMarkers.filter((marker) => !text.includes(marker));
-  if (missingMarkers.length > 0) {
+  const missingPatterns = (contract.requiredPatterns ?? []).filter((entry) => !entry.pattern.test(text));
+  const missing = [...missingMarkers, ...missingPatterns.map((entry) => entry.description)];
+  if (missing.length > 0) {
     return {
       name: contract.name,
       status: "fail",
-      detail: `${contract.filePath} missing ${missingMarkers.join(", ")}`,
+      detail: `${contract.filePath} missing ${missing.join(", ")}`,
       hint: contract.hint,
     };
   }

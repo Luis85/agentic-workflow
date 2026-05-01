@@ -56,19 +56,7 @@ test("workflowReadinessChecks validates verify and Pages workflow contracts", ()
   try {
     const workflowDir = path.join(root, ".github", "workflows");
     fs.mkdirSync(workflowDir, { recursive: true });
-    fs.writeFileSync(
-      path.join(workflowDir, "verify.yml"),
-      [
-        "steps:",
-        "  - uses: actions/checkout@v6",
-        "  - uses: actions/setup-node@v6",
-        "    with:",
-        "      cache: npm",
-        "  - run: npm ci",
-        "  - run: npm run verify",
-      ].join("\n"),
-      "utf8",
-    );
+    fs.writeFileSync(path.join(workflowDir, "verify.yml"), validVerifyWorkflow(), "utf8");
     fs.writeFileSync(
       path.join(workflowDir, "pages.yml"),
       [
@@ -111,10 +99,96 @@ test("workflowReadinessChecks reports missing workflow contract markers", () => 
     assert.equal(results[0].status, "fail");
     assert.equal(
       results[0].detail,
-      ".github/workflows/verify.yml missing actions/checkout, actions/setup-node, cache: npm, npm ci, npm run verify",
+      ".github/workflows/verify.yml missing pull_request:, - main, actions/checkout, actions/setup-node, cache: npm, npm ci, npm run verify, actions/checkout SHA-pinned, actions/setup-node SHA-pinned",
     );
     assert.equal(results[1].status, "fail");
     assert.equal(results[1].detail, ".github/workflows/pages.yml missing");
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("workflowReadinessChecks fails when verify.yml lacks the pull_request trigger", () => {
+  const root = tempRepo();
+  try {
+    const workflowDir = path.join(root, ".github", "workflows");
+    fs.mkdirSync(workflowDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(workflowDir, "verify.yml"),
+      validVerifyWorkflow().replace("pull_request:\n  ", ""),
+      "utf8",
+    );
+    fs.writeFileSync(path.join(workflowDir, "pages.yml"), validPagesWorkflow(), "utf8");
+
+    const results = workflowReadinessChecks(root);
+    assert.equal(results[0].status, "fail");
+    assert.equal(results[0].detail, ".github/workflows/verify.yml missing pull_request:");
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("workflowReadinessChecks fails when verify.yml does not push to main", () => {
+  const root = tempRepo();
+  try {
+    const workflowDir = path.join(root, ".github", "workflows");
+    fs.mkdirSync(workflowDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(workflowDir, "verify.yml"),
+      validVerifyWorkflow().replace("- main", "- develop"),
+      "utf8",
+    );
+    fs.writeFileSync(path.join(workflowDir, "pages.yml"), validPagesWorkflow(), "utf8");
+
+    const results = workflowReadinessChecks(root);
+    assert.equal(results[0].status, "fail");
+    assert.equal(results[0].detail, ".github/workflows/verify.yml missing - main");
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("workflowReadinessChecks fails when actions/checkout is not SHA-pinned in verify.yml", () => {
+  const root = tempRepo();
+  try {
+    const workflowDir = path.join(root, ".github", "workflows");
+    fs.mkdirSync(workflowDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(workflowDir, "verify.yml"),
+      validVerifyWorkflow().replace(
+        "actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+        "actions/checkout@v6",
+      ),
+      "utf8",
+    );
+    fs.writeFileSync(path.join(workflowDir, "pages.yml"), validPagesWorkflow(), "utf8");
+
+    const results = workflowReadinessChecks(root);
+    assert.equal(results[0].status, "fail");
+    assert.equal(results[0].detail, ".github/workflows/verify.yml missing actions/checkout SHA-pinned");
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("workflowReadinessChecks fails when actions/setup-node is not SHA-pinned in verify.yml", () => {
+  const root = tempRepo();
+  try {
+    const workflowDir = path.join(root, ".github", "workflows");
+    fs.mkdirSync(workflowDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(workflowDir, "verify.yml"),
+      validVerifyWorkflow().replace(
+        "actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e",
+        "actions/setup-node@v6",
+      ),
+      "utf8",
+    );
+    fs.writeFileSync(path.join(workflowDir, "pages.yml"), validPagesWorkflow(), "utf8");
+
+    const results = workflowReadinessChecks(root);
+    assert.equal(results[0].status, "fail");
+    assert.equal(results[0].detail, ".github/workflows/verify.yml missing actions/setup-node SHA-pinned");
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
@@ -241,4 +315,37 @@ function tempRepo(): string {
 
 function writeJson(filePath: string, value: unknown): void {
   fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
+}
+
+function validVerifyWorkflow(): string {
+  return [
+    "on:",
+    "  pull_request:",
+    "  push:",
+    "    branches:",
+    "      - main",
+    "jobs:",
+    "  verify:",
+    "    steps:",
+    "      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+    "      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e",
+    "        with:",
+    "          cache: npm",
+    "      - run: npm ci",
+    "      - run: npm run verify",
+    "",
+  ].join("\n");
+}
+
+function validPagesWorkflow(): string {
+  return [
+    "steps:",
+    "  - uses: actions/checkout@v6",
+    "  - uses: actions/configure-pages@v6",
+    "  - uses: actions/upload-pages-artifact@v5",
+    "    with:",
+    "      path: sites",
+    "  - uses: actions/deploy-pages@v5",
+    "",
+  ].join("\n");
 }
