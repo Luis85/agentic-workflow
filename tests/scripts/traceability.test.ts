@@ -381,6 +381,154 @@ id: TESTPLAN-FEAT-001
   );
 });
 
+test("TEST defined as heading without a covering REQ or NFR reference is reported", () => {
+  const requirements = record(
+    "requirements.md",
+    `---
+feature: feat
+id: PRD-FEAT-001
+---
+
+## REQ-FEAT-001 — Title
+
+- **Satisfies:** PRD-FEAT-001
+`,
+  );
+  const spec = record(
+    "spec.md",
+    `---
+feature: feat
+id: SPECDOC-FEAT-001
+---
+
+## SPEC-FEAT-001 — Title
+
+- **Satisfies:** REQ-FEAT-001
+`,
+  );
+  const testPlan = record(
+    "test-plan.md",
+    `---
+feature: feat
+id: TESTPLAN-FEAT-001
+---
+
+## TEST-FEAT-001 — Orphan
+
+- **Notes:** No requirement linked yet.
+`,
+  );
+  const diagnostics = diagnose(cleanState, [requirements, spec, testPlan]);
+  assert.ok(
+    diagnostics.includes(
+      `specs/feat/test-plan.md TEST-FEAT-001 has no covering REQ or NFR reference`,
+    ),
+  );
+});
+
+test("TEST heading with a Requirement REQ field is treated as covered", () => {
+  const requirements = record(
+    "requirements.md",
+    `---
+feature: feat
+id: PRD-FEAT-001
+---
+
+## REQ-FEAT-001 — Title
+
+- **Satisfies:** PRD-FEAT-001
+`,
+  );
+  const testPlan = record(
+    "test-plan.md",
+    `---
+feature: feat
+id: TESTPLAN-FEAT-001
+---
+
+## TEST-FEAT-001 — Covered
+
+- **Requirement:** REQ-FEAT-001
+`,
+  );
+  const diagnostics = diagnose(cleanState, [requirements, testPlan]);
+  assert.equal(
+    diagnostics.some((message) => message.includes("has no covering REQ or NFR reference")),
+    false,
+  );
+});
+
+test("TEST defined in a spec.md table row without a REQ or NFR reference is reported", () => {
+  const requirements = record(
+    "requirements.md",
+    `---
+feature: feat
+id: PRD-FEAT-001
+---
+
+## REQ-FEAT-001 — Title
+
+- **Satisfies:** PRD-FEAT-001
+`,
+  );
+  const spec = record(
+    "spec.md",
+    `---
+feature: feat
+id: SPECDOC-FEAT-001
+---
+
+## SPEC-FEAT-001 — Title
+
+- **Satisfies:** REQ-FEAT-001
+
+| Test ID | Scenario | Type | Refs |
+|---|---|---|---|
+| TEST-FEAT-001 | Happy path | e2e | SPEC-FEAT-001 |
+`,
+  );
+  const diagnostics = diagnose(cleanState, [requirements, spec]);
+  assert.ok(
+    diagnostics.includes(`specs/feat/spec.md TEST-FEAT-001 has no covering REQ or NFR reference`),
+  );
+});
+
+test("TEST table row that names a REQ on the same row passes the coverage check", () => {
+  const requirements = record(
+    "requirements.md",
+    `---
+feature: feat
+id: PRD-FEAT-001
+---
+
+## REQ-FEAT-001 — Title
+
+- **Satisfies:** PRD-FEAT-001
+`,
+  );
+  const spec = record(
+    "spec.md",
+    `---
+feature: feat
+id: SPECDOC-FEAT-001
+---
+
+## SPEC-FEAT-001 — Title
+
+- **Satisfies:** REQ-FEAT-001
+
+| Test ID | Scenario | Type | Refs |
+|---|---|---|---|
+| TEST-FEAT-001 | Happy path | e2e | SPEC-FEAT-001, REQ-FEAT-001 |
+`,
+  );
+  const diagnostics = diagnose(cleanState, [requirements, spec]);
+  assert.equal(
+    diagnostics.some((message) => message.includes("has no covering REQ or NFR reference")),
+    false,
+  );
+});
+
 test("splitItemSections splits markdown body by traceability headings", () => {
   const sections = splitItemSections(
     record(

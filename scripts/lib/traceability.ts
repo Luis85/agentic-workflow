@@ -71,6 +71,8 @@ export function traceabilityDiagnosticsForFeature(
     validateTraceFields(record, registry, errors);
   }
 
+  validateTestCoverage(artifactRecords, registry, errors);
+
   return errors;
 }
 
@@ -220,6 +222,39 @@ function validateTraceFields(
   for (const section of sections) {
     validateSectionFields(record, section, registry, errors);
   }
+}
+
+function validateTestCoverage(
+  records: ArtifactRecord[],
+  registry: Map<string, DefinitionRecord>,
+  errors: string[],
+): void {
+  const coveredTests = new Set<string>();
+  const testRowPattern = /^\|\s*(TEST-[A-Z][A-Z0-9]*-\d{3})\s*\|/gm;
+
+  for (const record of records) {
+    for (const section of splitItemSections(record)) {
+      if (section.kind !== "TEST") continue;
+      if (mentionsReqOrNfr(section.body)) coveredTests.add(section.id);
+    }
+
+    for (const line of record.text.split(/\r?\n/)) {
+      testRowPattern.lastIndex = 0;
+      const match = testRowPattern.exec(line);
+      if (!match) continue;
+      if (mentionsReqOrNfr(line)) coveredTests.add(match[1]);
+    }
+  }
+
+  for (const [id, definition] of registry) {
+    if (definition.kind !== "TEST") continue;
+    if (coveredTests.has(id)) continue;
+    errors.push(`${definition.rel} ${id} has no covering REQ or NFR reference`);
+  }
+}
+
+function mentionsReqOrNfr(text: string): boolean {
+  return idsIn(text).some((id) => id.startsWith("REQ-") || id.startsWith("NFR-"));
 }
 
 function validateSectionFields(
