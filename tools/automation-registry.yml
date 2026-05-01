@@ -219,6 +219,16 @@ entries:
     emits_json: false
     used_by: [human, agent, ci]
     rerun_command: npm run check:product-page
+  - id: check:sites-tokens-mirror
+    kind: check
+    command: npm run check:sites-tokens-mirror
+    path: scripts/check-sites-tokens-mirror.ts
+    purpose: Enforce byte-equality between sites/colors_and_type.css and the canonical token file under .claude/skills/specorator-design/.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: false
+    used_by: [human, agent, ci]
+    rerun_command: npm run check:sites-tokens-mirror
   - id: check:workflow-docs
     kind: check
     command: npm run check:workflow-docs
@@ -358,6 +368,16 @@ entries:
     emits_json: false
     used_by: [human, agent]
     rerun_command: npm run fix:script-docs
+  - id: fix:sites-tokens
+    kind: fix
+    command: npm run fix:sites-tokens
+    path: scripts/fix-sites-tokens.ts
+    purpose: Mirror .claude/skills/specorator-design/colors_and_type.css into sites/colors_and_type.css so GitHub Pages can serve the tokens.
+    read_only: false
+    safe_to_run_locally: true
+    emits_json: false
+    used_by: [human, agent]
+    rerun_command: npm run fix:sites-tokens
   - id: workflow:actionlint
     kind: workflow
     path: .github/workflows/actionlint.yml
