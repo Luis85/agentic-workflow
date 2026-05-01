@@ -44,6 +44,7 @@ Each track produces a handoff artifact that feeds the next: `chosen-brief.md`, `
 - For irreversible architectural decisions, use [`record-decision`](.claude/skills/record-decision/SKILL.md) (wraps `/adr:new`).
 - For glossary terms, use [`/glossary:new "<term>"`](.claude/commands/glossary/new.md) (wraps [`new-glossary-entry`](.claude/skills/new-glossary-entry/SKILL.md)). Entries live one-per-file under [`docs/glossary/`](docs/glossary/).
 - Where every markdown artifact lands is documented in [`docs/sink.md`](docs/sink.md). Don't invent new sink locations.
+- New work packages (briefs, RFPs, zips, reference material) land in [`inputs/`](inputs/). Every conductor consults `inputs/` at the start of its scope phase. No auto-extract — see [`docs/inputs-ingestion.md`](docs/inputs-ingestion.md).
 - Don't add `.claudeignore` exclusions silently — note them in `docs/steering/tech.md`.
 
 ## What not to do

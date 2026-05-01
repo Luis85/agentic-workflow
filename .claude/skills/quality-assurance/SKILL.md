@@ -56,6 +56,7 @@ Every check uses this evidence-first shape:
 
 ## Procedure
 
+0. **Intake gate.** List `inputs/` non-recursively before scoping. Surface every item via a single `AskUserQuestion`: "I see N items in `inputs/`. Which are relevant for this quality review?" Common QA inputs: prior audit reports, supplier evidence packs, customer complaints, regulator letters, certificate copies. Never auto-extract archives. Cite paths into `inputs/` from `quality-plan.md` and checklist evidence fields. Full contract: [`docs/inputs-ingestion.md`](../../../docs/inputs-ingestion.md). Decision: [ADR-0017](../../../docs/adr/0017-adopt-inputs-folder-as-canonical-ingestion-zone.md).
 1. **Start.** Establish scope, product/service boundary, interested parties, applicable lifecycle/project artifacts, quality objectives, and evidence locations. Record whether this is internal readiness, supplier assurance, release readiness, or formal audit preparation.
 2. **Plan.** Create a quality plan and checklist set. Derive checks from scoped artifacts instead of using only generic ISO labels.
 3. **Check.** Execute checklist items against evidence. Run deterministic verification where available. Record gaps plainly and keep open items visible.

@@ -27,10 +27,11 @@ You conduct the Project Scaffolding Track defined in [`docs/project-scaffolding-
 
 ## Procedure
 
+0. **Intake gate.** List `inputs/` non-recursively before asking for source pointers — work packages dropped there are the default scaffolding source. Surface every item via a single `AskUserQuestion`: "I see N items in `inputs/`. Which are relevant for this scaffold?" If the user picks items in `inputs/`, those become (or augment) the source pointer at step 2. Never auto-extract archives — extraction is a separate, explicitly approved step. Cite paths into `inputs/` from `intake.md` and `extraction.md`. Full contract: [`docs/inputs-ingestion.md`](../../../docs/inputs-ingestion.md). Decision: [ADR-0017](../../../docs/adr/0017-adopt-inputs-folder-as-canonical-ingestion-zone.md).
 1. Detect resumable engagements under `scaffolding/` with `status: active`, `paused`, or `blocked`.
 2. For a fresh engagement, clarify in one user gate:
    - project slug,
-   - source pointer(s),
+   - source pointer(s) — default to items selected from `inputs/` at step 0,
    - desired starter outputs,
    - whether the material describes an existing system that may require Stock-taking.
 3. Run `/scaffold:start <slug> <source-pointer>`.
