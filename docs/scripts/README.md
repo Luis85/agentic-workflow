@@ -41,7 +41,7 @@ npm run check:workflow
 npm run verify:changed
 ```
 
-`check:fast` runs script typechecking, script tests, automation registry validation, and agent artifact validation. `check:content` covers Markdown, generated docs, frontmatter, Obsidian metadata/assets, and product-page drift. `check:workflow` covers workflow docs, spec state, roadmaps, traceability, automation registry, and agent artifacts. `verify:changed` currently uses the same fast gate as a safe local default.
+`check:fast` runs script typechecking, script tests, automation registry validation, and agent artifact validation. `check:content` covers Markdown, generated docs, frontmatter, Obsidian metadata/assets, and product-page drift. `check:workflow` covers workflow docs, spec state, roadmaps, traceability, automation registry, and agent artifacts. `verify:changed` inspects committed, staged, unstaged, and untracked files relative to `origin/main`, then runs the smallest mapped read-only check set for those paths.
 
 Agents and CI adapters can request a machine-readable aggregate report:
 
@@ -53,7 +53,7 @@ The JSON report includes the failing check, diagnostics, and rerun command for e
 
 ## Automation Registry
 
-The canonical inventory of local scripts, checks, fixers, workflows, skills, and operational agents lives in [`tools/automation-registry.yml`](_media/automation-registry.yml). Validate it with:
+The canonical inventory of local scripts, checks, fixers, workflows, skills, and operational agents lives at `tools/automation-registry.yml`. Validate it with:
 
 ```bash
 npm run check:automation-registry

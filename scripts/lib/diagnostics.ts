@@ -4,6 +4,10 @@ export type Diagnostic = {
   line?: number;
   code?: string;
   rerun?: string;
+  command?: string;
+  exit_code?: number;
+  stdout_tail?: string;
+  stderr_tail?: string;
 };
 
 export type CheckResult = {
