@@ -9,7 +9,7 @@ entry_point: false
 
 Defines what runs on every pull request and what blocks merge. Companion to [`verify-gate.md`](verify-gate.md) (local source of truth) and [`ci-automation.md`](ci-automation.md) (PR-hygiene tooling — title check, typos, Dependabot).
 
-This contract is the architecture output of T-V04-002. It consumes the v0.3 validation baseline confirmation produced by T-V04-001 and feeds the workflow file authored in T-V04-003 and the readiness check in T-V04-004.
+This contract is the architecture output of T-V04-002. It consumes the v0.3 validation baseline confirmation produced by T-V04-001 and is satisfied by the existing `.github/workflows/verify.yml` (confirmed in T-V04-003) and codified by the readiness check in T-V04-004.
 
 ## Principle
 
@@ -82,7 +82,7 @@ Affected when an `implementation-log.md`, `release-notes.md`, or `retrospective.
 
 ## Workflow file contract
 
-The PR CI workflow file lives at `.github/workflows/verify.yml`. T-V04-003 authors it; T-V04-004 verifies presence and markers via `npm run doctor`.
+The PR CI workflow file lives at `.github/workflows/verify.yml`. T-V04-003 confirms the existing workflow satisfies this contract; T-V04-004 verifies presence and markers via `npm run doctor`.
 
 Required structure:
 
@@ -91,10 +91,10 @@ Required structure:
 | Trigger | `pull_request` (any branch) and `push: branches: [main]` |
 | Runner | `ubuntu-latest` |
 | Step 1 | `actions/checkout@<SHA>` (SHA-pinned per [`security-ci.md`](security-ci.md)) |
-| Step 2 | `actions/setup-node@<SHA>` with `node-version: '20'` (or `node-version-file` if a `.nvmrc` is added) |
+| Step 2 | `actions/setup-node@<SHA>` with `node-version: 24` (the project's current Node target; bumps follow the existing CI policy and may use `node-version-file` if a `.nvmrc` is added) |
 | Step 3 | `npm ci` |
 | Step 4 | `npm run verify` |
-| Concurrency | `group: verify-${{ github.ref }}`, `cancel-in-progress: true` |
+| Concurrency | `cancel-in-progress: true`, group keyed per workflow + PR-or-ref so PR runs and branch runs are scoped separately (current implementation: `${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}`) |
 | Permissions | `contents: read` (least privilege) |
 
 Fail-fast is implicit: any non-zero exit fails the job. `npm run verify` is configured to stop at the first failing check (per [`scripts/lib/tasks.ts`](../scripts/lib/tasks.ts) and the runner's behaviour) and print the reproduction command.
