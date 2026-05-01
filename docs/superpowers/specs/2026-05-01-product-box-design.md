@@ -168,7 +168,7 @@ Static SVG mirror of the front face: name, tagline, status pill. No 3D. Sized 12
 - Both present → replace everything between them. Idempotent.
 - Both absent → append the start marker, card, and end marker after the `<main>` opening tag (or after the `<header>` if no `<main>`). Report the change explicitly in the PR summary.
 - Start present without end (or vice versa) → refuse to write, surface error to user. Do not silently corrupt.
-- The card itself links to `box/`; styles live in `sites/box/styles.css`, which `sites/index.html` `<link>`s.
+- The card itself links to `box/`. Card styles live in the root `sites/styles.css` per §6.5; the product page does **not** `<link>` to the box stylesheet.
 
 ### 6.5 Stylesheet ownership
 
@@ -208,7 +208,7 @@ Runs on PRs that touch `sites/box/**`, `sites/index.html`, or `sites/styles.css`
 
 ### 9.1 Unit-ish (renderer is pure)
 
-- Fixtures at `tests/product-box/fixtures/*.yml`, expected snapshots at `tests/product-box/snapshots/*.html`. `tests/product-box/` is a new test root; planning must confirm the repo's test runner / verify gate discovers it (add path to runner config if needed).
+- Fixtures at `tests/scripts/product-box/fixtures/*.yml`, expected snapshots at `tests/scripts/product-box/snapshots/*.html`. The repo's existing test runner (`scripts/test-scripts.ts`) globs `tests/scripts/**/*.test.ts`, so product-box tests under `tests/scripts/product-box/` are picked up automatically — no runner config change needed.
 - Cases: minimal yaml, each `status` value, each representative `stage` (1, 3, 5, 10), reduced-motion fallback markup, accessibility labels present.
 
 ### 9.2 Integration (skill behavior)
@@ -244,9 +244,9 @@ sites/box/styles.css
 sites/box/og-card.svg
 docs/product-box.md
 docs/adr/0017-add-product-box-feature.md
-tests/product-box/fixtures/*.yml
-tests/product-box/snapshots/*.html
-tests/product-box/README.md
+tests/scripts/product-box/fixtures/*.yml
+tests/scripts/product-box/snapshots/*.html
+tests/scripts/product-box/README.md
 ```
 
 ### 10.2 Modified
