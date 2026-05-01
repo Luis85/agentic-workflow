@@ -33,8 +33,15 @@
 ## Quick grep recipes
 
 ```bash
-# Hex literals outside :root in sites/styles.css — 3/4/6/8-digit, any case
-grep -nEi "#([0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})\b" sites/styles.css | grep -vE "^\s*[0-9]+:\s*--"
+# Hex literals outside :root in sites/styles.css — 3/4/6/8-digit, any case.
+# Strip the :root { … } block (handles nested braces) before grepping so
+# custom properties declared elsewhere (e.g. `.card { --local: #fff; }`) are
+# still flagged.
+awk 'BEGIN{depth=0; in_root=0}
+     /:root[[:space:]]*\{/ && depth==0 { in_root=1; depth=1; next }
+     in_root { depth += gsub(/\{/, "{") - gsub(/\}/, "}"); if (depth<=0) { in_root=0; depth=0 } ; next }
+     { print NR ":" $0 }' sites/styles.css \
+  | grep -Ei "#([0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})\b"
 
 # Emoji in changed files
 git diff main...HEAD --name-only | xargs grep -P "[\x{1F300}-\x{1FAFF}\x{2600}-\x{27BF}]" 2>/dev/null

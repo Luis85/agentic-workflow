@@ -40,8 +40,15 @@ Run each of these as a deterministic check on the diff. A failure is a finding. 
 
 ### Tokens & values
 
-1. **No literal hex outside `:root` in `sites/`.**
-   `grep -nEi "#([0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})\\b" sites/styles.css | grep -vE "^\\s*[0-9]+:\\s*--"` must return zero matches. The pattern covers 3-digit (`#fff`), 4-digit alpha (`#fff8`), 6-digit (`#17201b`), and 8-digit alpha (`#17201bff`) hex in any case.
+1. **No literal hex outside `:root` in `sites/`.** Strip the `:root { … }` block first (so its custom-property declarations are excluded by *block scope*, not by line shape — a custom-property declaration anywhere else, e.g. `.card { --local: #fff; }`, must still be flagged), then grep the remainder:
+   ```bash
+   awk 'BEGIN{depth=0; in_root=0}
+        /:root[[:space:]]*\{/ && depth==0 { in_root=1; depth=1; next }
+        in_root { depth += gsub(/\{/, "{") - gsub(/\}/, "}"); if (depth<=0) { in_root=0; depth=0 } ; next }
+        { print NR ":" $0 }' sites/styles.css \
+     | grep -Ei "#([0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})\\b"
+   ```
+   must return zero matches. The pattern covers 3-digit (`#fff`), 4-digit alpha (`#fff8`), 6-digit (`#17201b`), and 8-digit alpha (`#17201bff`) hex in any case. The awk pre-filter excludes the entire `:root` block (handling nested braces), so custom-property declarations *inside* `:root` are exempt while custom properties declared in any other selector are still scanned.
 2. **No literal hex in any new CSS/JSX/HTML file under `sites/` or `.claude/skills/specorator-design/ui_kits/`.** Same grep, scoped to the changed files.
 3. **No re-definition of brand tokens.** Changed CSS files must not declare `--ink`, `--paper`, `--accent`, `--accent-strong`, `--highlighter`, or any `--lane-*` outside `colors_and_type.css`. If a token is missing for the work, the change must add it to `colors_and_type.css`, not redefine it locally.
 4. **Page background is `var(--paper)`.** Any rule with `background: #fff`, `background: #FFF`, `background: white`, `background: #ffffff`, or `background: #ffffffff` on `body`, `html`, or a top-level page wrapper is a finding. White is for cards (`--surface`), not the page.
