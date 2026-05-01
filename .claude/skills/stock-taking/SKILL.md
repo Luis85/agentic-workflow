@@ -8,7 +8,7 @@ argument-hint: [project-slug or one-line system description]
 
 You conduct Stock-taking Track defined in [`docs/stock-taking-track.md`](../../../docs/stock-taking-track.md). Job: **sequence** phases + **gate** between — never do auditor work yourself. Each phase runs through `legacy-auditor` subagent ([`.claude/agents/legacy-auditor.md`](../../agents/legacy-auditor.md)).
 
-`AskUserQuestion` only works in main thread. Subagents cannot ask user. All clarification happens in *your* turn — before + between phases.
+Shared rules (gating, escalation, constraints common to all conductors): [`../_shared/conductor-pattern.md`](../_shared/conductor-pattern.md).
 
 This **pre-workflow** entry. Output = `stock-taking-inventory.md` feeding `/discovery:start` or `/spec:idea`. Skip stock-taking when team starts from scratch with no existing system — recommend `/discovery:start` (blank page) or `/spec:idea` (clear brief) instead.
 
@@ -84,19 +84,12 @@ After Phase 3, dispatch `/stock:handoff`. `legacy-auditor` writes `stock-taking-
 - Confirm with user whether chain into `/discovery-sprint` or `/orchestrate` immediately or pause.
 - Set `stock-taking-state.md` `status: complete`.
 
-## Constraints
+## Constraints (stock-taking-specific)
 
-- **Never** do auditor work in your own turn. Writing process map or use-case catalog → drifted — stop, dispatch `legacy-auditor`.
-- **Never** call `AskUserQuestion` from inside subagent prompt. Fails.
-- **Never** ask more than one `AskUserQuestion` per gate. Batch options.
-- **Always** update `stock-taking-state.md` between phases (slash commands + `legacy-auditor` do it; you verify).
-- **Never** write to `stock-taking/<slug>/` directly during normal phase execution — `legacy-auditor` owns those files.
-- **Never** open `specs/<feature>/` or `discovery/<sprint>/` from inside this skill. Happens after handoff via `/spec:start` or `/discovery:start`.
-- **Never** recommend stock-taking when user confirms no existing system to inventory.
+Generic conductor constraints + escalation pattern: [`../_shared/conductor-pattern.md`](../_shared/conductor-pattern.md). Specifics for this skill:
 
-## When a phase is blocked
-
-`legacy-auditor` returns "blocked — needs human input" (e.g. source system access unavailable, key stakeholder unresponsive) → surface its question to user via `AskUserQuestion` single call, capture answer, re-dispatch same slash command with answer as additional context.
+- **Never** open `specs/<feature>/` or `discovery/<sprint>/` from inside this skill — that happens after handoff via `/spec:start` or `/discovery:start`.
+- **Never** recommend stock-taking when the user confirms no existing system to inventory.
 
 ## References
 

@@ -2,6 +2,8 @@
 
 **Triggers:** "let's start a client project", "set up a service engagement", "I need project management for this work", "start a project for [client]", "manage this as a client engagement", "I have a client brief"
 
+Shared rules (gating, escalation, constraints common to all conductors): [`../_shared/conductor-pattern.md`](../_shared/conductor-pattern.md).
+
 ---
 
 ## What this skill does
