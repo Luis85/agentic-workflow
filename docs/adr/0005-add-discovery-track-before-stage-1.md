@@ -13,6 +13,10 @@ tags: [process, agents, discovery, design-sprint, game-design]
 
 # ADR-0005 — Add a Discovery Track that precedes Stage 1 (Idea)
 
+## Summary
+
+The Lifecycle workflow assumes a brief already exists when Stage 1 (Idea) starts. Two adoption shapes break that assumption: blank-page teams arrive without a brief; competing-concept teams arrive with several candidates and no agreed primary. This ADR adds an opt-in **Discovery Track** before Stage 1 — five phases (Frame → Diverge → Converge → Prototype → Validate) plus Handoff — that produce a `chosen-brief.md` to feed `/spec:idea`. Specialist roles (`facilitator`, `product-strategist`, `user-researcher`, `divergent-thinker`, `critic`, `prototyper`, `game-designer`) shadow the equivalent human roles in a GV / IDEO-style sprint. Output fills the implicit upstream gap; the Lifecycle Track is unchanged. Triggered conversationally via the `discovery-sprint` skill or manually via `/discovery:start`. Trade-off: extra optional surface for teams that already have a brief — mitigated by the skip option and a one-line "do you have a brief?" gate at sprint entry.
+
 ## Status
 
 Accepted
