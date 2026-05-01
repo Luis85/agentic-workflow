@@ -166,7 +166,8 @@ Quality gates per stage are summarised below; the full Definition of Done lives 
 ### 3.10 Release
 - **Goal:** Prepare the feature for delivery.
 - **Optional companion artifact:** Use `release-readiness-guide.md` when the increment needs an explicit go/no-go packet across product value, user experience, stakeholder approval, engineering, security/privacy/compliance, operations, support, data, commercial, or communications perspectives.
-- **Quality gate:** Changelog written. Release readiness conditions and approvals summarized or the guide is explicitly marked not used. Rollback plan documented. Observability hooks in place. Known limitations disclosed.
+- **Released package shape — fresh-surface starter.** When a release publishes the Specorator template itself (a tagged GitHub Release source archive, a GitHub Package, or any future packaging target), the released artifact ships as a fresh-surface starter, not as the codebase state. Documentation ships in stub form, ADRs are excluded so the consumer's first ADR is `ADR-0001`, and the 10 intake folders (`inputs/`, `specs/`, `discovery/`, `projects/`, `portfolio/`, `roadmaps/`, `quality/`, `scaffolding/`, `stock-taking/`, `sales/`) ship empty. The contract is template-wide and applies to every release. Source of truth: [ADR-0021](adr/0021-release-package-fresh-surface.md). Methodology: [`docs/release-package-contents.md`](release-package-contents.md). The release readiness check enforces the contract before publish.
+- **Quality gate:** Changelog written. Release readiness conditions and approvals summarized or the guide is explicitly marked not used. Rollback plan documented. Observability hooks in place. Known limitations disclosed. When the release publishes the Specorator template itself, the fresh-surface contract (ADR-0021) is asserted green or an explicit operator waiver is recorded.
 
 ### 3.11 Learning (Retrospective)
 - **Goal:** Capture insights for continuous improvement.

@@ -71,6 +71,20 @@ The first GitHub Package should have an explicit contract before automation exis
 
 Given the current Node tooling, the likely first package is an npm package published to GitHub Packages after `private: true`, `name`, `publishConfig`, and files list decisions are resolved.
 
+## Release package contents (fresh-surface contract)
+
+The released package — whether the GitHub Release source archive or a future GitHub Package — ships as a **fresh-surface starter**. The rule is template-wide and applies to every release, not only v0.5. Source of truth: [ADR-0021](../../docs/adr/0021-release-package-fresh-surface.md). Canonical, template-wide methodology: [`docs/release-package-contents.md`](../../docs/release-package-contents.md).
+
+Three exclusion classes:
+
+1. **Documentation ships as stubs.** Every `docs/` page that ships in the released package keeps its title, frontmatter, top-level headings, and a one-paragraph statement of intent. Built-up content — accumulated examples, version-specific commentary, references to template-internal history — is replaced with `<!-- TODO: <what consumer fills in> -->` markers. Reference shape: [`templates/release-package-stub.md`](../../templates/release-package-stub.md).
+2. **ADRs are excluded.** No `docs/adr/0\d{3}-*.md` file ships. ADR numbering is project-local — the consumer's first ADR is `ADR-0001`, not a continuation of ours. `docs/adr/README.md` ships as a stub that explains how the consumer files their own ADRs; `templates/adr-template.md` ships unchanged.
+3. **Intake folders ship empty.** Each of the 10 intake folders ships either absent or containing only a top-level `README.md`: `inputs/`, `specs/`, `discovery/`, `projects/`, `portfolio/`, `roadmaps/`, `quality/`, `scaffolding/`, `stock-taking/`, `sales/`. No per-feature subdirectories, no per-deal files, no per-engagement state, no per-cycle logs ship. `examples/` is **not** an intake folder and is unaffected.
+
+The fresh-surface contract relates to the package-contract model (`Package contract model` above) as follows: the package contract names *what* ships under each registry / archive target; the fresh-surface contract names *what shape* the shipping content takes. The package-contract document (T-V05-002 deliverable, owned by `pm`) is the place where these rules become concrete include / exclude lists for the published archive.
+
+The contract is enforced before publish. The release readiness check (T-V05-004 / SPEC-V05-005) asserts the three exclusion classes against the candidate archive; the manual release workflow (T-V05-006 / SPEC-V05-002) refuses publish until readiness passes. When a new intake folder is added to the template, the enumeration in [ADR-0021](../../docs/adr/0021-release-package-fresh-surface.md) and [`docs/release-package-contents.md`](../../docs/release-package-contents.md) must be updated in the same PR.
+
 ## Affected surfaces
 
 | Surface | Change type |
@@ -85,6 +99,9 @@ Given the current Node tooling, the likely first package is an npm package publi
 | `CHANGELOG.md` | Align release entries with tags and GitHub Releases. |
 | `README.md`, `docs/specorator.md`, `sites/index.html` | Update public release and package positioning when implemented. |
 | `specs/version-0-4-plan/` | Consume quality-signal handoff from CI/metrics/maturity work. |
+| `docs/release-package-contents.md` (new) | Canonical, template-wide fresh-surface contract for released artifacts (per ADR-0021). |
+| `scripts/check-release-package-contents.ts` (new, future T-V05-004 surface) | Validate the published archive against ADR-0021 exclusion classes. |
+| `templates/release-package-stub.md` (new) | Reference stub shape for docs that ship in the released package. |
 
 ## Authorization boundary
 

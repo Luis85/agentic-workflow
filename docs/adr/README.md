@@ -32,6 +32,7 @@ Records of architecturally significant decisions. Format follows Michael Nygard'
 | [0017](0017-adopt-inputs-folder-as-canonical-ingestion-zone.md) | Adopt `inputs/` as the canonical ingestion folder for new work packages | Proposed |
 | [0018](0018-sites-consumes-tokens.md) | Flip sites/styles.css to consume design-system tokens | Proposed |
 | [0019](0019-add-design-track.md) | Add a Design Track as an opt-in first-party workflow | Proposed |
+| [0021](0021-release-package-fresh-surface.md) | Ship the released template package as a fresh-surface starter | Accepted |
 <!-- END GENERATED: adr-index -->
 
 ## Conventions
