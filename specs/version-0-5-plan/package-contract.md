@@ -84,7 +84,7 @@ Full enumeration and rationale: `docs/release-package-contents.md`.
 
 | Path / glob | Reason excluded |
 |---|---|
-| `docs/adr/0\d{3}-*.md` (all numbered ADR files) | ADR numbering is project-local. The consumer's first ADR must be their own `ADR-0001`, not a continuation of the template's history. |
+| `docs/adr/[0-9][0-9][0-9][0-9]-*.md` (all numbered ADR files) | ADR numbering is project-local. The consumer's first ADR must be their own `ADR-0001`, not a continuation of the template's history. |
 | `specs/<slug>/` (all per-feature subdirectories) | Intake folder state. The consumer's first feature must be their `specs/<their-feature>/`. |
 | `discovery/<sprint>/`, `projects/<slug>/`, `portfolio/<slug>/`, `roadmaps/<slug>/`, `quality/<review>/`, `scaffolding/<slug>/`, `stock-taking/<slug>/`, `sales/<deal>/` | Per-engagement state for every intake track. Same rationale: project-local state must not ship. |
 | `inputs/<any files except README.md>` | Ingested work packages are project-specific; the orientation `README.md` is the only orientation artifact that helps a fresh consumer. |
@@ -127,13 +127,34 @@ No other version source is consulted for the npm package. The `version` field in
 
 For v0.5, the install path is **manual install + manual file copy**. There is no scaffolder CLI yet.
 
-```
+The package is published to **GitHub Packages** (registry endpoint `https://npm.pkg.github.com`), not to the public npm registry, so the default `npm install` command alone cannot resolve it. Consumers must configure scope-to-registry mapping and authentication first.
+
+### Prerequisites
+
+1. **Generate a GitHub Personal Access Token (Classic) with the `read:packages` scope.** A fine-grained token with the equivalent `Packages: read` repository permission also works. Even when the package and repository are public, GitHub Packages requires authenticated reads.
+2. **Make the token available to npm.** Either set `NODE_AUTH_TOKEN` in the consumer's environment (in CI) or add a line to `~/.npmrc` (locally):
+
+   ```ini
+   //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+   ```
+
+3. **Map the `@luis85` scope to GitHub Packages** by adding the following line to the consumer project's `.npmrc` (committed at the project root):
+
+   ```ini
+   @luis85:registry=https://npm.pkg.github.com
+   ```
+
+### Install
+
+With the prerequisites in place:
+
+```bash
 npm install --save-dev @luis85/agentic-workflow
 ```
 
 After install, the consumer copies the relevant template files from `node_modules/@luis85/agentic-workflow/` into their repository. A scaffolder (`npm create @luis85/agentic-workflow`) is a post-v0.5 goal and is **not** promised in this contract. Consumers must not depend on a scaffolder entry point until a future package contract version explicitly adds one.
 
-**Note:** This contract does not over-promise. Manual copy is the supported path for v0.5.
+**Note:** This contract does not over-promise. Manual copy is the supported path for v0.5. The GitHub Packages auth requirement applies even for public packages — consumers without `read:packages` token configuration will see `401 Unauthorized` from `npm install`.
 
 ## 8. Authorization
 

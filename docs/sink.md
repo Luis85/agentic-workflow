@@ -364,7 +364,7 @@ A portfolio is bootstrapped with `/portfolio:start <slug>`. The three cycle comm
 
 ## Released package shape
 
-The 10 intake folders enumerated in this sink (`inputs/`, `specs/`, `discovery/`, `projects/`, `portfolio/`, `roadmaps/`, `quality/`, `scaffolding/`, `stock-taking/`, `sales/`) each ship **empty** in the released Specorator template package — only their top-level `README.md` ships, no per-feature / per-deal / per-engagement state. ADRs (`docs/adr/0\d{3}-*.md`) do not ship. `docs/` pages ship as stubs. Source of truth: [ADR-0021](adr/0021-release-package-fresh-surface.md). Methodology: [`docs/release-package-contents.md`](release-package-contents.md).
+The 10 intake folders enumerated in this sink (`inputs/`, `specs/`, `discovery/`, `projects/`, `portfolio/`, `roadmaps/`, `quality/`, `scaffolding/`, `stock-taking/`, `sales/`) each ship **empty** in the released Specorator template package — only their top-level `README.md` ships, no per-feature / per-deal / per-engagement state. ADRs (`docs/adr/[0-9][0-9][0-9][0-9]-*.md`) do not ship. `docs/` pages ship as stubs. Source of truth: [ADR-0021](adr/0021-release-package-fresh-surface.md). Methodology: [`docs/release-package-contents.md`](release-package-contents.md).
 
 **Maintenance rule.** Any new intake folder added to the layout above must also be added to the enumeration in `docs/release-package-contents.md` and `ADR-0021`'s "Decision §3" in the same PR. The release readiness check uses the documented enumeration as its checklist; an un-enumerated folder will leak into the released archive.
 

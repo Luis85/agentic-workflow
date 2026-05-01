@@ -41,7 +41,7 @@ The packaging step is responsible for producing stub form from the codebase form
 
 ### 2. ADRs are excluded
 
-`docs/adr/0\d{3}-*.md` files **do not ship**. ADR numbering is project-local: a consumer who adopts the template writes their own `ADR-0001`, not a continuation of ours.
+`docs/adr/[0-9][0-9][0-9][0-9]-*.md` files **do not ship**. ADR numbering is project-local: a consumer who adopts the template writes their own `ADR-0001`, not a continuation of ours.
 
 What ships:
 

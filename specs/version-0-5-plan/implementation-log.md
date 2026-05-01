@@ -48,6 +48,15 @@ A running record of *what* was implemented, *why* a deviation was taken, and *wh
 - **Deviation from spec:** none
 - **Notes:** Package = `@luis85/agentic-workflow` on GitHub Packages (npm registry endpoint), public visibility (subject to OQ-V05-001 confirmation), version source = `package.json#version` mirrored to git tag (per ADR-0020). Three open questions logged: repo visibility (OQ-V05-001), final `package.json#files` glob (OQ-V05-002), manual stub-form packaging step until T-V05-012 automates it (OQ-V05-003). Resolves CLAR-V05-002.
 
+### 2026-05-02 — Review fix — Codex round 1 on PR #157
+
+- **Files changed:** `docs/adr/0021-release-package-fresh-surface.md` (Errata appended), `specs/version-0-5-plan/requirements.md`, `specs/version-0-5-plan/spec.md`, `specs/version-0-5-plan/design.md`, `specs/version-0-5-plan/tasks.md`, `specs/version-0-5-plan/package-contract.md`, `docs/release-package-contents.md`, `docs/sink.md`, `templates/release-package-stub.md`
+- **Spec reference:** REQ-V05-012, SPEC-V05-010 (notation correction; decision unchanged); T-V05-004, T-V05-012 (DAG correction)
+- **Owner:** orchestrator
+- **Outcome:** done
+- **Deviation from spec:** none (typo correction; DAG correction; install-instruction completion; doc-link correction)
+- **Notes:** Four Codex findings addressed in one commit. (1) **P1 ADR glob.** Replaced `0\d{3}-*.md` (which is neither valid regex nor valid glob for the intended pattern) with the unambiguous shell glob `[0-9][0-9][0-9][0-9]-*.md` across all operational specs. ADR-0021 body kept unmodified per the constitution's ADR-immutability rule; an Errata section was appended at the bottom calling out the canonical operational form. (2) **P1 install instructions.** Added GitHub Packages prerequisites to `package-contract.md` §7 — `read:packages` PAT, `~/.npmrc` `_authToken`, scope-to-registry mapping in consumer `.npmrc`. The bare `npm install` no longer fails with `401 Unauthorized`. (3) **P2 stub link.** Removed the released-stub's link to the excluded ADR; trailer now points at `docs/release-package-contents.md` (which ships in stub form). (4) **P2 DAG.** Inverted the dependency between T-V05-012 (fresh-surface check script) and T-V05-004 (release readiness check) so that readiness composes the fresh-surface assertions. T-V05-012 → depends on T-V05-002 only; T-V05-004 → depends on T-V05-001, T-V05-002, T-V05-012. T-V05-004 satisfies expanded to include REQ-V05-012 / SPEC-V05-010.
+
 ### 2026-05-02 — T-V05-003 — Add `.github/release.yml` for generated release notes
 
 - **Files changed:** `.github/release.yml` (new)

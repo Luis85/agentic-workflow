@@ -39,9 +39,9 @@ updated: 2026-05-02
 
 ### T-V05-004 — Add release readiness check
 
-- **Description:** Implement a deterministic release readiness check for version, tag, changelog, lifecycle release notes, package metadata, release config, and workflow permissions.
-- **Satisfies:** REQ-V05-007, REQ-V05-010, NFR-V05-003, SPEC-V05-005, SPEC-V05-008
-- **Depends on:** T-V05-001, T-V05-002
+- **Description:** Implement a deterministic release readiness check for version, tag, changelog, lifecycle release notes, package metadata, release config, and workflow permissions. Composes the fresh-surface assertions from T-V05-012 so a single readiness call enforces both release metadata correctness and the fresh-surface contract.
+- **Satisfies:** REQ-V05-007, REQ-V05-010, REQ-V05-012, NFR-V05-003, SPEC-V05-005, SPEC-V05-008, SPEC-V05-010
+- **Depends on:** T-V05-001, T-V05-002, T-V05-012
 - **Owner:** dev
 - **Estimate:** M
 
@@ -95,9 +95,9 @@ updated: 2026-05-02
 
 ### T-V05-012 — Implement fresh-surface packaging step
 
-- **Description:** Add `scripts/check-release-package-contents.ts` (or equivalent) that asserts the published archive matches the fresh-surface contract from ADR-0021 / SPEC-V05-010 / `package-contract.md`: no files matching `docs/adr/0\d{3}-*.md`, every enumerated intake folder is absent or contains only a top-level `README.md`, and every shipping doc under `docs/` matches `templates/release-package-stub.md`. Wire it into the release readiness check (T-V05-004) so the release workflow refuses to publish a non-conformant archive.
+- **Description:** Add `scripts/check-release-package-contents.ts` (or equivalent) that asserts the published archive matches the fresh-surface contract from ADR-0021 / SPEC-V05-010 / `package-contract.md`: no files matching `docs/adr/[0-9][0-9][0-9][0-9]-*.md`, every enumerated intake folder is absent or contains only a top-level `README.md`, and every shipping doc under `docs/` matches `templates/release-package-stub.md`. The script is the building block; `T-V05-004` (release readiness check) then composes it so the readiness gate enforces both release metadata correctness and the fresh-surface contract together. Sequencing T-V05-012 before T-V05-004 prevents a path where readiness can pass while the fresh-surface assertions are not yet wired in.
 - **Satisfies:** REQ-V05-005, REQ-V05-012, NFR-V05-002, SPEC-V05-004, SPEC-V05-010
-- **Depends on:** T-V05-002, T-V05-004
+- **Depends on:** T-V05-002
 - **Owner:** dev
 - **Estimate:** M
 

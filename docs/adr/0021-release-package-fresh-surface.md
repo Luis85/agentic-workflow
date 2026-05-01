@@ -147,6 +147,10 @@ The package contract document (`T-V05-002` deliverable, written by `pm` after th
 
 When a new intake folder is added to the template, the enumeration in this ADR's "Decision §3" and in `docs/release-package-contents.md` must be updated in the same PR. The release readiness check uses the documented enumeration as its checklist; an un-enumerated folder will leak into the released artifact until the check is updated.
 
+## Errata
+
+- **2026-05-02.** The pattern `docs/adr/0\d{3}-*.md` used in §Decision.2 and §Compliance.1 was intended as an informal sketch of the canonical numbered-ADR filename shape. As written it is neither a clean shell glob nor a clean regex (`-*` repeats `-` in regex; `\d{3}` is regex syntax that does not apply in glob context), so it does not match real filenames such as `0021-release-package-fresh-surface.md`. The unambiguous operational form is the shell glob `docs/adr/[0-9][0-9][0-9][0-9]-*.md`, which is the form used by the operational specs (`requirements.md`, `spec.md`, `tasks.md`, `package-contract.md`, `docs/release-package-contents.md`, `docs/sink.md`). The decision recorded by this ADR — that numbered ADR files do not ship in the released package — is unchanged.
+
 ## References
 
 - `REQ-V05-005` — Define package contract (this ADR sharpens what "contents" means).

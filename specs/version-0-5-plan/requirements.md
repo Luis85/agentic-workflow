@@ -130,7 +130,7 @@ Plan v0.5 as the release and distribution release: define the branching strategy
 - **Pattern:** event-driven
 - **Statement:** When the release workflow publishes a versioned package, the published archive shall conform to the fresh-surface contract documented in ADR-0021 and SPEC-V05-010 — documentation in stub form, no built-up ADRs, intake folders empty.
 - **Acceptance:**
-  1. The published archive contains zero files matching `docs/adr/0\d{3}-*.md`.
+  1. The published archive contains zero files matching `docs/adr/[0-9][0-9][0-9][0-9]-*.md`.
   2. Every intake folder enumerated in ADR-0021 (`inputs/`, `specs/`, `discovery/`, `projects/`, `portfolio/`, `roadmaps/`, `quality/`, `scaffolding/`, `stock-taking/`, `sales/`) is either absent from the archive or contains only a top-level `README.md` orientation file — no per-feature subdirectories, no per-deal files, no per-engagement state files.
   3. Every `docs/` page that ships under `docs/` matches the stub shape defined in `templates/release-package-stub.md` — frontmatter present, top-level headings present, `<!-- TODO: ... -->` markers in place of built-up content.
 - **Owner:** product
