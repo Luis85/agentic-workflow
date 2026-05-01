@@ -7,19 +7,23 @@ model: sonnet
 
 # /design:mock
 
-Run **Phase 3 — Mock** of the Design Track. Read [`docs/design-track.md`](../../../docs/design-track.md) §3.3.
+Run **Phase 3 — Mock** of the Design Track. Read [`docs/design-track.md`](../../../docs/design-track.md) §3.3. State machine and field names live in [`templates/design-state-template.md`](../../../templates/design-state-template.md).
 
-1. Resolve the slug from `$1` or by inspecting `designs/` for the active design at `current_phase: mock`.
+1. Resolve the slug from `$1` or by inspecting `designs/` for a `design-state.md` whose `status` is `mock-in-progress` (or `sketch-complete` ready to advance).
 2. Confirm `designs/<slug>/sketch.md` exists; if not, route to `/design:sketch` first.
-3. **Spawn the `design-lead` subagent** with the slug. The design-lead will:
+3. If `status` is `sketch-complete`, advance it to `mock-in-progress` before starting the phase.
+4. **Spawn the `design-lead` subagent** with the slug. The design-lead will:
    - Re-read `.claude/skills/specorator-design/SKILL.md` and `colors_and_type.css` in full.
    - Sequence `ui-designer` to assign a design-system component to each screen element and name every token used.
    - Optionally produce `designs/<slug>/mock.html` (static, self-contained, imports `colors_and_type.css`).
    - Optionally invoke `brand-reviewer` for an inline check against the 14-check brand checklist.
-   - Record token decisions and any proposed new tokens in `design-state.md`.
+   - Record token decisions and any proposed new tokens in `design-state.md` under the Token decisions table.
    - Run the brand non-negotiables gate (page background `var(--paper)`, `--highlighter` scope, sentence-case headlines, no emoji, no icon library imports, no token literals).
-4. Update `design-state.md`: mark mock complete, set `current_phase: handoff`.
-5. Recommend `/design:handoff`.
+5. Update `design-state.md`:
+   - If `mock.html` was produced, set its row in the Artifacts table to `complete`.
+   - Advance `status` from `mock-in-progress` to `mock-complete`.
+   - Append a hand-off note under `### After Mock`.
+6. Recommend `/design:handoff`.
 
 ## Don't
 
