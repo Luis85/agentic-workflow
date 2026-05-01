@@ -4,7 +4,7 @@ title: Version 0.4 release plan — Release notes
 stage: release
 feature: version-0-4-plan
 version: v0.4.0
-status: draft
+status: complete
 owner: release-manager
 inputs:
   - PRD-V04-001
@@ -16,7 +16,7 @@ updated: 2026-05-01
 
 # Release notes — v0.4 (CI quality gates, metrics, maturity model)
 
-> **Status: in-progress draft.** Substantive editing has begun. Sections that depend on still-open tasks (T-V04-006 qa tests, T-V04-010 product page, T-V04-011 release readiness, T-V04-012 v0.5 handoff) remain marked TODO and will be finished by their owners before the release ships. Issue #89 tracks state.
+> **Status: shipped.** All 12 T-V04-* tasks plus the Stage 11 retrospective merged. Release-readiness verdict was **go** (T-V04-011, 2026-05-01). Stage 10 closes with this release-tag PR. Issue #89 tracks closure.
 
 ## Summary
 
@@ -26,11 +26,17 @@ v0.4 promotes the v0.3 hard-fail validators into a required PR CI quality gate. 
 
 ### New
 
-- **PR CI quality gate** — `.github/workflows/verify.yml` enforces full `npm run verify` on every PR (T-V04-001 / T-V04-002 / T-V04-003, PRs #137 / #138 / #148). Workflow file contract published in `docs/pr-ci-gate.md`.
-- **CI readiness checks** — `scripts/lib/doctor.ts` `workflowReadinessChecks` enforces the verify.yml contract markers from `docs/pr-ci-gate.md` §Workflow file contract: trigger keys (`pull_request:`, `push:`), a YAML-parser-backed evaluator that confirms the `push:` trigger covers the `main` branch (handles block-list `- main` and flow-list `[main]` forms equivalently), and verify-job-scoped SHA-pin evaluators for `actions/checkout` + `actions/setup-node` that walk `jobs.verify.steps` so a sibling pinned job cannot mask an unpinned verify-job step (T-V04-004, PR #149).
-- **Workflow metrics report** — stage-aware scoring with optional `--save` / `--compare` trend snapshots; `/quality:status` workflow-native command; agent prompt hooks across orchestration / QA / review / release / retrospective / project / roadmap / portfolio (T-V04-005).
-- **Metrics interpretation guide** — `docs/quality-metrics.md` documents each metric's meaning, supported decisions, misuse warnings, and typical actions; linked from `docs/quality-framework.md`, `scripts/README.md`, and the `quality-metrics` skill (T-V04-007).
-- **Five-level maturity model** — evidence-backed maturity assessment with gaps and next-step guidance, surfaced in both `npm run quality:metrics` rendered output and the JSON output v0.5 release-readiness will consume (T-V04-008).
+- **PR CI quality gate** — `.github/workflows/verify.yml` enforces full `npm run verify` on every PR (T-V04-001 / T-V04-002 / T-V04-003; PRs #137 / #138 / #148). Workflow file contract published in `docs/pr-ci-gate.md`.
+- **CI readiness checks** — `scripts/lib/doctor.ts` `workflowReadinessChecks` enforces the verify.yml contract markers from `docs/pr-ci-gate.md` §Workflow file contract: trigger keys (`pull_request:`, `push:`), a YAML-parser-backed evaluator that confirms the `push:` trigger covers the `main` branch (handles block-list `- main` and flow-list `[main]` forms equivalently), and verify-job-scoped SHA-pin evaluators for `actions/checkout` + `actions/setup-node` that walk `jobs.verify.steps` so a sibling pinned job cannot mask an unpinned verify-job step (T-V04-004; PR #149).
+- **Workflow metrics report** — stage-aware scoring with optional `--save` / `--compare` trend snapshots; `/quality:status` workflow-native command; agent prompt hooks across orchestration / QA / review / release / retrospective / project / roadmap / portfolio (T-V04-005; PR #152).
+- **Metrics interpretation guide** — `docs/quality-metrics.md` documents each metric's meaning, supported decisions, misuse warnings, and typical actions; linked from `docs/quality-framework.md`, `scripts/README.md`, and the `quality-metrics` skill (T-V04-007; PR #152).
+- **Five-level maturity model** — evidence-backed maturity assessment with gaps and next-step guidance, surfaced in both `npm run quality:metrics` rendered output and the JSON output v0.5 release-readiness will consume (T-V04-008; PR #152).
+- **Tests for CI readiness and metrics behaviour** — focused test coverage across the five workflow states (active / blocked / done / skipped / open-clarification) plus doctor readiness gaps; 158 → 165 passing (T-V04-006; PR #166).
+- **Public release documentation** — release notes drafted, picked up, and substantively edited across PRs #163 (starter draft), #164 (Codex-authored re-cut from a newer `main` while #163 was still draft), and #165 (substantive pickup); §Changes finalised and README §Roadmap row v0.4 flipped to "Done" in the release-tag PR (T-V04-009).
+- **Product page v0.4 positioning** — `sites/index.html` §Quality gates card updated for CI ≡ local; new §Workflow metrics & maturity card (T-V04-010; PR #168).
+- **Release readiness verification** — fresh-checkout verification suite green end-to-end with the verdict and conditions documented inline (T-V04-011; PR #169).
+- **v0.5 release-quality handoff contract** — `specs/version-0-5-plan/v04-handoff.md` documents the consumption contract for the four machine-readable quality signals v0.5 release-readiness must read before any GitHub Release or Package publish (T-V04-012; PR #170).
+- **Stage 11 retrospective** — `specs/version-0-4-plan/retrospective.md` filed (RETRO-V04-001) with five tabled actions; ahead-of-tag sequence chosen to capture lessons while fresh (T-V04-retro; PR #171).
 
 ### Improved
 
@@ -67,12 +73,12 @@ v0.4 promotes the v0.3 hard-fail validators into a required PR CI quality gate. 
   - `npm run quality:metrics` (repo) — exit 0; overall score 91.5%; maturity Level 3 (Traceable); 0 active blockers.
   - `npm run quality:metrics -- --feature=version-0-4-plan` — exit 0; v0.4 stage score 97.1%; 0 open clarifications; CLAR-V04-001 and CLAR-V04-002 both resolved.
   - `npm run doctor` — exit 0; one advisory warning (two merged worktrees not yet pruned: `feat/v04-t006-tests`, `feat/v04-t010-product-page`). Hygiene only; not a release blocker.
-- **Required conditions before release ships:**
-  - T-V04-009 final cross-check: release-manager re-confirms §Changes against the final list of merged PRs at release time, and flips README.md §Roadmap row v0.4 from "Planned" to "Done" plus the `docs/specorator.md` v0.4 references (per the v0.3 pattern). Tracked in the T-V04-009 closeout note in `workflow-state.md`.
-  - T-V04-010 external-announcement disposition: the §Communication external-announcement quality-gate item is paired with T-V04-010, and that task already shipped the `sites/index.html` v0.4 positioning update; the `[ ]` Communication checkbox flips to `[x]` once the release-manager confirms no further external-announcement work is required.
-  - T-V04-012 v0.5 handoff: `release-notes.md` §Validation baseline for v0.5 is the canonical handoff input; T-V04-012 documents the consumption contract for v0.5 release-readiness automation.
-  - Worktree hygiene: prune the two merged-but-still-registered worktrees flagged by `npm run doctor` before opening the release tag (cosmetic; can also ride on a follow-up PR).
-- **Approvals required:** human release-manager sign-off on the T-V04-009 / T-V04-010 / T-V04-012 closures above. No legal, security, or compliance approvals required (no runtime change, no data flow, no third-party surface).
+- **Release-time conditions — all closed:**
+  - T-V04-009 §Changes cross-checked against the final list of merged PRs touching `specs/version-0-4-plan/` or v0.4 surfaces: #137, #138, #148, #149, #152, #163, #164, #165, #166, #168, #169, #170, #171. README §Roadmap row v0.4 flipped to "Done" with this release-tag PR. `docs/specorator.md` v0.4 references reviewed — no version-specific references to update.
+  - T-V04-010 §Communication external-announcement disposition confirmed: `sites/index.html` v0.4 positioning update (PR #168) is the external announcement; no further external work required.
+  - T-V04-012 v0.5 handoff contract published at `specs/version-0-5-plan/v04-handoff.md` (PR #170). v0.5 release-readiness can consume the four signals (`quality:metrics --json`, `--save` snapshots, `doctor` exit code, `verify` exit code) without re-implementing metric collection.
+  - Worktree hygiene: prior merged-but-stale worktrees pruned during T-V04-012 cleanup; this release-tag PR confirms a clean `git worktree list`.
+- **Approvals required:** human release-manager sign-off (recorded by merging this release-tag PR). No legal, security, or compliance approvals required (no runtime change, no data flow, no third-party surface).
 
 ## Known limitations
 
