@@ -31,7 +31,6 @@ No Figma file; no design tokens file in the repo. The CSS in `sites/styles.css` 
 | `README.md` *(this file)*         | Brand context, content fundamentals, visual foundations, iconography.            |
 | `colors_and_type.css`             | All foundational tokens — color, type, spacing, radius, shadow, motion.          |
 | `assets/`                         | `specorator-mark.svg` (logo glyph), `specorator-workflow.svg` (workflow diagram). |
-| `sites/`                          | Pristine import of the live product page, kept for reference.                    |
 | `preview/`                        | Design-system specimen cards (registered to the Design System tab).              |
 | `ui_kits/product-page/`           | High-fidelity React UI kit — sections, cards, terminal, workflow rail.           |
 | `slides/`                         | Sample 16:9 slides reusing the visual system.                                    |

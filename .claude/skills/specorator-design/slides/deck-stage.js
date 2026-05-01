@@ -308,6 +308,15 @@
       window.removeEventListener('mousemove', this._onMouseMove);
       if (this._hideTimer) clearTimeout(this._hideTimer);
       if (this._mouseIdleTimer) clearTimeout(this._mouseIdleTimer);
+      // The `<style id="deck-stage-print-page">` tag in document.head is a
+      // singleton shared by every <deck-stage> instance. Only remove it when
+      // this is the last instance disconnecting; otherwise sibling decks lose
+      // their @page + print-color rules until they re-mount.
+      const stillConnected = document.querySelectorAll('deck-stage').length;
+      if (stillConnected === 0) {
+        const printTag = document.getElementById('deck-stage-print-page');
+        if (printTag) printTag.remove();
+      }
     }
 
     attributeChangedCallback() {

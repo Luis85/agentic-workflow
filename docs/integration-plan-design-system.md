@@ -134,16 +134,16 @@ The agent runs at Stage 9 (Review) for any feature whose diff touches:
 
 Its mechanical checklist (drives the agent's output):
 
-1. ✅ Imports `colors_and_type.css` rather than redefining tokens
-2. ✅ Uses `var(--paper)` for page backgrounds (never `#fff`)
-3. ✅ Zero emoji in copy or markup
-4. ✅ Zero icon imports unless an ADR justifies the addition
-5. ✅ Headlines are sentence-case and end with a period
-6. ✅ Em-dashes (`—`) used for asides; no en-dashes (`–`)
-7. ✅ `--highlighter` used only for: brand mark, primary CTA, step numbers, code chips on dark backgrounds
-8. ✅ Lane coding intact: Define = green, Build = blue, Ship = gold
-9. ✅ Sentence-case mono used for slash commands and IDs
-10. ✅ No new color introduced without addition to `colors_and_type.css`
+1. Imports `colors_and_type.css` rather than redefining tokens
+2. Uses `var(--paper)` for page backgrounds (never `#fff`)
+3. Zero emoji in copy or markup
+4. Zero icon imports unless an ADR justifies the addition
+5. Headlines are sentence-case and end with a period
+6. Em-dashes (`—`) used for asides; no en-dashes (`–`)
+7. `--highlighter` used only for: brand mark, primary CTA, step numbers, code chips on dark backgrounds
+8. Lane coding intact: Define = green, Build = blue, Ship = gold
+9. Sentence-case mono used for slash commands and IDs
+10. No new color introduced without addition to `colors_and_type.css`
 
 The agent **delegates to** `reviewer` (doesn't replace it) and posts findings as PR review comments with file/line citations.
 
@@ -199,7 +199,7 @@ colors_and_type.css                → root tokens
 assets/                            → 2 svgs
 preview/                           → 22 specimen cards (optional but useful)
 ui_kits/product-page/              → reference React kit (read-only example)
-slides/                            → 9-slide deck system + deck-stage.js
+slides/                            → 6-slide deck system + deck-stage.js
 ```
 
 These do **not** move (project-only, not part of the skill):

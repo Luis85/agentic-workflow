@@ -8,7 +8,7 @@
  *   <body class="specorator">  // optional; tokens are on :root
  */
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;650;700;760;800;850&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
 
 :root {
   /* ─────────── Color · Core ─────────── */
