@@ -21,12 +21,28 @@ const SCRIPT_PATH = fileURLToPath(
   new URL("../../scripts/check-release-readiness.ts", import.meta.url),
 );
 
-function runCli(args: readonly string[], env: NodeJS.ProcessEnv = {}) {
-  return spawnSync(process.execPath, ["--import", "tsx", SCRIPT_PATH, ...args], {
-    encoding: "utf8",
-    windowsHide: true,
-    env: { ...process.env, ...env },
-  });
+// Resolve `tsx` to an absolute file URL once so spawnSync can invoke the CLI
+// from any working directory — bare `--import tsx` would resolve relative to
+// the spawned child's cwd and fail when cwd is outside the repo (the case the
+// CWD regression test deliberately exercises).
+const TSX_LOADER_URL = import.meta.resolve("tsx");
+
+interface RunCliOptions {
+  env?: NodeJS.ProcessEnv;
+  cwd?: string;
+}
+
+function runCli(args: readonly string[], opts: RunCliOptions = {}) {
+  return spawnSync(
+    process.execPath,
+    ["--import", TSX_LOADER_URL, SCRIPT_PATH, ...args],
+    {
+      encoding: "utf8",
+      windowsHide: true,
+      env: { ...process.env, ...(opts.env ?? {}) },
+      cwd: opts.cwd,
+    },
+  );
 }
 
 const VERSION = "0.5.0";
@@ -537,8 +553,10 @@ test("CLI: archive without version fails closed (Codex P1 PR #158 regression)", 
   // RELEASE_PACKAGE_ARCHIVE env). The CLI must NOT silently skip — supplying
   // an archive implies a release context, so readiness must run end-to-end.
   const result = runCli(["--archive", "/nonexistent-archive"], {
-    RELEASE_VERSION: "",
-    RELEASE_PACKAGE_ARCHIVE: "",
+    env: {
+      RELEASE_VERSION: "",
+      RELEASE_PACKAGE_ARCHIVE: "",
+    },
   });
   assert.equal(
     result.status,
@@ -552,29 +570,37 @@ test("CLI: archive without version fails closed (Codex P1 PR #158 regression)", 
   );
 });
 
-test("CLI: relative archive path resolves against repoRoot (Codex P2 PR #158 regression)", () => {
+test("CLI: relative archive path resolves against repoRoot, not caller CWD (Codex P2 PR #158 regression)", () => {
   // Adversary case: caller invokes from a non-repo working directory with a
   // relative archive path. `check-release-package-contents` resolves relative
   // paths against repoRoot; this CLI must do the same so Layer 2 behaviour
   // does not depend on caller CWD.
+  //
+  // Codex round 2 (PR #158) flagged that the original test inherited the
+  // test-process cwd (the repo root), making it pass even if the CLI
+  // regressed to `process.cwd()`. The fix passes `cwd: tmpCwd` to spawnSync
+  // so the CLI runs from a directory that is NOT the repo root, then asserts
+  // the resolved path contains the repo root and is invariant to the cwd.
   const tmpCwd = fs.mkdtempSync(path.join(os.tmpdir(), "release-readiness-cwd-"));
   try {
     const result = runCli(["--version", "0.5.0", "--archive", "./does-not-exist-here"], {
-      // explicit empty env so we don't inherit RELEASE_VERSION from a CI shell
-      RELEASE_VERSION: "",
-      RELEASE_PACKAGE_ARCHIVE: "",
+      cwd: tmpCwd,
+      env: {
+        RELEASE_VERSION: "",
+        RELEASE_PACKAGE_ARCHIVE: "",
+      },
     });
-    // The path should resolve against repoRoot (the worktree root), so the
-    // resolved absolute path must contain the worktree directory name and
-    // NOT the tmpCwd we are running from.
     const combined = result.stdout + result.stderr;
     assert.equal(result.status, 1, `expected non-zero exit; combined=${combined}`);
     assert.match(combined, /RELEASE_READINESS_ARG/);
     assert.match(combined, /resolved:.*does-not-exist-here/);
+    // If the CLI regresses to `process.cwd()`, the resolved path will start
+    // with `tmpCwd`. Assert that `tmpCwd` does NOT appear in the diagnostic
+    // and that the resolved path is in fact the worktree root + relative path.
     assert.doesNotMatch(
       combined,
       new RegExp(tmpCwd.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
-      "resolved path must not be relative to caller CWD",
+      `resolved path must not be relative to caller CWD (${tmpCwd})`,
     );
   } finally {
     fs.rmSync(tmpCwd, { recursive: true, force: true });

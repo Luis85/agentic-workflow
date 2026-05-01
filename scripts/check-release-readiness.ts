@@ -57,7 +57,10 @@ if (parsed.kind === "argv-empty") {
 if (!parsed.version) {
   // Codex P1 (PR #158): an `--archive` (or `RELEASE_PACKAGE_ARCHIVE`) without a
   // matching version must NOT silently skip — that would let release automation
-  // pass the readiness gate even though a candidate archive was supplied.
+  // pass the readiness gate even though a candidate archive was supplied. The
+  // explicit `else` below makes the bare-skip branch reachable only when both
+  // version and archive are absent so the control flow is unambiguous to
+  // automated reviewers.
   if (parsed.archive) {
     failIfErrors(
       [
@@ -69,11 +72,12 @@ if (!parsed.version) {
       heading,
     );
     process.exit(1); // unreachable: failIfErrors exits on non-empty diagnostics; kept for control-flow narrowing.
+  } else {
+    console.log(
+      `${heading}: skipped (no release version provided; pass --version <X.Y.Z> or set RELEASE_VERSION)`,
+    );
+    process.exit(0);
   }
-  console.log(
-    `${heading}: skipped (no release version provided; pass --version <X.Y.Z> or set RELEASE_VERSION)`,
-  );
-  process.exit(0);
 }
 
 const version = parsed.version;
