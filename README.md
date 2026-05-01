@@ -350,6 +350,10 @@ Each arrow is a quality gate. See [`docs/workflow-overview.md`](docs/workflow-ov
 # Decisions:
 /adr:new
 
+# design:
+/design:frame    /design:handoff  /design:mock
+/design:sketch   /design:start
+
 # Discovery Track:
 /discovery:converge   /discovery:diverge    /discovery:frame
 /discovery:handoff    /discovery:prototype  /discovery:start
