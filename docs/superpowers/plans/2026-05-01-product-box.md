@@ -105,34 +105,21 @@ git rev-parse --abbrev-ref HEAD
 
 Expected: `On branch feat/product-box`, clean tree.
 
-- [ ] **Step 3: Move spec and plan files from main into this branch**
+- [ ] **Step 3: Confirm spec and plan are present on the branch**
 
-Both files were written on main but never committed there. Copy them into the worktree, then revert them on main.
+The design PR (#144) shipped both files to `main`, so the worktree (forked from `main`) already has them at:
 
-```bash
-mkdir -p docs/superpowers/specs docs/superpowers/plans
-cp ../../docs/superpowers/specs/2026-05-01-product-box-design.md docs/superpowers/specs/
-cp ../../docs/superpowers/plans/2026-05-01-product-box.md docs/superpowers/plans/
-```
-
-- [ ] **Step 4: Commit spec and plan files**
+- `docs/superpowers/specs/2026-05-01-product-box-design.md`
+- `docs/superpowers/plans/2026-05-01-product-box.md`
 
 ```bash
-git add docs/superpowers/specs/2026-05-01-product-box-design.md \
-        docs/superpowers/plans/2026-05-01-product-box.md
-git commit -m "docs(product-box): add design spec and implementation plan"
+ls docs/superpowers/specs/2026-05-01-product-box-design.md \
+   docs/superpowers/plans/2026-05-01-product-box.md
 ```
 
-- [ ] **Step 5: Clean up main**
+Expected: both paths exist. No copy or restore needed — these are tracked on `main` and inherited by `feat/product-box`.
 
-```bash
-cd ../../
-git restore docs/superpowers/specs/2026-05-01-product-box-design.md
-git restore docs/superpowers/plans/2026-05-01-product-box.md
-cd .worktrees/product-box
-```
-
-Expected: spec and plan removed from main working tree (preserved on `feat/product-box`).
+If either file is missing, the design PR has not yet merged; abort and wait for it to land before continuing.
 
 ### Task 1.2: File ADR-0017
 
