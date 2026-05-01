@@ -3,8 +3,8 @@ feature: version-0-4-plan
 area: V04
 current_stage: implementation
 status: active
-last_updated: 2026-04-30
-last_agent: codex
+last_updated: 2026-05-01
+last_agent: claude
 artifacts:
   idea.md: complete
   research.md: complete
@@ -54,8 +54,9 @@ artifacts:
 - 2026-04-29 (codex): Extended T-V04-008 with evidence-backed maturity assessment in the quality metrics report and documentation.
 - 2026-04-30 (codex): Extended T-V04-005 with optional quality metrics trend snapshots via `--save` and `--compare`.
 - 2026-04-30 (codex): Added `/quality:status` and agent prompt hooks so quality metrics are visible at orchestration, QA, review, release, retrospective, project, roadmap, and portfolio handoffs.
+- 2026-05-01 (claude): Completed T-V04-001 v0.3 validation baseline confirmation. 6 of 7 baseline checks classified `required` for PR CI promotion; 1 (every `REQ-*`/`NFR-*` covered by `TEST-*`) remains `deferred` pending test-plan format lock. Classification + handoff lives in `implementation-log.md` §Task T-V04-001. CLAR-V04-001 resolved. Unblocks T-V04-002 (architect — CI gate contract).
 
 ## Open clarifications
 
-- [ ] CLAR-V04-001 — Confirm which v0.3 validation checks are stable enough to become required PR CI gates.
+- [x] CLAR-V04-001 — Confirm which v0.3 validation checks are stable enough to become required PR CI gates.  *(resolved 2026-05-01: 6 of 7 baseline checks classified `required`; 1 `deferred`. See `implementation-log.md` §Task T-V04-001.)*
 - [ ] CLAR-V04-002 — Confirm whether v0.4 should include scheduled read-only health reporting or defer scheduled automation beyond v0.4.

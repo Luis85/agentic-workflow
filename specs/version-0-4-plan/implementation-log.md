@@ -8,10 +8,46 @@ owner: dev
 inputs:
   - TASKS-V04-001
 created: 2026-04-28
-updated: 2026-04-30
+updated: 2026-05-01
 ---
 
 # Implementation log - Version 0.4
+
+## Task T-V04-001 - v0.3 validation baseline confirmation
+
+Source: `specs/version-0-3-plan/release-notes.md` §Validation baseline for v0.4. Each
+candidate v0.3 hard-fail or advisory check is classified below as **required**, **advisory**,
+or **deferred** for promotion into PR CI in T-V04-003. Each row documents v0.3 source, local
+reproduction command, and false-positive decision (per SPEC-V04-007 acceptance).
+
+Resolves CLAR-V04-001.
+
+### Classification
+
+| # | Check | v0.3 source | Local repro | Class | False-positive decision |
+|---|---|---|---|---|---|
+| 1 | Workflow-state frontmatter consistency (`scripts/lib/spec-state.ts`) | §Validation baseline, hard-fail #1 | `npm run check:specs` | required | Deterministic frontmatter parse; backed by 24 characterization tests. No known false-positive path. |
+| 2 | Stage-progress table consistency (`scripts/lib/spec-state.ts`) | §Validation baseline, hard-fail #2 | `npm run check:specs` | required | Same library; mirrors frontmatter status. No known false-positive path. |
+| 3 | Skipped-artifact documentation under `## Skips` (v0.3 PR #95) | §Validation baseline, hard-fail #3 | `npm run check:specs` | required | Caught the v0.3 plan's own skip gap (v0.3 PR #112) — real signal. v0.4 retrospective filed an action for the §Notes-on-meta-features template clarification (analyst, due 2026-06-01); does not block CI promotion. |
+| 4 | Examples folders contain `workflow-state.md` (v0.3 PR #101) | §Validation baseline, hard-fail #4 | `npm run check:specs` | required | Deterministic file-presence check. No known false-positive path. |
+| 5 | `TEST-*` references back to `REQ-*`/`NFR-*` in its definition source (v0.3 PR #107) | §Validation baseline, hard-fail #5 | `npm run check:traceability` | required | Caught 14 pre-existing trace gaps in `examples/cli-todo/` during v0.3. Known risk: `idsIn` matches IDs anywhere in a line including fenced code blocks; today no artifact embeds raw IDs in code, so risk is zero. If a future template embeds IDs in code, the validator will need a code-block skip. Document the risk in CI gate contract; not a CI promotion blocker. |
+| 6 | Traceability ID format, area mismatch, duplicate ID, unknown reference, invalid reference kind, and missing `Satisfies` field (`scripts/lib/traceability.ts`) | §Validation baseline, hard-fail #6 | `npm run check:traceability` | required | Single library, 23 characterization tests, surfaced a P1 dropped-error bug in v0.3 (v0.3 PR #94 fix). High-confidence promotion. **Discovered during T-V04-001 authoring:** the area-mismatch sub-rule (`validateIdAreas`) flags any traceability ID in the body whose area code differs from the workflow's area. Cross-feature narrative references in `implementation-log.md` (e.g. quoting v0.3 task or retro IDs from v0.4 work) trigger the rule. This is correct enforcement — cross-area IDs cross traceability namespaces — but contributors should phrase cross-feature mentions via PR numbers or file paths, not via raw IDs. CI gate contract should note this. |
+| 7 | Every `REQ-*`/`NFR-*` has at least one covering `TEST-*` | §Validation baseline, advisory deferred (v0.3 CLAR-V03-002) | (no validator yet) | deferred | Not implemented in v0.3. Deferred until test-plan format is locked enough to avoid false positives. Re-evaluate as a v0.4 cycle action filed in v0.3 retrospective (analyst, due v0.4 cycle); decision to be tracked separately from this baseline confirmation. |
+
+### Outcome
+
+- 6 of 7 baseline candidates promote to **required** PR CI gates (rows 1-6).
+- 1 remains **deferred** (row 7) pending the test-plan format lock decision (v0.3 retrospective action).
+- No baseline check is downgraded to **advisory**. The v0.3 hard-fail set held under v0.3's own use; nothing produced noise (per v0.3 retrospective §Process observations: "Quality gates that produced noise — None.").
+- Other `npm run verify` checks beyond the v0.3 baseline (`check:links`, `check:agents`, `check:frontmatter`, `check:obsidian`, `check:product-page`, `check:script-docs`, `check:workflow-docs`, `check:roadmaps`, `check:automation-registry`, `check:adr-index`, `check:commands`, `check:token-budget`, `typecheck:scripts`, `test:scripts`) are out of scope for T-V04-001 (REQ-V04-008 narrows v0.4 to the v0.3 baseline). T-V04-002 (architect — CI gate contract) decides whether to expand the contract beyond the baseline.
+
+### Handoff to T-V04-002
+
+The architect authoring `T-V04-002` should:
+1. Read this section as the canonical input list.
+2. Decide whether the CI workflow runs the broader `npm run verify` set or only the 6 required baseline checks. Recommend full `npm run verify` to keep CI ≡ local (REQ-V04-002), with the 6 baseline checks called out as the v0.3 promotion record (SPEC-V04-007).
+3. Document the false-positive risk for row 5 (`idsIn` and code blocks) in the CI gate contract.
+4. Carry the deferred row 7 forward into the gate contract's "advisory / deferred" section so the deferral is visible to contributors.
 
 ## Task T-V04-005 - Workflow metrics report
 
