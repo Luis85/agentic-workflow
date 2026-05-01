@@ -4,7 +4,7 @@ title: Version 0.3 release plan — Release notes
 stage: release
 feature: version-0-3-plan
 version: v0.3.0
-status: draft
+status: complete
 owner: release-manager
 inputs:
   - PRD-V03-001
