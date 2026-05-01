@@ -19,7 +19,7 @@ A single shared checkout serialises this work. Worktrees give each branch its ow
 
 ## How to apply
 
-The **branch name** must carry one of the canonical prefixes from [`docs/branching.md`](../../docs/branching.md) (`feat/`, `fix/`, `refactor/`, `chore/`, `docs/`, `claude/`). The default `.claude/settings.json` allowlist only permits pushes from these prefixes; an unprefixed branch will be denied at push time. The on-disk worktree path (`.worktrees/<slug>`) is unconstrained — only the branch name has to satisfy the allowlist.
+The **branch name** must carry one of the canonical prefixes from [`docs/branching.md`](../../docs/branching.md) (`feat/`, `fix/`, `refactor/`, `chore/`, `docs/`, `release/`, `claude/`). The default `.claude/settings.json` allowlist only permits pushes from these prefixes; an unprefixed branch will be denied at push time. The on-disk worktree path (`.worktrees/<slug>`) is unconstrained — only the branch name has to satisfy the allowlist.
 
 ```bash
 # Create — branch name is <prefix>/<slug>; worktree path is the slug alone
