@@ -289,7 +289,7 @@ function validateHumanAnnotation(
   registryPath: string,
   errors: Diagnostic[],
 ): void {
-  if (typeof entry.purpose === "string" && /\bTODO\b/i.test(entry.purpose)) {
+  if (typeof entry.purpose === "string" && /^TODO:\s+describe\b/i.test(entry.purpose)) {
     errors.push({
       path: registryPath,
       code: "AUTO_ANNOTATION",

@@ -163,3 +163,32 @@ test("automation registry rejects generated placeholder annotations", () => {
     fs.rmSync(root, { recursive: true, force: true });
   }
 });
+
+test("automation registry allows human-authored purposes that mention TODO", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "agentic-workflow-registry-todo-purpose-test-"));
+  try {
+    fs.writeFileSync(path.join(root, "package.json"), JSON.stringify({ scripts: {} }), "utf8");
+    const errors = validateAutomationRegistry(
+      {
+        version: 1,
+        entries: [
+          {
+            id: "script:todo-scan",
+            kind: "script",
+            command: "npm run todo-scan",
+            purpose: "Scan source for TODO comments before release review.",
+            read_only: true,
+            safe_to_run_locally: true,
+            emits_json: false,
+            used_by: ["agent"],
+            rerun_command: "npm run todo-scan",
+          },
+        ],
+      },
+      root,
+    );
+    assert.deepEqual(errors, []);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
