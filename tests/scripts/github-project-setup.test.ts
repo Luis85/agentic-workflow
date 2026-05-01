@@ -74,3 +74,18 @@ test("setup plan issues reference declared labels and milestones", () => {
     }
   }
 });
+
+test("setup plan issue titles are unique within each milestone", () => {
+  const plan = buildGitHubProjectSetupPlan({
+    projectName: "Plugin",
+    profile: "obsidian-plugin",
+    includeP3: true,
+  });
+  const keys = new Set<string>();
+
+  for (const issue of plan.issues) {
+    const key = `${issue.milestone}\t${issue.title}`;
+    assert.equal(keys.has(key), false, `duplicate planned issue ${key}`);
+    keys.add(key);
+  }
+});

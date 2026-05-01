@@ -151,7 +151,10 @@ export function applyGitHubProjectSetupPlan(repo: string, plan: GitHubProjectSet
     runGh(["api", `repos/${repo}/milestones`, "-f", `title=${milestone.title}`, "-f", `description=${milestone.description}`]);
     existingMilestones.add(milestone.title);
   }
+  const existingIssues = listExistingIssueKeys(repo);
   for (const issue of plan.issues) {
+    const issueKey = issueKeyFor(issue.title, issue.milestone);
+    if (existingIssues.has(issueKey)) continue;
     runGh([
       "issue",
       "create",
@@ -166,6 +169,7 @@ export function applyGitHubProjectSetupPlan(repo: string, plan: GitHubProjectSet
       "--milestone",
       issue.milestone,
     ]);
+    existingIssues.add(issueKey);
   }
 }
 
@@ -190,6 +194,37 @@ function runGhText(args: string[]): string {
 function listExistingMilestoneTitles(repo: string): Set<string> {
   const output = runGhText(["api", `repos/${repo}/milestones`, "--paginate", "-F", "state=all", "--jq", ".[].title"]);
   return new Set(output.split(/\r?\n/).map((line) => line.trim()).filter(Boolean));
+}
+
+function listExistingIssueKeys(repo: string): Set<string> {
+  const output = runGhText([
+    "issue",
+    "list",
+    "--repo",
+    repo,
+    "--state",
+    "all",
+    "--limit",
+    "1000",
+    "--json",
+    "title,milestone",
+    "--jq",
+    '.[] | [.title, (.milestone.title // "")] | @tsv',
+  ]);
+  return new Set(
+    output
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((line) => {
+        const [title, milestone = ""] = line.split("\t");
+        return issueKeyFor(title, milestone);
+      }),
+  );
+}
+
+function issueKeyFor(title: string, milestone: string): string {
+  return `${milestone.trim()}\t${title.trim()}`;
 }
 
 function repoSetupIssues(input: ProjectSetupInput): GitHubIssueSpec[] {
