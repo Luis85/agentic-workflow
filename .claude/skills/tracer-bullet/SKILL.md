@@ -1,6 +1,6 @@
 ---
 name: tracer-bullet
-description: Decompose a spec into vertical-slice tasks where each slice goes end-to-end through every layer it needs to and leaves the codebase in a working, committable state. Use during stage 6 (Tasks) of the workflow, when the user wants to break work into independently shippable steps, when a plan reads as horizontal slices ("first all the data layer, then all the API…"), or when the user mentions "tracer bullet", "vertical slice", or "smallest possible commits".
+description: Decompose spec into vertical end-to-end slices, each committable. Use in stage 6 (Tasks). Triggers "tracer bullet", "vertical slice", "smallest commits", or when a plan reads as horizontal layers.
 argument-hint: [feature-slug, e.g. "user-profile"]
 ---
 

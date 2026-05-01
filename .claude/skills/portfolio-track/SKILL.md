@@ -1,6 +1,6 @@
 ---
 name: portfolio-track
-description: Drive a portfolio management cycle based on P5 Express (https://p5.express/). Detects which cycle is due (X: 6-monthly strategy, Y: monthly review, Z: daily operations) and dispatches /portfolio:x, /portfolio:y, or /portfolio:z. Use when the user says "run portfolio review", "update the portfolio", "check portfolio health", "portfolio cycle", or asks about portfolio status across multiple projects. Opt-in — does not affect the Specorator 11-stage lifecycle.
+description: Drive P5 Express portfolio cycle. Detects which cycle (X strategy / Y monthly / Z daily) is due, dispatches /portfolio:x|y|z. Triggers "run portfolio review", "portfolio cycle", "portfolio health". Opt-in.
 argument-hint: [portfolio-slug or "list"]
 ---
 

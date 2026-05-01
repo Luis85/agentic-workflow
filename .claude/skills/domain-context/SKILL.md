@@ -1,6 +1,6 @@
 ---
 name: domain-context
-description: Maintain a living domain context map at docs/CONTEXT.md (or scoped contexts under docs/contexts/) — the project's shared mental model of what the system is, who its users are, what bounded contexts exist, and how they relate. Lazily creates the file on first need. Use when a stage agent discovers a new domain concept, when a context boundary shifts, or whenever the user mentions "domain model", "context map", or "bounded context".
+description: Maintain living domain context map at docs/CONTEXT.md (or docs/contexts/) — system overview, users, bounded contexts, relationships. Lazily created. Triggers "domain model", "context map", "bounded context".
 argument-hint: [optional context name for multi-context repos]
 ---
 

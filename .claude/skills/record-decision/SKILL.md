@@ -1,6 +1,6 @@
 ---
 name: record-decision
-description: File a new Architecture Decision Record (ADR) under docs/adr/ for a hard-to-reverse decision. Wraps the existing /adr:new command with guidance on when an ADR is warranted, what to capture, and how to link it back to the workflow. Use when the user wants to record a decision, file an ADR, document a trade-off, or whenever a stage agent flags an irreversible architectural choice.
+description: File a new ADR under docs/adr/ for a hard-to-reverse decision. Wraps /adr:new with guidance on when warranted and what to capture. Triggers "record decision", "file ADR", "document trade-off".
 argument-hint: <one-line decision title>
 ---
 

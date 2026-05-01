@@ -1,6 +1,6 @@
 ---
 name: roadmap-management
-description: Conduct the Roadmap Management Track for product and project roadmaps. Use when the user asks to create, update, review, align, communicate, or manage a roadmap for product management, project management, stakeholder alignment, or team communication.
+description: Conduct Roadmap Management Track for product/project roadmaps. Triggers "create roadmap", "update roadmap", "review roadmap", "align stakeholders", "roadmap communication".
 argument-hint: [roadmap-slug or "list"]
 ---
 

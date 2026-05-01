@@ -1,6 +1,6 @@
 ---
 name: product-page
-description: Create and keep alive a public product page for a project or product, with a directly accessible sites/index.html and hosting via GitHub Pages when available. Use when starting a new project or product, changing positioning, shipping a user-visible release, or when the user asks for a website, landing page, product page, GitHub Pages site, or public homepage.
+description: Maintain public product page at sites/index.html, hosted on GitHub Pages. Triggers new project, repositioning, user-visible release, or "website", "landing page", "product page", "GitHub Pages".
 argument-hint: [product or project name]
 ---
 
