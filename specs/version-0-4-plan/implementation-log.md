@@ -49,6 +49,26 @@ The architect authoring `T-V04-002` should:
 3. Document the false-positive risk for row 5 (`idsIn` and code blocks) in the CI gate contract.
 4. Carry the deferred row 7 forward into the gate contract's "advisory / deferred" section so the deferral is visible to contributors.
 
+## Task T-V04-002 - PR CI gate contract
+
+Authored `docs/pr-ci-gate.md` as the architecture output. Companion to `docs/verify-gate.md` (local) and `docs/ci-automation.md` (PR hygiene).
+
+Decisions taken:
+
+- **Run full `npm run verify` on PR.** CI ≡ local (REQ-V04-002). The 6 v0.3 baseline checks are called out as the v0.3 promotion record (SPEC-V04-007); the remaining 11 checks bundled by `verify` are also blocking because each is independently deterministic and low-noise (NFR-V04-001).
+- **No advisory tier in v0.4.** Reserved for future deferred items.
+- **One deferred check.** Row 7 (every `REQ-*`/`NFR-*` covered by a `TEST-*`) carried forward; re-evaluation gated on test-plan format lock decision.
+- **False-positive guidance.** Documents the cross-feature ID rule (correct enforcement; phrase via PR numbers / file paths / prose) and the IDs-in-fenced-code risk (zero today; action only if a future template change introduces it).
+- **Workflow file contract.** Specifies trigger (`pull_request` + `push: main`), runner (`ubuntu-latest`), required steps (`actions/checkout` SHA-pinned, `actions/setup-node` for Node 20, `npm ci`, `npm run verify`), concurrency, and least-privilege permissions. T-V04-003 implements; T-V04-004 verifies.
+- **CLAR-V04-002 disposition.** Scheduled health reporting deferred to v0.5 or later. Rationale: PRD non-goals exclude telemetry / dashboards; v0.4 produces machine-readable signals (T-V04-005 + T-V04-012) that v0.5 can consume from a scheduled job.
+
+Resolves CLAR-V04-002.
+
+### Handoff to T-V04-003 / T-V04-004
+
+- **T-V04-003 (dev — `.github/workflows/verify.yml`)** — author the workflow per `docs/pr-ci-gate.md` §Workflow file contract. SHA-pin actions per `docs/security-ci.md`. Single PR.
+- **T-V04-004 (dev — extend doctor)** — extend `scripts/doctor.ts` with a check that asserts the workflow file's presence and the markers listed in §Workflow file contract. Add focused tests under `tests/scripts/`. Depends on T-V04-003 landing.
+
 ## Task T-V04-005 - Workflow metrics report
 
 - Extended `scripts/lib/quality-metrics.ts` with stage-aware scoring.
