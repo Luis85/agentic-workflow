@@ -21,6 +21,7 @@
 - [check-roadmaps](check-roadmaps/README.md)
 - [check-script-docs](check-script-docs/README.md)
 - [check-spec-state](check-spec-state/README.md)
+- [check-token-budget](check-token-budget/README.md)
 - [check-traceability](check-traceability/README.md)
 - [check-workflow](check-workflow/README.md)
 - [check-workflow-docs](check-workflow-docs/README.md)

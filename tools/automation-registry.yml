@@ -289,6 +289,16 @@ entries:
     emits_json: false
     used_by: [human, agent, ci]
     rerun_command: npm run check:traceability
+  - id: check:token-budget
+    kind: check
+    command: npm run check:token-budget
+    path: scripts/check-token-budget.ts
+    purpose: Enforce caps on always-loaded context, skill bodies, and skill descriptions.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: false
+    used_by: [human, agent, ci]
+    rerun_command: npm run check:token-budget
   - id: docs:scripts
     kind: script
     command: npm run docs:scripts
