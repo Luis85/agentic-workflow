@@ -80,6 +80,7 @@ npm run check:agents
 ```
 
 The check verifies required frontmatter and prompt sections so automation surfaces remain discoverable and consistent for humans and agents.
+It also catches concrete stale inline path references and undefined `npm run <script>` references while ignoring fenced examples, placeholders, and documented generated-output paths.
 
 ## Quality Metrics
 
