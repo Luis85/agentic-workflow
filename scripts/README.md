@@ -18,6 +18,28 @@ npm run doctor
 
 `doctor` checks Node/npm/git availability, branch and worktree state, installed dependencies, GitHub workflow readiness, generated-block drift, and the full verify gate. It is read-only and exits non-zero if required checks fail. Dependency hints prefer `npm ci` when `package-lock.json` is present so local setup matches CI.
 
+## Self-check
+
+Run a comprehensive local quality review for humans or agents:
+
+```bash
+npm run self-check
+```
+
+`self-check` is read-only. It runs the machine-readable verify gate, collects workflow quality metrics, summarizes retrospective/quality-review/ADR learning evidence, and returns recommendations for the next quality improvements.
+
+Use JSON for programmatic consumers:
+
+```bash
+npm run self-check -- --json
+```
+
+Scope the metrics review to one feature while still using the repository automation gate:
+
+```bash
+npm run self-check -- --feature <feature-slug>
+```
+
 ## Verify
 
 Run the full read-only gate:
@@ -125,6 +147,22 @@ Use JSON when another agent or tool needs to consume the evidence report:
 npm run roadmap:evidence -- <roadmap-slug> --json
 ```
 
+## GitHub Project Setup
+
+Plan or create the baseline GitHub labels, milestones, and issues for a new product/project repository:
+
+```bash
+npm run project:setup:github -- --project-name "Specorator" --profile obsidian-plugin --dry-run
+```
+
+Execute against a repository after reviewing the dry run:
+
+```bash
+npm run project:setup:github -- --repo Luis85/specorator --project-name "Specorator" --profile obsidian-plugin --execute
+```
+
+Profiles are `generic-product` and `obsidian-plugin`. P3.express initiation issues are included by default; pass `--no-p3` for tiny experiments that do not need sponsor, kickoff, go/no-go, or follow-up-register work.
+
 ## Roadmap Digest
 
 Generate an audience-specific draft roadmap update from the roadmap strategy, board, delivery plan, and stakeholder map:
@@ -176,6 +214,7 @@ In GitHub Actions, `verify` requests JSON diagnostics from supported check scrip
 | `npm run check:fast` | Run the fast local iteration gate. |
 | `npm run check:content` | Run content and generated documentation integrity checks. |
 | `npm run check:workflow` | Run workflow state, traceability, roadmap, and agent contract checks. |
+| `npm run project:setup:github` | Plan or create GitHub labels, milestones, and baseline issues for a new product/project repository. |
 | `npm run automation:registry:discover` | Emit candidate registry entries for newly discovered automation surfaces. |
 | `npm run check:automation-registry` | Validate `tools/automation-registry.yml` against package scripts, workflows, skills, and operational agents. |
 | `npm run check:agents` | Validate lifecycle agents, skills, and operational agents as product artifacts. |
@@ -191,6 +230,7 @@ In GitHub Actions, `verify` requests JSON diagnostics from supported check scrip
 | `npm run check:specs` | Validate lifecycle `workflow-state.md` files and their artifact maps. |
 | `npm run check:roadmaps` | Validate roadmap state frontmatter, dates, document maps, and required sections. |
 | `npm run check:traceability` | Validate lifecycle artifact IDs and local traceability references. |
+| `npm run self-check` | Run a comprehensive local quality review using verify diagnostics, quality metrics, and learning evidence. |
 
 ## Script Documentation
 

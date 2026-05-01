@@ -10,6 +10,16 @@ entries:
     emits_json: false
     used_by: [human, agent]
     rerun_command: npm run doctor
+  - id: script:self-check
+    kind: script
+    command: npm run self-check
+    path: scripts/self-check.ts
+    purpose: Run a local comprehensive quality review by aggregating verify diagnostics, workflow metrics, and learning evidence.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: true
+    used_by: [human, agent]
+    rerun_command: npm run self-check
   - id: script:verify
     kind: script
     command: npm run verify
@@ -80,6 +90,16 @@ entries:
     emits_json: true
     used_by: [human, agent]
     rerun_command: npm run roadmap:evidence -- <roadmap-slug>
+  - id: script:project-setup-github
+    kind: script
+    command: npm run project:setup:github
+    path: scripts/github-project-setup.ts
+    purpose: Plan or create GitHub labels, milestones, and baseline setup issues for a new product/project repository.
+    read_only: false
+    safe_to_run_locally: true
+    emits_json: false
+    used_by: [human, agent]
+    rerun_command: npm run project:setup:github -- --dry-run
   - id: script:typecheck-scripts
     kind: check
     command: npm run typecheck:scripts
@@ -526,6 +546,15 @@ entries:
     emits_json: false
     used_by: [agent]
     rerun_command: open .claude/skills/project-run/SKILL.md
+  - id: skill:github-project-setup
+    kind: skill
+    path: .claude/skills/github-project-setup/SKILL.md
+    purpose: Set up a new GitHub repository with product, project-management, and readiness milestones/issues.
+    read_only: false
+    safe_to_run_locally: true
+    emits_json: false
+    used_by: [agent]
+    rerun_command: open .claude/skills/github-project-setup/SKILL.md
   - id: skill:project-scaffolding
     kind: skill
     path: .claude/skills/project-scaffolding/SKILL.md

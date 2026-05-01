@@ -16,7 +16,7 @@ See [`docs/verify-gate.md`](../../../docs/verify-gate.md) for the contract that 
 <project-verify-command>
 ```
 
-For this template repository, the default command is `npm run verify`. Use `npm run check:fast`, `npm run check:content`, or `npm run check:workflow` only while iterating on that narrower surface; run the full gate before pushing. Use `npm run verify:json` when an agent or CI adapter needs structured diagnostics with rerun commands.
+For this template repository, the default command is `npm run verify`. Use `npm run check:fast`, `npm run check:content`, or `npm run check:workflow` only while iterating on that narrower surface; run the full gate before pushing. Use `npm run verify:json` when an agent or CI adapter needs structured diagnostics with rerun commands. Use `npm run self-check` when the user asks for a broader local quality review that combines verify diagnostics, workflow metrics, and learning evidence; use `npm run self-check -- --json` for programmatic consumers.
 
 If verify fails, **re‑run only the failing stage** so its output is readable. Example, for an npm project:
 
