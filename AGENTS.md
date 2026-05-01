@@ -1,73 +1,69 @@
 # AGENTS.md
 
-Cross-tool root context for AI coding agents (Claude Code, Codex, Cursor, Aider, Copilot, Gemini, etc.). Tool-specific files and folders (`CLAUDE.md`, `.codex/`, `.cursor/rules/`, `.aider.conf.yml`) should `@import` or reference this file, not duplicate.
+Cross-tool root context for AI coding agents (Claude Code, Codex, Cursor, Aider, Copilot, Gemini, etc.). Tool-specific files (`CLAUDE.md`, `.codex/`, `.cursor/rules/`, `.aider.conf.yml`) `@import` this file rather than duplicate.
 
 > **One source of truth, many tools.** Change project conventions here.
 
 ## Project
 
-Repo = **template for spec-driven, agentic software development**. No product build — defines workflow, artifacts, roles for building products. Workflow itself = deliverable.
-
-In project *using* template, replace this section with product overview.
+Repo = **template for spec-driven, agentic software development**. Defines workflow, artifacts, roles for building products. Workflow itself = the deliverable. Replace this section with a product overview when a project *uses* the template.
 
 ## Read these first
-
-Before non-trivial work, read:
 
 1. **`memory/constitution.md`** — governing principles. Override only with explicit human approval.
 2. **`.claude/memory/MEMORY.md`** — operational memory: workflow rules + project state, indexed.
 3. **`docs/specorator.md`** — full workflow definition.
-4. **`docs/steering/`** — scoped context (product, tech, ux, quality, operations). Load only relevant to task.
-5. **Current feature's `specs/<feature>/workflow-state.md`** — shows active stage + what produced.
+4. **`docs/steering/`** — scoped context (product, tech, ux, quality, ops). Load only what's relevant.
+5. **Current feature's `specs/<feature>/workflow-state.md`** — active stage + what's already produced.
 
 ## Operating rules
 
-- **Stay in scope.** Each agent role has defined responsibility (see `.claude/agents/`). No code in research phase. No requirement changes during implementation.
-- **Specs = source of truth.** Implementation reveals missing requirement → escalate, no silent invent. Update spec first, then code.
-- **Respect quality gates.** Every stage has acceptance criteria in `docs/quality-framework.md`. No stage complete unless pass.
-- **Trace everything.** Every requirement, task, test has ID (see `docs/traceability.md`). Reference IDs in commits, PRs, artifacts.
-- **EARS for requirements.** Functional requirements use EARS notation (see `docs/ears-notation.md`) — map 1:1 to tests.
-- **ADRs for irreversible decisions.** Architecturally load-bearing → ADR in `docs/adr/`. Use template `templates/adr-template.md`.
-- **Update workflow state.** Finish or hand off stage → update `specs/<feature>/workflow-state.md` so next agent resume.
-- **Keep product page alive.** Every new project/product gets public product page with directly accessible `sites/index.html`. Prefer GitHub Pages via GitHub Actions when available. Update page in same PR as user-visible product or positioning changes.
-- **Escalate ambiguity.** No guess. Ask human or open `clarifications` block in active artifact.
-- **No direct commits on `main` / `develop`.** Every change — code, docs, ADRs, glossary, memory, brainstorm output, plans, generated docs — lands via topic branch + merged PR. Push deny = backstop, not gate; commits never reach integration branch locally either. See `.claude/memory/feedback_no_main_commits.md`.
-- **Branch per concern; verify before push.** Topic branches live in `.worktrees/<slug>/`; one concern per PR; `verify` green locally before opening PR. Never `--no-verify`. See `docs/branching.md`, `docs/worktrees.md`, `docs/verify-gate.md`.
-- **Codex opens PR.** For non-trivial repo changes, Codex creates own worktree, commits, pushes, opens pull request, reports PR URL/status, asks human for next step. See `.codex/README.md`.
-- **Memory edits = docs‑only.** Updates to `.claude/memory/` ride own PR with no changeset, no version bump. See `.claude/memory/feedback_memory_edits.md`.
+- **Stay in scope.** Each agent role has a defined responsibility (see `.claude/agents/`). No code in research; no requirement changes during implementation.
+- **Specs = source of truth.** Implementation reveals a missing requirement → escalate, no silent invent. Update spec first, then code.
+- **Respect quality gates.** Acceptance criteria in `docs/quality-framework.md` are non-negotiable.
+- **Trace everything.** `REQ-<AREA>-NNN`, `T-<AREA>-NNN`, `TEST-<AREA>-NNN`, `ADR-NNNN`. Reference IDs in commits, PRs, artifacts. See [`docs/traceability.md`](docs/traceability.md).
+- **EARS for requirements.** Functional requirements use EARS notation — map 1:1 to tests. See [`docs/ears-notation.md`](docs/ears-notation.md).
+- **ADRs for irreversible decisions.** Architecturally load-bearing → ADR in `docs/adr/`. Use `templates/adr-template.md`. ADR bodies are immutable; supersede to change.
+- **Update workflow state.** Hand off a stage → update `specs/<feature>/workflow-state.md`.
+- **Keep a product page alive.** Public page at `sites/index.html`; prefer GitHub Pages. Update in the same PR as user-visible changes.
+- **Escalate ambiguity.** No guessing. Ask the human or open a `clarifications` block.
+- **No direct commits on `main` / `develop`.** Every change lands via topic branch + merged PR. Push deny is the backstop, not the gate. See [`.claude/memory/feedback_no_main_commits.md`](.claude/memory/feedback_no_main_commits.md).
+- **Branch per concern; verify before push.** One concern per PR; `verify` green locally; never `--no-verify`. See [`docs/branching.md`](docs/branching.md), [`docs/worktrees.md`](docs/worktrees.md), [`docs/verify-gate.md`](docs/verify-gate.md).
+- **Codex opens its PR.** Non-trivial changes via Codex own worktree → commit → push → open PR → report URL. See [`.codex/README.md`](.codex/README.md).
+- **Memory edits are docs-only.** Updates to `.claude/memory/` ride own PR with no changeset. See [`.claude/memory/feedback_memory_edits.md`](.claude/memory/feedback_memory_edits.md).
 
 ## Repo conventions
 
-- Markdown for all artifacts. Keep concise; precision over completeness in early iterations.
+- Markdown for all artifacts. Concise; precision over completeness in early iterations.
 - File names = kebab-case. Per-feature work under `specs/<feature-slug>/`.
-- Each folder may have at most one `README.md`. Below repo root → folder entry point for GitHub-style Markdown browsing. Must start with YAML frontmatter: `title`, `folder`, `description`, `entry_point: true`. `folder` value = repo-relative directory path. Root `README.md` = public repo entry point, exempt from frontmatter rule.
-- IDs stable: `REQ-<AREA>-NNN`, `T-<AREA>-NNN`, `TEST-<AREA>-NNN`, `ADR-NNNN`.
-- ADR bodies immutable. Change decision → supersede; predecessor's `status` and `superseded-by` pointers = only fields updateable.
-- Glossary terms live one-per-file under `docs/glossary/<slug>.md`. Define term with `/glossary:new "<term>"`. Directory listing = index — no `README.md` index to maintain. See [ADR-0010](docs/adr/0010-shard-glossary-into-one-file-per-term.md). Legacy `docs/UBIQUITOUS_LANGUAGE.md` single-file model deprecated.
-- Commit messages: imperative mood, reference IDs (`feat(auth): add T-AUTH-014 password reset`).
+- One `README.md` per folder max. Folders below the repo root start with frontmatter (`title`, `folder`, `description`, `entry_point: true`); root `README.md` is exempt.
+- Glossary terms one-per-file under `docs/glossary/<slug>.md` via `/glossary:new "<term>"`. Legacy single-file `docs/UBIQUITOUS_LANGUAGE.md` deprecated by [ADR-0010](docs/adr/0010-shard-glossary-into-one-file-per-term.md).
+- Commit messages: imperative, reference IDs (`feat(auth): add T-AUTH-014 password reset`).
 
-## When the harness gets in your way
+## Agent classes
 
-Repo **process-light by design**, but now has local + CI quality signals: `npm run verify`, PR-title checks, spell check, Pages deployment, workflow/security scans, dependency bump automation. Branch protection may still be intentionally light for early template adoption; if fighting tooling, fix process over working around it.
+| Class | Location | Purpose | Methodology |
+|---|---|---|---|
+| **Lifecycle (Stage 1–11 specialists)** | `.claude/agents/` | Build one feature: analyst, pm, ux/ui-designer, architect, planner, dev, qa, reviewer, release-manager, sre, retrospective. | [`docs/specorator.md`](docs/specorator.md) |
+| **Discovery specialists** *(opt-in)* | `.claude/agents/` | Pre-Stage 1 ideation: facilitator + product-strategist, user-researcher, game-designer, divergent-thinker, critic, prototyper. Produces `chosen-brief.md`. | [`docs/discovery-track.md`](docs/discovery-track.md) ([ADR-0005](docs/adr/0005-add-discovery-track-before-stage-1.md)) |
+| **Stock-taking** *(opt-in, brownfield)* | `.claude/agents/legacy-auditor.md` | Inventory existing systems before new work. Produces `stock-taking-inventory.md`. | [`docs/stock-taking-track.md`](docs/stock-taking-track.md) ([ADR-0007](docs/adr/0007-add-stock-taking-track-for-legacy-projects.md)) |
+| **Sales** *(opt-in, service provider)* | `.claude/agents/` | Pre-contract: `sales-qualifier`, `scoping-facilitator`, `estimator`, `proposal-writer`. Produces `order.md`. | [`docs/sales-cycle.md`](docs/sales-cycle.md) ([ADR-0006](docs/adr/0006-add-sales-cycle-track-before-discovery.md)) |
+| **Project manager** *(opt-in)* | `.claude/agents/project-manager.md` | Client-engagement governance based on P3.Express. State lives `projects/<slug>/`. Never edits `specs/`. | [`docs/project-track.md`](docs/project-track.md) ([ADR-0008](docs/adr/0008-add-project-manager-track.md)) |
+| **Roadmap manager** *(opt-in)* | `.claude/agents/roadmap-manager.md` | Outcome roadmaps, stakeholder maps, comms log under `roadmaps/<slug>/`. Read-only on `specs/`. | [`docs/roadmap-management-track.md`](docs/roadmap-management-track.md) ([ADR-0012](docs/adr/0012-add-roadmap-management-track.md)) |
+| **Portfolio** *(opt-in)* | `.claude/agents/portfolio-manager.md` | P5 Express X/Y/Z cycles. Reads `specs/*/workflow-state.md`; never modifies spec artifacts. | [`docs/portfolio-track.md`](docs/portfolio-track.md) ([ADR-0009](docs/adr/0009-add-portfolio-manager-role.md)) |
+| **Project scaffolder** *(opt-in)* | `.claude/agents/project-scaffolder.md` | Source-led onboarding from collected docs/folders. State lives `scaffolding/<slug>/`. | [`docs/project-scaffolding-track.md`](docs/project-scaffolding-track.md) ([ADR-0011](docs/adr/0011-add-project-scaffolding-track.md)) |
+| **Quality assurance** *(opt-in)* | `.claude/skills/quality-assurance/SKILL.md` | ISO 9001-aligned readiness review. State lives `quality/<slug>/`. | [`docs/quality-assurance-track.md`](docs/quality-assurance-track.md) |
+| **Operational bots** | `agents/operational/` | Scheduled routines (review-bot, docs-review-bot, plan-recon-bot, dep-triage-bot, actions-bump-bot). `PROMPT.md` + `README.md` per bot. | — |
 
-## Four classes of agent
-
-- **Lifecycle agents** (`.claude/agents/`) — build one feature across Stages 1–11. `orchestrator` routes between them. Three sub-classes:
-  - **Stage 1–11 specialists** — analyst, pm, ux-designer, ui-designer, architect, planner, dev, qa, reviewer, release-manager, sre, retrospective.
-  - **Discovery specialists** *(pre-stage 1, opt-in — see [ADR-0005](docs/adr/0005-add-discovery-track-before-stage-1.md))* — facilitator + product-strategist, user-researcher, game-designer, divergent-thinker, critic, prototyper. For ideation / design-sprint / concept-validation work producing `chosen-brief.md` before `/spec:idea`. Discovery-track methodology at [`docs/discovery-track.md`](docs/discovery-track.md).
-  - **Stock-taking specialist** *(pre-Discovery or pre-Stage 1, opt-in for legacy/brownfield projects — see [ADR-0007](docs/adr/0007-add-stock-taking-track-for-legacy-projects.md))* — `legacy-auditor`. Inventories existing systems (processes, use-cases, integrations, data, technical debt) before ideation or feature work. Produces `stock-taking-inventory.md` feeding Discovery Track or `/spec:idea`. Stock-taking methodology at [`docs/stock-taking-track.md`](docs/stock-taking-track.md).
-- **Project manager** (`.claude/agents/project-manager.md`) *(opt-in, service-provider context — see [ADR-0008](docs/adr/0008-add-project-manager-track.md))* — owns all project-level governance for client engagements: scope, stakeholders, risk/issue/change tracking, weekly cadence, status reports, project closure. Based on P3.Express. State lives `projects/<slug>/`. Links to but never edits `specs/` or `discovery/` artifacts. Project-manager methodology at [`docs/project-track.md`](docs/project-track.md).
-- **Roadmap manager** (`.claude/agents/roadmap-manager.md`) *(opt-in, product + project planning context — see [ADR-0012](docs/adr/0012-add-roadmap-management-track.md))* — owns outcome roadmaps, delivery-plan signals, stakeholder maps, communication logs, roadmap decisions under `roadmaps/<slug>/`. Reads linked `specs/`, `projects/`, `portfolio/` artifacts but never edits. Methodology at [`docs/roadmap-management-track.md`](docs/roadmap-management-track.md).
-- **Portfolio agent** (`.claude/agents/portfolio-manager.md`) *(opt-in, above Stage 1–11 — see [ADR-0009](docs/adr/0009-add-portfolio-manager-role.md))* — manages portfolios of programs and projects using P5 Express methodology (X/Y/Z cycles). Invoked by `/portfolio:x`, `/portfolio:y`, `/portfolio:z`. Reads `specs/*/workflow-state.md` for health signals; never modifies spec artifacts. Portfolio artifacts live under `portfolio/<slug>/`. Methodology at [`docs/portfolio-track.md`](docs/portfolio-track.md).
-- **Project scaffolder** (`.claude/agents/project-scaffolder.md`) *(opt-in, source-led adoption — see [ADR-0011](docs/adr/0011-add-project-scaffolding-track.md))* — inventories folders or Markdown files collected before template adoption, extracts evidence-backed project context, assembles reviewable starter drafts, hands off to Discovery, Specorator, Project Manager Track, or Stock-taking. State lives `scaffolding/<slug>/`. Methodology at [`docs/project-scaffolding-track.md`](docs/project-scaffolding-track.md).
-- **Quality assurance workflow** (`.claude/skills/quality-assurance/SKILL.md`) *(opt-in, ISO 9001-aligned readiness review)* — creates evidence-backed QA plans, checklists, readiness reviews, corrective actions for projects, portfolios, releases, suppliers, active features. State lives `quality/<slug>/`. Methodology at [`docs/quality-assurance-track.md`](docs/quality-assurance-track.md).
-- **Operational agents** (`agents/operational/`) — always-on, scheduled routines acting against live repo (review-bot, docs-review-bot, plan-recon-bot, dep-triage-bot, actions-bump-bot). Each = `PROMPT.md` + `README.md`.
-
-Skills (`.claude/skills/`) = reusable how-tos any agent invokes (`verify`, `new-adr`, `review-fix`). Ten workflow-conductor skills (`orchestrate`, `project-scaffolding`, `discovery-sprint`, `stock-taking`, `sales-cycle`, `project-run`, `roadmap-management`, `portfolio-track`, `quality-assurance`, `specorator-improvement`) = conversational entry points.
+Skills (`.claude/skills/`) = reusable how-tos any agent invokes (`verify`, `new-adr`, `review-fix`). Ten workflow-conductor skills (`orchestrate`, `project-scaffolding`, `discovery-sprint`, `stock-taking`, `sales-cycle`, `project-run`, `roadmap-management`, `portfolio-track`, `quality-assurance`, `specorator-improvement`) are the conversational entry points.
 
 ## Tool-specific notes
 
-- **Claude Code.** Subagents at `.claude/agents/`, slash commands at `.claude/commands/`, skills at `.claude/skills/`, operational memory at `.claude/memory/`, permission baseline at `.claude/settings.json`. `CLAUDE.md` imports this file plus constitution and memory index.
-- **Codex.** This file = primary context. Codex-specific instructions and workflows live in [`.codex/`](.codex/README.md): create worktree, verify, push, open PR, ask for next steps.
-- **Cursor / Aider.** This file = primary context. Cursor users: `.cursor/rules/` may be added later if needed.
-- **All tools.** Templates in `templates/` = framework-agnostic Markdown.
+- **Claude Code.** Subagents at `.claude/agents/`, slash commands at `.claude/commands/`, skills at `.claude/skills/`, memory at `.claude/memory/`, permissions at `.claude/settings.json`. `CLAUDE.md` imports this file plus constitution + memory index.
+- **Codex.** Primary context = this file. Codex specifics in [`.codex/`](.codex/README.md).
+- **Cursor / Aider.** Primary context = this file. `.cursor/rules/` optional.
+- **All tools.** Templates in `templates/` are framework-agnostic Markdown.
+
+## When the harness gets in your way
+
+Process-light by design, but with local + CI quality signals (`npm run verify`, PR-title checks, spell check, Pages deployment, security scans, dep automation). Branch protection is intentionally light for early template adoption. Fighting tooling? Fix the process, don't work around it.
