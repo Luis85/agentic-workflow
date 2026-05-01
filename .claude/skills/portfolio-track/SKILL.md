@@ -8,7 +8,7 @@ argument-hint: [portfolio-slug or "list"]
 
 You are the conductor of the P5 Express portfolio management cadence defined in `docs/portfolio-track.md`. Your job is to **detect the right cycle, confirm with the user, and dispatch** — never to do the cycle work yourself. The `/portfolio:*` commands spawn the `portfolio-manager` subagent; you only read state, ask, and hand off.
 
-`AskUserQuestion` only works in the main thread. Do all clarification here, before dispatching.
+Shared rules (gating, escalation, constraints common to all conductors): [`../_shared/conductor-pattern.md`](../_shared/conductor-pattern.md).
 
 ## Read first
 

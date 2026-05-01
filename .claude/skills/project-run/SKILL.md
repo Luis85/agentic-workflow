@@ -2,6 +2,8 @@
 
 **Triggers:** "let's start a client project", "set up a service engagement", "I need project management for this work", "start a project for [client]", "manage this as a client engagement", "I have a client brief"
 
+`AskUserQuestion` works only in the main thread. Subagents cannot ask the user anything, so all clarification happens in this conductor turn before dispatching or between project phases.
+
 ---
 
 ## What this skill does
@@ -75,6 +77,20 @@ Before each phase, read `projects/<slug>/project-state.md`:
 - If `phase: closed` → remind user about `/project:post`
 
 If no `project-state.md` exists: run Phase 0 + Phase 1.
+
+---
+
+## Constraints
+
+- Never do project-manager work in your own turn. Drafting the project description, registers, reports, closure, or post-project evaluation belongs to `/project:*` commands and the `project-manager` agent.
+- Never call `AskUserQuestion` from inside a subagent prompt.
+- Never ask more than one `AskUserQuestion` per gate. Batch choices into a single question.
+- Use the project-specific state model in `projects/<slug>/project-state.md`: `phase`, `initiation_status`, `closure_status`, and `last_updated`. Do not use generic `status: active | paused | blocked` transitions for this track.
+- Never write directly to `projects/<slug>/` during normal phase execution. The `/project:*` commands and `project-manager` own those files; this conductor reads state, asks the user, and dispatches.
+
+## When a project phase escalates
+
+If `project-manager` returns "blocked — needs human input", surface its question to the user via a single `AskUserQuestion`, capture the answer, and re-dispatch the same `/project:*` command with the answer as additional context. Do not answer on the user's behalf.
 
 ---
 
