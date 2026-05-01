@@ -27,23 +27,17 @@ chosen_briefs: []         # list of feature slugs spawned by handoff (0..N)
 | 5. Validate | `validation.md` | pending |
 | Handoff | `chosen-brief.md` (0..N) | pending |
 
-> **Statuses:** `pending` | `in-progress` | `complete` | `skipped` | `blocked`. Sprint-level status: `active | blocked | paused | complete | no-go | pivot`. `complete` means at least one brief was handed off; `no-go` means every candidate failed validation; `pivot` means re-framing is required.
+> **Statuses:** `pending` | `in-progress` | `complete` | `skipped` | `blocked`. Sprint-level: `active | blocked | paused | complete | no-go | pivot`. `complete` = at least one brief handed off; `no-go` = every candidate failed validation; `pivot` = re-framing required. Section semantics: see [`_shared/state-file-sections.md`](./_shared/state-file-sections.md).
 
 ## Skips
-
-> Phases may be skipped only when the sprint is being run in a compressed format (e.g. a 1-day "Lightning" sprint that collapses Frame+Diverge). Document the trade-off here.
 
 - e.g., `divergence.md` — collapsed into frame.md for compressed sprint
 
 ## Blocks
 
-> Anything blocking sprint progress.
-
 - e.g., `validation.md blocked — no target users available before <date>`
 
 ## Hand-off notes
-
-Free-form. What does the next phase / next agent / next human need to know? Where did the previous specialist stop?
 
 ```
 2026-04-27 (facilitator):     Sprint kicked off. Outcome: Q2 retention. Decider: <name>.
@@ -52,8 +46,6 @@ Free-form. What does the next phase / next agent / next human need to know? Wher
 ```
 
 ## Open clarifications
-
-> Add and resolve as they come up. Unresolved clarifications block phase transitions.
 
 - [ ] CLAR-001 — …
 - [x] CLAR-002 — …  *(resolved YYYY-MM-DD: …)*
