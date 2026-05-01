@@ -100,12 +100,12 @@ gh auth login
 | Workflow | Tool | Trigger | Purpose |
 |---|---|---|---|
 | [`verify.yml`](.github/workflows/verify.yml) | Node + npm | every PR + push to `main` | Mirrors `npm run verify` |
-| [`pr-title.yml`](.github/workflows/pr-title.yml) | — | every PR | Enforces Conventional Commits in PR titles |
-| [`pages.yml`](.github/workflows/pages.yml) | — | push to `main` | Deploys [`sites/`](sites/) to GitHub Pages |
-| [`gitleaks.yml`](.github/workflows/gitleaks.yml) | gitleaks | every PR + weekly cron | Secret scanning |
-| [`typos.yml`](.github/workflows/typos.yml) | typos | every PR | Typo scan |
-| [`actionlint.yml`](.github/workflows/actionlint.yml) | actionlint | only when `.github/workflows/**` or `.github/actions/**` change | Workflow file linter |
-| [`zizmor.yml`](.github/workflows/zizmor.yml) | zizmor | only when `.github/workflows/**` or `.github/actions/**` change + weekly cron | GitHub Actions security audit (SARIF → Security tab) |
+| [`pr-title.yml`](.github/workflows/pr-title.yml) | — | PR opened / edited / reopened / synchronize | Enforces Conventional Commits in PR titles |
+| [`pages.yml`](.github/workflows/pages.yml) | — | push to `main` + manual `workflow_dispatch` | Deploys [`sites/`](sites/) to GitHub Pages |
+| [`gitleaks.yml`](.github/workflows/gitleaks.yml) | gitleaks | every PR + push to `main` + weekly cron | Secret scanning |
+| [`typos.yml`](.github/workflows/typos.yml) | typos | every PR + push to `main` | Typo scan |
+| [`actionlint.yml`](.github/workflows/actionlint.yml) | actionlint | PR + push to `main`, only when `.github/workflows/**` or `.github/actions/**` change | Workflow file linter |
+| [`zizmor.yml`](.github/workflows/zizmor.yml) | zizmor | PR + push to `main` (path-scoped to `.github/workflows/**` or `.github/actions/**`) + weekly cron | GitHub Actions security audit (SARIF → Security tab) |
 
 > See [`docs/security-ci.md`](docs/security-ci.md) for the security-CI rationale.
 
