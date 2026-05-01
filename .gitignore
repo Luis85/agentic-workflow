@@ -18,6 +18,7 @@ node_modules/
 # Claude Code local state
 .claude/settings.local.json
 .claude/.session/
+.claude/scheduled_tasks.lock
 
 # Operational-bot scratch (FAILED-* recovery files, etc.)
 .claude/cache/
