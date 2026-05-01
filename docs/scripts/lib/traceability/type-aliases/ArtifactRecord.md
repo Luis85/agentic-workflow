@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../README.md)
+[**agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../modules.md) / [check-traceability](../README.md) / ArtifactRecord
+[agentic-workflow](../../../modules.md) / [lib/traceability](../README.md) / ArtifactRecord
 
 # Type Alias: ArtifactRecord
 
@@ -13,12 +13,6 @@
 ### artifact
 
 > **artifact**: `string`
-
-***
-
-### filePath
-
-> **filePath**: `string`
 
 ***
 

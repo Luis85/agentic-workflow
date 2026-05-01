@@ -38,6 +38,7 @@
 - [lib/runner](lib/runner/README.md)
 - [lib/spec-state](lib/spec-state/README.md)
 - [lib/tasks](lib/tasks/README.md)
+- [lib/traceability](lib/traceability/README.md)
 - [lib/workflow-schema](lib/workflow-schema/README.md)
 - [quality-metrics](quality-metrics/README.md)
 - [roadmap-digest](roadmap-digest/README.md)
