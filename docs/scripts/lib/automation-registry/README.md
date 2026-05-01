@@ -16,6 +16,7 @@ entry_point: true
 
 - [AutomationKind](type-aliases/AutomationKind.md)
 - [AutomationRegistry](type-aliases/AutomationRegistry.md)
+- [AutomationRegistryDiscovery](type-aliases/AutomationRegistryDiscovery.md)
 - [AutomationRegistryEntry](type-aliases/AutomationRegistryEntry.md)
 
 ## Variables
@@ -24,5 +25,6 @@ entry_point: true
 
 ## Functions
 
+- [discoverAutomationRegistryEntries](functions/discoverAutomationRegistryEntries.md)
 - [loadAutomationRegistry](functions/loadAutomationRegistry.md)
 - [validateAutomationRegistry](functions/validateAutomationRegistry.md)

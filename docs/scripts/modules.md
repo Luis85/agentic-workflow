@@ -6,6 +6,7 @@
 
 ## Modules
 
+- [automation-registry-discover](automation-registry-discover/README.md)
 - [check-adr-index](check-adr-index/README.md)
 - [check-agents](check-agents/README.md)
 - [check-automation-registry](check-automation-registry/README.md)

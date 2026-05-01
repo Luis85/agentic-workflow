@@ -40,6 +40,16 @@ entries:
     emits_json: false
     used_by: [human, agent]
     rerun_command: npm run verify:changed
+  - id: script:automation-registry-discover
+    kind: script
+    command: npm run automation:registry:discover
+    path: scripts/automation-registry-discover.ts
+    purpose: Emit candidate registry entries for newly discovered automation surfaces.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: true
+    used_by: [human, agent]
+    rerun_command: npm run automation:registry:discover
   - id: script:quality-metrics
     kind: script
     command: npm run quality:metrics

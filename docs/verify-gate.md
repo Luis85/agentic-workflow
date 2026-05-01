@@ -49,7 +49,7 @@ For narrower local iteration, the template exposes tiered read-only gates:
 | `npm run verify:changed` | Changed-file gate that selects the smallest mapped read-only checks relative to `origin/main`. |
 | `npm run verify:json` | Full gate with machine-readable aggregate diagnostics and rerun commands. |
 
-The automation inventory that backs these commands lives in `tools/automation-registry.yml`; `npm run check:automation-registry` verifies that package scripts, GitHub workflows, skills, and operational agents remain registered.
+The automation inventory that backs these commands lives in `tools/automation-registry.yml`; `npm run check:automation-registry` verifies that package scripts, GitHub workflows, skills, and operational agents remain registered. When a surface is missing, `npm run automation:registry:discover` emits candidate entries for humans or agents to annotate before committing.
 
 ## Reporting
 
