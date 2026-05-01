@@ -105,6 +105,11 @@ export const checkTasks = [
     label: "Traceability IDs",
     script: "scripts/check-traceability.ts",
   },
+  {
+    name: "check:token-budget",
+    label: "Token budget caps",
+    script: "scripts/check-token-budget.ts",
+  },
 ];
 
 /**
