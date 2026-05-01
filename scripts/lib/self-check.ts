@@ -35,6 +35,8 @@ export type SelfCheckOptions = {
   runner?: (command: string, args: string[]) => { status: number | null; stdout: string; stderr: string };
 };
 
+const noMaturityGapsMessage = "No maturity gaps detected for this level.";
+
 type VerifyJsonOutput = {
   check: string;
   status: "pass" | "fail";
@@ -181,7 +183,7 @@ function selfCheckRecommendations(
   if (metrics.summary.overallScore < 80 && metrics.summary.workflowCount > 0) {
     recommendations.push(`Improve workflow evidence; current overall workflow score is ${metrics.summary.overallScore.toFixed(1)}%.`);
   }
-  for (const gap of metrics.summary.maturity.gaps.slice(0, 3)) recommendations.push(gap);
+  for (const gap of actionableMaturityGaps(metrics.summary.maturity.gaps).slice(0, 3)) recommendations.push(gap);
   if (metrics.signals.activeBlockers.length > 0) {
     recommendations.push(`Resolve active workflow blockers: ${metrics.signals.activeBlockers.slice(0, 3).join(", ")}.`);
   }
@@ -208,6 +210,16 @@ function selfCheckSummary(
     `Maturity: L${metrics.summary.maturity.level} ${metrics.summary.maturity.name}.`,
     `Learning evidence: ${learning.retrospectiveCount} retrospective(s), ${learning.qualityReviewCount} quality review(s), ${learning.adrCount} ADR(s).`,
   ].join(" ");
+}
+
+/**
+ * Return only maturity gaps that require follow-up action.
+ *
+ * @param gaps - Maturity gap messages returned by quality metrics.
+ * @returns Actionable gap messages, excluding the healthy placeholder.
+ */
+export function actionableMaturityGaps(gaps: string[]): string[] {
+  return gaps.filter((gap) => gap !== noMaturityGapsMessage);
 }
 
 function parseVerifyJson(raw: string): VerifyJsonOutput | null {

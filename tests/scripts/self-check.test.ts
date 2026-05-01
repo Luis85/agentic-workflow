@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { collectSelfCheckReport, renderSelfCheckReport } from "../../scripts/lib/self-check.js";
+import { actionableMaturityGaps, collectSelfCheckReport, renderSelfCheckReport } from "../../scripts/lib/self-check.js";
 
 test("self-check reports pass with deterministic gate, metrics, and learning signals", () => {
   const report = collectSelfCheckReport({
@@ -65,4 +65,11 @@ test("self-check fails with a stable diagnostic when verify json is malformed", 
   assert.equal(report.status, "fail");
   assert.equal(report.tools[0].diagnostics[0].code, "SELF_VERIFY_JSON");
   assert.equal(report.tools[0].diagnostics[0].rerun, "npm run verify:json");
+});
+
+test("self-check recommendations ignore the healthy maturity placeholder", () => {
+  assert.deepEqual(actionableMaturityGaps(["No maturity gaps detected for this level."]), []);
+  assert.deepEqual(actionableMaturityGaps(["No maturity gaps detected for this level.", "Add QA review evidence."]), [
+    "Add QA review evidence.",
+  ]);
 });

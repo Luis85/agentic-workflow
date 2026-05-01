@@ -21,5 +21,6 @@ entry_point: true
 
 ## Functions
 
+- [actionableMaturityGaps](functions/actionableMaturityGaps.md)
 - [collectSelfCheckReport](functions/collectSelfCheckReport.md)
 - [renderSelfCheckReport](functions/renderSelfCheckReport.md)
