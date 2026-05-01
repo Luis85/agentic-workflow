@@ -1,5 +1,13 @@
 import { SpawnSyncReturns, spawnSync } from "node:child_process";
-import { CheckResult, dependencyReadinessCheck, workflowReadinessChecks } from "./lib/doctor.js";
+import fs from "node:fs";
+import path from "node:path";
+import {
+  CheckResult,
+  branchReadinessCheck,
+  dependencyReadinessCheck,
+  workflowReadinessChecks,
+  worktreeHygieneCheck,
+} from "./lib/doctor.js";
 import { repoRoot } from "./lib/repo.js";
 
 type Check = {
@@ -70,8 +78,23 @@ function checkGitBranch(): Check {
       }
 
       const branchName = firstLine(branch.stdout);
-      const upstreamName = upstream.status === 0 ? firstLine(upstream.stdout) : "no upstream";
-      return { name: "branch", status: "pass", detail: `${branchName} -> ${upstreamName}` };
+      if (upstream.status !== 0) {
+        return { name: "branch", status: "pass", detail: `${branchName} -> no upstream` };
+      }
+
+      const upstreamName = firstLine(upstream.stdout);
+      const counts = run("git", ["rev-list", "--left-right", "--count", "HEAD...@{u}"]);
+      if (counts.status !== 0) {
+        return { name: "branch", status: "fail", detail: "could not compare branch with upstream" };
+      }
+
+      const [aheadText = "0", behindText = "0"] = firstLine(counts.stdout).split(/\s+/);
+      return branchReadinessCheck({
+        branchName,
+        upstreamName,
+        ahead: Number(aheadText),
+        behind: Number(behindText),
+      });
     },
   };
 }
@@ -102,8 +125,20 @@ function checkWorktrees(): Check {
       const result = run("git", ["worktree", "list", "--porcelain"]);
       if (result.status !== 0) return { name: "worktrees", status: "fail", detail: "git worktree list failed" };
 
-      const worktreeCount = result.stdout.split(/\r?\n/).filter((line) => line.startsWith("worktree ")).length;
-      return { name: "worktrees", status: "pass", detail: `${worktreeCount} registered` };
+      const registeredWorktrees = result.stdout
+        .split(/\r?\n/)
+        .filter((line) => line.startsWith("worktree "))
+        .map((line) => line.slice("worktree ".length));
+      const worktreeDirectories = worktreeDirectoryNames();
+      const mergedBranches = mergedLocalBranches();
+      const branch = run("git", ["branch", "--show-current"]);
+
+      return worktreeHygieneCheck({
+        registeredWorktrees,
+        worktreeDirectories,
+        mergedBranches,
+        currentBranch: branch.status === 0 ? firstLine(branch.stdout) : "",
+      });
     },
   };
 }
@@ -148,6 +183,24 @@ function run(command: string, args: string[]): SpawnSyncReturns<string> {
     encoding: "utf8",
     windowsHide: true,
   });
+}
+
+function worktreeDirectoryNames(): string[] {
+  const worktreesPath = path.join(repoRoot, ".worktrees");
+  if (!fs.existsSync(worktreesPath)) return [];
+  return fs
+    .readdirSync(worktreesPath, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name);
+}
+
+function mergedLocalBranches(): string[] {
+  const result = run("git", ["branch", "--merged", "origin/main", "--format=%(refname:short)"]);
+  if (result.status !== 0) return [];
+  return result.stdout
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
 }
 
 function commandInvocation(command: string, args: string[]): { command: string; args: string[] } {

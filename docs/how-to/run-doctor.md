@@ -16,14 +16,14 @@
    - **Node** — version satisfies the engines field (`>=20`).
    - **npm** — present on `PATH`.
    - **git** — present on `PATH`.
-   - **branch** — current branch and upstream.
+   - **branch** — current branch, upstream, and ahead/behind state.
    - **git status** — clean / dirty.
-   - **worktrees** — every entry under `.worktrees/` is registered with git.
+   - **worktrees** — registered worktrees, unregistered `.worktrees/` directories, and merged local branches that are ready for cleanup.
    - **dependencies** — `node_modules/` matches `package.json`.
    - **ADR index** — re-runs `check:adr-index`.
    - **command inventories** — re-runs `check:commands`.
    - **verify gate** — re-runs `npm run verify` end-to-end.
-3. For every `warn` line, read the `hint` to decide if it matters for your task. Many warns (e.g. dirty tree on a topic branch) are expected.
+3. For every `warn` line, read the `hint` to decide if it matters for your task. A stale integration branch usually means `git pull --ff-only`; a merged branch or unregistered worktree usually means cleanup after the related PR is confirmed merged.
 4. For every `fail` line, fix the underlying cause before continuing. The doctor exits non-zero on any failure.
 5. Re-run until the trailing line reads `doctor: ok`.
 

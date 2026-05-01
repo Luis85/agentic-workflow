@@ -10,6 +10,20 @@ export type CheckResult = {
   hint?: string;
 };
 
+export type BranchReadinessInput = {
+  branchName: string;
+  upstreamName: string;
+  ahead: number;
+  behind: number;
+};
+
+export type WorktreeHygieneInput = {
+  registeredWorktrees: string[];
+  worktreeDirectories: string[];
+  mergedBranches: string[];
+  currentBranch: string;
+};
+
 type PackageJson = {
   dependencies?: Record<string, string>;
   devDependencies?: Record<string, string>;
@@ -101,6 +115,77 @@ export function workflowReadinessChecks(root: string): CheckResult[] {
   return workflowContracts.map((contract) => workflowReadinessCheck(root, contract));
 }
 
+/**
+ * Check whether the current branch is fresh enough to start or resume work.
+ *
+ * @param input - Current branch, upstream, and ahead/behind counts.
+ * @returns Branch readiness result.
+ */
+export function branchReadinessCheck(input: BranchReadinessInput): CheckResult {
+  const { branchName, upstreamName, ahead, behind } = input;
+  const detail = `${branchName} -> ${upstreamName}`;
+  const integrationBranch = branchName === "main" || branchName === "develop";
+
+  if (integrationBranch && ahead > 0) {
+    return {
+      name: "branch",
+      status: "fail",
+      detail: `${detail}; ahead ${ahead}`,
+      hint: `preserve any work on a topic branch, then reset ${branchName} only after confirming it is safe`,
+    };
+  }
+
+  if (behind > 0) {
+    return {
+      name: "branch",
+      status: "warn",
+      detail: `${detail}; behind ${behind}`,
+      hint: integrationBranch ? `run git pull --ff-only` : `merge or recreate from ${upstreamName} before depending on latest changes`,
+    };
+  }
+
+  if (ahead > 0) {
+    return {
+      name: "branch",
+      status: "warn",
+      detail: `${detail}; ahead ${ahead}`,
+      hint: "push or review local commits before handing off the branch",
+    };
+  }
+
+  return { name: "branch", status: "pass", detail };
+}
+
+/**
+ * Check whether .worktrees/ matches git's registered worktree state.
+ *
+ * @param input - Registered worktrees, filesystem directories, and merged local branches.
+ * @returns Worktree hygiene result.
+ */
+export function worktreeHygieneCheck(input: WorktreeHygieneInput): CheckResult {
+  const registeredNames = new Set(input.registeredWorktrees.map((entry) => normalizeWorktreeName(entry)).filter(Boolean));
+  const unregisteredDirectories = input.worktreeDirectories.filter((directory) => !registeredNames.has(directory));
+  const staleBranches = input.mergedBranches.filter(
+    (branch) => branch !== input.currentBranch && branch !== "main" && branch !== "develop",
+  );
+
+  const warnings = [
+    ...unregisteredDirectories.map((directory) => `.worktrees/${directory} is not registered`),
+    ...staleBranches.map((branch) => `${branch} is already merged into origin/main`),
+  ];
+
+  if (warnings.length > 0) {
+    return {
+      name: "worktrees",
+      status: "warn",
+      detail: `${input.registeredWorktrees.length} registered; ${warnings.length} hygiene warning(s)`,
+      hint: `${warnings.join("; ")}. After merged PRs are confirmed, remove stale worktrees/branches with the cleanup workflow.`,
+    };
+  }
+
+  return { name: "worktrees", status: "pass", detail: `${input.registeredWorktrees.length} registered` };
+}
+
 function workflowReadinessCheck(root: string, contract: WorkflowContract): CheckResult {
   const absolutePath = path.join(root, contract.filePath);
   if (!fs.existsSync(absolutePath)) {
@@ -128,4 +213,8 @@ function workflowReadinessCheck(root: string, contract: WorkflowContract): Check
     status: "pass",
     detail: `${contract.filePath} ready`,
   };
+}
+
+function normalizeWorktreeName(worktreePath: string): string {
+  return path.basename(worktreePath.replace(/[/\\]$/, ""));
 }
