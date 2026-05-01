@@ -63,14 +63,18 @@ const workflowContracts: WorkflowContract[] = [
       "npm ci",
       "npm run verify",
     ],
-    requiredPatterns: [
-      { description: "actions/checkout SHA-pinned", pattern: /actions\/checkout@[0-9a-f]{40}\b/ },
-      { description: "actions/setup-node SHA-pinned", pattern: /actions\/setup-node@[0-9a-f]{40}\b/ },
-    ],
     requiredEvaluators: [
       {
         description: "push trigger covers main branch",
         evaluate: pushTriggerCoversMain,
+      },
+      {
+        description: "actions/checkout SHA-pinned",
+        evaluate: (text) => verifyJobActionPinned(text, "actions/checkout"),
+      },
+      {
+        description: "actions/setup-node SHA-pinned",
+        evaluate: (text) => verifyJobActionPinned(text, "actions/setup-node"),
       },
     ],
     hint: "restore the verify workflow contract so CI mirrors the local verify gate (see docs/pr-ci-gate.md)",
@@ -270,4 +274,32 @@ function pushTriggerCoversMain(text: string): boolean {
   if (push == null || typeof push !== "object") return false;
   const branches = (push as { branches?: unknown }).branches;
   return Array.isArray(branches) && branches.includes("main");
+}
+
+function verifyJobActionPinned(text: string, actionName: string): boolean {
+  let parsed: unknown;
+  try {
+    parsed = YAML.parse(text);
+  } catch {
+    return false;
+  }
+  const jobs = (parsed as { jobs?: unknown } | null)?.jobs;
+  if (jobs == null || typeof jobs !== "object") return false;
+  const verifyJob = (jobs as { verify?: unknown }).verify;
+  if (verifyJob == null || typeof verifyJob !== "object") return false;
+  const steps = (verifyJob as { steps?: unknown }).steps;
+  if (!Array.isArray(steps)) return false;
+
+  const usesEntries = steps
+    .filter(
+      (step): step is { uses: string } =>
+        step != null &&
+        typeof step === "object" &&
+        typeof (step as { uses?: unknown }).uses === "string",
+    )
+    .map((step) => step.uses)
+    .filter((uses) => uses.startsWith(`${actionName}@`));
+
+  if (usesEntries.length === 0) return false;
+  return usesEntries.every((uses) => /^[^@]+@[0-9a-f]{40}$/.test(uses));
 }

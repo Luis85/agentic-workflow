@@ -119,7 +119,7 @@ Extended `scripts/lib/doctor.ts` with the readiness contract for `.github/workfl
 3. **verify.yml contract entry expanded** with:
    - New string markers `pull_request:` and `push:` (catch the "trigger key missing entirely" case).
    - The push-covers-main evaluator described above.
-   - New regex patterns enforcing SHA-pin format on `actions/checkout` and `actions/setup-node`: `actions\/<action>@[0-9a-f]{40}\b`. A 40-character lowercase hex commit SHA is the deterministic shape used by GitHub for commit-pinned actions; this matches the existing `chore(ci): pin all action references to commit SHA` policy.
+   - SHA-pin evaluators for `actions/checkout` and `actions/setup-node` that walk `jobs.verify.steps` (PR #149 round 3 review found the original whole-file regex was bypassable: a separate pinned job in the same workflow could mask an unpinned `verify` job step). Each evaluator reads the verify-job step list, filters `uses:` entries that target the action, and verifies every reference matches `^[^@]+@[0-9a-f]{40}$`. A 40-character lowercase hex commit SHA is the deterministic shape used by GitHub for commit-pinned actions; this matches the existing `chore(ci): pin all action references to commit SHA` policy.
 
 `workflowReadinessCheck` now collects missing markers, missing patterns, and missing evaluators into a single `missing` list (markers first, then patterns, then evaluators) and surfaces them in the failure detail.
 
@@ -134,7 +134,7 @@ Per the §Workflow file contract scope, the doctor check does not enforce:
 
 ### Tests
 
-Added seven focused tests under `tests/scripts/doctor.test.ts`:
+Added eight focused tests under `tests/scripts/doctor.test.ts`:
 
 | Test | Scenario | Expected fail detail |
 |---|---|---|
@@ -143,19 +143,20 @@ Added seven focused tests under `tests/scripts/doctor.test.ts`:
 | push trigger missing entirely | verify.yml triggers only on `pull_request: branches: [main]` (no push: at all) | `... missing push:, push trigger covers main branch` |
 | push: empty / main only under pull_request | `push:` (null) precedes `pull_request: branches: [main]` — the round 2 P1 bypass case | `... missing push trigger covers main branch` |
 | inline flow form `branches: [main]` is accepted | YAML flow form for the push trigger — round 2 P2 false-positive case | `pass` |
-| checkout not SHA-pinned | `actions/checkout@v6` instead of 40-hex | `... missing actions/checkout SHA-pinned` |
-| setup-node not SHA-pinned | `actions/setup-node@v6` instead of 40-hex | `... missing actions/setup-node SHA-pinned` |
+| checkout not SHA-pinned | `actions/checkout@v6` in verify-job step | `... missing actions/checkout SHA-pinned` |
+| setup-node not SHA-pinned | `actions/setup-node@v6` in verify-job step | `... missing actions/setup-node SHA-pinned` |
+| verify job unpinned but another job pinned | verify uses `@v6`, sibling job uses 40-hex — round 3 P2 bypass case | `... missing actions/checkout SHA-pinned, actions/setup-node SHA-pinned` |
 
 The two existing tests ("validates verify and Pages workflow contracts" / "reports missing workflow contract markers") were updated. The valid-workflow fixture now includes the new markers + SHA-pinned actions; the missing-markers fixture now expects all ten missing items in the failure detail. A `validVerifyWorkflow()` helper holds the fixture.
 
-Test count: 150 → 157.
+Test count: 150 → 158.
 
 Resolves SPEC-V04-002 (CI readiness contract). Satisfies REQ-V04-001 (PR CI gates), REQ-V04-002 (preserve local-first), NFR-V04-002 (deterministic + low-noise readiness signal).
 
 ### Verification
 
 - `npm run typecheck:scripts`
-- `npm run test:scripts` (157 pass, 0 fail)
+- `npm run test:scripts` (158 pass, 0 fail)
 - `npm run doctor` (passes against the real `.github/workflows/verify.yml`)
 - `npm run verify`
 
