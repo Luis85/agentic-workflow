@@ -30,6 +30,7 @@ Records of architecturally significant decisions. Format follows Michael Nygard'
 | [0015](0015-codify-codex-pr-review-loop.md) | Codify a bounded Codex review loop on every pull request | Proposed |
 | [0016](0016-design-system-as-skill.md) | Adopt the specorator-design skill as the canonical brand source | Proposed |
 | [0017](0017-adopt-inputs-folder-as-canonical-ingestion-zone.md) | Adopt `inputs/` as the canonical ingestion folder for new work packages | Proposed |
+| [0018](0018-sites-consumes-tokens.md) | Flip sites/styles.css to consume design-system tokens | Proposed |
 <!-- END GENERATED: adr-index -->
 
 ## Conventions

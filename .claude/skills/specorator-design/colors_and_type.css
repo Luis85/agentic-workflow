@@ -8,7 +8,7 @@
  *   <body class="specorator">  // optional; tokens are on :root
  */
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;650;700;760;800;850&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
 
 :root {
   /* ─────────── Color · Core ─────────── */
@@ -46,6 +46,20 @@
   --on-ink:      #f8faf5;
   --on-ink-mute: #c7d5cd;
   --on-ink-dim:  rgba(248, 250, 245, 0.55);
+
+
+  /* ─────────── Color · Lane text (darker readable variants on lane-soft) ─────────── */
+  --lane-define-text: #0e6a48;
+  --lane-build-text:  #2d4a73;
+  --lane-ship-text:   #6b5400;
+
+  /* ─────────── Color · Diff / annotation ─────────── */
+  --diff-add-text: #8a4a00;
+
+  /* ─────────── Color · macOS traffic lights (terminal chrome) ─────────── */
+  --macos-red:    #ff5f57;
+  --macos-yellow: #febc2e;
+  --macos-green:  #28c840;
 
   /* ─────────── Type · Families ─────────── */
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,

@@ -1,3 +1,5 @@
+@import url("../.claude/skills/specorator-design/colors_and_type.css");
+
 :root {
   color-scheme: light;
   --ink: #17201b;
@@ -26,7 +28,7 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-sans);
   line-height: 1.5;
 }
 
@@ -124,7 +126,7 @@ button:focus-visible {
 }
 
 .button:hover {
-  background: #0e1512;
+  background: var(--ink-soft);
 }
 
 .button.secondary {
@@ -133,7 +135,7 @@ button:focus-visible {
 }
 
 .button.secondary:hover {
-  background: #eef1ea;
+  background: var(--surface-3);
 }
 
 .button.highlight {
@@ -286,7 +288,7 @@ h1 {
 
 .section.dark {
   background: var(--ink);
-  color: #f8faf5;
+  color: var(--on-ink);
 }
 
 .section-header {
@@ -314,7 +316,7 @@ h1 {
 .dark .section-kicker,
 .dark .card p,
 .dark .step p {
-  color: #c7d5cd;
+  color: var(--on-ink-mute);
 }
 
 .split {
@@ -332,11 +334,11 @@ h1 {
 }
 
 .panel.problem {
-  background: #fff8d8;
+  background: var(--soft-yellow);
 }
 
 .panel.solution {
-  background: #e6f6ef;
+  background: var(--soft-green);
 }
 
 .panel h2,
@@ -353,7 +355,7 @@ h1 {
 }
 
 .fit-section {
-  background: #f5f7f1;
+  background: var(--surface-2);
 }
 
 .fit-grid {
@@ -375,7 +377,7 @@ h1 {
 }
 
 .fit-panel.poor-fit {
-  background: #fff5ee;
+  background: var(--soft-orange);
 }
 
 .fit-panel h3 {
@@ -403,7 +405,7 @@ h1 {
 .card {
   min-height: 170px;
   padding: 22px;
-  border: 1px solid rgba(216, 222, 211, 0.72);
+  border: 1px solid var(--line-soft);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.06);
 }
@@ -474,7 +476,7 @@ h1 {
   position: relative;
   margin: 6px 0 0 !important;
   color: var(--muted) !important;
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 11px !important;
   font-weight: 700 !important;
   letter-spacing: 0.08em;
@@ -488,7 +490,7 @@ h1 {
   border-radius: 8px;
   background: rgba(27, 111, 85, 0.08);
   color: var(--accent-strong);
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 700;
   word-break: break-word;
@@ -562,7 +564,7 @@ h1 {
 
 .stage-owner {
   display: block;
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
   color: var(--muted);
@@ -571,7 +573,7 @@ h1 {
 }
 
 .stage.gate .stage-owner {
-  color: #6b5400;
+  color: var(--lane-ship-text);
 }
 
 .stage.gate {
@@ -587,7 +589,7 @@ h1 {
 }
 
 .team-section {
-  background: #f5f7f1;
+  background: var(--surface-2);
 }
 
 .team-grid {
@@ -617,21 +619,21 @@ h1 {
 }
 
 .team-card[data-lane="define"]::before {
-  background: #159166;
+  background: var(--lane-define);
 }
 
 .team-card[data-lane="build"]::before {
-  background: #365fa3;
+  background: var(--lane-build);
 }
 
 .team-card[data-lane="ship"]::before {
-  background: #d49a14;
+  background: var(--lane-ship);
 }
 
 .team-card:hover {
   border-color: var(--ink);
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(23, 32, 27, 0.08);
+  box-shadow: var(--shadow-md);
 }
 
 .team-card-head {
@@ -642,7 +644,7 @@ h1 {
 }
 
 .team-num {
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 700;
   color: var(--muted);
@@ -657,17 +659,17 @@ h1 {
   color: var(--accent-strong);
   padding: 3px 9px;
   border-radius: 999px;
-  background: #bce5d2;
+  background: var(--lane-define-soft);
 }
 
 .team-card[data-lane="build"] .team-lane {
-  color: #2d4a73;
-  background: #cbd9f7;
+  color: var(--lane-build-text);
+  background: var(--lane-build-soft);
 }
 
 .team-card[data-lane="ship"] .team-lane {
-  color: #6b5400;
-  background: #f9e3a0;
+  color: var(--lane-ship-text);
+  background: var(--lane-ship-soft);
 }
 
 .team-card h3 {
@@ -688,7 +690,7 @@ h1 {
   border-radius: 5px;
   background: rgba(23, 32, 27, 0.06);
   color: var(--ink);
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 700;
 }
@@ -711,7 +713,7 @@ h1 {
   border-radius: 5px;
   background: rgba(23, 32, 27, 0.06);
   color: var(--ink);
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 700;
 }
@@ -784,7 +786,7 @@ h1 {
   margin: 0;
   padding: 0;
   list-style: none;
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   color: var(--muted);
 }
@@ -819,7 +821,7 @@ h1 {
   border-radius: 6px;
   background: rgba(27, 111, 85, 0.08);
   color: var(--accent-strong);
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 12.5px;
   font-weight: 800;
 }
@@ -867,13 +869,13 @@ h1 {
 
 .roster-group h3 {
   margin: 0;
-  color: #f8faf5;
+  color: var(--on-ink);
   font-size: 20px;
   letter-spacing: -0.01em;
 }
 
 .roster-count {
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   color: rgba(248, 250, 245, 0.55);
   letter-spacing: 0.04em;
@@ -904,7 +906,7 @@ h1 {
   border-radius: 6px;
   background: rgba(230, 255, 112, 0.1);
   color: var(--highlighter);
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 700;
 }
@@ -945,7 +947,7 @@ h1 {
 }
 
 .example-section {
-  background: #eef1ea;
+  background: var(--surface-3);
 }
 
 .faq-section {
@@ -989,7 +991,7 @@ h1 {
   border-radius: 4px;
   background: rgba(23, 32, 27, 0.06);
   color: var(--ink);
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 12.5px;
   font-weight: 700;
 }
@@ -1014,7 +1016,7 @@ h1 {
   border-radius: 12px;
   background: var(--surface);
   overflow: hidden;
-  box-shadow: 0 6px 20px rgba(23, 32, 27, 0.04);
+  box-shadow: var(--shadow-sm);
 }
 
 .artifact-card-head {
@@ -1037,7 +1039,7 @@ h1 {
   padding: 0;
   background: transparent;
   color: var(--muted);
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 600;
 }
@@ -1048,7 +1050,7 @@ h1 {
   padding: 18px 20px;
   background: var(--surface);
   color: var(--ink);
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 12.5px;
   line-height: 1.65;
   white-space: pre-wrap;
@@ -1075,7 +1077,7 @@ h1 {
 }
 
 .artifact-source .md-em {
-  color: #8a4a00;
+  color: var(--diff-add-text);
   font-weight: 700;
 }
 
@@ -1102,7 +1104,7 @@ h1 {
   border-radius: 4px;
   background: rgba(23, 32, 27, 0.06);
   color: var(--ink);
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 700;
 }
@@ -1154,7 +1156,7 @@ h1 {
 }
 
 .step code {
-  color: #f8faf5;
+  color: var(--on-ink);
   font-size: 0.92em;
 }
 
@@ -1177,7 +1179,7 @@ h1 {
 
 .quickstart p {
   margin-bottom: 0;
-  color: #c7d5cd;
+  color: var(--on-ink-mute);
 }
 
 .terminal {
@@ -1185,8 +1187,8 @@ h1 {
   border: 1px solid rgba(216, 222, 211, 0.18);
   border-radius: 10px;
   overflow: hidden;
-  background: #0e1512;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  background: var(--ink-soft);
+  box-shadow: var(--shadow-term);
 }
 
 .terminal-chrome {
@@ -1207,21 +1209,21 @@ h1 {
 }
 
 .terminal-dot-red {
-  background: #ff5f57;
+  background: var(--macos-red);
 }
 
 .terminal-dot-yellow {
-  background: #febc2e;
+  background: var(--macos-yellow);
 }
 
 .terminal-dot-green {
-  background: #28c840;
+  background: var(--macos-green);
 }
 
 .terminal-title {
   margin-left: 10px;
   color: rgba(248, 250, 245, 0.55);
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0;
 }
@@ -1231,9 +1233,9 @@ h1 {
   margin: 0;
   overflow-x: auto;
   padding: 18px 20px;
-  background: #0e1512;
-  color: #f8faf5;
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  background: var(--ink-soft);
+  color: var(--on-ink);
+  font-family: var(--font-mono);
   font-size: 14px;
   line-height: 1.6;
 }
