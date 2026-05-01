@@ -64,6 +64,9 @@ One command per workflow phase. Subdirectories namespace commands (`spec/specify
 # Stock-taking Track:
 /stock-taking:audit       /stock-taking:handoff     /stock-taking:scope
 /stock-taking:start       /stock-taking:synthesize
+
+# token-review.md:
+/token-review.md:token-review
 <!-- END GENERATED: command-inventory -->
 
 ## Usage

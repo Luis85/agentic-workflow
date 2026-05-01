@@ -21,6 +21,7 @@ One-line pointers into `.claude/memory/`. Read first. See [`README.md`](./README
 - **Parallel PRs: merge not rebase** — preserves reviewer line anchors. See [`feedback_parallel_pr_conflicts.md`](./feedback_parallel_pr_conflicts.md).
 - **Autonomous merge** — only after green review + green CI + clean mergeable. See [`feedback_autonomous_merge.md`](./feedback_autonomous_merge.md).
 - **Memory edits are docs-only** — no changeset, no bundling with code. See [`feedback_memory_edits.md`](./feedback_memory_edits.md).
+- **Token-budget review** — quarterly or pre-release: `/token-review` runs the audit + emits a per-area cleanup plan. See [`token-budget-review`](../skills/token-budget-review/SKILL.md).
 
 ## How this index is maintained
 

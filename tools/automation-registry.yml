@@ -616,6 +616,15 @@ entries:
     emits_json: false
     used_by: [agent]
     rerun_command: open .claude/skills/tdd-cycle/SKILL.md
+  - id: skill:token-budget-review
+    kind: skill
+    path: .claude/skills/token-budget-review/SKILL.md
+    purpose: Agent-facing reusable workflow skill.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: false
+    used_by: [agent]
+    rerun_command: open .claude/skills/token-budget-review/SKILL.md
   - id: skill:tracer-bullet
     kind: skill
     path: .claude/skills/tracer-bullet/SKILL.md

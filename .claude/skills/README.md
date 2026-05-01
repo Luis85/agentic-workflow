@@ -81,6 +81,7 @@ Skills MAY include supporting files (templates, scripts, fixtures) next to `SKIL
 | [`new-adr/`](new-adr/SKILL.md) | Scaffold new ADR from `templates/adr-template.md` with next free number. | `architect` (no `Bash` — list next number from directory listing user supplies; or hand off to agent with `Bash`) |
 | [`review-fix/`](review-fix/SKILL.md) | Turn automated‑review finding into isolated worktree + plan, ready for TDD. | `dev`, `reviewer` (with caveats — `reviewer` typically lack worktree authority; hand off to `dev`) |
 | [`quality-metrics/`](quality-metrics/SKILL.md) | Present deterministic project quality KPIs from workflow deliverables, traceability, docs, QA checklists, maturity, trend snapshots. | `/quality:status`; `qa`, `reviewer`, `release-manager`, `retrospective`, `orchestrator`; project/portfolio/roadmap agents via JSON handoff |
+| [`token-budget-review/`](token-budget-review/SKILL.md) | Audit prompt-budget consumption by area (always-loaded, skills, examples, docs, worktrees, templates, ops bots) and emit a per-area cleanup plan. | `/token-review`; quarterly housekeeping; pre-release. |
 
 ## How to use
 
