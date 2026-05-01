@@ -61,3 +61,32 @@ test("automation registry reports invalid entry metadata", () => {
     fs.rmSync(root, { recursive: true, force: true });
   }
 });
+
+test("automation registry reports non-string paths without throwing", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "agentic-workflow-registry-path-test-"));
+  try {
+    fs.writeFileSync(path.join(root, "package.json"), JSON.stringify({ scripts: {} }), "utf8");
+    const errors = validateAutomationRegistry(
+      {
+        version: 1,
+        entries: [
+          {
+            id: "bad-path",
+            kind: "script",
+            path: true,
+            purpose: "Bad path fixture.",
+            read_only: true,
+            safe_to_run_locally: true,
+            emits_json: false,
+            used_by: ["agent"],
+            rerun_command: "npm run bad-path",
+          } as unknown as Parameters<typeof validateAutomationRegistry>[0]["entries"][number],
+        ],
+      },
+      root,
+    );
+    assert.equal(errors.some((error) => typeof error !== "string" && error.code === "AUTO_PATH"), true);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});

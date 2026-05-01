@@ -119,3 +119,51 @@ test("runNodeTasksJson emits rerun commands for machine consumers", () => {
   assert.equal(output.results[0].rerun, "npm run check:fixture");
   assert.equal(output.results[0].errors[0].rerun, "npm run check:fixture");
 });
+
+test("runNodeTasksJson falls back when JSON diagnostics have the wrong shape", () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "agentic-workflow-runner-bad-json-test-"));
+  const scriptPath = path.join(tempDir, "bad-json-check.ts");
+  const logs: string[] = [];
+  const originalLog = console.log;
+  const originalExit = process.exit;
+
+  fs.writeFileSync(
+    scriptPath,
+    [
+      "console.log(JSON.stringify({ check: 'check:fixture', status: 'fail' }));",
+      "process.exit(1);",
+    ].join("\n"),
+    "utf8",
+  );
+
+  try {
+    console.log = (message?: unknown) => {
+      logs.push(String(message));
+    };
+    process.exit = ((code?: string | number | null) => {
+      throw new Error(`exit:${code}`);
+    }) as typeof process.exit;
+
+    assert.throws(
+      () =>
+        runNodeTasksJson(
+          [{ name: "check:fixture", label: "Fixture check", script: scriptPath, jsonDiagnostics: true }],
+          { heading: "verify" },
+        ),
+      /exit:1/,
+    );
+  } finally {
+    console.log = originalLog;
+    process.exit = originalExit;
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+
+  const output = JSON.parse(logs.join("\n")) as {
+    status: string;
+    results: Array<{ errors: Array<{ code: string; message: string; rerun: string }> }>;
+  };
+  assert.equal(output.status, "fail");
+  assert.equal(output.results[0].errors[0].code, "TASK_FAILED");
+  assert.match(output.results[0].errors[0].message, /"status":"fail"/);
+  assert.equal(output.results[0].errors[0].rerun, "npm run check:fixture");
+});

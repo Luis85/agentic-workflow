@@ -1,6 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { parseStageProgressTable, specStateDiagnosticsForText } from "../../scripts/lib/spec-state.js";
+import {
+  examplesCoverageDiagnostics,
+  parseStageProgressTable,
+  specStateDiagnosticsForText,
+} from "../../scripts/lib/spec-state.js";
 
 const REL = "specs/feat/workflow-state.md";
 const FEATURE_DIR = "feat";
@@ -208,6 +212,52 @@ test("missing required section is reported", () => {
   const text = cleanText.replace("## Skips\n\n> None.\n\n", "");
   const diagnostics = diagnose(text);
   assert.ok(diagnostics.includes(`${REL} missing section: Skips`));
+});
+
+test("skipped artifact without mention in Skips section is reported", () => {
+  const text = cleanText
+    .replace("research.md: pending", "research.md: skipped")
+    .replace(
+      "| 2. Research | `research.md` | pending |",
+      "| 2. Research | `research.md` | skipped |",
+    );
+  const diagnostics = diagnose(text);
+  assert.ok(
+    diagnostics.includes(
+      `${REL} marks research.md as skipped, but Skips section does not document it`,
+    ),
+  );
+});
+
+test("skipped artifact mentioned in Skips section passes the skip-doc check", () => {
+  const text = cleanText
+    .replace("research.md: pending", "research.md: skipped")
+    .replace(
+      "| 2. Research | `research.md` | pending |",
+      "| 2. Research | `research.md` | skipped |",
+    )
+    .replace("## Skips\n\n> None.", "## Skips\n\n- `research.md` skipped because no upstream sources required.");
+  const diagnostics = diagnose(text);
+  assert.equal(
+    diagnostics.some((message) =>
+      message.includes("Skips section does not document"),
+    ),
+    false,
+  );
+});
+
+test("examplesCoverageDiagnostics passes when no example subdirs are missing workflow-state.md", () => {
+  assert.deepEqual(examplesCoverageDiagnostics([]), []);
+});
+
+test("examplesCoverageDiagnostics reports each example subdir missing workflow-state.md", () => {
+  assert.deepEqual(
+    examplesCoverageDiagnostics(["examples/foo", "examples/bar"]),
+    [
+      "examples/foo missing workflow-state.md",
+      "examples/bar missing workflow-state.md",
+    ],
+  );
 });
 
 test("parseStageProgressTable extracts artifact-status pairs", () => {

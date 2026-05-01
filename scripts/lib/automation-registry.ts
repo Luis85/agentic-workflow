@@ -120,7 +120,26 @@ export function validateAutomationRegistry(
       });
     }
 
-    if (!entry.command && !entry.path) {
+    const command = typeof entry.command === "string" ? entry.command : null;
+    const entryPath = typeof entry.path === "string" ? entry.path : null;
+
+    if (entry.command !== undefined && !command) {
+      errors.push({
+        path: registryPath,
+        code: "AUTO_COMMAND",
+        message: `${entry.id || prefix} command must be a string`,
+      });
+    }
+
+    if (entry.path !== undefined && !entryPath) {
+      errors.push({
+        path: registryPath,
+        code: "AUTO_PATH",
+        message: `${entry.id || prefix} path must be a string`,
+      });
+    }
+
+    if (!command && !entryPath) {
       errors.push({
         path: registryPath,
         code: "AUTO_TARGET",
@@ -128,14 +147,14 @@ export function validateAutomationRegistry(
       });
     }
 
-    if (entry.command) commands.add(entry.command);
-    if (entry.path) {
-      paths.add(entry.path);
-      if (!fs.existsSync(path.join(root, entry.path))) {
+    if (command) commands.add(command);
+    if (entryPath) {
+      paths.add(entryPath);
+      if (!fs.existsSync(path.join(root, entryPath))) {
         errors.push({
           path: registryPath,
           code: "AUTO_PATH",
-          message: `${entry.id || prefix} references missing path: ${entry.path}`,
+          message: `${entry.id || prefix} references missing path: ${entryPath}`,
         });
       }
     }

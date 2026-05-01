@@ -18,5 +18,6 @@ entry_point: true
 
 ## Functions
 
+- [examplesCoverageDiagnostics](functions/examplesCoverageDiagnostics.md)
 - [parseStageProgressTable](functions/parseStageProgressTable.md)
 - [specStateDiagnosticsForText](functions/specStateDiagnosticsForText.md)

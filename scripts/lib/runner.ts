@@ -142,7 +142,15 @@ function renderAnnotatedFailure(task: NodeTask, stdout: string | Buffer | null, 
 function parseCheckResult(raw: string): CheckResult | null {
   if (!raw) return null;
   try {
-    return JSON.parse(raw) as CheckResult;
+    const parsed = JSON.parse(raw) as Partial<CheckResult>;
+    if (
+      typeof parsed.check !== "string" ||
+      (parsed.status !== "pass" && parsed.status !== "fail") ||
+      !Array.isArray(parsed.errors)
+    ) {
+      return null;
+    }
+    return parsed as CheckResult;
   } catch {
     return null;
   }
