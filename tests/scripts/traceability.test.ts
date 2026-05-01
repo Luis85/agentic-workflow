@@ -529,6 +529,53 @@ id: SPECDOC-FEAT-001
   );
 });
 
+test("orphan TEST in spec.md is not rescued by a REQ mention in traceability.md", () => {
+  const requirements = record(
+    "requirements.md",
+    `---
+feature: feat
+id: PRD-FEAT-001
+---
+
+## REQ-FEAT-001 — Title
+
+- **Satisfies:** PRD-FEAT-001
+`,
+  );
+  const spec = record(
+    "spec.md",
+    `---
+feature: feat
+id: SPECDOC-FEAT-001
+---
+
+## SPEC-FEAT-001 — Title
+
+- **Satisfies:** REQ-FEAT-001
+
+| Test ID | Scenario | Type | Refs |
+|---|---|---|---|
+| TEST-FEAT-001 | Orphan in spec | e2e | SPEC-FEAT-001 |
+`,
+  );
+  const traceability = record(
+    "traceability.md",
+    `---
+feature: feat
+id: RTM-FEAT-001
+---
+
+| Test | Requirement | Status |
+|---|---|---|
+| TEST-FEAT-001 | REQ-FEAT-001 | OK |
+`,
+  );
+  const diagnostics = diagnose(cleanState, [requirements, spec, traceability]);
+  assert.ok(
+    diagnostics.includes(`specs/feat/spec.md TEST-FEAT-001 has no covering REQ or NFR reference`),
+  );
+});
+
 test("splitItemSections splits markdown body by traceability headings", () => {
   const sections = splitItemSections(
     record(

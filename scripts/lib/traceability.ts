@@ -229,28 +229,35 @@ function validateTestCoverage(
   registry: Map<string, DefinitionRecord>,
   errors: string[],
 ): void {
-  const coveredTests = new Set<string>();
-  const testRowPattern = /^\|\s*(TEST-[A-Z][A-Z0-9]*-\d{3})\s*\|/gm;
-
-  for (const record of records) {
-    for (const section of splitItemSections(record)) {
-      if (section.kind !== "TEST") continue;
-      if (mentionsReqOrNfr(section.body)) coveredTests.add(section.id);
-    }
-
-    for (const line of record.text.split(/\r?\n/)) {
-      testRowPattern.lastIndex = 0;
-      const match = testRowPattern.exec(line);
-      if (!match) continue;
-      if (mentionsReqOrNfr(line)) coveredTests.add(match[1]);
-    }
-  }
+  const recordsByRel = new Map(records.map((record) => [record.rel, record]));
 
   for (const [id, definition] of registry) {
     if (definition.kind !== "TEST") continue;
-    if (coveredTests.has(id)) continue;
+    const source = recordsByRel.get(definition.rel);
+    if (!source) continue;
+    if (testIsCoveredInDefinitionSource(id, source)) continue;
     errors.push(`${definition.rel} ${id} has no covering REQ or NFR reference`);
   }
+}
+
+function testIsCoveredInDefinitionSource(id: string, source: ArtifactRecord): boolean {
+  for (const section of splitItemSections(source)) {
+    if (section.id === id && section.kind === "TEST" && mentionsReqOrNfr(section.body)) {
+      return true;
+    }
+  }
+
+  if (!definitionTableKinds(source.artifact).has("TEST")) return false;
+
+  const rowPrefix = new RegExp(`^\\|\\s*${escapeRegExp(id)}\\s*\\|`);
+  for (const line of source.text.split(/\r?\n/)) {
+    if (rowPrefix.test(line) && mentionsReqOrNfr(line)) return true;
+  }
+  return false;
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function mentionsReqOrNfr(text: string): boolean {
