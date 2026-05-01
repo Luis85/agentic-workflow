@@ -20,7 +20,8 @@ A solution-agnostic, **spec-driven** workflow for building software with humans 
 10. [Future extensions](#10-future-extensions)
 11. [Quality Assurance Track](#11-quality-assurance-track)
 12. [Roadmap Management Track](#12-roadmap-management-track)
-13. [Improving Specorator itself](#13-improving-specorator-itself)
+13. [Design Track](#13-design-track)
+14. [Improving Specorator itself](#14-improving-specorator-itself)
 
 ---
 
@@ -47,6 +48,7 @@ See [`memory/constitution.md`](../memory/constitution.md) for the full version. 
 flowchart LR
     scaffold["Project Scaffolding Track"]
     discovery["Discovery Track"]
+    design_track["Design Track"]
     idea["1. Idea"]
     research["2. Research"]
     requirements["3. Requirements"]
@@ -61,6 +63,7 @@ flowchart LR
 
     scaffold -.->|starter pack| discovery
     scaffold -.->|idea seed| idea
+    design_track -.->|design-handoff.md| design
     discovery -.->|brief| idea
     idea --> research
     research --> requirements
@@ -93,6 +96,7 @@ flowchart LR
 
 - **Quality Assurance Track** — an ISO 9001-aligned evidence workflow for checking project execution health and delivery readiness. Produces `quality-plan.md`, checklists, `quality-review.md`, and `improvement-plan.md`. Defined in [`docs/quality-assurance-track.md`](quality-assurance-track.md). **Use for internal readiness, quality drift review, release readiness, supplier assurance, or audit preparation.**
 - **Roadmap Management Track** — an outcome-led product/project planning workflow for roadmaps, delivery confidence, stakeholder alignment, and team communication. Produces `roadmap-board.md`, `delivery-plan.md`, `stakeholder-map.md`, `communication-log.md`, and `decision-log.md` under `roadmaps/<slug>/`. Defined in [`docs/roadmap-management-track.md`](roadmap-management-track.md). **Use when product direction, project delivery constraints, stakeholder expectations, and team communication need one maintained source of truth.**
+- **Design Track** — a four-phase, brand-aware surface-creation workflow (Frame → Sketch → Mock → Handoff) for producing new user-visible surfaces under the Specorator brand system. Produces `design-brief.md`, `sketch.md`, an optional `mock.html`, and `design-handoff.md` under `designs/<slug>/`. Defined in [`docs/design-track.md`](design-track.md); rationale in [ADR-0019](adr/0019-add-design-track.md). **Use when creating a new surface (docs site, marketing page, onboarding flow, dashboard) or significantly redesigning an existing one. Do not use for feature-level UI work — use `/spec:design` (Stage 4) instead.**
 
 ---
 
@@ -135,6 +139,7 @@ Quality gates per stage are summarised below; the full Definition of Done lives 
   - **`design-twice`** — explore divergent module shapes when the design has a genuine fork. Produces `design-comparison.md`.
   - **`arc42-baseline`** — for any architecture-significant feature (SaaS, on-premises, embedded, internal tool, library), drive the Arc42 + 12-Factor questionnaire to lock cross-cutting non-functional and operability decisions before Part C. Produces `arc42-questionnaire.md`, files ADRs for accepted key decisions, and feeds `/spec:design` as canonical input. Sections not applicable to the project type are marked `N/A`.
   - **`specorator-design`** — canonical brand source (tokens, voice, iconography rules, UI kit, deck system). Invoke before generating user-visible HTML / CSS / mocks. Lift values from `colors_and_type.css` by token name; never invent colors, weights, radii, or shadows. See [ADR-0016](adr/0016-design-system-as-skill.md).
+  - **Design Track** — when the feature introduces a *new surface* (not just a UI component within an existing surface), run `/design:start <slug>` first. The `design-handoff.md` it produces replaces `ui-designer`'s Part B contribution at Stage 4.
 - **Quality gate:** Boundaries clear. Decisions justified. Irreversible architecture choices have ADRs.
 
 ### 3.5 Specification
@@ -179,6 +184,7 @@ Each stage is owned by a dedicated agent defined in [`.claude/agents/`](../.clau
 | 3 — Requirements | `pm` | `.claude/agents/pm.md` |
 | 4 — Design (UX) | `ux-designer` | `.claude/agents/ux-designer.md` |
 | 4 — Design (UI) | `ui-designer` | `.claude/agents/ui-designer.md` |
+| Design Track orchestrator | `design-lead` | `.claude/agents/design-lead.md` |
 | 4 — Design (architecture), 5 — Specification | `architect` | `.claude/agents/architect.md` |
 | 6 — Tasks | `planner` | `.claude/agents/planner.md` |
 | 7 — Implementation | `dev` | `.claude/agents/dev.md` |
@@ -271,6 +277,11 @@ The `orchestrator` agent (or a human) reads `workflow-state.md` and:
 | `/roadmap:align <slug>` | Map stakeholders and prepare team communication |
 | `/roadmap:communicate <slug> [audience]` | Produce and log a focused roadmap update |
 | `/roadmap:review <slug>` | Review roadmap confidence, dependencies, risks, and communication needs |
+| `/design:start <slug>` | Bootstrap a new Design Track workspace |
+| `/design:frame` | Phase 1 — Frame: produce `design-brief.md` |
+| `/design:sketch` | Phase 2 — Sketch: produce `sketch.md` |
+| `/design:mock` | Phase 3 — Mock: assign components + tokens; optionally produce `mock.html` |
+| `/design:handoff` | Phase 4 — Handoff: produce `design-handoff.md` |
 | `/specorator:update "<idea>"` | Classify and guide a template improvement |
 | `/specorator:add-script "<purpose>"` | Add or change a repository script/check/fixer |
 | `/specorator:add-tooling "<purpose>"` | Add developer tooling, CI, generated tooling, or operational automation |
@@ -373,7 +384,27 @@ Use it when a team needs a maintained roadmap that explains what is Now / Next /
 
 ---
 
-## 13. Improving Specorator itself
+## 13. Design Track
+
+The Design Track is a four-phase, brand-aware workflow for producing new user-visible surfaces — marketing pages, docs sites, onboarding flows, dashboards — under the Specorator brand system. It is distinct from Stage 4 (`/spec:design`), which handles feature-level UI design within an existing surface.
+
+| Phase | Command | Artifact |
+|---|---|---|
+| Start | `/design:start <slug>` | `design-state.md` |
+| Frame | `/design:frame` | `design-brief.md` |
+| Sketch | `/design:sketch` | `sketch.md` |
+| Mock | `/design:mock` | token decisions in `design-state.md`; optional `mock.html` |
+| Handoff | `/design:handoff` | `design-handoff.md` |
+
+Use it when creating a new user-visible surface from scratch, or significantly redesigning an existing one in a way that touches the brand system holistically. Do not use for feature-level UI — use `/spec:design` (Stage 4) instead.
+
+The track is orchestrated by the `design-lead` agent, which reads the `specorator-design` skill before any phase that produces visual output. `ux-designer` is consulted at Frame and Sketch; `ui-designer` is consulted at Mock and Handoff. `brand-reviewer` runs an optional inline check at Mock phase.
+
+The full methodology lives in [`docs/design-track.md`](design-track.md). Rationale in [ADR-0019](adr/0019-add-design-track.md).
+
+---
+
+## 14. Improving Specorator itself
 
 Specorator can be used to improve the template while a human is actively using it. Treat those requests as template improvements, not downstream product work. Examples include adding a quality drift review check, introducing a new operational routine, adding slash commands, or updating the workflow method.
 
