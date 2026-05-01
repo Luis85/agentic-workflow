@@ -12,7 +12,7 @@ Worked end-to-end examples of features developed with this kit.
 
 Status:
 
-- [`examples/cli-todo/`](./cli-todo/) — a tiny CLI todo app, walked through every stage. Demonstrates the workflow on something small enough to read in one sitting. **Complete** — stages 1–11 are represented from idea through retrospective. Start with `cli-todo/workflow-state.md`, then read artifacts in stage order.
+- [`examples/cli-todo/`](./cli-todo/) — a tiny CLI todo app, walked through every stage. Demonstrates the workflow on something small enough to read in one sitting. **Complete** — stages 1–11 are represented from idea through retrospective. Start with `cli-todo/workflow-state.md`, then read artifacts in stage order. **Top-level files are trimmed one-page excerpts** so agents that scan `examples/` for reference patterns load tens of KB, not hundreds; the full unabridged mirror lives at [`cli-todo/full/`](./cli-todo/full/) for human reference.
 
 Reading order for a complete example:
 
