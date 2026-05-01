@@ -97,6 +97,28 @@ After pulling v0.3:
 - **External announcement:** the GitHub Pages product page (`sites/index.html`) carries the v0.3 worked-example pivot. README roadmap row flips from "Planned" to "Done" in the T-V03-008 release-readiness PR.
 - **Support / docs updates:** `examples/README.md` (already updated in T-V03-002) is the canonical reader entry point.
 
+
+### Issue #88 closure comment
+
+Use this final issue update when closing [#88](https://github.com/Luis85/agentic-workflow/issues/88):
+
+```markdown
+v0.3 is complete and ready to close.
+
+Shipped in this cycle:
+- Completed worked example: `examples/cli-todo/` end-to-end lifecycle.
+- Hardened validation in `npm run verify` (spec-state + traceability checks, including TEST→REQ/NFR enforcement).
+- Added regression characterization coverage for validator logic.
+- Updated docs and roadmap (`README.md` v0.3 row now Done) plus product page positioning to the real worked example.
+- Recorded v0.4 validation baseline/advisory handoff in `specs/version-0-3-plan/release-notes.md`.
+
+Final state:
+- `specs/version-0-3-plan/workflow-state.md`: `current_stage: retrospective`, `status: done`.
+- Remaining action items are explicitly deferred to the v0.4 cycle.
+
+Closing #88.
+```
+
 ## Validation baseline for v0.4
 
 This subsection feeds T-V03-009 (v0.4 validation handoff).
