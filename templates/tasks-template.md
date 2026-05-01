@@ -18,6 +18,8 @@ Each task ≤ ~½ day, has a stable ID, references ≥ 1 requirement, and has a 
 
 > **TDD ordering:** test tasks for a requirement come **before** the implementation task for that requirement.
 
+> **"May slice" annotation:** A task that touches more than one independent code path or artifact may legitimately ship as several PRs rather than one. Mark such tasks with 🪓 in the heading (in addition to the task-type emoji), and add a `**Slice plan:**` line under the task sketching the expected slices. PR planners should expect the task to land in pieces. The v0.3 retrospective filed this convention after T-V03-003 and T-V03-005 each shipped in multiple slices that were not anticipated by the original `tasks.md`.
+
 ## Legend
 
 - 🧪 = test task
@@ -25,6 +27,7 @@ Each task ≤ ~½ day, has a stable ID, references ≥ 1 requirement, and has a 
 - 📐 = design / scaffolding task
 - 📚 = documentation task
 - 🚀 = release / ops task
+- 🪓 = may slice (task touches multiple independent code paths; expect several PRs)
 
 ## Task list
 
