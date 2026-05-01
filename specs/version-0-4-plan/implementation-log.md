@@ -160,6 +160,44 @@ Resolves SPEC-V04-002 (CI readiness contract). Satisfies REQ-V04-001 (PR CI gate
 - `npm run doctor` (passes against the real `.github/workflows/verify.yml`)
 - `npm run verify`
 
+## Task T-V04-006 - Focused tests for CI readiness and metrics by state
+
+Added focused tests covering the five workflow states named in the task description (active / blocked / done / skipped / open-clarification) for `scripts/lib/quality-metrics.ts`, plus targeted gap-fill tests for `scripts/lib/doctor.ts` readiness checks. All tests use the existing `node:test` harness and run under `npm run test:scripts`.
+
+### Tests added (`tests/scripts/quality-metrics.test.ts`)
+
+| State | Test | Approach |
+|---|---|---|
+| active | `collectQualityMetrics scores active workflows by current stage` (refined) | Real fixture (`version-0-4-plan`), now also asserts `status === "active"` so the state contract is explicit. |
+| done | `collectQualityMetrics treats done workflows as fully expected` | Real fixture (`improve-specorator-tooling`). Asserts `status === "done"`, `testCoverageExpected === true`, `earsExpected === true`, `expectedArtifactPresence === 100`, `expectedArtifactCompletion === 100`, and that the workflow does not appear in `signals.activeBlockers`. |
+| skipped | `collectQualityMetrics counts skipped canonical artifacts as expected-complete` | Real fixture (`project-consistency-hardening`, which intentionally skips `idea.md`). Asserts `counts.artifactsExpectedForStage === 3` and `counts.artifactsCompleteForStage === 2` (idea skipped + research complete; requirements in-progress excluded). |
+| open-clarification | `collectQualityMetrics surfaces open clarifications in workflow counts and signals` | Real fixture (`project-consistency-hardening`, which has 2 unresolved CLAR-CONS-* items). Asserts `workflow.openClarifications >= 2` and that `signals.openClarifications` mentions the feature. |
+| blocked | `expectedArtifactsForStage and traceabilityExpectation handle the blocked status` | Pure helper — no real blocked spec exists in the repo. Asserts blocked at `specification` produces the same expected-artifact set and traceability expectation as active at `specification` (blocked is paused-at-stage, not progress past it). |
+| done (helper) | `expectedArtifactsForStage with status done returns every canonical artifact regardless of currentStage` | Pure helper. Asserts `expectedArtifactsForStage("idea", "done")` and `expectedArtifactsForStage("learning", "done")` are deeply equal and include `retrospective.md`; `traceabilityExpectation("idea", "done")` returns `{ specs: true, tasks: true, tests: true }`. |
+
+### Tests added (`tests/scripts/doctor.test.ts`)
+
+| Gap | Test |
+|---|---|
+| `dependencyReadinessCheck` happy path (covered failure paths, missing the pass case) | `dependencyReadinessCheck passes when node_modules and lockfile are both present` |
+| `branchReadinessCheck` topic-branch-ahead warn path (covered clean / behind / integration-ahead, missing topic-ahead at line 147 of `doctor.ts`) | `branchReadinessCheck warns when a topic branch is ahead` |
+
+### What was deliberately not added
+
+- **No new test for the active state** — the existing test refined here already exercises that path; duplicating would not change coverage.
+- **No real-blocked-spec fixture** — no spec in the repo currently has `status: blocked`. The pure-helper test asserts the contract a blocked workflow would produce; a temp-fs fixture for `collectQualityMetrics` would duplicate the helper's behaviour without exercising new code paths.
+- **No new tests for `assessMaturity` levels 0–3** — the existing tests cover level 4 (`Verified`) and level 0 (unreadable workflow states). The intermediate levels are already exercised indirectly by the level-4 evidence assertions; explicit tests for each level are deferred until a richer test-fixture harness lands (out of v0.4 scope).
+
+Resolves SPEC-V04-002 (CI readiness contract — test side) and SPEC-V04-003 (workflow metrics report — test side). Satisfies REQ-V04-001, REQ-V04-003, REQ-V04-004, REQ-V04-008, REQ-V04-009, NFR-V04-001, NFR-V04-002, NFR-V04-005.
+
+Test count: 158 → 165.
+
+### Verification
+
+- `npm run typecheck:scripts`
+- `npm run test:scripts` (165 pass, 0 fail)
+- `npm run verify`
+
 ## Task T-V04-005 - Workflow metrics report
 
 - Extended `scripts/lib/quality-metrics.ts` with stage-aware scoring.

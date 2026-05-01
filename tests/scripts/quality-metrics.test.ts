@@ -42,11 +42,51 @@ test("renderQualityMetrics includes the headline KPIs and attention signals", ()
 test("collectQualityMetrics scores active workflows by current stage", () => {
   const metrics = collectQualityMetrics({ feature: "version-0-4-plan" });
   const workflow = metrics.workflows[0];
+  assert.equal(workflow.status, "active");
   assert.equal(workflow.currentStage, "implementation");
   assert.equal(workflow.testCoverageExpected, false);
   assert.equal(workflow.testCoverage, 0);
   assert.equal(workflow.requirementCoverage, 100);
   assert.equal(workflow.stageScore > workflow.artifactCompletion, true);
+});
+
+test("collectQualityMetrics treats done workflows as fully expected", () => {
+  const metrics = collectQualityMetrics({ feature: "improve-specorator-tooling" });
+  const workflow = metrics.workflows[0];
+  assert.equal(workflow.status, "done");
+  assert.equal(workflow.testCoverageExpected, true);
+  assert.equal(workflow.earsExpected, true);
+  // Expected artifacts for a done workflow include every canonical artifact regardless of currentStage.
+  assert.equal(workflow.expectedArtifactPresence, 100);
+  assert.equal(workflow.expectedArtifactCompletion, 100);
+  // A done workflow should not surface itself as an active blocker.
+  assert.equal(
+    metrics.signals.activeBlockers.some((signal) => signal.includes("improve-specorator-tooling")),
+    false,
+  );
+});
+
+test("collectQualityMetrics counts skipped canonical artifacts as expected-complete", () => {
+  const metrics = collectQualityMetrics({ feature: "project-consistency-hardening" });
+  const workflow = metrics.workflows[0];
+  // project-consistency-hardening intentionally skips idea.md (research-driven entry).
+  // Expected stage artifacts at requirements stage = idea + research + requirements.
+  // idea is skipped, research is complete, requirements is in-progress.
+  // skipped and complete are both counted by completeArtifactsFor; in-progress is not.
+  assert.equal(workflow.status, "active");
+  assert.equal(workflow.counts.artifactsExpectedForStage, 3);
+  assert.equal(workflow.counts.artifactsCompleteForStage, 2);
+});
+
+test("collectQualityMetrics surfaces open clarifications in workflow counts and signals", () => {
+  const metrics = collectQualityMetrics({ feature: "project-consistency-hardening" });
+  const workflow = metrics.workflows[0];
+  // Two unresolved CLAR-CONS-* checklist items in workflow-state.md §Open clarifications.
+  assert.equal(workflow.openClarifications >= 2, true);
+  assert.equal(
+    metrics.signals.openClarifications.some((signal) => signal.includes("project-consistency-hardening")),
+    true,
+  );
 });
 
 test("collectQualityMetrics ignores resolved clarification checklist items", () => {
@@ -57,6 +97,35 @@ test("collectQualityMetrics ignores resolved clarification checklist items", () 
     metrics.signals.openClarifications.some((signal) => signal.includes("cli-todo")),
     false,
   );
+});
+
+test("expectedArtifactsForStage and traceabilityExpectation handle the blocked status", () => {
+  // A blocked workflow is paused at its current stage — the expected-artifact set
+  // and traceability expectation should match the active equivalent for that stage,
+  // because blocked status only signals a gate, not progress past it.
+  const blockedExpected = expectedArtifactsForStage("specification", "blocked");
+  const activeExpected = expectedArtifactsForStage("specification", "active");
+  assert.deepEqual(blockedExpected, activeExpected);
+  assert.deepEqual(traceabilityExpectation("specification", "blocked"), {
+    specs: true,
+    tasks: false,
+    tests: false,
+  });
+});
+
+test("expectedArtifactsForStage with status done returns every canonical artifact regardless of currentStage", () => {
+  // status=done implies every lifecycle stage was reached, so the full canonical set is expected
+  // even if currentStage frozen at an early value.
+  const idea = expectedArtifactsForStage("idea", "done");
+  const learning = expectedArtifactsForStage("learning", "done");
+  assert.deepEqual(idea, learning);
+  assert.equal(idea.includes("retrospective.md"), true);
+  // traceabilityExpectation echoes the same shape for done.
+  assert.deepEqual(traceabilityExpectation("idea", "done"), {
+    specs: true,
+    tasks: true,
+    tests: true,
+  });
 });
 
 test("completeCanonicalArtifacts ignores non-lifecycle workflow-state keys", () => {
