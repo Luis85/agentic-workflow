@@ -290,7 +290,7 @@ entry_point: false
 
 # Product box
 
-The **product box** is the early-stage visual companion to [`product-page`](../sites/index.html). It exists to answer one question: *"What is this team building?"* — even before the product itself is shippable.
+The **product box** is the early-stage visual companion to the public product page (`sites/index.html`). It exists to answer one question: *"What is this team building?"* — even before the product itself is shippable.
 
 ## Where it sits
 
@@ -1585,7 +1585,7 @@ argument-hint: [product or project name]
 
 # Product box
 
-The product box is the early-stage visual companion to the [product page](../product-page/SKILL.md). It exists to show **what the team is building** as soon as a brief, steering doc, or even just a conversation exists.
+The product box is the early-stage visual companion to the product-page skill (`.claude/skills/product-page/SKILL.md`). It exists to show **what the team is building** as soon as a brief, steering doc, or even just a conversation exists.
 
 ## Canonical output
 
@@ -1663,7 +1663,7 @@ entry_point: false
 
 # product-box
 
-See [`SKILL.md`](./SKILL.md) for the contract and procedure. Pairs with `.claude/agents/product-box-designer.md` (rendering) and `scripts/lib/product-box/` (libs).
+See `SKILL.md` (this folder) for the contract and procedure. Pairs with `.claude/agents/product-box-designer.md` (rendering) and `scripts/lib/product-box/` (libs).
 
 Spec: `docs/superpowers/specs/2026-05-01-product-box-design.md`.
 ADR: `docs/adr/0017-add-product-box-feature.md`.
@@ -2257,7 +2257,7 @@ In the skills table (or wherever existing skills are listed), add:
 Under `## Workflow rules` (or a new `## Public surface` section if it makes more sense locally), add:
 
 ```markdown
-- **Product box** — early-stage envisioned-product visualization at `sites/box/`, paired with product page via marker slot. See [`docs/product-box.md`](../../docs/product-box.md).
+- **Product box** — early-stage envisioned-product visualization at `sites/box/`, paired with product page via marker slot. See `docs/product-box.md`.
 ```
 
 - [ ] **Step 3: CLAUDE.md — add table row if surfaced as a track**
@@ -2265,7 +2265,7 @@ Under `## Workflow rules` (or a new `## Public surface` section if it makes more
 In the existing skills/track table, add:
 
 ```markdown
-| **Product box** | new project, brief written, envisioned product visualization | [`product-box`](.claude/skills/product-box/SKILL.md) | `/product:box` | [`docs/product-box.md`](docs/product-box.md) ([ADR-0017](docs/adr/0017-add-product-box-feature.md)) |
+| **Product box** | new project, brief written, envisioned product visualization | `.claude/skills/product-box/SKILL.md` | `/product:box` | `docs/product-box.md` (ADR-0017) |
 ```
 
 - [ ] **Step 4: docs/sink.md — register destinations**

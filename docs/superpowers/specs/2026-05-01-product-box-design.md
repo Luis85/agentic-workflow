@@ -3,7 +3,7 @@
 **Status:** Draft for review.
 **Date:** 2026-05-01.
 **Author:** Brainstorming session, Specorator template repo.
-**Related ADR:** [`docs/adr/0017-add-product-box-feature.md`](../../adr/0017-add-product-box-feature.md) (to be filed alongside implementation).
+**Related ADR:** `docs/adr/0017-add-product-box-feature.md` (to be filed alongside implementation).
 **Pairs with:** [`product-page` skill](../../../.claude/skills/product-page/SKILL.md), [`product-page-designer` agent](../../../.claude/agents/product-page-designer.md).
 
 ---
