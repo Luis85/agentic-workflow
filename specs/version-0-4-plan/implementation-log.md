@@ -349,3 +349,104 @@ section already documents the machine-readable JSON / exit-code surfaces and the
 `--save` / `--compare` snapshot contract that v0.5 release-readiness should consume.
 T-V04-012's job is to write the consumption contract from the v0.5 side; this PR
 does not pre-empt it.
+
+## Task T-V04-012 - v0.5 release-quality handoff
+
+Documents the consumption contract for the four machine-readable quality signals
+v0.5 release-readiness must read before any GitHub Release or GitHub Package
+publish. Satisfies REQ-V04-009 (Expose release-quality signals for v0.5),
+NFR-V04-005 (machine-readability), SPEC-V04-008 (Release-quality output).
+
+### Decision: where the consumption contract lives
+
+Two locations were considered:
+
+1. Expand v0.4 `release-notes.md` §Validation baseline for v0.5 with the
+   consumption side - what v0.5 reads, when, with what error semantics.
+2. New doc under `specs/version-0-5-plan/` that v0.5 consumes as a
+   prerequisite, leaving v0.4 release notes scoped to what v0.4 ships.
+
+Picked option 2: `specs/version-0-5-plan/v04-handoff.md`. Reasons:
+
+- v0.4 release notes are about what v0.4 ships; the consumption contract is
+  forward-looking. Mixing them muddles the audience (release operator vs.
+  v0.5 implementor).
+- The v0.5 folder already houses the consumers - the release-readiness check
+  task, the tests for it, the operator guide, and the v0.5 spec section
+  pinning v0.4 quality gate consumption. The handoff doc sits alongside the
+  artifacts that need it. (Cross-feature IDs are deliberately phrased as
+  prose here per `docs/pr-ci-gate.md` §Cross-feature ID references in
+  narrative.)
+- v0.5 can evolve the consumption seam (threshold tuning, new signal
+  consumption, waiver semantics) without editing v0.4 release notes after
+  the v0.4 tag ships.
+- v0.4 release-notes §Validation baseline for v0.5 stays the canonical
+  upstream listing. This is its companion downstream contract, cross-linked.
+
+### Edits
+
+- `specs/version-0-5-plan/v04-handoff.md` (new). Frontmatter only carries
+  title / feature / stage / status / owner / dates - no `id` field, because
+  the doc is supplementary (not in `workflowArtifacts`) and "HANDOFF" is not
+  a valid traceability ID kind. The doc is excluded from
+  `check:traceability` by virtue of not being a canonical artifact, so
+  cross-feature ID references in the body are safe; this is the one v0.5
+  artifact where v0.4 IDs appear deliberately.
+
+  Sections:
+  - Upstream / cross-reference list, with the explicit rule that source
+    documents (`docs/pr-ci-gate.md`, `docs/quality-metrics.md`,
+    `scripts/lib/quality-metrics.ts`) win on disagreement.
+  - Four signal subsections - `npm run quality:metrics --json`,
+    `npm run quality:metrics --save` snapshots, `npm run doctor`,
+    `npm run verify` - each documenting shape / exit semantics / blocker
+    rules / advisory tier.
+  - Consumption matrix mapping the v0.5 release-readiness acceptance items
+    onto the four signals.
+  - Test fixture expectations for the v0.5 release-readiness test task.
+  - "Must not" list (do not duplicate metric collection, do not gate on
+    `--save` alone, do not silently waive blockers).
+  - Open questions deliberately deferred to v0.5 implementation
+    (workflow score floor, maturity floor, delta thresholds).
+
+- `specs/version-0-4-plan/implementation-log.md` (this section).
+- `specs/version-0-4-plan/workflow-state.md` - hand-off note for T-V04-012;
+  `last_updated` and `last_agent` refreshed.
+
+No edits to `release-notes.md` §Verification steps. The handoff doc does not
+introduce new release-time verification commands; T-V04-011's verification
+suite already exercised the four signals end-to-end.
+
+### Traceability
+
+- REQ-V04-009 (Expose release-quality signals for v0.5) - satisfied by the
+  consumption contract written in `v04-handoff.md`. v0.5 release-readiness
+  can now read the four surfaces without re-implementing metric collection.
+- NFR-V04-005 (machine-readability) - satisfied. The contract names the
+  JSON shape, the snapshot directory layout, and the exit-code semantics
+  v0.5 automation parses without prose.
+- SPEC-V04-008 (Release-quality output) - satisfied. The acceptance criterion
+  ("v0.5 release readiness can consume the output without reimplementing
+  metric collection") is the contract this doc records.
+
+### Deferred: T-V04-009 final close
+
+T-V04-009 has three release-time pieces still owed:
+
+- README.md §Roadmap row v0.4 flip from "Planned" to "Done" with link to
+  `release-notes.md`.
+- `docs/specorator.md` v0.4 references review.
+- `release-notes.md` §Changes cross-check against the final list of merged
+  PRs at release time, plus frontmatter `status: draft` -> `complete`.
+
+These are release-time operations: the v0.4 tag has not been cut. Performing
+them now would advertise a release that does not exist. The handoff PR
+deliberately does not bundle them. They land in a follow-up PR alongside
+the release tag (`feat/v04-release-tag` or similar), at which point Stage 10
+flips to `complete` and Stage 11 (`/spec:retro`) opens.
+
+### Stage status
+
+Stage 10 (Release) stays `in-progress`. T-V04-012 substantive work is
+complete; the remaining open items (T-V04-009 final close, T-V04-010
+§Communication checkbox confirmation) are release-time, not handoff-time.
