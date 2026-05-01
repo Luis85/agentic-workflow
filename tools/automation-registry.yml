@@ -109,6 +109,16 @@ entries:
     emits_json: false
     used_by: [human, agent, ci]
     rerun_command: npm run typecheck:scripts
+  - id: script:test
+    kind: check
+    command: npm run test
+    path: scripts/test-scripts.ts
+    purpose: Standard npm test idiom alias delegating to test:scripts.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: false
+    used_by: [human, agent, ci]
+    rerun_command: npm run test
   - id: script:test-scripts
     kind: check
     command: npm run test:scripts
