@@ -329,7 +329,7 @@ This interface is the sole mutation entry point for the on-disk store, per ADR-C
 - **Post-conditions:** Returns a string. Does not touch the filesystem.
 - **Side effects:** None.
 - **Errors:** None — path resolution is a pure function of the environment.
-- **Satisfies:** REQ-CLI-009, REQ-CLI-007.
+- **Satisfies:** REQ-CLI-009, REQ-CLI-007, NFR-CLI-003.
 
 ---
 
@@ -659,6 +659,19 @@ Inherits from PRD NFR-CLI-001 with no tightening:
 - **Budget:** any subcommand against a data store containing up to 10,000 tasks completes in ≤ 1 second wall-clock on a 2015-era commodity laptop (e.g., 4-core x86-64, SSD, 8 GB RAM, no encryption-at-rest overhead).
 - **Implementation implication (informative):** the read-all-into-memory-then-rewrite strategy is acceptable at this scale. No caching, no incremental write, no in-memory database is needed. The dominant cost is file I/O (read + temp write + fsync + rename), all of which are well under 100 ms at 10,000 tasks on commodity hardware.
 - **No per-interface tighter budget** is set in v1.
+
+---
+
+### SPEC-CLI-010 — Non-functional acceptance constraints
+
+- **Kind:** Cross-cutting acceptance contract.
+- **Performance:** Any subcommand against a data store containing up to 10,000 tasks completes in ≤ 1 second wall-clock on the reference hardware named in NFR-CLI-001.
+- **Portability:** v1 supports Linux and macOS using the resolver behavior in SPEC-CLI-009. Windows remains undefined for v1.
+- **Privacy:** The CLI has no telemetry, analytics, remote backup, cloud sync, or other network path.
+- **Maintainability:** Source remains small enough to review in one sitting; the target is ≤ 500 source lines excluding tests and generated files.
+- **Installability:** The example is installable from source with one language-toolchain command and no external service dependency.
+- **Traceability:** Review must leave a requirement-to-code mapping in the RTM before the worked example is marked complete.
+- **Satisfies:** NFR-CLI-001, NFR-CLI-003, NFR-CLI-004, NFR-CLI-005, NFR-CLI-006, NFR-CLI-007.
 
 ---
 
