@@ -1,6 +1,6 @@
 ---
 name: discovery-sprint
-description: Drive a Discovery Sprint end-to-end (Frame → Diverge → Converge → Prototype → Validate → Handoff) by gathering scope from the user up front, then dispatching the facilitator and consulted specialists for each phase, persisting artifacts under discovery/<slug>/, and gating between phases with the user. Use when the user wants to run a design sprint, ideate, brainstorm new product ideas, find a feature to build, or mentions "discovery sprint", "design sprint", "ideation", "brainstorm", "explore options", "from scratch with a blank page".
+description: Drive discovery sprint Frame → Diverge → Converge → Prototype → Validate for blank-page ideation. Triggers "design sprint", "brainstorm". /discovery:start.
 argument-hint: [sprint-slug or one-line outcome]
 ---
 

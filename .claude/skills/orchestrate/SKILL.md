@@ -1,6 +1,6 @@
 ---
 name: orchestrate
-description: Drive feature end-to-end through Specorator workflow (idea → retrospective). Gather scope from user up front, dispatch stage subagent per phase, persist artifacts under specs/<slug>/, gate between stages with user. Use when user wants new feature, full workflow, end-to-end drive, asks "what's next?" on active feature, or mentions "orchestrate", "kick off", "from scratch".
+description: Drive feature end-to-end through Specorator (idea → retro). Triggers "kick off", "what's next?", "orchestrate", /orchestrate.
 argument-hint: [feature-slug or one-line goal]
 ---
 

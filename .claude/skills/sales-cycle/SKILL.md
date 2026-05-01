@@ -1,6 +1,6 @@
 ---
 name: sales-cycle
-description: Drive a Sales Cycle end-to-end (Qualify → Scope → Estimate → Propose → Order → Delivery handoff) by gathering deal context from the user up front, then dispatching the right phase agent for each stage, persisting artifacts under sales/<deal-slug>/, and gating between phases with the user. Use when a service provider wants to manage a client opportunity, when someone says "we have a new lead", "we need to write a proposal", "we got an RFP", "help me scope this project for a client", "we need an SOW", or "let's run a sales cycle". Skip when the user already has a signed contract — go directly to /discovery:start or /spec:start instead.
+description: Drive sales cycle Qualify → Scope → Estimate → Propose → Order. Triggers "new lead", "RFP", "SOW", "proposal". /sales:start.
 argument-hint: [deal-slug or client/project description]
 ---
 

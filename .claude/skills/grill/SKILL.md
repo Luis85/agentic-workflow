@@ -1,6 +1,6 @@
 ---
 name: grill
-description: Interview the user relentlessly about a plan, design, or requirement until every branch of the decision tree is resolved. Asks one question at a time, walks down each branch, gives a recommended answer, and explores the codebase to answer questions that don't need a human. Use when the user wants to stress-test a plan, sharpen ambiguity, get grilled on a design, run a clarification gate, or mentions "grill me", "interrogate this", or "tighten this up".
+description: Interview user one question at a time until decision tree resolved. Triggers "grill me", "interrogate this", "tighten this up".
 argument-hint: [path or topic to grill, e.g. "specs/payments/spec.md"]
 ---
 

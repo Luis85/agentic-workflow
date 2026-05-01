@@ -1,6 +1,6 @@
 ---
 name: specorator-improvement
-description: Improve the Specorator template itself by guiding script, tooling, workflow, agent, skill, template, documentation, and operational automation changes through the repo's established spec-driven contributor loop.
+description: Guide Specorator template improvements (scripts, tooling, workflow, agents, skills, templates, docs) via spec-driven loop.
 argument-hint: "<mode> <improvement idea>"
 ---
 

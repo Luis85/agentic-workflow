@@ -1,6 +1,6 @@
 ---
 name: new-glossary-entry
-description: Scaffold a new glossary entry under docs/glossary/<slug>.md from templates/glossary-entry-template.md. Use this skill when invoked via /glossary:new "<term>", when a new domain term is coined inside a workflow, when a stage agent reports terminology ambiguity, or when the user mentions "glossary", "define this term", "add a glossary entry", or "what does X mean in this repo". Replaces the deprecated ubiquitous-language skill (see ADR-0010).
+description: Scaffold docs/glossary/<slug>.md from template. /glossary:new "<term>". Replaces deprecated ubiquitous-language (ADR-0010).
 argument-hint: "<term>"
 allowed-tools: [Read, Edit, Write, Bash]
 ---

@@ -1,6 +1,6 @@
 ---
 name: stock-taking
-description: Drive Stock-taking Engagement end-to-end (Scope → Audit → Synthesize → Handoff). Gather project context from user up front, dispatch legacy-auditor each phase, persist artifacts under stock-taking/<slug>/, gate phases with user. Use when user building on legacy system, needs understand existing system before project, mentions "stock-taking", "legacy assessment", "inventory", "what do we already have", "existing system", "brownfield", or wants catalogue processes + use-cases before building new.
+description: Drive stock-taking Scope → Audit → Synthesize → Handoff for legacy/brownfield inventory. Triggers "stock-taking", "legacy", "brownfield". /stock:start.
 argument-hint: [project-slug or one-line system description]
 ---
 

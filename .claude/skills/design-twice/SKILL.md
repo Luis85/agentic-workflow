@@ -1,6 +1,6 @@
 ---
 name: design-twice
-description: Generate two or three radically different design alternatives for a module, interface, flow, or architecture in parallel using the Task tool, then synthesize a recommendation. Use during stage 4 (Design) of the workflow on non-trivial features, when the user wants to explore options, compare module shapes, "design it twice", or whenever an irreversible design choice needs deliberation.
+description: Generate 2-3 parallel design alternatives via Task tool, then synthesize. Stage 4. Triggers "design it twice", "explore options".
 argument-hint: <one-line scope, e.g. "user profile editing API">
 ---
 

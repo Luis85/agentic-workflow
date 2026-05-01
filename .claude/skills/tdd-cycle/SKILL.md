@@ -1,6 +1,6 @@
 ---
 name: tdd-cycle
-description: Implement one slice using strict red → green → refactor. Write the failing test first, write the smallest code that makes it pass, then refactor only on green. Use during stage 7 (Implementation), when the user mentions "TDD", "red-green-refactor", "test-first", or whenever the dev agent is executing a task from tasks.md.
+description: Strict red → green → refactor on one slice. Stage 7. Triggers "TDD", "red-green-refactor", "test-first".
 argument-hint: [task-id, e.g. "T-PAY-014"]
 ---
 

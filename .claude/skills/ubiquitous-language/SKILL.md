@@ -1,6 +1,6 @@
 ---
 name: ubiquitous-language
-description: "[Deprecated by ADR-0010] Legacy single-file glossary at docs/UBIQUITOUS_LANGUAGE.md. New terms go in docs/glossary/<slug>.md via /glossary:new (handled by the new-glossary-entry skill). This skill is retained only so that forks of earlier template versions still resolve their references; it should not auto-trigger for new work."
+description: [DEPRECATED ADR-0010] Use new-glossary-entry + /glossary:new instead. Kept only for legacy fork compat — should not auto-trigger.
 argument-hint: "[deprecated — use /glossary:new instead]"
 ---
 

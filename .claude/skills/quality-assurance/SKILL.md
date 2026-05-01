@@ -1,6 +1,6 @@
 ---
 name: quality-assurance
-description: Run an ISO 9001-aligned quality assurance workflow that plans, executes, reviews, and improves project quality using evidence-backed checklists. Use when the user asks for quality assurance, ISO 9001 readiness, project execution health, delivery readiness, quality drift checks, or corrective action planning.
+description: ISO 9001-aligned QA workflow: plan → execute → review → improve. Triggers "quality assurance", "ISO 9001 readiness", "delivery readiness".
 argument-hint: "<phase> <quality-review-slug>"
 ---
 

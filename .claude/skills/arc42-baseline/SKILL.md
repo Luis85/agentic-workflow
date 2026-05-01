@@ -1,6 +1,6 @@
 ---
 name: arc42-baseline
-description: Drive an Arc42 + 12-Factor questionnaire to baseline architecture and operability decisions before /spec:design. Pre-fills from upstream, grills the user on TBDs, files ADRs for accepted key decisions, and produces specs/<slug>/arc42-questionnaire.md as canonical input for the architect's Part C — Architecture. Applicable to any software project — SaaS, on-premises, embedded, internal tool, or platform. Use during stage 4 (Design) on non-trivial features, when the user wants an Arc42 baseline, says "fill the questionnaire", "Arc42", "12-factor check", or whenever non-functional and operability decisions need to be locked before design proper.
+description: Arc42 + 12-Factor questionnaire to baseline architecture/operability before /spec:design. Stage 4. Triggers "Arc42", "12-factor check".
 argument-hint: [feature-slug]
 ---
 
