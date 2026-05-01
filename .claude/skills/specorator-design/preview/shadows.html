@@ -1,0 +1,14 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css"><style>
+body { width: 700px; padding: 28px; background: var(--paper); }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.tile { background: var(--surface); border-radius: 12px; height: 90px; display: flex; align-items: end; padding: 12px; font-family: var(--font-mono); font-size: 10px; color: var(--muted); }
+.t1 { box-shadow: 0 6px 20px rgba(23, 32, 27, 0.04); }
+.t2 { box-shadow: 0 12px 30px rgba(23, 32, 27, 0.08); }
+.t3 { box-shadow: 0 24px 70px rgba(23, 32, 27, 0.13); }
+</style></head><body>
+<div class="grid">
+  <div class="tile t1">--shadow-sm · artifact-card</div>
+  <div class="tile t2">--shadow-md · card hover</div>
+  <div class="tile t3">--shadow-hero · hero visual</div>
+</div>
+</body></html>

@@ -134,6 +134,7 @@ Quality gates per stage are summarised below; the full Definition of Done lives 
 - **Optional pre-design skills:**
   - **`design-twice`** — explore divergent module shapes when the design has a genuine fork. Produces `design-comparison.md`.
   - **`arc42-baseline`** — for any architecture-significant feature (SaaS, on-premises, embedded, internal tool, library), drive the Arc42 + 12-Factor questionnaire to lock cross-cutting non-functional and operability decisions before Part C. Produces `arc42-questionnaire.md`, files ADRs for accepted key decisions, and feeds `/spec:design` as canonical input. Sections not applicable to the project type are marked `N/A`.
+  - **`specorator-design`** — canonical brand source (tokens, voice, iconography rules, UI kit, deck system). Invoke before generating user-visible HTML / CSS / mocks. Lift values from `colors_and_type.css` by token name; never invent colors, weights, radii, or shadows. See [ADR-0016](adr/0016-design-system-as-skill.md).
 - **Quality gate:** Boundaries clear. Decisions justified. Irreversible architecture choices have ADRs.
 
 ### 3.5 Specification

@@ -1,0 +1,20 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css"><style>
+body { width: 700px; padding: 24px 28px; background: var(--paper); }
+.row { display: flex; flex-wrap: wrap; gap: 10px; }
+.stage { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); min-width: 130px; align-items: center; }
+.stage .nm { font-size: 13px; font-weight: 760; color: var(--ink); }
+.stage .ow { font-family: var(--font-mono); font-size: 10px; color: var(--muted); }
+.stage.discovery { background: var(--soft-green); }
+.stage.lifecycle { background: var(--soft-blue); }
+.stage.gate      { background: var(--soft-yellow); }
+.stage.gate .ow  { color: #6b5400; }
+.lbl { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin: 0 0 8px; text-transform: uppercase; letter-spacing: 0.08em; }
+</style></head><body>
+<p class="lbl">Stage chips · 3 variants</p>
+<div class="row">
+  <div class="stage discovery"><span class="nm">Frame</span><span class="ow">product-strategist</span></div>
+  <div class="stage lifecycle"><span class="nm">3. Requirements</span><span class="ow">pm</span></div>
+  <div class="stage gate"><span class="nm">Brief gate</span><span class="ow">human</span></div>
+  <div class="stage lifecycle"><span class="nm">7. Implementation</span><span class="ow">dev</span></div>
+</div>
+</body></html>

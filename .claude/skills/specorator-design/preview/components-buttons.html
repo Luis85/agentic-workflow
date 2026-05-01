@@ -1,0 +1,16 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css"><style>
+body { width: 700px; padding: 26px 28px; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border: 1px solid var(--ink); border-radius: 8px; font-weight: 760; font-family: var(--font-sans); font-size: 14px; cursor: default; }
+.primary { background: var(--ink); color: #fff; }
+.highlight { background: var(--highlighter); color: var(--ink); border-color: var(--highlighter); }
+.secondary { background: transparent; color: var(--ink); }
+.lbl { display:block; font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-top: 8px; }
+.col { display: flex; flex-direction: column; gap: 4px; }
+</style></head><body>
+<div class="row">
+  <div class="col"><span class="btn highlight">Get started</span><span class="lbl">.button.highlight · primary CTA</span></div>
+  <div class="col"><span class="btn primary">Read the workflow</span><span class="lbl">.button · default</span></div>
+  <div class="col"><span class="btn secondary">Read the workflow</span><span class="lbl">.button.secondary</span></div>
+</div>
+</body></html>

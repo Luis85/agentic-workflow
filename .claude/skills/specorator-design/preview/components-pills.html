@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css"><style>
+body { width: 700px; padding: 26px 28px; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+.row:last-child { margin-bottom: 0; }
+.lbl { font-family: var(--font-mono); font-size: 10px; color: var(--muted); width: 110px; flex: 0 0 110px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 11px; letter-spacing: 0.08em; font-weight: 800; text-transform: uppercase; }
+.pill.status { background: var(--soft-green); color: var(--accent-strong); }
+.pill.status::before { content:""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.pill.track { background: var(--soft-green); color: var(--accent-strong); letter-spacing: 0.1em; padding: 3px 9px; font-size: 10px; }
+.lane { padding: 3px 9px; border-radius: 999px; font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+.lane.define { color: var(--accent-strong); background: var(--lane-define-soft); }
+.lane.build  { color: #2d4a73; background: var(--lane-build-soft); }
+.lane.ship   { color: #6b5400; background: var(--lane-ship-soft); }
+</style></head><body>
+<div class="row"><span class="lbl">status</span><span class="pill status">Open-source template</span><span class="pill status">Ready to ship</span></div>
+<div class="row"><span class="lbl">track-when</span><span class="pill track">Pre-brief</span><span class="pill track">Legacy systems</span><span class="pill track">Always-on</span></div>
+<div class="row"><span class="lbl">lane chip</span><span class="lane define">Define</span><span class="lane build">Build</span><span class="lane ship">Ship</span></div>
+</body></html>
