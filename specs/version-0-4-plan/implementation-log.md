@@ -247,3 +247,105 @@ Satisfies T-V04-010 release task; satisfies the §Communication TODO that the v0
 - `npm run quality:metrics`
 - `npm run quality:metrics -- --feature=version-0-4-plan`
 - `npm run verify`
+
+## Task T-V04-011 - Verify v0.4 release readiness
+
+Source: tasks.md T-V04-011 DoD ("Run targeted tests, CI-readiness checks, metrics
+checks, link checks, and `npm run verify`; document skipped checks and any deferred
+scheduled automation.") and the session pickup brief.
+
+Resolves the bulk of T-V04-009's final close gate (release-manager retains the
+T-V04-009 §Changes cross-check + README §Roadmap flip at release time) and unblocks
+T-V04-012 (release-manager - v0.5 release-quality handoff).
+
+Satisfies REQ-V04-001, REQ-V04-002, REQ-V04-003, REQ-V04-007, REQ-V04-008, REQ-V04-009,
+NFR-V04-005, SPEC-V04-001, SPEC-V04-002, SPEC-V04-003, SPEC-V04-006, SPEC-V04-007,
+SPEC-V04-008.
+
+### Decision: no separate release-readiness-guide.md
+
+`templates/release-readiness-guide-template.md` ships a per-perspective scaffold
+(product, UX, customer, engineering, security, operations, support, data, commercial,
+communications). v0.4 ships docs, scripts, and a CI workflow only. There is no
+runtime, no users, no migrations, no on-call rotation, no commercial impact, no data
+flow, and no external announcement that needs sign-off. Eight of ten perspectives
+collapse to N/A. The remaining two (engineering, communications) are already covered
+by `release-notes.md` §Quality gate.
+
+A separate guide would add noise without adding signal. v0.3 set the same precedent
+(no guide). The decision is recorded in `release-notes.md` §Readiness summary
+("Release readiness guide: not used"). The v0.5 release should re-evaluate per
+release; a runtime release would justify the guide.
+
+### Verification suite
+
+Worktree cut from `origin/main` at `e6edc07` on branch `feat/v04-t011-release-readiness`.
+Fresh `npm ci` install (worktrees do not share `node_modules`).
+
+| # | Command | Exit | Result |
+|---|---|---:|---|
+| 1 | `npm ci` | 0 | 30 packages installed; 0 vulnerabilities. |
+| 2 | `npm test` | 0 | 165/165 tests pass in 3.6s. |
+| 3 | `npm run verify` | 0 | `verify: ok` in 20.5s; all bundled checks green (`typecheck:scripts`, `test:scripts`, `check:agents`, `check:links`, `check:adr-index`, `check:commands`, `check:script-docs`, `check:workflow-docs`, `check:product-page`, `check:sites-tokens-mirror`, `check:frontmatter`, `check:obsidian`, `check:obsidian-assets`, `check:specs`, `check:roadmaps`, `check:traceability`, `check:token-budget`). |
+| 4 | `npm run quality:metrics` | 0 | Repo overall score 91.5%; 11 workflow states scanned; maturity Level 3 (Traceable); 0 active blockers; 5 specs with open clarifications, none in v0.4. |
+| 5 | `npm run quality:metrics -- --feature=version-0-4-plan` | 0 | v0.4 stage score 97.1% (stage `implementation`, status `active`); req-chain coverage 100%; EARS coverage 100%; test coverage `not expected yet` for current stage; 0 active blockers; 0 open clarifications (CLAR-V04-001 + CLAR-V04-002 both resolved). |
+| 6 | `npm run doctor` | 0 | Node v24.12.0; npm 11.9.0; git 2.47.0; branch tracking `origin/main`; working tree clean; dependencies present; verify workflow ready; pages workflow ready; ADR index ok; command inventories ok; verify gate ok. One advisory warning: 5 worktrees registered, 2 hygiene warnings — `feat/v04-t006-tests` and `feat/v04-t010-product-page` are merged into `origin/main` but the worktrees / branches were not pruned. Hygiene only; not a release blocker. |
+
+CI-readiness signals exercised by command 6: trigger keys (`pull_request:`, `push:`),
+push-covers-`main` evaluator (block-list and flow-list forms), verify-job-scoped
+SHA-pin evaluators for `actions/checkout` and `actions/setup-node`. All green.
+
+### Caveat surfaced
+
+`npm run quality:metrics --feature=<slug>` (without `--`) is silently swallowed by
+the npm CLI as an npm config flag (`npm warn Unknown cli config "--feature"`); the
+script never sees it and falls back to repo-wide scope. The proper invocation is
+`npm run quality:metrics -- --feature=<slug>` (with the `--` separator) or
+`tsx scripts/quality-metrics.ts --feature=<slug>` invoked directly. Recorded in
+`release-notes.md` §Verification steps so v0.5 release-readiness automation does not
+hit the same trap.
+
+### Deferred automation (per task DoD)
+
+- **Scheduled health reporting** - deferred to v0.5+ per CLAR-V04-002 (resolved
+  2026-05-01 in T-V04-002). PRD non-goals exclude telemetry / dashboards. v0.4
+  produces machine-readable signals (`npm run quality:metrics` JSON and exit codes,
+  `npm run doctor` exit code) that v0.5 can consume from a scheduled job. See
+  `docs/pr-ci-gate.md` §Out of scope.
+- **REQ/NFR -> TEST forward-coverage advisory check** - deferred (carried forward
+  from CLAR-V03-002) until the test-plan format is locked enough to avoid false
+  positives. v0.5 should re-evaluate. Captured in `release-notes.md` §Known
+  limitations and §Validation baseline for v0.5.
+
+### Edits in this PR
+
+- `release-notes.md` §Readiness summary — guide-not-used decision, **go** verdict,
+  three release-time conditions (T-V04-009 §Changes cross-check + README flip,
+  T-V04-010 §Communication checkbox confirmation, T-V04-012 v0.5 handoff), required
+  approvals (release-manager only).
+- `release-notes.md` §Verification steps — replaced TODO row 6 with the
+  feature-scoped invocation plus the `--` separator caveat; added doctor's CI
+  contract scope.
+- `release-notes.md` §Quality gate — flipped `[ ]` Readiness conditions to `[x]`.
+  `[ ]` Communication remains; release-manager confirms it during T-V04-009 close.
+- `workflow-state.md` Stage 8 marked `skipped` with rationale under §Skips
+  (`test-plan.md`, `test-report.md` skipped — meta-feature; canonical test
+  artifacts are `tests/scripts/doctor.test.ts` and `tests/scripts/quality-metrics.test.ts`
+  from T-V04-006).
+- `workflow-state.md` Hand-off note added (T-V04-011 closeout).
+- `implementation-log.md` §Task T-V04-011 (this section).
+
+### Verdict
+
+**Go**, conditional on the three release-time items in `release-notes.md`
+§Readiness summary. Verification suite is green; no release-blocking findings;
+deferred automation is documented; CLAR-V04-001 and CLAR-V04-002 are both resolved.
+
+### Handoff to T-V04-012
+
+Release-manager picks up T-V04-012 (v0.5 release-quality handoff) using
+`release-notes.md` §Validation baseline for v0.5 as the canonical input. That
+section already documents the machine-readable JSON / exit-code surfaces and the
+`--save` / `--compare` snapshot contract that v0.5 release-readiness should consume.
+T-V04-012's job is to write the consumption contract from the v0.5 side; this PR
+does not pre-empt it.

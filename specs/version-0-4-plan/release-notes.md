@@ -59,9 +59,20 @@ v0.4 promotes the v0.3 hard-fail validators into a required PR CI quality gate. 
 
 ## Readiness summary
 
-- Release readiness guide: TODO — decide in T-V04-011 whether to use a separate `release-readiness-guide.md`.
-- Go/no-go verdict: TODO (lands in T-V04-011).
-- Required conditions or approvals: TODO.
+- **Release readiness guide:** not used. v0.4 ships docs, scripts, and a CI workflow only — no runtime, no users, no migrations, no on-call rotation, no commercial impact, no external announcement that needs sign-off. The per-perspective scaffold in [`templates/release-readiness-guide-template.md`](../../templates/release-readiness-guide-template.md) (UX, security, operations, support, data, commercial, communications) is mostly N/A for a meta-template release. The inline §Readiness summary plus §Quality gate below provides the equivalent decision record. v0.3 set the same precedent.
+- **Go / no-go verdict:** **go**. T-V04-011 verification on a fresh `npm ci` checkout of `feat/v04-t011-release-readiness` (cut from `origin/main` at `e6edc07`) was green end-to-end on 2026-05-01.
+  - `npm ci` — exit 0 (30 packages, 0 vulnerabilities).
+  - `npm test` — exit 0 (165/165 pass).
+  - `npm run verify` — exit 0 (`verify: ok` in 20.5s; all bundled checks pass).
+  - `npm run quality:metrics` (repo) — exit 0; overall score 91.5%; maturity Level 3 (Traceable); 0 active blockers.
+  - `npm run quality:metrics -- --feature=version-0-4-plan` — exit 0; v0.4 stage score 97.1%; 0 open clarifications; CLAR-V04-001 and CLAR-V04-002 both resolved.
+  - `npm run doctor` — exit 0; one advisory warning (two merged worktrees not yet pruned: `feat/v04-t006-tests`, `feat/v04-t010-product-page`). Hygiene only; not a release blocker.
+- **Required conditions before release ships:**
+  - T-V04-009 final cross-check: release-manager re-confirms §Changes against the final list of merged PRs at release time, and flips README.md §Roadmap row v0.4 from "Planned" to "Done" plus the `docs/specorator.md` v0.4 references (per the v0.3 pattern). Tracked in the T-V04-009 closeout note in `workflow-state.md`.
+  - T-V04-010 external-announcement disposition: the §Communication external-announcement quality-gate item is paired with T-V04-010, and that task already shipped the `sites/index.html` v0.4 positioning update; the `[ ]` Communication checkbox flips to `[x]` once the release-manager confirms no further external-announcement work is required.
+  - T-V04-012 v0.5 handoff: `release-notes.md` §Validation baseline for v0.5 is the canonical handoff input; T-V04-012 documents the consumption contract for v0.5 release-readiness automation.
+  - Worktree hygiene: prune the two merged-but-still-registered worktrees flagged by `npm run doctor` before opening the release tag (cosmetic; can also ride on a follow-up PR).
+- **Approvals required:** human release-manager sign-off on the T-V04-009 / T-V04-010 / T-V04-012 closures above. No legal, security, or compliance approvals required (no runtime change, no data flow, no third-party surface).
 
 ## Known limitations
 
@@ -77,9 +88,9 @@ After pulling v0.4:
 1. `npm ci` — installs dependencies with the lockfile.
 2. `npm test` (or `npm run test:scripts`) — runs the script test suite.
 3. `npm run verify` — full local verify gate. Expect `verify: ok`.
-4. `npm run quality:metrics` — workflow metrics report (rendered + JSON).
-5. `npm run doctor` — local environment + CI readiness checks.
-6. TODO — additional steps once T-V04-011 lands.
+4. `npm run quality:metrics` — repo-wide workflow metrics report (rendered + JSON).
+5. `npm run quality:metrics -- --feature=<slug>` — feature-scoped metrics. Note the `--` separator: `npm run quality:metrics --feature=<slug>` (without `--`) is silently swallowed by the npm CLI and the script falls back to repo-wide scope. Use `tsx scripts/quality-metrics.ts --feature=<slug>` if invoking the script directly.
+6. `npm run doctor` — local environment + CI readiness checks. Includes the verify.yml workflow contract (trigger keys, push-covers-main, verify-job-scoped SHA-pin), branch readiness, and worktree hygiene.
 
 ## Rollback plan
 
@@ -114,7 +125,7 @@ This subsection feeds T-V04-012 (v0.5 release-quality handoff). v0.5 release-rea
 
 - [x] Summary written for the audience (users / stakeholders, not engineers).
 - [x] User-visible impact stated.
-- [ ] Readiness conditions and approvals summarized, or guide marked not used. *(T-V04-011)*
+- [x] Readiness conditions and approvals summarized, or guide marked not used.
 - [x] Known limitations disclosed.
 - [x] Verification steps documented (T-V04-011 may add more).
 - [x] Rollback plan documented.
