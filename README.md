@@ -409,6 +409,9 @@ Each arrow is a quality gate. See [`docs/workflow-overview.md`](docs/workflow-ov
 
 <!-- BEGIN GENERATED: slash-commands -->
 ```
+# Top-level:
+/token-review
+
 # Decisions:
 /adr:new
 
