@@ -35,6 +35,7 @@ export type GitHubProjectSetupPlan = {
 const baseLabels: GitHubLabelSpec[] = [
   { name: "setup", color: "0E8A16", description: "Repository setup and project foundations" },
   { name: "github", color: "5319E7", description: "GitHub configuration, templates, and collaboration workflow" },
+  { name: "project-management", color: "5319E7", description: "Project governance, coordination, decision gates, and registers" },
   { name: "ci", color: "1D76DB", description: "Continuous integration and automated checks" },
   { name: "release", color: "FBCA04", description: "Versioning, packaging, and release automation" },
   { name: "product", color: "0E8A16", description: "Product strategy, vision, PRD, and scope" },
@@ -51,7 +52,6 @@ const baseLabels: GitHubLabelSpec[] = [
 
 const p3Labels: GitHubLabelSpec[] = [
   { name: "p3-express", color: "0052CC", description: "P3.express project management activities" },
-  { name: "project-management", color: "5319E7", description: "Project governance, coordination, decision gates, and registers" },
   { name: "governance", color: "B60205", description: "Roles, decisions, approvals, and management controls" },
   { name: "risk", color: "D93F0B", description: "Risks, issues, responses, and follow-up actions" },
   { name: "decision-gate", color: "FBCA04", description: "Go/no-go gates and approval checkpoints" },
@@ -145,8 +145,11 @@ export function applyGitHubProjectSetupPlan(repo: string, plan: GitHubProjectSet
   for (const label of plan.labels) {
     runGh(["label", "create", label.name, "--repo", repo, "--color", label.color, "--description", label.description, "--force"]);
   }
+  const existingMilestones = listExistingMilestoneTitles(repo);
   for (const milestone of plan.milestones) {
+    if (existingMilestones.has(milestone.title)) continue;
     runGh(["api", `repos/${repo}/milestones`, "-f", `title=${milestone.title}`, "-f", `description=${milestone.description}`]);
+    existingMilestones.add(milestone.title);
   }
   for (const issue of plan.issues) {
     runGh([
@@ -172,6 +175,21 @@ function runGh(args: string[]): void {
   if (result.status !== 0) {
     throw new Error(`gh ${args.join(" ")} failed with status ${result.status}`);
   }
+}
+
+function runGhText(args: string[]): string {
+  const result = spawnSync("gh", args, { encoding: "utf8", windowsHide: true });
+  if (result.error) throw result.error;
+  if (result.status !== 0) {
+    const detail = result.stderr.trim() || result.stdout.trim();
+    throw new Error(`gh ${args.join(" ")} failed with status ${result.status}${detail ? `: ${detail}` : ""}`);
+  }
+  return result.stdout;
+}
+
+function listExistingMilestoneTitles(repo: string): Set<string> {
+  const output = runGhText(["api", `repos/${repo}/milestones`, "--paginate", "-F", "state=all", "--jq", ".[].title"]);
+  return new Set(output.split(/\r?\n/).map((line) => line.trim()).filter(Boolean));
 }
 
 function repoSetupIssues(input: ProjectSetupInput): GitHubIssueSpec[] {
