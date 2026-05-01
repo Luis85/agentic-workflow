@@ -61,6 +61,20 @@ npm run check:automation-registry
 
 Registry entries record the command or path, purpose, read-only status, local safety, JSON support, intended users, and rerun command. Add or update the registry in the same PR as any new package script, GitHub workflow, skill, or operational agent.
 
+When a check reports a missing surface, scaffold candidate entries with:
+
+```bash
+npm run automation:registry:discover
+```
+
+Use JSON when an agent or tool needs to consume the candidates:
+
+```bash
+npm run automation:registry:discover -- --json
+```
+
+Discovery output is intentionally not commit-ready: generated `purpose` values contain `TODO` markers, and `check:automation-registry` rejects those placeholders until a human or responsible agent writes the actual annotation.
+
 ## Agent Artifacts
 
 Validate lifecycle agents, reusable skills, and operational agent prompts as product artifacts:
@@ -165,6 +179,7 @@ In GitHub Actions, `verify` requests JSON diagnostics from supported check scrip
 | `npm run check:fast` | Run the fast local iteration gate. |
 | `npm run check:content` | Run content and generated documentation integrity checks. |
 | `npm run check:workflow` | Run workflow state, traceability, roadmap, and agent contract checks. |
+| `npm run automation:registry:discover` | Emit candidate registry entries for newly discovered automation surfaces. |
 | `npm run check:automation-registry` | Validate `tools/automation-registry.yml` against package scripts, workflows, skills, and operational agents. |
 | `npm run check:agents` | Validate lifecycle agents, skills, and operational agents as product artifacts. |
 | `npm run check:links` | Validate local Markdown links and anchors. |

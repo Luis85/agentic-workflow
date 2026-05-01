@@ -41,6 +41,10 @@ export type AutomationRegistry = {
   entries: AutomationRegistryEntry[];
 };
 
+export type AutomationRegistryDiscovery = {
+  missing: AutomationRegistryEntry[];
+};
+
 type PackageJson = {
   scripts?: Record<string, string>;
 };
@@ -114,6 +118,7 @@ export function validateAutomationRegistry(
     validateRequiredBoolean(entry, "read_only", registryPath, errors);
     validateRequiredBoolean(entry, "safe_to_run_locally", registryPath, errors);
     validateRequiredBoolean(entry, "emits_json", registryPath, errors);
+    validateHumanAnnotation(entry, registryPath, errors);
 
     if (!Array.isArray(entry.used_by) || entry.used_by.length === 0) {
       errors.push({
@@ -203,6 +208,52 @@ export function validateAutomationRegistry(
   return errors;
 }
 
+/**
+ * Discover registry entries for automation surfaces that are not yet registered.
+ *
+ * The returned entries are intentionally incomplete: their `purpose` values
+ * contain TODO markers that `validateAutomationRegistry` rejects. This makes
+ * the output useful as a scaffold without allowing generated placeholders to
+ * become accepted registry annotations.
+ *
+ * @param {AutomationRegistry} registry - Parsed automation registry.
+ * @param {string} [root=repoRoot] - Repository root.
+ * @returns {AutomationRegistryDiscovery} Missing registry entry candidates.
+ */
+export function discoverAutomationRegistryEntries(
+  registry: AutomationRegistry,
+  root = repoRoot,
+): AutomationRegistryDiscovery {
+  const entries = registry && Array.isArray(registry.entries) ? registry.entries : [];
+  const commands = new Set(
+    entries.map((entry) => entry.command).filter((command): command is string => typeof command === "string"),
+  );
+  const paths = new Set(
+    entries.map((entry) => entry.path).filter((entryPath): entryPath is string => typeof entryPath === "string"),
+  );
+  const missing: AutomationRegistryEntry[] = [];
+
+  for (const script of packageScripts(root)) {
+    const command = `npm run ${script}`;
+    if (!commands.has(command)) missing.push(discoveredPackageScriptEntry(script, root));
+  }
+
+  for (const workflow of listedFiles(".github/workflows", root, ".yml", ".yaml")) {
+    if (!paths.has(workflow)) missing.push(discoveredWorkflowEntry(workflow));
+  }
+
+  for (const skill of listedFiles(".claude/skills", root, "SKILL.md")) {
+    if (!paths.has(skill)) missing.push(discoveredSkillEntry(skill));
+  }
+
+  for (const operationalAgent of listedFiles("agents/operational", root, "PROMPT.md")) {
+    const directory = operationalAgent.replace(/\/PROMPT\.md$/, "");
+    if (!paths.has(directory)) missing.push(discoveredOperationalAgentEntry(directory));
+  }
+
+  return { missing };
+}
+
 function validateRequiredString(
   entry: AutomationRegistryEntry,
   key: "purpose" | "rerun_command",
@@ -233,12 +284,114 @@ function validateRequiredBoolean(
   }
 }
 
+function validateHumanAnnotation(
+  entry: AutomationRegistryEntry,
+  registryPath: string,
+  errors: Diagnostic[],
+): void {
+  if (typeof entry.purpose === "string" && /\bTODO\b/i.test(entry.purpose)) {
+    errors.push({
+      path: registryPath,
+      code: "AUTO_ANNOTATION",
+      message: `${entry.id || "entry"} purpose must be human-authored before registration`,
+    });
+  }
+}
+
 function packageScripts(root: string): string[] {
   const packageJson = JSON.parse(readText(path.join(root, "package.json"))) as PackageJson;
   if (!packageJson.scripts || typeof packageJson.scripts !== "object" || Array.isArray(packageJson.scripts)) {
     return [];
   }
   return Object.keys(packageJson.scripts).sort();
+}
+
+function discoveredPackageScriptEntry(script: string, root: string): AutomationRegistryEntry {
+  const scriptCommand = packageScriptCommand(root, script);
+  const discoveredPath = scriptPath(scriptCommand);
+  return {
+    id: discoveredPackageScriptId(script),
+    kind: packageScriptKind(script),
+    command: `npm run ${script}`,
+    ...(discoveredPath ? { path: discoveredPath } : {}),
+    purpose: `TODO: describe npm script ${script}.`,
+    read_only: !(script === "fix" || script.startsWith("fix:") || script.startsWith("docs:")),
+    safe_to_run_locally: true,
+    emits_json: script.endsWith(":json"),
+    used_by: ["human", "agent"],
+    rerun_command: `npm run ${script}`,
+  };
+}
+
+function discoveredWorkflowEntry(workflow: string): AutomationRegistryEntry {
+  const name = path.basename(workflow).replace(/\.(ya?ml)$/i, "");
+  return {
+    id: `workflow:${name}`,
+    kind: "workflow",
+    path: workflow,
+    purpose: `TODO: describe GitHub workflow ${workflow}.`,
+    read_only: workflow !== ".github/workflows/pages.yml",
+    safe_to_run_locally: false,
+    emits_json: false,
+    used_by: ["ci"],
+    rerun_command: `gh run list --workflow ${path.basename(workflow)}`,
+  };
+}
+
+function discoveredSkillEntry(skill: string): AutomationRegistryEntry {
+  const name = skill.replace(/^\.claude\/skills\//, "").replace(/\/SKILL\.md$/, "");
+  return {
+    id: `skill:${name}`,
+    kind: "skill",
+    path: skill,
+    purpose: `TODO: describe agent-facing skill ${name}.`,
+    read_only: true,
+    safe_to_run_locally: true,
+    emits_json: false,
+    used_by: ["agent"],
+    rerun_command: `open ${skill}`,
+  };
+}
+
+function discoveredOperationalAgentEntry(directory: string): AutomationRegistryEntry {
+  const name = directory.replace(/^agents\/operational\//, "");
+  return {
+    id: `operational-agent:${name}`,
+    kind: "operational-agent",
+    path: directory,
+    purpose: `TODO: describe operational agent ${name}.`,
+    read_only: true,
+    safe_to_run_locally: false,
+    emits_json: false,
+    used_by: ["agent", "human"],
+    rerun_command: `open ${directory}/PROMPT.md`,
+  };
+}
+
+function discoveredPackageScriptId(script: string): string {
+  if (script.startsWith("check:")) return script;
+  if (script === "fix") return "fix:generated";
+  if (script.startsWith("fix:")) return script;
+  if (script === "docs:scripts") return script;
+  return `script:${script.replace(/:/g, "-")}`;
+}
+
+function packageScriptKind(script: string): AutomationKind {
+  if (script.startsWith("check:")) return "check";
+  if (script === "fix" || script.startsWith("fix:")) return "fix";
+  return "script";
+}
+
+function packageScriptCommand(root: string, script: string): string {
+  const packageJson = JSON.parse(readText(path.join(root, "package.json"))) as PackageJson;
+  return packageJson.scripts?.[script] || "";
+}
+
+function scriptPath(command: string): string | undefined {
+  const match =
+    command.match(/\btsx\s+(scripts\/[^\s]+\.ts)\b/) ||
+    command.match(/\bnode\s+(scripts\/[^\s]+\.js)\b/);
+  return match?.[1];
 }
 
 function listedFiles(startDir: string, root: string, ...suffixes: string[]): string[] {
