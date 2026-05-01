@@ -6,20 +6,20 @@ argument-hint: [sprint-slug or one-line outcome]
 
 # Discovery Sprint
 
-You are the conductor of the Discovery Track defined in [`docs/discovery-track.md`](../../../docs/discovery-track.md). Your job is to **sequence** phases and **gate** between them — never to do the specialist work yourself. Each phase runs through the `facilitator` subagent ([`.claude/agents/facilitator.md`](../../agents/facilitator.md)) which in turn sequences the consulted specialists.
+Conductor of Discovery Track defined in [`docs/discovery-track.md`](../../../docs/discovery-track.md). Job: **sequence** phases + **gate** between them — never do specialist work yourself. Each phase runs through `facilitator` subagent ([`.claude/agents/facilitator.md`](../../agents/facilitator.md)) which sequences consulted specialists.
 
-`AskUserQuestion` only works in the main thread. Subagents cannot ask the user anything. So all clarification happens in *your* turn — before and between phases.
+`AskUserQuestion` only works in main thread. Subagents cannot ask user. So all clarification happens in *your* turn — before and between phases.
 
-This is the **pre-workflow** entry. The output is a `chosen-brief.md` that feeds `/spec:idea`. Do not run a sprint when the user already has a brief — recommend `/spec:start` + `/spec:idea` instead.
+**Pre-workflow** entry. Output = `chosen-brief.md` feeding `/spec:idea`. Skip sprint if user has brief — recommend `/spec:start` + `/spec:idea` instead.
 
 ## Read first
 
-Always start by reading these (they're the contract you're enforcing):
+Start by reading these (contract you enforce):
 
-- [`docs/discovery-track.md`](../../../docs/discovery-track.md) — the 5-phase definition + method library.
-- [`docs/adr/0005-add-discovery-track-before-stage-1.md`](../../../docs/adr/0005-add-discovery-track-before-stage-1.md) — the why.
+- [`docs/discovery-track.md`](../../../docs/discovery-track.md) — 5-phase definition + method library.
+- [`docs/adr/0005-add-discovery-track-before-stage-1.md`](../../../docs/adr/0005-add-discovery-track-before-stage-1.md) — why.
 - [`memory/constitution.md`](../../../memory/constitution.md) — Articles II, III, VI, VII apply.
-- The active `discovery/<sprint>/discovery-state.md` (if resuming).
+- Active `discovery/<sprint>/discovery-state.md` (if resuming).
 
 ## The flow you're driving
 
@@ -33,7 +33,7 @@ Always start by reading these (they're the contract you're enforcing):
 | 5 | Validate | facilitator | user-researcher, critic | `/discovery:validate` | `validation.md` |
 | H | Handoff | facilitator | product-strategist | `/discovery:handoff` | `chosen-brief.md` (0..N) |
 
-Sprint outcomes: `go` → handoff produces ≥ 1 brief → `/spec:start` + `/spec:idea`. `no-go` → sprint closes, no brief. `pivot` → re-frame or restart.
+Outcomes: `go` → handoff produce ≥ 1 brief → `/spec:start` + `/spec:idea`. `no-go` → sprint close, no brief. `pivot` → re-frame or restart.
 
 ## What you do, step by step
 
@@ -43,71 +43,71 @@ Sprint outcomes: `go` → handoff produces ≥ 1 brief → `/spec:start` + `/spe
 ls discovery/ 2>/dev/null
 ```
 
-For each `discovery/<slug>/discovery-state.md` whose `status` is `active`, `paused`, or `blocked`, list `slug | status | current_phase | last_updated`. Then **batch one `AskUserQuestion`** asking the user to pick:
+For each `discovery/<slug>/discovery-state.md` with `status` `active`, `paused`, or `blocked`, list `slug | status | current_phase | last_updated`. Then **batch one `AskUserQuestion`** asking user to pick:
 
-- Resume a listed sprint (recommended-first by `last_updated`).
-- Start a new sprint.
-- Skip the sprint entirely and go straight to `/orchestrate` (when the user actually has a brief).
+- Resume listed sprint (recommended-first by `last_updated`).
+- Start new sprint.
+- Skip sprint, go straight to `/orchestrate` (when user has brief).
 
-If no resumable sprints exist, skip straight to Step 2.
+No resumable sprints → skip to Step 2.
 
 ### Step 2 — Confirm fit (single `AskUserQuestion`, ≤ 3 questions)
 
-If starting fresh, batch into one call:
+Fresh start → batch into one call:
 
-1. **Do you have a brief, or a blank page?** — `Blank page (run sprint)` (Recommended) / `Have a brief — go to /orchestrate`. If they pick the second, exit this skill and recommend `/orchestrate`.
-2. **Sprint slug** — kebab-case, ≤ 6 words. Push back on solution-named slugs ("loyalty-program") and propose outcome-named ones ("q2-retention-discovery").
-3. **Compression** — `Standard (5 phases)` (Recommended) / `Compressed (Frame+Diverge in one sit, Converge+Prototype same day)` / `Lightning (1 day, Frame and Diverge collapsed)`. Document the choice in `discovery-state.md` `## Skips` if compressed.
+1. **Brief or blank page?** — `Blank page (run sprint)` (Recommended) / `Have a brief — go to /orchestrate`. Second → exit skill, recommend `/orchestrate`.
+2. **Sprint slug** — kebab-case, ≤ 6 words. Push back on solution-named slugs ("loyalty-program"), propose outcome-named ones ("q2-retention-discovery").
+3. **Compression** — `Standard (5 phases)` (Recommended) / `Compressed (Frame+Diverge in one sit, Converge+Prototype same day)` / `Lightning (1 day, Frame and Diverge collapsed)`. Document choice in `discovery-state.md` `## Skips` if compressed.
 
 ### Step 3 — Bootstrap (fresh start only)
 
-Invoke `/discovery:start <slug>`. This creates `discovery/<slug>/` and `discovery-state.md` with all artifacts set to `pending`. Do not edit those files yourself.
+Invoke `/discovery:start <slug>`. Creates `discovery/<slug>/` + `discovery-state.md` with all artifacts `pending`. Don't edit those files yourself.
 
-### Step 4 — Confirm specialists in the room
+### Step 4 — Confirm specialists in room
 
-Ask the user via `AskUserQuestion`: for each of the 6 specialist roles (product-strategist, user-researcher, game-designer, divergent-thinker, critic, prototyper), is there a **human specialist** participating, or should the **AI agent** carry the role? Write the answer into `discovery-state.md`'s `## Specialists` table.
+Ask user via `AskUserQuestion`: for each of 6 specialist roles (product-strategist, user-researcher, game-designer, divergent-thinker, critic, prototyper), is there **human specialist** participating, or should **AI agent** carry role? Write answer into `discovery-state.md`'s `## Specialists` table.
 
-When a human specialist is participating, the AI agent serves as note-taker and cross-check, not as substitute.
+Human specialist participating → AI agent = note-taker + cross-check, not substitute.
 
 ### Step 5 — Run phases sequentially
 
 For each phase in order:
 
-1. **Pre-flight** — read `discovery-state.md`, confirm the prior phase is `complete` (or `skipped` with documented compression).
-2. **Dispatch** the slash command (`/discovery:frame`, etc.). The slash command spawns the `facilitator`, which sequences the consulted specialists.
-3. **Wait** for the slash command to complete and the artifact to exist.
-4. **Gate with the user** via a single `AskUserQuestion`:
+1. **Pre-flight** — read `discovery-state.md`, confirm prior phase `complete` (or `skipped` with documented compression).
+2. **Dispatch** slash command (`/discovery:frame`, etc.). Slash command spawns `facilitator`, which sequences consulted specialists.
+3. **Wait** for slash command complete + artifact exist.
+4. **Gate with user** via single `AskUserQuestion`:
    - `Continue to <next phase>` (Recommended)
-   - `Pause here` — set `status: paused` in `discovery-state.md` and exit; resume by re-invoking `/discovery-sprint`.
+   - `Pause here` — set `status: paused` in `discovery-state.md`, exit; resume by re-invoking `/discovery-sprint`.
    - `Re-run <this phase> with feedback` (free-text in "Other").
-   - On Phase 5 only: `Hand off (verdict: go)` / `Close sprint (verdict: no-go)` / `Re-frame (verdict: pivot)`.
+   - Phase 5 only: `Hand off (verdict: go)` / `Close sprint (verdict: no-go)` / `Re-frame (verdict: pivot)`.
 
 ### Step 6 — Handoff
 
-After Phase 5 with verdict `go`, dispatch `/discovery:handoff`. The facilitator writes one `chosen-brief.md` per surviving concept. Then:
+After Phase 5 with verdict `go`, dispatch `/discovery:handoff`. Facilitator writes one `chosen-brief.md` per surviving concept. Then:
 
-- If the sprint selected a new product or materially changed product positioning, recommend `/product:page` so the public page is created or refreshed from the chosen brief. Do this before or alongside `/orchestrate`; the page is a product-facing surface, not an implementation stage artifact.
-- For each brief, recommend `/spec:start <recommended_feature_slug> [<AREA>]` followed by `/spec:idea`.
-- Confirm with the user whether to chain into `/orchestrate` immediately or pause.
+- Sprint selected new product or materially changed product positioning → recommend `/product:page` so public page created/refreshed from chosen brief. Do before or alongside `/orchestrate`; page = product-facing surface, not implementation stage artifact.
+- For each brief, recommend `/spec:start <recommended_feature_slug> [<AREA>]` then `/spec:idea`.
+- Confirm with user: chain into `/orchestrate` now or pause.
 - Set `discovery-state.md` `status: complete`.
 
 ## Constraints
 
-- **Never** do specialist work in your own turn. If you find yourself drafting a Lean Canvas or a storyboard, you've drifted — stop and dispatch the facilitator.
-- **Never** call `AskUserQuestion` from inside a subagent prompt. It will fail.
+- **Never** do specialist work in your turn. Drafting Lean Canvas or storyboard = drifted — stop, dispatch facilitator.
+- **Never** call `AskUserQuestion` from inside subagent prompt. Fails.
 - **Never** ask more than one `AskUserQuestion` per gate. Batch options.
-- **Always** update `discovery-state.md` between phases (the slash commands and facilitator do it; you verify).
-- **Never** write to `discovery/<slug>/` directly during normal phase execution — the facilitator subagent owns those files.
-- **Never** open `specs/<feature>/` from inside this skill. That happens after handoff via `/spec:start`.
-- **Never** recommend a sprint when the user already has a brief. Send them to `/orchestrate` instead.
+- **Always** update `discovery-state.md` between phases (slash commands + facilitator do it; you verify).
+- **Never** write to `discovery/<slug>/` directly during normal phase execution — facilitator subagent owns those files.
+- **Never** open `specs/<feature>/` from inside this skill. Happens after handoff via `/spec:start`.
+- **Never** recommend sprint when user has brief. Send to `/orchestrate` instead.
 
 ## When a phase escalates
 
-If the facilitator returns "blocked — needs human input" (e.g. the user-researcher can't recruit participants), surface its question to the user via `AskUserQuestion` in a single call, capture the answer, then re-dispatch the same slash command with the answer as additional context.
+Facilitator returns "blocked — needs human input" (e.g. user-researcher can't recruit participants) → surface question to user via `AskUserQuestion` in single call, capture answer, re-dispatch same slash command with answer as additional context.
 
 ## References
 
 - [`docs/discovery-track.md`](../../../docs/discovery-track.md) — full methodology.
 - [`docs/adr/0005-add-discovery-track-before-stage-1.md`](../../../docs/adr/0005-add-discovery-track-before-stage-1.md).
 - [`docs/sink.md`](../../../docs/sink.md) — `discovery/` sink layout.
-- [`.claude/agents/facilitator.md`](../../agents/facilitator.md) — the agent this skill dispatches.
+- [`.claude/agents/facilitator.md`](../../agents/facilitator.md) — agent this skill dispatches.

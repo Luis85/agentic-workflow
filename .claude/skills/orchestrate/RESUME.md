@@ -1,8 +1,8 @@
 # Resume protocol
 
-The orchestrate skill must survive crashes, branch switches, and long pauses. State lives in `specs/<slug>/workflow-state.md` (per `templates/workflow-state-template.md`); resuming is a matter of reading that file and picking the next pending stage.
+orchestrate skill must survive crashes, branch switches, long pauses. State lives in `specs/<slug>/workflow-state.md` (per `templates/workflow-state-template.md`); resume = read file, pick next pending stage.
 
-The canonical workflow `status` enum is **`active | blocked | paused | done`** (set in the YAML frontmatter). Do not invent values outside this enum — other commands and skills parse state using the documented schema.
+Canonical workflow `status` enum: **`active | blocked | paused | done`** (set in YAML frontmatter). No invent values outside enum — other commands/skills parse state via documented schema.
 
 ## Detection
 
@@ -19,50 +19,50 @@ for f in specs/*/workflow-state.md; do
 done
 ```
 
-How to treat each status:
+Treat each status:
 
 - **`active`** — resumable. Default candidate for "what's next?".
-- **`paused`** — resumable. The user explicitly paused; the orchestrator's pause gate sets this.
-- **`blocked`** — surface the blocker (from the `## Blocks` section) and ask the user whether to proceed anyway, address the blocker, or pause.
-- **`done`** — do **not** auto-resume; `/spec:retro` set this when the workflow finished. Offer "start new feature" instead. If the user explicitly types the slug, ask whether they want to amend (start a related new workflow) or just inspect.
+- **`paused`** — resumable. User paused explicit; orchestrator pause gate set this.
+- **`blocked`** — surface blocker (from `## Blocks` section), ask user: proceed anyway, address blocker, or pause.
+- **`done`** — do **not** auto-resume; `/spec:retro` set this when workflow finished. Offer "start new feature" instead. If user types slug explicit, ask: amend (start related new workflow) or just inspect.
 
 ## Decision flow
 
-The picker considers all **resumable** statuses (`active`, `paused`, `blocked`) — never just `active`. A user who paused a feature and later asks "what's next?" must see it offered.
+Picker considers all **resumable** statuses (`active`, `paused`, `blocked`) — never just `active`. User who paused feature then asks "what's next?" must see it offered.
 
-1. **One resumable feature, no `$ARGUMENTS`:** offer to resume it as the recommended option (annotate with its current status), plus "Start new feature" alternative.
-2. **Multiple resumable features:** list each as an `AskUserQuestion` option (annotated with status), sorted by `last_updated` desc. If there are >4, offer the top 3 plus "Start new feature". Sort `active` ahead of `paused`, and `paused` ahead of `blocked` when `last_updated` ties.
-3. **`$ARGUMENTS` matches a known slug:** resume that one without asking, regardless of resumable status. (For `done` slugs, follow the `done` rule above and confirm intent first.)
-4. **`$ARGUMENTS` is a goal phrase, no match:** propose deriving a slug and starting fresh.
-5. **No resumable features and no `$ARGUMENTS`:** ask for the goal.
+1. **One resumable feature, no `$ARGUMENTS`:** offer resume as recommended option (annotate current status), plus "Start new feature" alternative.
+2. **Multiple resumable features:** list each as `AskUserQuestion` option (annotate status), sort by `last_updated` desc. If >4, offer top 3 plus "Start new feature". Sort `active` ahead of `paused`, `paused` ahead of `blocked` on `last_updated` tie.
+3. **`$ARGUMENTS` matches known slug:** resume that one no ask, regardless of resumable status. (For `done` slugs, follow `done` rule above, confirm intent first.)
+4. **`$ARGUMENTS` is goal phrase, no match:** propose derive slug, start fresh.
+5. **No resumable features, no `$ARGUMENTS`:** ask for goal.
 
 ## On resume
 
-After picking a feature to resume:
+After pick feature to resume:
 
-1. Read the full `workflow-state.md` and report a one-line summary to the user (current stage, status, last agent, last update).
-2. Read the most recent stage's artifact to confirm it actually completed (don't trust state alone — the file may have been deleted or edited).
-3. Determine the next pending stage from the **YAML `artifacts:` map in the frontmatter** (the canonical machine-readable source per `templates/workflow-state-template.md` line 8). The human-readable status table below the frontmatter is a *view* and may drift; if the table and the frontmatter disagree, trust the frontmatter and surface the inconsistency to the user. Walk the `artifacts:` map in stage order, treating `complete` and `skipped` as passable; the next stage is the one whose owning artifact(s) are still `pending`, `in-progress`, or `blocked`.
+1. Read full `workflow-state.md`, report one-line summary to user (current stage, status, last agent, last update).
+2. Read most recent stage artifact to confirm complete (no trust state alone — file may be deleted or edited).
+3. Determine next pending stage from **YAML `artifacts:` map in frontmatter** (canonical machine-readable source per `templates/workflow-state-template.md` line 8). Human-readable status table below frontmatter is *view*, may drift; if table and frontmatter disagree, trust frontmatter, surface inconsistency to user. Walk `artifacts:` map in stage order, treat `complete` and `skipped` as passable; next stage = one whose owning artifact(s) still `pending`, `in-progress`, or `blocked`.
 4. Ask via `AskUserQuestion`: `Continue from <next stage>` (Recommended) / `Re-run <current stage>` / `Run /spec:analyze first` / `Pause`.
-5. On Continue, jump to Step 4 of `SKILL.md`. On Re-run, dispatch the current stage's slash command with feedback. On Pause, set `status: paused` in `workflow-state.md` and stop. (To abandon a feature outright, the user can delete the `specs/<slug>/` folder manually — the schema does not include a `cancelled` status.)
+5. On Continue, jump to Step 4 of `SKILL.md`. On Re-run, dispatch current stage slash command with feedback. On Pause, set `status: paused` in `workflow-state.md`, stop. (To abandon feature outright, user delete `specs/<slug>/` folder manually — schema no include `cancelled` status.)
 
 ## What not to do on resume
 
-- **Don't** re-run earlier stages "to refresh context" — the stage subagent reads upstream artifacts itself.
-- **Don't** silently skip a stage that the upstream marked `pending` — confirm with the user.
-- **Don't** mutate `workflow-state.md` beyond the orchestrator-owned `status` field and free-form `## Hand-off notes` appends; stage transitions and artifact-status updates are owned by the slash commands.
-- **Don't** invent frontmatter fields outside the schema (`active | blocked | paused | done` for workflow status; `pending | in-progress | complete | skipped | blocked` for artifact status).
-- **Don't** auto-resume a `done` feature even if the user types its slug — confirm whether they want to amend or start a related new one.
+- **Don't** re-run earlier stages "to refresh context" — stage subagent reads upstream artifacts itself.
+- **Don't** silent skip stage upstream marked `pending` — confirm with user.
+- **Don't** mutate `workflow-state.md` beyond orchestrator-owned `status` field and free-form `## Hand-off notes` appends; stage transitions and artifact-status updates owned by slash commands.
+- **Don't** invent frontmatter fields outside schema (`active | blocked | paused | done` for workflow status; `pending | in-progress | complete | skipped | blocked` for artifact status).
+- **Don't** auto-resume `done` feature even if user types slug — confirm: amend or start related new one.
 
 ## Crash recovery
 
-If an artifact in `workflow-state.md` shows `in-progress` but the file was never written and `last_updated` is older than the typical stage runtime (~1 hour), assume the previous orchestrator run crashed mid-stage. Surface this to the user:
+If artifact in `workflow-state.md` shows `in-progress` but file never written and `last_updated` older than typical stage runtime (~1 hour), assume previous orchestrator run crashed mid-stage. Surface to user:
 
 > "The last run appears to have crashed during `<stage>` at `<timestamp>`. Do you want to re-run it from scratch, or has work since been done that I should re-detect?"
 
 Offer two safe options only:
 
-- `Re-run <stage>` (Recommended) — overwrite/re-run the stage cleanly.
-- `Inspect manually first` — exit so the user can examine the working tree and reconstruct any partial work.
+- `Re-run <stage>` (Recommended) — overwrite/re-run stage clean.
+- `Inspect manually first` — exit so user can examine working tree, reconstruct partial work.
 
-Do **not** offer "mark complete and continue" here. The artifact file is missing on disk, and resume logic downstream trusts artifact statuses to pick the next stage; flipping the status to `complete` without an actual file would let the workflow advance with required inputs absent, silently corrupting later stages. If the user genuinely has off-disk work that should count as the artifact, they must paste/reconstruct it into the artifact file first, then re-run the stage to validate.
+Do **not** offer "mark complete and continue" here. Artifact file missing on disk, resume logic downstream trusts artifact statuses to pick next stage; flip status to `complete` without actual file lets workflow advance with required inputs absent, silent corrupt later stages. If user genuine has off-disk work that should count as artifact, they must paste/reconstruct into artifact file first, then re-run stage to validate.
