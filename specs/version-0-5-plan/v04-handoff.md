@@ -44,12 +44,12 @@ Canonical machine-readable workflow health snapshot. v0.5 invokes the script wit
 | `scope` | string | `"repository"` for repo-wide runs, `"feature:<slug>"` when `--feature` is passed. |
 | `summary.workflowCount` | number | Workflow-state files scanned. |
 | `summary.overallScore` | number 0..1 | Average stage-aware score across workflows. |
-| `summary.maturity` | `MaturityAssessment` | `level` (1..5), `name`, `summary`, `evidence[]`, `gaps[]`, `nextStep`. |
+| `summary.maturity` | `MaturityAssessment` | `level` (0..5; `0` = `Uninstrumented`, returned when no workflow evidence exists), `name`, `summary`, `evidence[]`, `gaps[]`, `nextStep`. |
 | `summary.checklistGaps` | number | QA checklist gaps / nonconformities. |
-| `workflows[]` | `WorkflowMetric[]` | Per-feature row: `feature`, `area`, `status`, `currentStage`, `stageScore`, `blockers`, `openClarifications`, plus coverage ratios for frontmatter / requirement chain / test coverage / EARS. |
-| `signals.activeBlockers[]` | string[] | One entry per workflow-state `Blocks` line that is not yet resolved. |
-| `signals.openClarifications[]` | string[] | One entry per unresolved `[ ] CLAR-<area>-<n>` line. |
-| `signals.missingFrontmatter[]` | string[] | Markdown files missing required frontmatter. |
+| `workflows[]` | `WorkflowMetric[]` | Per-feature row: `feature`, `area`, `status`, `currentStage`, `stageScore`, `blockers` (integer item count for that workflow), `openClarifications` (integer item count for that workflow), plus coverage ratios for frontmatter / requirement chain / test coverage / EARS. |
+| `signals.activeBlockers[]` | string[] | One entry **per workflow** that has any unresolved blockers, formatted `<feature> (<workflow-state path>)`. The string array carries workflow identity, not item count — to count items, sum `workflows[].blockers`. |
+| `signals.openClarifications[]` | string[] | One entry **per workflow** that has any unresolved `[ ] CLAR-<area>-<n>` lines, formatted `<feature> (<workflow-state path>)`. To count items, sum `workflows[].openClarifications`. |
+| `signals.missingFrontmatter[]` | string[] | Markdown files missing required frontmatter. One entry per file. |
 
 **Exit semantics.** The script always exits 0 on a successful run. The JSON itself is the signal — v0.5 must not infer pass / fail from the exit code. A non-zero exit means the script crashed (filesystem error, malformed workflow-state YAML), which is itself a release blocker because the snapshot is unusable.
 
@@ -59,10 +59,10 @@ Canonical machine-readable workflow health snapshot. v0.5 invokes the script wit
 
 | Field | Block publish when | Reason |
 |---|---|---|
-| `signals.activeBlockers.length` | > 0 | Open blocker means the feature is paused for cause; releasing past it is the regression we want to prevent. |
-| `signals.openClarifications.length` (feature scope) | > 0 for the feature being released | Unresolved clarification = unresolved spec ambiguity per Article I.4. |
-| `summary.overallScore` (repo scope) | < threshold | Threshold is a v0.5 decision (T-V05-004); recommend 0.85 as the initial floor based on v0.4 observed 0.915. |
-| `summary.maturity.level` | < 3 | Below Level 3 (Traceable) the lifecycle has gaps the release process depends on. v0.4 currently reports Level 3. |
+| `signals.activeBlockers.length` (or `sum(workflows[].blockers)` for item-level cardinality) | > 0 | Any workflow with unresolved blockers signals a feature paused for cause; releasing past it is the regression we want to prevent. The string array length is workflow count; the per-workflow integer is item count. v0.5 should pick the cardinality that matches the gate it is enforcing (workflow-level vs. item-level). |
+| `signals.openClarifications.length` (or `sum(workflows[].openClarifications)` for item-level cardinality) | > 0 for the feature being released | Unresolved clarification = unresolved spec ambiguity per Article I.4. Same workflow-vs-item cardinality note as blockers. |
+| `summary.overallScore` (repo scope) | < threshold | Threshold is a v0.5 decision (release-readiness check task); recommend 0.85 as the initial floor based on v0.4 observed 0.915. |
+| `summary.maturity.level` | < 3 (treats `0` `Uninstrumented` and `1` `Initial` and `2` `Repeatable` all as block) | Below Level 3 (Traceable) the lifecycle has gaps the release process depends on. v0.4 currently reports Level 3. Level `0` (`Uninstrumented`) is expected only on first-run / new-scope cases and is a hard block: nothing useful can be said about a release with zero workflow evidence. |
 | `summary.checklistGaps` | > 0 with no waiver | QA checklist nonconformities are explicit gaps. |
 
 **Advisory (do not block, but surface in release notes).** `summary.workflowCount` (informational), `signals.missingFrontmatter` (often legacy docs, not blocking a release), per-workflow `stageScore` for non-released features.
