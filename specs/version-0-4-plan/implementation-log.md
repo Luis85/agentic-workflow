@@ -69,6 +69,43 @@ Resolves CLAR-V04-002.
 - **T-V04-003 (dev — `.github/workflows/verify.yml`)** — author the workflow per `docs/pr-ci-gate.md` §Workflow file contract. SHA-pin actions per `docs/security-ci.md`. Single PR.
 - **T-V04-004 (dev — extend doctor)** — extend `scripts/doctor.ts` with a check that asserts the workflow file's presence and the markers listed in §Workflow file contract. Add focused tests under `tests/scripts/`. Depends on T-V04-003 landing.
 
+## Task T-V04-003 - PR CI quality gate
+
+`.github/workflows/verify.yml` already existed in the repository before T-V04-002 contract authorship; it was authored alongside earlier CI hardening (`2a56ce8 chore: add JavaScript integrity checks`) and tightened over time (`d322108 chore(ci): bump GitHub Actions to Node 24-compatible majors`, `f4335ab chore(ci): pin all action references to commit SHA`, `3a701c9 ci: resolve code scanning workflow alerts`). This task confirms the existing workflow satisfies the §Workflow file contract published in T-V04-002 and reconciles two intentional drifts back into the contract.
+
+### Workflow file vs §Workflow file contract
+
+| Slot | Required | Existing `.github/workflows/verify.yml` | Status |
+|---|---|---|---|
+| Trigger | `pull_request` (any branch) and `push: branches: [main]` | `pull_request:` + `push: branches: [main]` | satisfied |
+| Runner | `ubuntu-latest` | `ubuntu-latest` | satisfied |
+| Step 1 | `actions/checkout@<SHA>` (SHA-pinned) | `actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2` | satisfied |
+| Step 2 | `actions/setup-node@<SHA>` with Node 24 | `actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0` with `node-version: 24` and `cache: npm` | satisfied |
+| Step 3 | `npm ci` | `npm ci` | satisfied |
+| Step 4 | `npm run verify` | `npm run verify` | satisfied |
+| Concurrency | `cancel-in-progress: true`, group keyed per workflow + PR-or-ref | `${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}`, `cancel-in-progress: true` | satisfied |
+| Permissions | `contents: read` | `contents: read` | satisfied |
+
+### Reconciliation back into the contract
+
+T-V04-002 was authored without reading the existing workflow, so it specified two values that diverged from what already shipped. Both existing values are intentional and better; this task updates `docs/pr-ci-gate.md` rather than the workflow:
+
+- **Node version.** Contract said Node 20; existing workflow uses Node 24 from PR #38 (`d322108 chore(ci): bump GitHub Actions to Node 24-compatible majors`). Node 24 is the project's current target. Contract updated to Node 24.
+- **Concurrency expression.** Contract said `verify-${{ github.ref }}`; existing workflow uses `${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}`. The existing form scopes PR runs (keyed by PR number) separately from branch runs (keyed by ref), so a force-push to a branch only cancels its own in-flight runs and a PR push only cancels prior runs of the same PR. Contract updated to describe the existing pattern.
+
+Neither change widens the contract's intent (a single-job, single-composite, fail-fast PR gate) or weakens the markers T-V04-004 will codify in `npm run doctor`: workflow file presence, trigger contains `pull_request` + `push: main`, steps include `npm ci` + `npm run verify`, `actions/checkout` and `actions/setup-node` SHA-pinned. Node version and concurrency-group shape are deliberately not in T-V04-004's marker set.
+
+Resolves SPEC-V04-001 (PR CI gate). Satisfies REQ-V04-001 (PR CI gates), REQ-V04-002 (preserve local-first), NFR-V04-001 (deterministic, low-noise).
+
+### Verification
+
+- `npm run verify` (full composite, run from worktree against repo root)
+- Manual cross-check of `.github/workflows/verify.yml` against `docs/pr-ci-gate.md` §Workflow file contract
+
+### Handoff to T-V04-004
+
+The contract is now aligned with the shipped workflow. T-V04-004 (dev — extend `scripts/doctor.ts`) implements the readiness check listed under §Workflow file contract: file presence, trigger markers, step markers, SHA-pin pattern. Add focused tests under `tests/scripts/`.
+
 ## Task T-V04-005 - Workflow metrics report
 
 - Extended `scripts/lib/quality-metrics.ts` with stage-aware scoring.

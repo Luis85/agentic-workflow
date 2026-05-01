@@ -56,6 +56,7 @@ artifacts:
 - 2026-04-30 (codex): Added `/quality:status` and agent prompt hooks so quality metrics are visible at orchestration, QA, review, release, retrospective, project, roadmap, and portfolio handoffs.
 - 2026-05-01 (claude): Completed T-V04-001 v0.3 validation baseline confirmation. 6 of 7 baseline checks classified `required` for PR CI promotion; 1 (every `REQ-*`/`NFR-*` covered by `TEST-*`) remains `deferred` pending test-plan format lock. Classification + handoff lives in `implementation-log.md` §Task T-V04-001. CLAR-V04-001 resolved. Unblocks T-V04-002 (architect — CI gate contract).
 - 2026-05-01 (claude): Completed T-V04-002 PR CI gate contract. Authored `docs/pr-ci-gate.md` — full `npm run verify` on PR (CI ≡ local), no advisory tier, 1 deferred check, false-positive guidance, workflow file contract markers for T-V04-004 doctor. CLAR-V04-002 resolved (scheduled health reporting deferred to v0.5+). Unblocks T-V04-003 (dev — `.github/workflows/verify.yml`) and T-V04-004 (dev — extend doctor).
+- 2026-05-01 (claude): Completed T-V04-003 PR CI quality gate. Confirmed existing `.github/workflows/verify.yml` satisfies `docs/pr-ci-gate.md` §Workflow file contract on every slot. Reconciled two contract values (Node 24, current concurrency expression) back into the contract; existing workflow values left unchanged because they are intentional and better. Resolves SPEC-V04-001. Unblocks T-V04-004 (dev — extend doctor).
 
 ## Open clarifications
 
