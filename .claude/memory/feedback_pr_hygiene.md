@@ -16,7 +16,7 @@ Stacked branches confuse automated reviewers (their line anchors break after reb
 
 ## How to apply
 
-- Before any non‑trivial change: `git switch <integration-branch> && git pull --ff-only && git switch -c <prefix>/<slug>` where `<prefix>` is one of `feat` / `fix` / `refactor` / `chore` / `docs` / `claude` (see [`docs/branching.md`](../../docs/branching.md)). The default `.claude/settings.json` allowlist *only* permits pushes from the prefixed branches; an unprefixed branch will be denied at push time.
+- Before any non‑trivial change: `git switch <integration-branch> && git pull --ff-only && git switch -c <prefix>/<slug>` where `<prefix>` is one of `feat` / `fix` / `refactor` / `chore` / `docs` / `release` / `claude` (see [`docs/branching.md`](../../docs/branching.md)). The default `.claude/settings.json` allowlist *only* permits pushes from the prefixed branches; an unprefixed branch will be denied at push time. `release/vX.Y.Z` is the dedicated release-prep prefix per ADR-0020 — see [`docs/branching.md`](../../docs/branching.md) §Release branches.
 - Before pushing: run the project's verify command (typically `npm run verify`, `make verify`, `pdm run verify`, etc. — see [`docs/verify-gate.md`](../../docs/verify-gate.md)).
 - If you discover *during* implementation that a second concern needs touching, open a second branch — don't widen the current one.
 
