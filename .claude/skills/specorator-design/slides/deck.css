@@ -3,7 +3,7 @@
  * No emoji, no icons, em-dashes only, sentence-case headings ending in period.
  */
 
-@import url("colors_and_type.css");
+@import url("../colors_and_type.css");
 
 * { box-sizing: border-box; }
 

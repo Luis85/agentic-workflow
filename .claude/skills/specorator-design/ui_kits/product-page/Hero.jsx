@@ -31,7 +31,7 @@ function Hero() {
         </div>
       </div>
       <figure className="hero-visual">
-        <img src="assets/specorator-workflow.svg" alt="Specorator workflow showing discovery, lifecycle stages, quality gates, and traceability." />
+        <img src="../../assets/specorator-workflow.svg" alt="Specorator workflow showing discovery, lifecycle stages, quality gates, and traceability." />
       </figure>
     </section>
   );

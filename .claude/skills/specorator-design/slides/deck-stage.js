@@ -308,6 +308,11 @@
       window.removeEventListener('mousemove', this._onMouseMove);
       if (this._hideTimer) clearTimeout(this._hideTimer);
       if (this._mouseIdleTimer) clearTimeout(this._mouseIdleTimer);
+      // Clean up the print-page rule injected into document.head; otherwise the
+      // global `* { print-color-adjust: exact }` declaration would leak to any
+      // host page that mounts <deck-stage> transiently.
+      const printTag = document.getElementById('deck-stage-print-page');
+      if (printTag) printTag.remove();
     }
 
     attributeChangedCallback() {

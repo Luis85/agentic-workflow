@@ -1,7 +1,6 @@
 ---
 name: specorator-design
-description: Use this skill to generate well-branded interfaces and assets for Specorator (the open-source agentic-workflow template), either for production or throwaway prototypes/mocks/etc. Contains essential design guidelines, colors, type, fonts, assets, and UI kit components for prototyping.
-user-invocable: true
+description: Use this skill to generate well-branded interfaces and assets for Specorator (the open-source agentic-workflow template), for production or prototypes. Contains canonical brand tokens, voice rules, iconography rules, assets, and UI kit components.
 ---
 
 Read the README.md file within this skill, and explore the other available files.
@@ -16,7 +15,6 @@ If the user invokes this skill without any other guidance, ask them what they wa
 - `colors_and_type.css` — every token: color, type, spacing, radius, shadow, motion. Drop this into any new HTML.
 - `assets/` — `specorator-mark.svg` (logo), `specorator-workflow.svg` (workflow diagram).
 - `ui_kits/product-page/` — pixel-faithful React recreation of the live product page. Read its components to learn idiomatic Specorator section/card/terminal patterns.
-- `sites/` — pristine import of the live page; the canonical source of truth for the visual system.
 - `preview/` — small specimen cards (colors, type, components) you can crib from.
 
 ## Non-negotiables
