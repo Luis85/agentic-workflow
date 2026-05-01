@@ -72,6 +72,11 @@ export const checkTasks = [
     script: "scripts/check-product-page.ts",
   },
   {
+    name: "check:sites-tokens-mirror",
+    label: "Sites tokens mirror",
+    script: "scripts/check-sites-tokens-mirror.ts",
+  },
+  {
     name: "check:frontmatter",
     label: "Frontmatter conventions",
     script: "scripts/check-frontmatter.ts",
@@ -181,5 +186,10 @@ export const fixTasks = [
     name: "fix:script-docs",
     label: "Generated script docs",
     script: "scripts/fix-script-docs.ts",
+  },
+  {
+    name: "fix:sites-tokens",
+    label: "Sites tokens mirror",
+    script: "scripts/fix-sites-tokens.ts",
   },
 ];

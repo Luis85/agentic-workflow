@@ -26,6 +26,7 @@
     "check:commands": "tsx scripts/check-command-docs.ts",
     "check:script-docs": "tsx scripts/check-script-docs.ts",
     "check:product-page": "tsx scripts/check-product-page.ts",
+    "check:sites-tokens-mirror": "tsx scripts/check-sites-tokens-mirror.ts",
     "check:workflow-docs": "tsx scripts/check-workflow-docs.ts",
     "check:frontmatter": "tsx scripts/check-frontmatter.ts",
     "check:obsidian": "tsx scripts/check-obsidian.ts",
@@ -39,7 +40,8 @@
     "fix:obsidian": "tsx scripts/fix-obsidian.ts",
     "fix:adr-index": "tsx scripts/fix-adr-index.ts",
     "fix:commands": "tsx scripts/fix-command-docs.ts",
-    "fix:script-docs": "tsx scripts/fix-script-docs.ts"
+    "fix:script-docs": "tsx scripts/fix-script-docs.ts",
+    "fix:sites-tokens": "tsx scripts/fix-sites-tokens.ts"
   },
   "engines": {
     "node": ">=20"
