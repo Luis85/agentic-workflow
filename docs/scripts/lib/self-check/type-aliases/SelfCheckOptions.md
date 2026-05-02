@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../../README.md)
+[**@luis85/agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../../modules.md) / [lib/self-check](../README.md) / SelfCheckOptions
+[@luis85/agentic-workflow](../../../modules.md) / [lib/self-check](../README.md) / SelfCheckOptions
 
 # Type Alias: SelfCheckOptions
 

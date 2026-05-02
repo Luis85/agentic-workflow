@@ -4,10 +4,10 @@ folder: "docs/scripts/fix-command-docs"
 description: "Entry point for generated API reference for the fix-command-docs script."
 entry_point: true
 ---
-[**agentic-workflow**](../README.md)
+[**@luis85/agentic-workflow**](../README.md)
 
 ***
 
-[agentic-workflow](../modules.md) / fix-command-docs
+[@luis85/agentic-workflow](../modules.md) / fix-command-docs
 
 # fix-command-docs

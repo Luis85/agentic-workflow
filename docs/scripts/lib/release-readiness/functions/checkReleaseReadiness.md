@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../../README.md)
+[**@luis85/agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../../modules.md) / [lib/release-readiness](../README.md) / checkReleaseReadiness
+[@luis85/agentic-workflow](../../../modules.md) / [lib/release-readiness](../README.md) / checkReleaseReadiness
 
 # Function: checkReleaseReadiness()
 

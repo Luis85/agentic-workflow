@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../../README.md)
+[**@luis85/agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../../modules.md) / [lib/release-package-contract](../README.md) / RELEASE\_PACKAGE\_DIAGNOSTIC\_CODES
+[@luis85/agentic-workflow](../../../modules.md) / [lib/release-package-contract](../README.md) / RELEASE\_PACKAGE\_DIAGNOSTIC\_CODES
 
 # Variable: RELEASE\_PACKAGE\_DIAGNOSTIC\_CODES
 

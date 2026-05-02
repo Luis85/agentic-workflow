@@ -1,8 +1,44 @@
 {
-  "name": "agentic-workflow",
-  "version": "0.2.0",
-  "private": true,
+  "name": "@luis85/agentic-workflow",
+  "version": "0.5.0",
+  "description": "Specorator — template for spec-driven, agentic software development. The workflow is the deliverable.",
+  "keywords": [
+    "agents",
+    "agentic",
+    "claude-code",
+    "specorator",
+    "spec-driven",
+    "template",
+    "workflow"
+  ],
+  "homepage": "https://github.com/Luis85/agentic-workflow",
+  "bugs": {
+    "url": "https://github.com/Luis85/agentic-workflow/issues"
+  },
+  "license": "MIT",
+  "author": "Luis Mendez",
+  "repository": "https://github.com/Luis85/agentic-workflow",
   "type": "module",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
+  },
+  "files": [
+    ".claude/",
+    ".codex/",
+    ".github/",
+    "agents/",
+    "docs/",
+    "examples/",
+    "memory/",
+    "scripts/",
+    "sites/",
+    "templates/",
+    "tests/",
+    "AGENTS.md",
+    "CHANGELOG.md",
+    "CLAUDE.md"
+  ],
   "scripts": {
     "doctor": "tsx scripts/doctor.ts",
     "self-check": "tsx scripts/self-check.ts",

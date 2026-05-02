@@ -1,16 +1,18 @@
 name: Release
 
-# Manual GitHub Release workflow for v0.5 (T-V05-006).
+# Manual GitHub Release workflow for v0.5 (T-V05-006 + T-V05-007).
 #
-# Composes `npm run check:release-readiness` (Layer 1 — release metadata) and
-# `gh release create` to publish a GitHub Release for the canonical `vX.Y.Z`
-# tag on `main` per ADR-0020. Layer 2 (fresh-surface composition) and the
-# release-asset attachment are intentional stubs that T-V05-007 / PR #160 will
-# fill once package publishing is wired.
+# Composes `npm run check:release-readiness` (Layer 1 — release metadata),
+# `npm pack` to materialise a candidate archive, `npm run
+# check:release-package-contents` (Layer 2 — fresh-surface contract per
+# ADR-0021 / SPEC-V05-010), `gh release create` for the canonical `vX.Y.Z`
+# tag on `main` per ADR-0020, `npm publish` to GitHub Packages, and
+# `gh release upload` to attach the package tarball as a release asset.
 #
 # Inputs and the confirm gate satisfy SPEC-V05-002 (explicit publish
-# authorisation), SPEC-V05-003 (GitHub Release publication), and SPEC-V05-009
-# (release candidate dry run).
+# authorisation), SPEC-V05-003 (GitHub Release publication), SPEC-V05-004
+# (package contract and publication), and SPEC-V05-009 (release candidate
+# dry run).
 
 on:
   workflow_dispatch:
@@ -44,8 +46,8 @@ on:
 # `RELEASE_READINESS_WORKFLOW_PERMISSIONS` (PR #158, scripts/lib/release-readiness.ts)
 # enforces the top-level block as exactly { contents: write, packages: write };
 # job-level overrides may only narrow, never widen. The single `release` job
-# below uses both: `contents: write` for `gh release create`, and `packages:
-# write` reserved for the T-V05-007 / PR #160 package publish step.
+# below uses both: `contents: write` for `gh release create` + `gh release
+# upload`, and `packages: write` for `npm publish` to GitHub Packages.
 #
 # zizmor's `excessive-permissions` and `undocumented-permissions` lints prefer
 # top-level `{}` with job-scoped writes. For a single-job workflow that uses
@@ -71,11 +73,18 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      # `registry-url` + `scope` write `~/.npmrc` so the `npm publish` step
+      # below authenticates against GitHub Packages using `NODE_AUTH_TOKEN`
+      # (T-V05-007 / SPEC-V05-004). The scope `@luis85` matches
+      # `package-contract.md` §2 and `EXPECTED_PACKAGE_NAME` in
+      # `scripts/lib/release-readiness.ts`.
       - name: Setup Node
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: 24
           cache: npm
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@luis85'
 
       - name: Install dependencies
         run: npm ci
@@ -92,17 +101,35 @@ jobs:
           RELEASE_QUALITY_WAIVER: ${{ vars.RELEASE_QUALITY_WAIVER }}
         run: npm run check:release-readiness -- --json
 
-      # Step 5 — fresh-surface archive prep (stub). T-V05-007 / PR #160 will
-      # replace this with the actual packaging step.
-      - name: Build candidate archive (stub — T-V05-007)
+      # Step 5 — build the candidate archive. `npm pack` honours
+      # `package.json#files` (T-V05-007 / package-contract.md §3) and emits a
+      # tarball that mirrors what `npm publish` would ship. Extract into a
+      # sibling directory so step 6 can run the fresh-surface assertions
+      # against the candidate tree without re-tar'ing.
+      - name: Build candidate archive
+        id: pack
         run: |
-          echo 'Stub: candidate fresh-surface archive prep belongs to T-V05-007 / PR #160.'
+          archive_root="$(mktemp -d)"
+          tarball_name="$(npm pack --silent --pack-destination "$archive_root")"
+          tarball_path="${archive_root}/${tarball_name}"
+          extract_dir="${archive_root}/extracted"
+          mkdir -p "$extract_dir"
+          # `npm pack` wraps contents in a top-level `package/` directory;
+          # `--strip-components=1` lifts them to `extract_dir` directly so the
+          # archive layout matches the running repo (what
+          # `checkReleasePackageContents` walks).
+          tar -xzf "$tarball_path" -C "$extract_dir" --strip-components=1
+          echo "tarball=${tarball_path}" >> "$GITHUB_OUTPUT"
+          echo "archive_dir=${extract_dir}" >> "$GITHUB_OUTPUT"
 
-      # Step 6 — Layer 2 readiness against the candidate archive (stub).
-      # T-V05-007 / PR #160 will wire `--archive <dir>` once step 5 lands.
-      - name: Readiness — Layer 2 (fresh-surface, stub — T-V05-007)
-        run: |
-          echo 'Stub: Layer 2 readiness (--archive <dir>) wiring belongs to T-V05-007 / PR #160.'
+      # Step 6 — Layer 2 readiness. Asserts the three fresh-surface contract
+      # rules from ADR-0021 / SPEC-V05-010 against the extracted archive: no
+      # numbered ADRs ship, intake folders are empty, docs are stubs. Fails
+      # closed when any assertion fails — release is blocked before publish.
+      - name: Readiness — Layer 2 (fresh-surface)
+        env:
+          RELEASE_PACKAGE_ARCHIVE: ${{ steps.pack.outputs.archive_dir }}
+        run: npm run check:release-package-contents -- --json
 
       # Step 8 — confirm gate. SPEC-V05-002 requires the operator to type the
       # literal version to authorise a non-dry-run publish. Step 7 (tag at
@@ -167,8 +194,37 @@ jobs:
             --jq '.body' \
             || echo '(generate-notes preview unavailable; readiness diagnostics above remain authoritative)'
 
-      # Step 10 — release-asset attachment (stub). T-V05-007 / PR #160 will
-      # attach the fresh-surface archive built in step 5.
-      - name: Release asset attachment (stub — T-V05-007)
+      # Step 10 — publish the package to GitHub Packages. `actions/setup-node`
+      # wrote `~/.npmrc` with the `@luis85` scope mapped to npm.pkg.github.com;
+      # `NODE_AUTH_TOKEN` provides the credential. The pre-flight check
+      # short-circuits before `npm publish` if `package.json` drifted from
+      # `INPUT_VERSION` between Layer 1 readiness and now (defence-in-depth
+      # against tag-race / late-merge). Visibility is inherited from the
+      # repository on GitHub Packages — `--access` is unnecessary for the
+      # `@luis85` scope on a public repo.
+      - name: Publish to GitHub Packages
+        if: ${{ ! inputs.dry_run }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_VERSION: ${{ inputs.version }}
         run: |
-          echo 'Stub: release-asset attachment belongs to T-V05-007 / PR #160.'
+          actual="$(node -p "require('./package.json').name + '@' + require('./package.json').version")"
+          expected="@luis85/agentic-workflow@${INPUT_VERSION}"
+          if [ "$actual" != "$expected" ]; then
+            echo "::error::package.json identity (${actual}) does not match expected (${expected}) — refusing to publish (T-V05-007)" >&2
+            exit 1
+          fi
+          npm publish
+
+      # Step 11 — attach the candidate tarball as a release asset. Runs after
+      # `gh release create` (step 9) so the release exists; `--clobber` lets a
+      # rerun replace a partial asset from an earlier failed publish without
+      # manual cleanup (NFR-V05-005 recoverability).
+      - name: Attach release asset
+        if: ${{ ! inputs.dry_run }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_VERSION: ${{ inputs.version }}
+          TARBALL: ${{ steps.pack.outputs.tarball }}
+        run: |
+          gh release upload "v${INPUT_VERSION}" "${TARBALL}" --clobber

@@ -4,11 +4,11 @@ folder: "docs/scripts/check-traceability"
 description: "Entry point for generated API reference for the check-traceability script."
 entry_point: true
 ---
-[**agentic-workflow**](../README.md)
+[**@luis85/agentic-workflow**](../README.md)
 
 ***
 
-[agentic-workflow](../modules.md) / check-traceability
+[@luis85/agentic-workflow](../modules.md) / check-traceability
 
 # check-traceability
 

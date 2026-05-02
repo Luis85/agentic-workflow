@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../../README.md)
+[**@luis85/agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../../modules.md) / [lib/roadmaps](../README.md) / RoadmapDigestReport
+[@luis85/agentic-workflow](../../../modules.md) / [lib/roadmaps](../README.md) / RoadmapDigestReport
 
 # Type Alias: RoadmapDigestReport
 

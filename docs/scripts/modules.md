@@ -1,8 +1,8 @@
-[**agentic-workflow**](README.md)
+[**@luis85/agentic-workflow**](README.md)
 
 ***
 
-# agentic-workflow
+# @luis85/agentic-workflow
 
 ## Modules
 

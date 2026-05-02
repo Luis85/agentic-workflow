@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../../README.md)
+[**@luis85/agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../../modules.md) / [lib/quality-metrics](../README.md) / renderQualityTrend
+[@luis85/agentic-workflow](../../../modules.md) / [lib/quality-metrics](../README.md) / renderQualityTrend
 
 # Function: renderQualityTrend()
 

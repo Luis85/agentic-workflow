@@ -4,11 +4,11 @@ folder: "docs/scripts/lib/release-readiness"
 description: "Entry point for generated API reference for the lib/release-readiness script helper module."
 entry_point: true
 ---
-[**agentic-workflow**](../../README.md)
+[**@luis85/agentic-workflow**](../../README.md)
 
 ***
 
-[agentic-workflow](../../modules.md) / lib/release-readiness
+[@luis85/agentic-workflow](../../modules.md) / lib/release-readiness
 
 # lib/release-readiness
 

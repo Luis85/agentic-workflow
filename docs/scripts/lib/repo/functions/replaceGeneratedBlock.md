@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../../README.md)
+[**@luis85/agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../../modules.md) / [lib/repo](../README.md) / replaceGeneratedBlock
+[@luis85/agentic-workflow](../../../modules.md) / [lib/repo](../README.md) / replaceGeneratedBlock
 
 # Function: replaceGeneratedBlock()
 

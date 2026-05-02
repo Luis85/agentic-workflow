@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../../README.md)
+[**@luis85/agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../../modules.md) / [lib/diagnostics](../README.md) / Diagnostic
+[@luis85/agentic-workflow](../../../modules.md) / [lib/diagnostics](../README.md) / Diagnostic
 
 # Type Alias: Diagnostic
 
