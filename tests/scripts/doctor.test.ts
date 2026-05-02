@@ -31,6 +31,27 @@ test("dependencyReadinessCheck points lockfile installs at npm ci", () => {
   }
 });
 
+test("dependencyReadinessCheck passes when node_modules and lockfile are both present", () => {
+  const root = tempRepo();
+  try {
+    writeJson(path.join(root, "package.json"), {
+      devDependencies: {
+        tsx: "^4.0.0",
+      },
+    });
+    fs.writeFileSync(path.join(root, "package-lock.json"), "{}\n", "utf8");
+    fs.mkdirSync(path.join(root, "node_modules"));
+
+    assert.deepEqual(dependencyReadinessCheck(root), {
+      name: "dependencies",
+      status: "pass",
+      detail: "node_modules and package-lock.json present",
+    });
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("dependencyReadinessCheck warns when dependencies lack a lockfile", () => {
   const root = tempRepo();
   try {
@@ -420,6 +441,25 @@ test("branchReadinessCheck warns when a branch is behind upstream", () => {
       status: "warn",
       detail: "main -> origin/main; behind 3",
       hint: "run git pull --ff-only",
+    },
+  );
+});
+
+test("branchReadinessCheck warns when a topic branch is ahead", () => {
+  // Topic-branch ahead path (line 147 in doctor.ts) — distinct from integration-branch ahead,
+  // which fails. Topic ahead is the normal "ready to push" state and should warn, not fail.
+  assert.deepEqual(
+    branchReadinessCheck({
+      branchName: "feat/example",
+      upstreamName: "origin/feat/example",
+      ahead: 2,
+      behind: 0,
+    }),
+    {
+      name: "branch",
+      status: "warn",
+      detail: "feat/example -> origin/feat/example; ahead 2",
+      hint: "push or review local commits before handing off the branch",
     },
   );
 });
