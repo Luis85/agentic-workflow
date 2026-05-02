@@ -91,7 +91,7 @@ Each article checked against the diff:
 - **IV — Quality gates.** All 18 verify gates green. Two-layer validation honoured: deterministic checks (typecheck, tests, schema, link, traceability, frontmatter) + critic-agent review (Codex on every PR; the round-by-round narrative shows real findings, not rubber-stamping).
 - **V — Traceability.** Every artifact links upstream. Some downstream — see traceability matrix. No requirement is orphan; no test is orphan.
 - **VI — Agent specialisation.** Boundaries respected. Review-fix commits are owned by `orchestrator` per the documented pattern. No agent broadened its tool list.
-- **VII — Human oversight.** Two open items are explicitly Decider-owned (CLAR-V05-003 + remote workflow dispatch). No agent pre-empted either.
+- **VII — Human oversight.** Two open items are explicitly Decider-owned (CLAR-V05-003 + remote workflow dispatch). No agent preempted either.
 - **VIII — Plain language.** Functional requirements use EARS notation; ADRs use active voice. Verified by `check:frontmatter` + EARS coverage 100% in quality metrics.
 - **IX — Reversibility.** Operator-authorised remote dispatch is correctly out of agent scope. The release workflow itself enforces irreversibility through `dry_run: true` default + `confirm` gate + `--verify-tag` defence-in-depth.
 - **X — Iteration.** REQ-V05-012 escalation is a textbook Article X application: implementation surfaced a missing requirement → spec updated first → propagated forward consistently.
