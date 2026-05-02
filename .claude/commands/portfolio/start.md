@@ -2,7 +2,7 @@
 description: Portfolio Track — Bootstrap. Scaffold a new portfolio folder under portfolio/<slug>/ with portfolio-state.md and portfolio-definition.md initialised.
 argument-hint: <portfolio-slug>
 allowed-tools: [Read, Edit, Write, Bash]
-model: sonnet
+model: haiku
 ---
 
 # /portfolio:start

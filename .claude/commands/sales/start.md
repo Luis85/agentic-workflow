@@ -2,7 +2,7 @@
 description: Sales Cycle — Bootstrap. Scaffold a new deal folder under sales/<deal-slug>/ with deal-state.md initialised.
 argument-hint: <deal-slug> [client-name]
 allowed-tools: [Read, Edit, Write]
-model: sonnet
+model: haiku
 ---
 
 # /sales:start
