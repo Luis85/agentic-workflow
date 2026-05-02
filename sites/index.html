@@ -661,6 +661,10 @@ task on its own line.</pre>
             <h3>Do I have to learn the slash commands?</h3>
             <p>No. The conductor skills (<code>orchestrate</code>, <code>discovery-sprint</code>, <code>project-run</code>, etc.) auto-trigger on natural language. Slash commands are the manual escape hatch when you want precise control. Every entry point in the audience cards above shows the natural-language form.</p>
           </article>
+          <article class="faq-item">
+            <h3>How do I get a tagged release?</h3>
+            <p>From v0.5, Specorator publishes as a <strong>GitHub Release</strong> (source archive plus tarball asset) and a <strong>GitHub Package</strong> (<code>@luis85/agentic-workflow</code> on <code>npm.pkg.github.com</code>). Cloning or forking the <code>main</code> branch is still the primary path. The package is consumed by configuring the <code>@luis85</code> scope to GitHub Packages and running <code>npm install --save-dev @luis85/agentic-workflow</code>; the operator path for publishing a release is in <a href="https://github.com/Luis85/agentic-workflow/blob/main/docs/release-operator-guide.md">the release operator guide</a>.</p>
+          </article>
         </div>
       </section>
 
@@ -673,7 +677,7 @@ task on its own line.</pre>
           <article class="step">
             <span class="step-number">1</span>
             <h3>Clone or fork</h3>
-            <p>Copy the repository into a new workspace, or fork it on GitHub when you want to track changes upstream.</p>
+            <p>Copy the repository into a new workspace, or fork it on GitHub when you want to track changes upstream. Tagged releases are also published as GitHub Releases and as the <code>@luis85/agentic-workflow</code> GitHub Package.</p>
           </article>
           <article class="step">
             <span class="step-number">2</span>

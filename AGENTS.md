@@ -13,7 +13,7 @@ Repo = **template for spec-driven, agentic software development**. Defines workf
 1. **`memory/constitution.md`** — governing principles. Override only with explicit human approval.
 2. **`.claude/memory/MEMORY.md`** — operational memory: workflow rules + project state, indexed.
 3. **`docs/specorator.md`** — full workflow definition.
-4. **`docs/steering/`** — scoped context (product, tech, ux, quality, ops). Load only what's relevant.
+4. **`docs/specorator-product/`** — Specorator's own product steering for template-improvement work. Use `docs/steering/` as downstream project steering templates.
 5. **Current feature's `specs/<feature>/workflow-state.md`** — active stage + what's already produced.
 
 ## Operating rules

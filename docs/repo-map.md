@@ -54,6 +54,8 @@ Each lifecycle stage has **one owner** (a specialist AI agent), **one output** (
 | [`docs/roadmap-management-track.md`](./roadmap-management-track.md) | Product/project roadmap management, stakeholder alignment, and team communication workflow |
 | [`docs/quality-assurance-track.md`](./quality-assurance-track.md) | ISO 9001-aligned quality assurance review workflow |
 | [`docs/release-readiness-guide.md`](./release-readiness-guide.md) | Stage 10 go/no-go guide for product perspectives and stakeholder requirements |
+| [`docs/release-operator-guide.md`](./release-operator-guide.md) | Operator path for publishing a tagged GitHub Release and (when enabled) a GitHub Package |
+| [`docs/release-package-contents.md`](./release-package-contents.md) | Fresh-surface contract for what ships in the released template package |
 | [`docs/workflow-overview.md`](./workflow-overview.md) | One-page visual + cheat sheet + slash command list |
 | [`docs/quality-framework.md`](./quality-framework.md) | Quality dimensions, gates, and Definition of Done per stage |
 | [`docs/ears-notation.md`](./ears-notation.md) | How to write requirements in EARS format |

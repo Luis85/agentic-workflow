@@ -7,6 +7,7 @@ Entry point for Claude Code in this repository.
 @AGENTS.md
 @memory/constitution.md
 @.claude/memory/MEMORY.md
+@docs/specorator-product/README.md
 
 ## What this repo is
 

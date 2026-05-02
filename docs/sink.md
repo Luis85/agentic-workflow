@@ -17,6 +17,8 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │   ├── quality-framework.md                 # quality dimensions, gates, DoD
 │   ├── quality-metrics.md                   # deterministic KPI interpretation guide
 │   ├── release-readiness-guide.md           # Stage 10 go/no-go guide across product perspectives and stakeholders
+│   ├── release-operator-guide.md            # operator path for publishing a tagged GitHub Release + GitHub Package
+│   ├── release-package-contents.md          # fresh-surface contract for the released package
 │   ├── traceability.md                      # ID scheme REQ → SPEC → T → code → TEST
 │   ├── ears-notation.md                     # EARS reference
 │   ├── sink.md                              # this file
