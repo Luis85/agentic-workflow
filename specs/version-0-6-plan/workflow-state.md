@@ -3,8 +3,8 @@ feature: version-0-6-plan
 area: V06
 current_stage: implementation
 status: active
-last_updated: 2026-05-01
-last_agent: planner
+last_updated: 2026-05-02
+last_agent: codex-dev
 artifacts:
   idea.md: complete
   research.md: complete
@@ -12,7 +12,7 @@ artifacts:
   design.md: complete
   spec.md: complete
   tasks.md: complete
-  implementation-log.md: pending
+  implementation-log.md: in-progress
   test-plan.md: pending
   test-report.md: pending
   review.md: pending
@@ -33,7 +33,7 @@ artifacts:
 | 4. Design | `design.md` | complete |
 | 5. Specification | `spec.md` | complete |
 | 6. Tasks | `tasks.md` | complete |
-| 7. Implementation | `implementation-log.md` + code/docs | pending |
+| 7. Implementation | `implementation-log.md` + code/docs | in-progress |
 | 8. Testing | `test-plan.md`, `test-report.md` | pending |
 | 9. Review | `review.md`, `traceability.md` | pending |
 | 10. Release | `release-notes.md` | pending |
@@ -50,6 +50,7 @@ artifacts:
 ## Hand-off notes
 
 - 2026-05-01 (codex): Planned v0.6 through Stage 6 from the product research pass. Recommended implementation order is steering profile, live golden-path demo, cross-tool adapters, hook pack, agentic security workflow, proof-first public positioning, adoption profiles, ISO 9001:2026 watch item, then release readiness verification.
+- 2026-05-02 (codex, T-V06-001/T-V06-002): PR-A selected the additive steering split: downstream starter templates stay in `docs/steering/`, while Specorator's own product steering lives in `docs/specorator-product/`. No ADR required because existing template ownership was preserved. Implementation evidence lives in `implementation-log.md`.
 
 ## Open clarifications
 
