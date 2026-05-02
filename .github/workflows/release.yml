@@ -106,11 +106,14 @@ jobs:
           RELEASE_QUALITY_WAIVER: ${{ vars.RELEASE_QUALITY_WAIVER }}
         run: npm run check:release-readiness -- --json
 
-      # Step 5 — build the candidate archive. `npm pack` honours
-      # `package.json#files` (T-V05-007 / package-contract.md §3) and emits a
-      # tarball that mirrors what `npm publish` would ship. Extract into a
-      # sibling directory so step 6 can run the fresh-surface assertions
-      # against the candidate tree without re-tar'ing.
+      # Step 5 — build the candidate archive. The release pipeline runs the
+      # build-time transform first (T-V05-013) so the tarball reflects the
+      # released *form* (numbered ADRs filtered, every shipping `docs/**/*.md`
+      # page replaced with the stub shape from `release-stubify.ts`) rather
+      # than the codebase form. `npm pack` then runs against the staged
+      # directory so `package.json#files` is still the single allowlist for
+      # *what* ships, and Layer 2 readiness in step 6 asserts the contract
+      # against the extracted candidate.
       #
       # `package-lock.json` is intentionally stripped by `npm pack` even when
       # listed in `files`; `npm-shrinkwrap.json` is the npm-canonical
@@ -118,15 +121,19 @@ jobs:
       # the tarball. `package-contract.md` §3 promises a shipped lockfile so
       # consumers have a deterministic `npm ci` baseline after copying the
       # template (Codex P2 on PR #160). Stage the lockfile under the canonical
-      # name on the runner before pack; the codebase form keeps
-      # `package-lock.json` for day-to-day development and the runner is
-      # ephemeral so no codebase cleanup is needed.
+      # name on the runner before the build script runs `npm pack --dry-run`;
+      # the codebase form keeps `package-lock.json` for day-to-day development
+      # and the runner is ephemeral so no codebase cleanup is needed.
       - name: Build candidate archive
         id: pack
         run: |
           cp package-lock.json npm-shrinkwrap.json
+          npm run build:release-archive -- --out .release-staging
           archive_root="$(mktemp -d)"
-          tarball_name="$(npm pack --silent --pack-destination "$archive_root")"
+          # `npm pack <folder>` packs that folder; the staged tree already
+          # has numbered ADRs filtered and shipping docs stubified so the
+          # tarball is the released form (T-V05-013).
+          tarball_name="$(npm pack --silent --pack-destination "$archive_root" ./.release-staging)"
           tarball_path="${archive_root}/${tarball_name}"
           extract_dir="${archive_root}/extracted"
           mkdir -p "$extract_dir"
@@ -238,6 +245,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           INPUT_VERSION: ${{ inputs.version }}
+          TARBALL: ${{ steps.pack.outputs.tarball }}
         run: |
           actual="$(node -p "require('./package.json').name + '@' + require('./package.json').version")"
           expected="@luis85/agentic-workflow@${INPUT_VERSION}"
@@ -265,7 +273,12 @@ jobs:
           if [ "$view_exit" -eq 0 ] && echo "$view_output" | grep -q "\"${INPUT_VERSION}\""; then
             echo "::notice::version ${INPUT_VERSION} already published to GitHub Packages — skipping npm publish (idempotent rerun, NFR-V05-005)"
           elif echo "$view_output" | grep -qE "\"code\": *\"E404\"|E404|code E404|404 Not Found"; then
-            npm publish
+            # Publish the byte-identical tarball produced in step 5 so the
+            # published archive equals the GitHub Release asset uploaded in
+            # step 11 (T-V05-013) and reflects the build-time transform
+            # (numbered ADRs filtered, shipping docs stubified). Publishing
+            # from the codebase form here would bypass the transform.
+            npm publish "${TARBALL}"
           else
             echo "::error::npm view failed with a non-404 error — refusing to publish so EPUBLISHCONFLICT cannot mask a real failure" >&2
             echo "$view_output" >&2
