@@ -1,6 +1,6 @@
 {
   "name": "@luis85/agentic-workflow",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Specorator — template for spec-driven, agentic software development. The workflow is the deliverable.",
   "keywords": [
     "agents",
