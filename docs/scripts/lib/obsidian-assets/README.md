@@ -4,11 +4,11 @@ folder: "docs/scripts/lib/obsidian-assets"
 description: "Entry point for generated API reference for the lib/obsidian-assets script helper module."
 entry_point: true
 ---
-[**agentic-workflow**](../../README.md)
+[**@luis85/agentic-workflow**](../../README.md)
 
 ***
 
-[agentic-workflow](../../modules.md) / lib/obsidian-assets
+[@luis85/agentic-workflow](../../modules.md) / lib/obsidian-assets
 
 # lib/obsidian-assets
 

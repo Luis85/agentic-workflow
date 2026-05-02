@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../../README.md)
+[**@luis85/agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../../modules.md) / [lib/release-readiness](../README.md) / EXPECTED\_PACKAGE\_REPOSITORY
+[@luis85/agentic-workflow](../../../modules.md) / [lib/release-readiness](../README.md) / EXPECTED\_PACKAGE\_REPOSITORY
 
 # Variable: EXPECTED\_PACKAGE\_REPOSITORY
 

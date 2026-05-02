@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../../README.md)
+[**@luis85/agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../../modules.md) / [lib/obsidian](../README.md) / obsidianDiagnosticsForFrontmatter
+[@luis85/agentic-workflow](../../../modules.md) / [lib/obsidian](../README.md) / obsidianDiagnosticsForFrontmatter
 
 # Function: obsidianDiagnosticsForFrontmatter()
 

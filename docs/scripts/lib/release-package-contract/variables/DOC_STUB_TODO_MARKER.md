@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../../README.md)
+[**@luis85/agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../../modules.md) / [lib/release-package-contract](../README.md) / DOC\_STUB\_TODO\_MARKER
+[@luis85/agentic-workflow](../../../modules.md) / [lib/release-package-contract](../README.md) / DOC\_STUB\_TODO\_MARKER
 
 # Variable: DOC\_STUB\_TODO\_MARKER
 

@@ -4,11 +4,11 @@ folder: "docs/scripts/lib/release-package-contract"
 description: "Entry point for generated API reference for the lib/release-package-contract script helper module."
 entry_point: true
 ---
-[**agentic-workflow**](../../README.md)
+[**@luis85/agentic-workflow**](../../README.md)
 
 ***
 
-[agentic-workflow](../../modules.md) / lib/release-package-contract
+[@luis85/agentic-workflow](../../modules.md) / lib/release-package-contract
 
 # lib/release-package-contract
 

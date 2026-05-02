@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../../README.md)
+[**@luis85/agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../../modules.md) / [lib/release-readiness](../README.md) / REQUIRED\_WORKFLOW\_PERMISSIONS
+[@luis85/agentic-workflow](../../../modules.md) / [lib/release-readiness](../README.md) / REQUIRED\_WORKFLOW\_PERMISSIONS
 
 # Variable: REQUIRED\_WORKFLOW\_PERMISSIONS
 

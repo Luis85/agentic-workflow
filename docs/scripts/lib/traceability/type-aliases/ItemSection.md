@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../../README.md)
+[**@luis85/agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../../modules.md) / [lib/traceability](../README.md) / ItemSection
+[@luis85/agentic-workflow](../../../modules.md) / [lib/traceability](../README.md) / ItemSection
 
 # Type Alias: ItemSection
 

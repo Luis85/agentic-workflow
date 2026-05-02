@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../../README.md)
+[**@luis85/agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../../modules.md) / [lib/release-package-contract](../README.md) / ADR\_NUMBERED\_PATTERN
+[@luis85/agentic-workflow](../../../modules.md) / [lib/release-package-contract](../README.md) / ADR\_NUMBERED\_PATTERN
 
 # Variable: ADR\_NUMBERED\_PATTERN
 

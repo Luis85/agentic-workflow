@@ -447,7 +447,7 @@ entries:
   - id: workflow:release
     kind: workflow
     path: .github/workflows/release.yml
-    purpose: Manual GitHub Release workflow — composes the readiness check (Layer 1) and `gh release create` for v0.5 (T-V05-006). Stubs Layer 2 fresh-surface composition and asset attachment for T-V05-007.
+    purpose: Manual GitHub Release workflow — composes Layer 1 readiness, `npm pack`, Layer 2 fresh-surface readiness (ADR-0021 / SPEC-V05-010), `gh release create`, `npm publish` to GitHub Packages, and `gh release upload` for the v0.5 release pipeline (T-V05-006 + T-V05-007).
     read_only: false
     safe_to_run_locally: false
     emits_json: false

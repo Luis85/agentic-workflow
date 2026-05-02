@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../../README.md)
+[**@luis85/agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../../modules.md) / [lib/release-readiness](../README.md) / MIN\_QUALITY\_MATURITY\_LEVEL
+[@luis85/agentic-workflow](../../../modules.md) / [lib/release-readiness](../README.md) / MIN\_QUALITY\_MATURITY\_LEVEL
 
 # Variable: MIN\_QUALITY\_MATURITY\_LEVEL
 

@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../../README.md)
+[**@luis85/agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../../modules.md) / [lib/obsidian](../README.md) / ObsidianDiagnosticCode
+[@luis85/agentic-workflow](../../../modules.md) / [lib/obsidian](../README.md) / ObsidianDiagnosticCode
 
 # Type Alias: ObsidianDiagnosticCode
 
