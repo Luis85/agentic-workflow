@@ -68,7 +68,7 @@ Claude Code gets the native commands, agents, and skills. Other tools use the sa
 
 | Version | Status | Focus |
 |---|---|---|
-| v0.5 | In review | [Release workflow, branching strategy, GitHub Releases and Packages](https://github.com/Luis85/agentic-workflow/issues/90) |
+| v0.5 | Done | [Release workflow, branching strategy, GitHub Releases and Packages](https://github.com/Luis85/agentic-workflow/issues/90) |
 | v0.5.1 | Active | [Issue-breakdown track patch release](https://github.com/Luis85/agentic-workflow/issues/183) |
 | v0.6 | Active | [Cross-tool adapters, live proof, hooks, and security](https://github.com/Luis85/agentic-workflow/issues/91) |
 | v1.0 | Planned | [Release readiness checklist](https://github.com/Luis85/agentic-workflow/issues/92) |
