@@ -79,7 +79,15 @@ function enumerateFilesViaNpmPack(): string[] {
   // Static literal command, no user input — safe to run via the platform shell
   // so the npm `.cmd` shim resolves on Windows without an EINVAL spawn from
   // execFileSync.
-  const stdout = execSync("npm pack --dry-run --json", {
+  //
+  // `--ignore-scripts` is REQUIRED here: `npm pack` (even in `--dry-run`
+  // mode) runs the `prepack` lifecycle script, and this repo wires
+  // `prepack` to `scripts/release-prepack-guard.mjs` which intentionally
+  // fails when invoked from the repo root (no `.release-staging-marker`).
+  // Without `--ignore-scripts` this enumeration would always exit 1 — the
+  // marker only exists *after* a successful build, but the build needs the
+  // file list to produce it (Codex P1 round-2 on PR #202).
+  const stdout = execSync("npm pack --dry-run --json --ignore-scripts", {
     cwd: repoRoot,
     encoding: "utf8",
     stdio: ["ignore", "pipe", "inherit"],
