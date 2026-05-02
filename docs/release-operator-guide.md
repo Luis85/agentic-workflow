@@ -297,8 +297,6 @@ GitHub's immutable-release contract blocks asset modification once a Release is 
 1. **Accept an asset-less Release.** The npm package on GitHub Packages remains the consumer-facing artifact (`npm install --save-dev @luis85/agentic-workflow@X.Y.Z`); document the missing asset in `specs/version-X-Y-plan/release-notes.md` §Known limitations and move on. The Release page still exists, the tag is still cut, the package is still installable.
 2. **Ship a recovery release.** If (1) is not acceptable — for example because the Release page is the consumer-facing artifact — bump to `vX.Y.(Z+1)`, restate the v0.5 incident pattern in the new release notes, disable the Immutable Releases setting **before** the new dispatch, and run the standard publish path. The original burned tag stays burned forever; only the new tag carries a stable Release. This is the path the v0.5.1 recovery release took.
 
-(The narrow corner case of a Release that is *both* immutable *and* still a draft — possible if the operator paused after a draft+prerelease dispatch but before promote-to-stable — does allow asset upload via `gh release upload --clobber` while the Release remains in draft state. The promote-draft-if-exists path in `release.yml` step 9a (#233 prevention C) handles this transparently for normal two-step dispatches.)
-
 After either (1) or (2): disable the Immutable Releases setting if it is still on, update §1 pre-conditions in your operator runbook, and file the incident in the project's retrospective and `#233` punch list.
 
 ## 8. Post-release cleanup
