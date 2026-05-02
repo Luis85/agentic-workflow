@@ -248,7 +248,7 @@ entry_point: false
 
 Opt-in track that runs *after* `/spec:tasks`. Decomposes a GitHub issue describing a product increment into N independent draft PRs (one per parallelisable batch from `tasks.md`), keeps the parent issue as the canonical progress dashboard, and is idempotent across re-runs.
 
-Filed by [ADR-0022](adr/0022-add-issue-breakdown-track.md).
+Filed by ADR-0022 (`docs/adr/0022-add-issue-breakdown-track.md`).
 
 ## When to use
 
@@ -303,12 +303,12 @@ Not for:
 
 ## References
 
-- Design spec: [`docs/superpowers/specs/2026-05-02-issue-breakdown-design.md`](superpowers/specs/2026-05-02-issue-breakdown-design.md).
-- ADR: [`docs/adr/0022-add-issue-breakdown-track.md`](adr/0022-add-issue-breakdown-track.md).
-- Slicing primitive: [`.claude/skills/tracer-bullet/SKILL.md`](../.claude/skills/tracer-bullet/SKILL.md).
-- Sink: [`docs/sink.md`](sink.md).
-- Verify gate: [`docs/verify-gate.md`](verify-gate.md).
-- Branching: [`docs/branching.md`](branching.md).
+- Design spec: `docs/superpowers/specs/2026-05-02-issue-breakdown-design.md`.
+- ADR: `docs/adr/0022-add-issue-breakdown-track.md`.
+- Slicing primitive: `.claude/skills/tracer-bullet/SKILL.md`.
+- Sink: `docs/sink.md`.
+- Verify gate: `docs/verify-gate.md`.
+- Branching: `docs/branching.md`.
 ```
 
 - [ ] **Step 3: Verify links repo-wide**
@@ -667,14 +667,14 @@ model: sonnet
 
 Decompose GitHub issue #$ARGUMENTS into independent draft PRs.
 
-Run the [`issue-breakdown`](../../skills/issue-breakdown/SKILL.md) skill against issue #$ARGUMENTS. The skill is the brain; this command is the entry point.
+Run the `issue-breakdown` skill (`.claude/skills/issue-breakdown/SKILL.md`) against issue #$ARGUMENTS. The skill is the brain; this command is the entry point.
 
 The skill enforces:
 
 - The feature linked from the issue must have `tasks.md` status `complete` in its `workflow-state.md`. If not, it will tell you to run `/spec:tasks` first.
 - Re-runs are idempotent: prior runs are detected by the `<!-- issue-breakdown-slice: issue-<n>-<NN> -->` HTML comment in PR bodies and the `<!-- BEGIN issue-breakdown:<slug> --> ... <!-- END issue-breakdown:<slug> -->` block in the parent issue body.
 
-See [`docs/issue-breakdown-track.md`](../../../docs/issue-breakdown-track.md) for the full methodology and [ADR-0022](../../../docs/adr/0022-add-issue-breakdown-track.md) for the rationale.
+See `docs/issue-breakdown-track.md` for the full methodology and `docs/adr/0022-add-issue-breakdown-track.md` for the rationale.
 ```
 
 - [ ] **Step 4: Verify command registration**
@@ -724,16 +724,16 @@ argument-hint: <issue-number>
 
 # Issue-breakdown conductor
 
-You conduct the issue-breakdown track defined in [`docs/issue-breakdown-track.md`](../../../docs/issue-breakdown-track.md). Your job: **gate** between phases, **dispatch** the [`issue-breakdown`](../../agents/issue-breakdown.md) specialist agent, **never** do the agent's work yourself. Filed by [ADR-0022](../../../docs/adr/0022-add-issue-breakdown-track.md).
+You conduct the issue-breakdown track defined in `docs/issue-breakdown-track.md`. Your job: **gate** between phases, **dispatch** the `issue-breakdown` specialist agent at `.claude/agents/issue-breakdown.md`, **never** do the agent's work yourself. Filed by ADR-0022 (`docs/adr/0022-add-issue-breakdown-track.md`).
 
-Shared rules (gating, escalation, intake-gate, constraints common to all conductors): [`_shared/conductor-pattern.md`](../_shared/conductor-pattern.md).
+Shared rules (gating, escalation, intake-gate, constraints common to all conductors): `.claude/skills/_shared/conductor-pattern.md`.
 
 ## Read first
 
-- [`docs/superpowers/specs/2026-05-02-issue-breakdown-design.md`](../../../docs/superpowers/specs/2026-05-02-issue-breakdown-design.md) — source-of-truth spec.
-- [`docs/issue-breakdown-track.md`](../../../docs/issue-breakdown-track.md) — methodology.
-- [`templates/tasks-template.md`](../../../templates/tasks-template.md) — the layout the agent parses.
-- [`memory/constitution.md`](../../../memory/constitution.md) — Articles I, II, VI, IX especially.
+- `docs/superpowers/specs/2026-05-02-issue-breakdown-design.md` — source-of-truth spec.
+- `docs/issue-breakdown-track.md` — methodology.
+- `templates/tasks-template.md` — the layout the agent parses.
+- `memory/constitution.md` — Articles I, II, VI, IX especially.
 
 ## Inputs
 
@@ -834,7 +834,7 @@ Print a 3-line summary to the user:
 
 ## Constraints (issue-breakdown-specific)
 
-Generic conductor constraints + escalation pattern: [`_shared/conductor-pattern.md`](../_shared/conductor-pattern.md). Specifics for this skill:
+Generic conductor constraints + escalation pattern: `.claude/skills/_shared/conductor-pattern.md`. Specifics for this skill:
 
 - **Never** invoke `tracer-bullet` at runtime. `tasks.md` is the input; it has already been produced upstream.
 - **Never** modify `tasks.md`. If parse fails, the user fixes it (or re-runs `/spec:tasks`).
@@ -853,12 +853,12 @@ Do not bleed `/issue:breakdown` concerns back into `/spec:tasks` or vice versa.
 
 ## References
 
-- Design spec: [`docs/superpowers/specs/2026-05-02-issue-breakdown-design.md`](../../../docs/superpowers/specs/2026-05-02-issue-breakdown-design.md).
-- Methodology: [`docs/issue-breakdown-track.md`](../../../docs/issue-breakdown-track.md).
-- ADR: [`docs/adr/0022-add-issue-breakdown-track.md`](../../../docs/adr/0022-add-issue-breakdown-track.md).
-- Tasks template: [`templates/tasks-template.md`](../../../templates/tasks-template.md).
-- Slicing primitive (consumed upstream by `/spec:tasks`): [`.claude/skills/tracer-bullet/SKILL.md`](../tracer-bullet/SKILL.md).
-- Sink: [`docs/sink.md`](../../../docs/sink.md).
+- Design spec: `docs/superpowers/specs/2026-05-02-issue-breakdown-design.md`.
+- Methodology: `docs/issue-breakdown-track.md`.
+- ADR: `docs/adr/0022-add-issue-breakdown-track.md`.
+- Tasks template: `templates/tasks-template.md`.
+- Slicing primitive (consumed upstream by `/spec:tasks`): `.claude/skills/tracer-bullet/SKILL.md`.
+- Sink: `docs/sink.md`.
 ```
 
 - [ ] **Step 3: Verify skill registration**
@@ -957,11 +957,11 @@ Expected: a 3-column markdown table headed `| Skill | Triggers when… | What it
 
 - [ ] **Step 2: Add the table row**
 
-Insert in alphabetical order:
+Insert in alphabetical order. Match the markdown-link form used by sibling rows in the same table — link the first column to `issue-breakdown/SKILL.md`. Column values:
 
-```markdown
-| [`issue-breakdown/`](issue-breakdown/SKILL.md) | post-/spec:tasks; "break this issue down", "decompose issue", `/issue:breakdown <n>` | Decompose a GitHub issue into independent draft PRs by parsing tasks.md `## Parallelisable batches`. |
-```
+- Column 1 (Skill): a markdown link with text `` `issue-breakdown/` `` pointing at `issue-breakdown/SKILL.md`.
+- Column 2 (Triggers when…): `post-/spec:tasks; "break this issue down", "decompose issue", /issue:breakdown <n>`.
+- Column 3 (What it does): `Decompose a GitHub issue into independent draft PRs by parsing tasks.md ## Parallelisable batches.`
 
 - [ ] **Step 3: Verify links repo-wide**
 
@@ -992,11 +992,12 @@ Expected: one match, with a table listing each agent class.
 
 - [ ] **Step 2: Add row**
 
-Add a new row after the "Quality assurance" row (or in the closest logical position), mirroring the existing row shape:
+Add a new row after the "Quality assurance" row (or in the closest logical position), mirroring the existing row shape. The fourth column should follow the same dual-link convention used by sibling rows: a markdown link to the methodology doc, followed by a parenthesised markdown link to the ADR. Column values, in inline-code form for clarity:
 
-```markdown
-| **Issue-breakdown** *(opt-in, post-/spec:tasks)* | `.claude/agents/issue-breakdown.md` | Decompose a GitHub issue into independent draft PRs from `tasks.md`. State lives `specs/<slug>/issue-breakdown-log.md`. Reads `specs/`; never edits requirements, design, spec, or tasks artifacts. | [`docs/issue-breakdown-track.md`](docs/issue-breakdown-track.md) ([ADR-0022](docs/adr/0022-add-issue-breakdown-track.md)) |
-```
+- Column 1: `**Issue-breakdown** *(opt-in, post-/spec:tasks)*`
+- Column 2: `` `.claude/agents/issue-breakdown.md` ``
+- Column 3: `Decompose a GitHub issue into independent draft PRs from tasks.md. State lives specs/<slug>/issue-breakdown-log.md. Reads specs/; never edits requirements, design, spec, or tasks artifacts.`
+- Column 4: a link to `docs/issue-breakdown-track.md` followed by a parenthesised link to `docs/adr/0022-add-issue-breakdown-track.md` labelled `ADR-0022`.
 
 - [ ] **Step 3: Update conductor-skill summary line**
 
@@ -1033,11 +1034,15 @@ Expected: one match, with a table of opt-in tracks (Discovery, Stock-taking, Sal
 
 - [ ] **Step 2: Add row**
 
-```markdown
-| **Issue-breakdown** | post-`/spec:tasks`, decompose issue into draft PRs | [`issue-breakdown`](.claude/skills/issue-breakdown/SKILL.md) | `/issue:breakdown <n>` | [`docs/issue-breakdown-track.md`](docs/issue-breakdown-track.md) ([ADR-0022](docs/adr/0022-add-issue-breakdown-track.md)) |
-```
+Add a 5-column row after the "Portfolio" row, matching the existing column shape. Use markdown links in columns 3 and 5 — same convention as sibling rows. Column values, in inline-code form for clarity:
 
-Place it after the "Portfolio" row to preserve the existing pre-/post-Specorator ordering.
+- Column 1 (Track): `**Issue-breakdown**`.
+- Column 2 (When to use): `post-/spec:tasks, decompose issue into draft PRs`.
+- Column 3 (Conductor skill): a link with text `` `issue-breakdown` `` pointing at `.claude/skills/issue-breakdown/SKILL.md`.
+- Column 4 (Manual entry): `` `/issue:breakdown <n>` ``.
+- Column 5 (Reference): a link with text `` `docs/issue-breakdown-track.md` `` pointing at `docs/issue-breakdown-track.md`, followed by `(ADR-0022)` where ADR-0022 links to `docs/adr/0022-add-issue-breakdown-track.md`.
+
+This preserves the existing pre-/post-Specorator ordering.
 
 - [ ] **Step 3: Verify links repo-wide**
 
@@ -1254,8 +1259,8 @@ Phase 3 — refinements (backlog):
 ## References
 
 - Spec: [`docs/superpowers/specs/2026-05-02-issue-breakdown-design.md`](../specs/2026-05-02-issue-breakdown-design.md).
-- ADR: [`docs/adr/0022-add-issue-breakdown-track.md`](../../adr/0022-add-issue-breakdown-track.md).
-- Methodology: [`docs/issue-breakdown-track.md`](../../issue-breakdown-track.md).
+- ADR (to be created by Task 1.3): `docs/adr/0022-add-issue-breakdown-track.md`.
+- Methodology (to be created by Task 1.4): `docs/issue-breakdown-track.md`.
 - Conductor pattern: [`.claude/skills/_shared/conductor-pattern.md`](../../../.claude/skills/_shared/conductor-pattern.md).
 - Tasks template: [`templates/tasks-template.md`](../../../templates/tasks-template.md).
 - PR template: [`.github/PULL_REQUEST_TEMPLATE.md`](../../../.github/PULL_REQUEST_TEMPLATE.md).
