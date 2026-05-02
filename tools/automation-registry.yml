@@ -229,6 +229,16 @@ entries:
     emits_json: false
     used_by: [human, agent, ci]
     rerun_command: npm run check:product-page
+  - id: check:public-surfaces
+    kind: check
+    command: npm run check:public-surfaces
+    path: scripts/check-public-surfaces.ts
+    purpose: Validate adopter-facing public surfaces against package version, changelog releases, and agent/skill inventory.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: true
+    used_by: [human, agent, ci]
+    rerun_command: npm run check:public-surfaces
   - id: check:sites-tokens-mirror
     kind: check
     command: npm run check:sites-tokens-mirror

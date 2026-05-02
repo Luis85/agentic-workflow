@@ -1,8 +1,8 @@
 # Specorator — Quality-Driven, Agentic Development Workflow
 
-**Version:** 0.2 · **Status:** Foundation + Skills layer · **Purpose:** Foundation for iteration
+**Version:** 0.5.0 · **Status:** Release infrastructure in review · **Purpose:** Spec-driven, agentic workflow template
 
-v0.2 adds the reusable skills layer, operational bots, and branching / verify / worktree guidance on top of the v0.1 lifecycle foundation.
+v0.5.0 adds the release workflow, GitHub Release and Package distribution path, and fresh-surface package contract on top of the lifecycle, skills, automation, and quality-gate foundation.
 
 A solution-agnostic, **spec-driven** workflow for building software with humans and AI agents. Treats specifications as the source of truth and code as their artifact. Covers the full SDLC: Product → UX → UI → Engineering → Testing → Quality → Delivery → Operations.
 
@@ -343,7 +343,7 @@ The workflow is iterative, not waterfall:
 ## 10. Future extensions
 
 - Domain-specific template variants (mobile, ML, infra)
-- Automated artifact validation and an RTM generator — see the v0.2 plans in [`README.md`](../README.md) (Versioning section)
+- Automated artifact validation and an RTM generator — see the roadmap in [`README.md`](../README.md#roadmap)
 - Layered template overrides (`templates/overrides/`)
 - Metrics and maturity model
 - CI quality gates
