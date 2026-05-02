@@ -77,13 +77,14 @@ Provide opt-in deterministic guardrails for worktree, branch, Markdown, secret, 
 - [ ] T-V06-009 advisory example hooks landed for ≥3 packs
 - [ ] Disable + bypass procedures documented per pack
 - [ ] No mandatory opt-in change to default contributor path
+- [ ] Append entry to `specs/version-0-6-plan/implementation-log.md` per Stage 7 (file is pending — first task to land creates it)
 - [ ] `npm run verify` green
 - [ ] PR title matches `feat(v06): ...`
 
 ## Workflow refs
 
 - [`AGENTS.md`](../../AGENTS.md)
-- [`docs/specorator.md`](../../docs/specorator.md)
+- [`docs/specorator.md`](../../docs/specorator.md) — full lifecycle (Stage 7 = Implementation, current stage)
 - [`docs/verify-gate.md`](../../docs/verify-gate.md)
 - [`docs/branching.md`](../../docs/branching.md)
 - [`docs/worktrees.md`](../../docs/worktrees.md)
@@ -92,5 +93,5 @@ Provide opt-in deterministic guardrails for worktree, branch, Markdown, secret, 
 
 ## Coordination
 
-- No file overlap with other Wave 1 PRs.
+- **`tools/automation-registry.yml` collision** — also touched by PR-B (#176), PR-C (#177), PR-E (#179). Per [`feedback_parallel_pr_conflicts.md`](../../.claude/memory/feedback_parallel_pr_conflicts.md): merge not rebase.
 - T-V06-012 (positioning) cites hook guardrails after merge.
