@@ -20,7 +20,11 @@ No new TypeScript scripts; no changes to `package.json#scripts`. The workflow co
 
 ### Trigger and inputs
 
-Unchanged from T-V05-006. `dry_run: true` (default) runs Layer 1 readiness, materialises a candidate archive, and runs Layer 2 readiness against it without creating any public artifact. `dry_run: false` adds the GitHub Release create, the `npm publish` to GitHub Packages, and the asset upload — all gated on the `confirm == version` check from SPEC-V05-002.
+Same five inputs as T-V05-006 plus one new input introduced by T-V05-007:
+
+- `publish_package` — boolean, default `false`. Operator must explicitly opt in to push the npm package to GitHub Packages on the current run; defaulting to `false` means candidate runs (`dry_run`, `draft`, `prerelease`, or any non-publish review run) cannot accidentally publish an irreversible stable package version (SPEC-V05-009 candidate dry run). The package publish step is gated on `! dry_run && publish_package`; the GitHub Release create and the asset upload still run on `! dry_run` so a draft Release can carry the tarball for reviewer inspection without publishing the package.
+
+`dry_run: true` (default) runs Layer 1 readiness, materialises a candidate archive, and runs Layer 2 readiness against it without creating any public artifact. `dry_run: false` adds the GitHub Release create and the asset upload — both gated on the `confirm == version` check from SPEC-V05-002. `dry_run: false && publish_package: true` additionally publishes the package to GitHub Packages.
 
 ### Permissions
 
@@ -39,7 +43,7 @@ The numbered comments in the workflow file already pin the slot for each step; T
 7. **Confirm gate.** Unchanged.
 8. **Create GitHub Release.** Unchanged (`gh release create … --verify-tag --generate-notes`).
 9. **Dry-run preview.** Unchanged.
-10. **Publish to GitHub Packages.** New step, gated by `if: ${{ ! inputs.dry_run }}`. Runs `npm publish` against `https://npm.pkg.github.com` using `NODE_AUTH_TOKEN: secrets.GITHUB_TOKEN`. A pre-flight `node -p` check rebuilds `name@version` from `package.json` and compares against `${INPUT_VERSION}` so a tag-race / late-merge between Layer 1 readiness and now still fails closed before the irreversible publish call. No `--access` flag — GitHub Packages inherits visibility from the repository.
+10. **Publish to GitHub Packages.** New step, gated by `if: ${{ ! inputs.dry_run && inputs.publish_package }}` so candidate runs (draft / prerelease / review-only) cannot accidentally push a stable package version. Runs `npm publish` against `https://npm.pkg.github.com` using `NODE_AUTH_TOKEN: secrets.GITHUB_TOKEN`. A pre-flight `node -p` check rebuilds `name@version` from `package.json` and compares against `${INPUT_VERSION}` so a tag-race / late-merge between Layer 1 readiness and now still fails closed before the irreversible publish call. No `--access` flag — GitHub Packages inherits visibility from the repository.
 11. **Attach release asset.** Replace the stub with `gh release upload "v${INPUT_VERSION}" "${TARBALL}" --clobber`. Runs after step 8 so the release exists. `--clobber` lets a partial-asset rerun replace what an earlier failed publish left behind without manual cleanup (NFR-V05-005 recoverability).
 
 ### Edge cases (must surface, not swallow)
@@ -49,6 +53,7 @@ The numbered comments in the workflow file already pin the slot for each step; T
 - `npm publish` fails after a successful `gh release create` (network blip, registry hiccup) — the Release exists but the package does not. NFR-V05-005 recovery: rerun the workflow with the same inputs; `--verify-tag` + Layer 1 + Layer 2 still pass; `npm publish` either succeeds or fails identifiably; `gh release upload --clobber` attaches the asset whether or not it was attached on the previous run.
 - `gh release upload` fails after `npm publish` succeeds — the package is published, the Release exists, the asset is missing. Same rerun path as above; `--clobber` makes the upload idempotent.
 - Operator widens `permissions:` in error — `RELEASE_READINESS_WORKFLOW_PERMISSIONS` catches it in step 4 before any state is mutated.
+- Operator runs `dry_run: false` to publish a draft / pre-release Release without intending to push the npm package — `publish_package` defaults to `false`, so step 10 is skipped; the Release is created, the tarball is attached as an asset (step 11), but no irreversible `npm publish` runs (SPEC-V05-009 candidate dry run; addresses Codex P1 on PR #160).
 
 ### Tests
 

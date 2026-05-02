@@ -41,6 +41,11 @@ on:
         type: string
         required: false
         default: ''
+      publish_package:
+        description: 'Publish the package to GitHub Packages on this run (SPEC-V05-004). Defaults to false so candidate runs — `dry_run`, `draft`, `prerelease`, or a release intended for review only — do not push the npm package. The package publish step is gated on `! dry_run && publish_package`; the GitHub Release create + asset upload run on `! dry_run` regardless.'
+        type: boolean
+        required: false
+        default: false
 
 # Least-privilege workflow permissions per ADR-0020 / SPEC-V05-002 / NFR-V05-001.
 # `RELEASE_READINESS_WORKFLOW_PERMISSIONS` (PR #158, scripts/lib/release-readiness.ts)
@@ -203,6 +208,14 @@ jobs:
       # repository on GitHub Packages — `--access` is unnecessary for the
       # `@luis85` scope on a public repo.
       #
+      # The step is gated on `! dry_run && publish_package` so candidate runs
+      # (draft / pre-release / non-package release) do not publish a stable
+      # package version (SPEC-V05-009). The operator opts in by setting
+      # `publish_package: true` alongside `dry_run: false` and a matching
+      # `confirm` input; the asset upload in step 11 still runs on
+      # `! dry_run` so a draft Release can carry the tarball for reviewer
+      # inspection without an irreversible npm publish.
+      #
       # zizmor's `use-trusted-publishing` audit suggests OIDC trusted
       # publishing instead of a token. GitHub Packages does not currently
       # support OIDC trusted publishing for npm — the documented credential is
@@ -210,7 +223,7 @@ jobs:
       # at the workflow level. The audit is suppressed at the step boundary;
       # revisit when GitHub Packages adds OIDC support.
       - name: Publish to GitHub Packages # zizmor: ignore[use-trusted-publishing]
-        if: ${{ ! inputs.dry_run }}
+        if: ${{ ! inputs.dry_run && inputs.publish_package }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           INPUT_VERSION: ${{ inputs.version }}

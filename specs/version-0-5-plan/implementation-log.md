@@ -129,6 +129,15 @@ PR #156 (`feat/v05-branch-strategy-and-release-notes`) stages two tasks together
 |---|---|---|---|---|
 | — | — | none | — | — |
 
+### 2026-05-04 — Review fix — Codex P1 on PR #160
+
+- **Files changed:** `.github/workflows/release.yml` (new `publish_package` input + tightened step 10 gate); `specs/version-0-5-plan/chunks/pr5-package-publish.md` (input list + step 10 description + edge case).
+- **Spec reference:** SPEC-V05-009 (candidate dry run); REQ-V05-002 / NFR-V05-001 (explicit publish authorisation).
+- **Owner:** orchestrator
+- **Outcome:** done
+- **Deviation from spec:** none (spec-aligning fix — original PR #160 left `dry_run: false` as the only publish gate, which would publish on draft/pre-release runs against SPEC-V05-009).
+- **Notes:** Codex P1 on commit `9342ea8` flagged that the publish step ran for every non-dry-run invocation, so a maintainer using `draft` or `prerelease` to stage a candidate would also publish the npm package. Added a dedicated `publish_package` boolean input (default `false`) and tightened the publish gate to `if: ${{ ! inputs.dry_run && inputs.publish_package }}`. The asset upload remains on `! inputs.dry_run` so a draft Release can carry the tarball for reviewer inspection without publishing the package; `npm publish` only runs when an operator explicitly sets `publish_package: true` alongside `dry_run: false` and a matching `confirm` input. Aligns the workflow with SPEC-V05-009 (candidate dry run) and REQ-V05-002 (explicit publish authorisation).
+
 ## Quality gate
 
 - [ ] All tasks accounted for (done, partial, blocked, or dropped).
