@@ -10,6 +10,10 @@ This folder describes Specorator itself: the workflow template, docs, scripts, a
 
 Use this folder when improving the template. Use [`docs/steering/`](../steering/README.md) when adopting Specorator for a downstream product or editing the blank steering templates that ship to adopters.
 
+## Naming
+
+Specorator is the product and workflow method. `agentic-workflow` remains the repository slug and GitHub Packages npm package identity (`@luis85/agentic-workflow`) per [ADR-0024](../adr/0024-lock-specorator-agentic-workflow-naming-contract.md). Product-facing copy should lead with Specorator and use `agentic-workflow` only for repository, package, URL, or install references.
+
 ## Decision
 
 T-V06-001 chooses the additive split from the v0.6 design:

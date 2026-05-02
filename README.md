@@ -1,14 +1,20 @@
 # Specorator — Agentic Development Workflow
 
-![Version](https://img.shields.io/badge/version-v0.2-blue) ![License](https://img.shields.io/badge/license-MIT-green)
+![Version](https://img.shields.io/badge/version-v0.5.0-blue) ![License](https://img.shields.io/badge/license-MIT-green)
 
 [![Verify](https://github.com/Luis85/agentic-workflow/actions/workflows/verify.yml/badge.svg?branch=main)](https://github.com/Luis85/agentic-workflow/actions/workflows/verify.yml) [![gitleaks](https://github.com/Luis85/agentic-workflow/actions/workflows/gitleaks.yml/badge.svg?branch=main)](https://github.com/Luis85/agentic-workflow/actions/workflows/gitleaks.yml) [![typos](https://github.com/Luis85/agentic-workflow/actions/workflows/typos.yml/badge.svg?branch=main)](https://github.com/Luis85/agentic-workflow/actions/workflows/typos.yml) [![zizmor](https://github.com/Luis85/agentic-workflow/actions/workflows/zizmor.yml/badge.svg?branch=main)](https://github.com/Luis85/agentic-workflow/actions/workflows/zizmor.yml)
 
 **Build software the right way with AI.** Specorator is a ready-to-use workflow template that keeps humans in charge of *what* to build while AI agents handle the heavy lifting of *how*.
 
-> **Status:** v0.2 — Foundation + Skills layer. Intentionally generic and starting-point-y — fork it, adapt it, make it yours.
+> **Status:** v0.5.0 — release infrastructure and fresh-surface packaging are in place. The repository remains a template: fork it, adapt it, make it yours.
 
 Product page: <https://luis85.github.io/agentic-workflow/>
+
+---
+
+## Naming
+
+**Specorator** is the product and workflow method. **`agentic-workflow`** is the GitHub repository and GitHub Packages npm package name (`@luis85/agentic-workflow`). ADR-0024 records this dual-name contract so public copy can use Specorator while install commands keep the repository/package identity stable.
 
 ---
 
@@ -465,12 +471,15 @@ Full version in [`memory/constitution.md`](memory/constitution.md).
 | v0.2 | Done | Skills layer, operational bots, branching / verify / worktrees guides |
 | v0.3 | Done | [Worked end-to-end examples, artifact validation](specs/version-0-3-plan/release-notes.md) |
 | v0.4 | Done | [CI quality gates, metrics, maturity model](specs/version-0-4-plan/release-notes.md) |
-| v0.5 | Planned | [Release workflow, branching strategy, GitHub Releases and Packages](specs/version-0-5-plan/tasks.md) |
-| v0.6 | Planned | [Productization, cross-tool adapters, live proof, hooks, and agentic security](specs/version-0-6-plan/tasks.md) |
+| v0.5 | In review | [Release workflow, branching strategy, GitHub Releases and Packages](https://github.com/Luis85/agentic-workflow/issues/90) |
+| v0.5.1 | Active | [Issue-breakdown track patch release](https://github.com/Luis85/agentic-workflow/issues/183) |
+| v0.6 | Active | [Productization, cross-tool adapters, live proof, hooks, and agentic security](https://github.com/Luis85/agentic-workflow/issues/91) |
 | v0.7 | Planned | [Automation quality hardening for agents and humans](https://github.com/Luis85/agentic-workflow/issues/98) |
-| v0.8 | Planned | [Content-driven product page generation](specs/version-0-8-plan/tasks.md) |
-| v0.8.1 | Planned | [Product box feature](docs/superpowers/plans/2026-05-01-product-box.md) ([issue #145](https://github.com/Luis85/agentic-workflow/issues/145)) |
-| v0.9 | Planned | [Stakeholder sparring partner for roadmap communication](specs/version-0-9-plan/tasks.md) ([issue #125](https://github.com/Luis85/agentic-workflow/issues/125)) |
+| v0.8 | Planned | [Content-driven product page generation](https://github.com/Luis85/agentic-workflow/issues/106) |
+| v0.8.1 | Planned | [Product box feature](https://github.com/Luis85/agentic-workflow/issues/145) |
+| v0.9 | Planned | [Stakeholder sparring partner for roadmap communication](https://github.com/Luis85/agentic-workflow/issues/125) |
+| v1.0 | Planned | [Release readiness checklist](https://github.com/Luis85/agentic-workflow/issues/92) |
+| v2.0 | Exploring | [Obsidian plugin planning](https://github.com/Luis85/agentic-workflow/issues/96) |
 
 ---
 

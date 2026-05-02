@@ -1,7 +1,7 @@
 ---
 id: ADR-0016
 title: Adopt the specorator-design skill as the canonical brand source
-status: proposed
+status: accepted
 date: 2026-05-01
 deciders:
   - human
@@ -20,7 +20,7 @@ tags: [design-system, brand, skill, sites, tokens]
 
 ## Status
 
-Proposed
+Accepted
 
 ## Context
 

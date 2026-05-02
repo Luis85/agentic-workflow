@@ -9,8 +9,8 @@ inputs:
   - TESTPLAN-V05-001
   - SPECDOC-V05-001
   - PRD-V05-001
-created: 2026-05-04
-updated: 2026-05-04
+created: 2026-05-02
+updated: 2026-05-02
 ---
 
 # Test report — Version 0.5 release and distribution plan (Stage 8)
@@ -19,7 +19,7 @@ updated: 2026-05-04
 
 | Field | Value |
 |---|---|
-| Date | 2026-05-04 |
+| Date | 2026-05-02 |
 | Test plan reference | `specs/version-0-5-plan/test-plan.md` (TESTPLAN-V05-001) |
 | Executor | qa agent (PR #162, branch `feat/v05-dry-run-and-verification`) |
 | Node version | v24.12.0 |

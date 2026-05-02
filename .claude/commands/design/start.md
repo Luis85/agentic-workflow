@@ -2,7 +2,7 @@
 description: Design Track — Bootstrap. Scaffold a new design folder under designs/<slug>/ with design-state.md initialised.
 argument-hint: <design-slug>
 allowed-tools: [Read, Edit, Write, Bash]
-model: sonnet
+model: haiku
 ---
 
 # /design:start
