@@ -173,68 +173,6 @@ test("assertSafeOutDir: accepts a non-existent path", () => {
   }
 });
 
-test("assertSafeOutDir: non-destructive mode passes a non-empty dir without the marker", () => {
-  // Codex P2 round-4 on PR #202: `--no-clean` must not be blocked by the
-  // marker / non-empty rejection because no clean is happening.
-  const { repoRoot, cleanup } = mkRepo();
-  const target = fs.mkdtempSync(path.join(os.tmpdir(), "stg-safety-no-clean-"));
-  try {
-    fs.writeFileSync(path.join(target, "user-data.txt"), "preserved", "utf8");
-    assert.doesNotThrow(() =>
-      assertSafeOutDir(target, repoRoot, { destructive: false }),
-    );
-  } finally {
-    fs.rmSync(target, { recursive: true, force: true });
-    cleanup();
-  }
-});
-
-test("assertSafeOutDir: non-destructive mode still rejects protected paths", () => {
-  const { repoRoot, cleanup } = mkRepo();
-  try {
-    assert.throws(
-      () => assertSafeOutDir(repoRoot, repoRoot, { destructive: false }),
-      /repo root|filesystem root|user home/i,
-    );
-    const parent = path.dirname(path.resolve(repoRoot));
-    assert.throws(
-      () => assertSafeOutDir(parent, repoRoot, { destructive: false }),
-      /repo parent|ancestor|filesystem root/i,
-    );
-  } finally {
-    cleanup();
-  }
-});
-
-test("assertSafeOutDir: non-destructive mode still rejects a non-directory file", () => {
-  const { repoRoot, cleanup } = mkRepo();
-  const filePath = path.join(repoRoot, "not-a-dir.txt");
-  try {
-    fs.writeFileSync(filePath, "x", "utf8");
-    assert.throws(
-      () => assertSafeOutDir(filePath, repoRoot, { destructive: false }),
-      /not a directory/i,
-    );
-  } finally {
-    cleanup();
-  }
-});
-
-test("assertSafeOutDir: non-destructive mode passes a dir containing `.git`", () => {
-  const { repoRoot, cleanup } = mkRepo();
-  const sibling = fs.mkdtempSync(path.join(os.tmpdir(), "stg-safety-sib-no-clean-"));
-  try {
-    fs.mkdirSync(path.join(sibling, ".git"));
-    // `.git` is fine when not deleting — `--no-clean` preserves contents.
-    assert.doesNotThrow(() =>
-      assertSafeOutDir(sibling, repoRoot, { destructive: false }),
-    );
-  } finally {
-    fs.rmSync(sibling, { recursive: true, force: true });
-    cleanup();
-  }
-});
-
 test("assertSafeOutDir: accepts a previously-staged dir (marker present)", () => {
   const { repoRoot, cleanup } = mkRepo();
   const target = fs.mkdtempSync(path.join(os.tmpdir(), "stg-safety-marked-"));

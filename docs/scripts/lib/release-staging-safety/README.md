@@ -12,10 +12,6 @@ entry_point: true
 
 # lib/release-staging-safety
 
-## Type Aliases
-
-- [AssertSafeOutDirOptions](type-aliases/AssertSafeOutDirOptions.md)
-
 ## Variables
 
 - [STAGING\_MARKER\_FILE](variables/STAGING_MARKER_FILE.md)

@@ -28,6 +28,12 @@ import { assertSafeOutDir, writeStagingMarker } from "./lib/release-staging-safe
  * npm run build:release-archive -- --json
  * ```
  *
+ * The CLI always cleans `outDir` before staging. There is no `--no-clean`
+ * flag: `package.json#files` whitelists whole directories like `docs/`, so a
+ * stale file left in the staging tree from a prior run (e.g. a deleted
+ * `docs/foo.md`) would silently ship in the next `npm pack ./.release-staging`
+ * — the antithesis of a deterministic build (Codex P2 round-5 on PR #202).
+ *
  * The CLI computes the file allowlist by running `npm pack --dry-run --json`
  * from `repoRoot`, then dispatches each path to `buildReleaseArchive`. The
  * single source of truth for "what ships" remains `package.json#files` —
@@ -36,13 +42,11 @@ import { assertSafeOutDir, writeStagingMarker } from "./lib/release-staging-safe
 
 type ParsedArgs = {
   outDir: string;
-  cleanFirst: boolean;
 };
 
 function parseArgs(argv: readonly string[]): ParsedArgs {
   const defaults: ParsedArgs = {
     outDir: path.join(repoRoot, ".release-staging"),
-    cleanFirst: true,
   };
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -60,10 +64,6 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
       const value = arg.slice("--out=".length);
       if (value === "") throw new Error("`--out=` requires a non-empty directory path");
       defaults.outDir = path.isAbsolute(value) ? value : path.resolve(repoRoot, value);
-      continue;
-    }
-    if (arg === "--no-clean") {
-      defaults.cleanFirst = false;
       continue;
     }
     if (arg === "--json") continue; // recognised by wantsJson()
@@ -113,17 +113,13 @@ try {
 }
 
 try {
-  // The `.git`-entry and non-empty-without-marker rejections only fire on
-  // the destructive (`cleanFirst`) path; absolute-path guards run on both
-  // paths. `--no-clean` then preserves whatever already lives in the dir
-  // (Codex P2 round-4 on PR #202).
-  assertSafeOutDir(parsed.outDir, repoRoot, { destructive: parsed.cleanFirst });
+  assertSafeOutDir(parsed.outDir, repoRoot);
 } catch (err) {
   console.error(`${heading}: ${(err as Error).message}`);
   process.exit(1);
 }
 
-if (parsed.cleanFirst && fs.existsSync(parsed.outDir)) {
+if (fs.existsSync(parsed.outDir)) {
   fs.rmSync(parsed.outDir, { recursive: true, force: true });
 }
 fs.mkdirSync(parsed.outDir, { recursive: true });
