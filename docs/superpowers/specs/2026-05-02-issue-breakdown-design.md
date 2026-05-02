@@ -146,25 +146,42 @@ Body sections:
 
 ### Slicing input — parsing `tasks.md`
 
-`tasks.md` is produced by the `tracer-bullet` skill during `/spec:tasks` and follows `templates/tasks-template.md`. It is **markdown**, not structured data. The conductor parses it directly using stable anchors that the template guarantees:
+`tasks.md` is produced by `tracer-bullet` during `/spec:tasks` and follows `templates/tasks-template.md`. It is **markdown**, not structured data. The conductor parses it directly using stable anchors the template actually contains.
+
+**A slice is a parallelisable batch.** The template provides this primitive in its `## Parallelisable batches` section (e.g. "Batch 1: T-AUTH-001, T-AUTH-005"). Each batch is, by definition, a set of tasks with no inter-dependencies — exactly the property a draft PR needs. The conductor's mapping rule is:
+
+- **One PR per `Batch N`** — slice ordinal `<NN>` = `N`.
+- **Tasks-in-slice** = the `T-<AREA>-NNN` list on that batch's line.
+- **`🪓 may slice` annotations** override the batch grouping for individual tasks: a task flagged `🪓` with a `**Slice plan:**` line is split out into its own slice (or sub-slices) regardless of which batch it sits in.
+
+The conductor parses these template-guaranteed anchors:
 
 | Field | Source in `tasks.md` |
 |---|---|
-| Ordinal `NN` | Conductor-assigned (1-based) over slice headings in document order. |
-| Task ID `T-<AREA>-NNN` | Per-slice heading line, regex `T-[A-Z0-9]+-\d{3}`. |
-| Slice goal | Slice heading text after the ID. |
-| Acceptance criteria | "Acceptance criteria" section under each slice (bullet list). |
-| Test approach | "Test approach" section under each slice. |
-| Risk level (L/M/H) | "Risk level" line. |
-| Blocked by | "Blocked by" line; comma-separated `T-<AREA>-NNN` list. |
-| DoD (whole spec) | Final "Definition of done" section. |
+| Slice ordinal `<NN>` | `## Parallelisable batches` body, line prefix `- **Batch N:**`, zero-padded to 2 digits. |
+| Tasks in slice | Same line; comma-separated `T-<AREA>-NNN` tokens. |
+| Per-task heading | `### T-<AREA>-NNN <emoji> — <short title>` — regex `^### (T-[A-Z0-9]+-\d{3}) ([🧪🔨📐📚🚀🪓]+) — (.+)$`. Goal = `<short title>`. |
+| Per-task description | Bullet `- **Description:**` under the heading. |
+| Per-task DoD | Bullet `- **Definition of done:**` followed by checklist items. |
+| Per-task `Depends on` | Bullet `- **Depends on:**` (used to cross-check that the batch is actually independent — surface a warning if not). |
+| `🪓 may-slice` flag | `🪓` in the heading emoji set; followed by a `**Slice plan:**` bullet. |
+| Slice goal (PR title) | Concatenation of in-batch task short titles, separated by " + ", truncated to 60 chars. If the batch is a single `🪓` task, the slice goal is that task's short title. |
+| Slice DoD (PR body) | Aggregation of in-batch tasks' per-task DoD checklists, plus the spec's `## Quality gate` section as a final gate. |
 
-This contract is fragile (heading-based regex). Two mitigations:
+There is **no** "Acceptance criteria" or "Test approach" section in the template — these are the planner's discretion inside `**Description:**` or `**Definition of done:**`. The conductor does not require them as anchors.
 
-1. The conductor refuses to proceed if any slice is missing one of the above anchors and surfaces the offending heading. This forces `tasks.md` authors (and `tracer-bullet`) to keep the template stable.
-2. A separate, deferred deliverable (out of scope here) may extend `tracer-bullet` to also emit a structured side-car (e.g. `specs/<slug>/tasks.json`). That extension is *not* a precondition for v1; if/when it lands, the conductor can switch to consuming it. This is recorded in the ADR's "consequences" as a deferred refinement.
+There is **no** whole-spec "Definition of done" section either — the analogous gate is `## Quality gate` (line 87 of the template), which the conductor copies into the PR body's "Definition of done" block as the final gate.
 
-If a slice's `<goal>` is empty or `<area>` cannot be derived from `<AREA>`, the conductor refuses and surfaces the parse error.
+**Refuse-on-missing-anchor.** The conductor hard-stops if any of these are absent or malformed:
+
+- `## Parallelisable batches` heading.
+- At least one `- **Batch N:**` line under it.
+- Every `T-<AREA>-NNN` referenced in a batch line resolves to a `### T-<AREA>-NNN …` heading in `## Task list`.
+- The matching task heading has both `**Description:**` and `**Definition of done:**` bullets.
+
+The error message names the offending line and instructs the user to either fix `tasks.md` directly or re-run `/spec:tasks`.
+
+**Deferred refinement.** A future `tasks.json` side-car (out of scope here) would replace this regex parser. Recorded in the ADR's "consequences".
 
 ### Subagent (`.claude/agents/issue-breakdown.md`)
 
@@ -301,7 +318,7 @@ Branch prefix is `feat/` (same as Phase 1) so a single set of branch-protection 
 - Avoid encoding Phase-2-only state (workflow run inspection, label removal) in Phase 1 surfaces.
 - Document the contract between conductor and `tasks.md` (the "Slicing input" section above) so Phase 2 can implement the same parser independently.
 
-No source code or prompt content is shared between them at v1.
+**File-level boundary.** Phase 2 introduces only files under `agents/operational/issue-breakdown-bot/` and `.github/workflows/issue-breakdown-bot.yml`. It does **not** import, transclude, or reference any file under `.claude/skills/issue-breakdown/` or `.claude/agents/issue-breakdown.md`. There is no shared template file. The two surfaces are kept consistent by sharing this design spec, not by sharing source.
 
 ## Data flow
 
@@ -316,11 +333,10 @@ issue-breakdown agent
         │                          requirements.md,
         │                          design.md,
         │                          spec.md,
-        │                          tasks.md}
-        │
-        ├─ dispatches ──► tracer-bullet skill
-        │                       │
-        │                       └─► slice list
+        │                          tasks.md}                ← parsed in-process
+        │                                                     (slice list derived from
+        │                                                      ## Parallelisable batches +
+        │                                                      🪓 may-slice annotations)
         │
         ├─ writes ──► specs/<slug>/issue-breakdown-log.md  (audit)
         ├─ appends ─► specs/<slug>/workflow-state.md       (## Hand-off notes line)
@@ -373,11 +389,17 @@ The conductor also does **not** create changesets. Empty PRs deliberately have n
 
 ## Sink update — `specs/<slug>/issue-breakdown-log.md`
 
-Lifecycle classification (per `docs/sink.md`): **append-only**. Same shape as `implementation-log.md`. Added by this PR to the sink table:
+Two updates to `docs/sink.md` (the real sink schema is `| Path | Owner | Mutability |` in the Ownership table, plus a separate prose "### Append-only" section — not the four-column shape used in earlier draft):
 
-| Path | Owner | Lifecycle | Notes |
-|---|---|---|---|
-| `specs/<slug>/issue-breakdown-log.md` | `issue-breakdown` agent | append-only | Audit log of `/issue:breakdown` runs against this feature. Free-form markdown; no schema. |
+1. **Ownership table row** (in the existing 3-column shape):
+
+   ```
+   | `specs/<slug>/issue-breakdown-log.md` | `issue-breakdown` agent | Append-only — dated entries, never rewritten |
+   ```
+
+2. **Append-only paragraph extension** — add `specs/<slug>/issue-breakdown-log.md` to the existing list at lines 268–270 of `docs/sink.md`, alongside `implementation-log.md` and the `## Hand-off notes` section. New text:
+
+   > `docs/CONTEXT.md`, `docs/glossary/*.md` …, `specs/<slug>/implementation-log.md`, **`specs/<slug>/issue-breakdown-log.md`**, and the `## Hand-off notes` free-form section of `workflow-state.md` are append-only in spirit. …
 
 The append-only contract mirrors `implementation-log.md`: dated entries, never rewritten, agents may refine wording but historical narrative survives.
 
@@ -385,10 +407,11 @@ The append-only contract mirrors `implementation-log.md`: dated entries, never r
 
 The sentinel-bracketed re-edit zone is the conductor's idempotency primitive. Its limits, made explicit:
 
-- **No optimistic lock.** `gh issue edit --body` is last-write-wins. Two concurrent runs (e.g. interactive conductor + label-triggered bot in Phase 2) can race. Phase 2 mitigates this with a workflow `concurrency.group: issue-breakdown-${{ github.event.issue.number }}` so a queued bot run waits for an earlier one. Phase 1 (interactive) is single-user-per-tty by construction; the conductor checks for an in-flight Phase 2 run by inspecting the workflow run list before proceeding.
+- **No optimistic lock.** `gh issue edit --body` is last-write-wins. Two concurrent runs (e.g. interactive conductor + label-triggered bot in Phase 2) can race. Phase 2 mitigates this with a workflow `concurrency.group: issue-breakdown-${{ github.event.issue.number }}` so a queued bot run waits for an earlier one. Phase 1 (interactive) is single-user-per-tty by construction; the conductor checks for an in-flight Phase 2 run by inspecting the workflow run list before proceeding, and **refuses** with a surfaced run URL if one is active. The user must wait for the workflow to finish (or cancel it manually) before re-running. There is no `--force-run` override at v1.
 - **In-block edits are silently overwritten.** Anything a human writes between `<!-- BEGIN issue-breakdown:<slug> -->` and `<!-- END issue-breakdown:<slug> -->` is replaced on re-run. The block is conductor-owned. Humans annotate *outside* the block.
 - **Missing block on a known-prior-run issue.** If `gh pr list --search "issue-breakdown-slice: issue-<n>" --state all` returns ≥ 1 PR but the issue body has no `BEGIN/END` block, the conductor **refuses** and surfaces: "prior run detected (PRs #x #y) but issue body block missing — restore manually or pass `--force-rebuild` to re-emit." It never silently appends a second block.
 - **Discriminator.** Idempotency on the PR side keys off the `<!-- issue-breakdown-slice: issue-<n>-<NN> -->` HTML comment in the PR body — searched via `gh pr list --search`. `Refs #<n>` is informational only, not the key.
+- **Search reliability caveat.** `gh pr list --search` queries GitHub's code-search index, which tokenises on word boundaries. The `:`, `<`, `>`, and `-` characters in the slice tag may not match as a literal phrase across all GitHub versions. The implementation plan must include a smoke-test that opens a known-tagged draft PR and confirms `gh pr list --search "issue-breakdown-slice issue-<n>"` (without colons) returns it. If the search proves unreliable, fall back to a brute-force scan: list all PRs that match `Refs #<n>` and grep the body locally for the exact tag.
 
 | Case | Handling |
 |---|---|
@@ -461,17 +484,19 @@ ADR captures:
 The conductor doesn't exist when the work to *build it* starts. The dogfood plan ("first slice PR is the conductor itself, subsequent slices are templates / ADR / docs / bot") therefore requires:
 
 1. Bootstrap by hand: open the tracking issue, run `/spec:start … /spec:tasks` through `/orchestrate`, then **manually open the first ~3 draft PRs** (conductor skill + slash command + agent) using `gh pr create --draft` from the user's terminal.
-2. Once those PRs merge and the conductor is on `main`, run `/issue:breakdown <n>` against the same tracking issue. Idempotency (sentinel-block check + slice-tag search) ensures the already-merged PRs are recognised and only the *remaining* slices are opened.
+2. **Manually paste the slice tag** into the body of each bootstrapped PR (`<!-- issue-breakdown-slice: issue-<n>-<NN> -->`) so subsequent re-runs of `/issue:breakdown <n>` recognise them as already-existing slices. Without the tag, the discriminator falls back to `Refs #<n>` matching only and the conductor may produce duplicates.
+3. Once those PRs merge and the conductor is on `main`, run `/issue:breakdown <n>` against the same tracking issue. Idempotency (sentinel-block check + slice-tag search) ensures the already-merged PRs are recognised and only the *remaining* slices are opened.
 
 This is a one-time bootstrap; subsequent issues use the conductor end-to-end.
 
-## Open questions
+## Decisions confirmed during round-2 review
 
-All material questions resolved. Items to confirm during planning:
+(Folded down from the prior "Open questions" section after round 2.)
 
-- Whether the empty scaffold commit message should be `chore(<area>):` or `chore(scope):` — go with `chore(<area>)` to mirror the PR title's scope.
-- Whether to emit the audit log in YAML frontmatter + body, or pure markdown (markdown for v1; promote to YAML if downstream tooling needs it).
-- Whether `<AREA>` casing override (lowercase scope distinct from uppercase ID prefix) needs a `workflow-state.md` field — current plan: derive `<area>` mechanically as `<AREA>.toLowerCase()`, no field added.
+- Empty scaffold commit message uses `chore(<area>):` (lowercase scope), mirroring the PR title.
+- Audit log is plain markdown for v1; promotable to YAML frontmatter + body if downstream tooling needs it.
+- `<area>` (lowercase) is derived mechanically as `<AREA>.toLowerCase()`. No new `workflow-state.md` field is added; if a feature genuinely needs a different scope value, it can override at the conductor's `AskUserQuestion` confirm step.
+- `gitleaks` runs on the PR's commit range. An empty-commit PR has zero new content to scan — pass is fast. `pages.yml` triggers only on `main` writes; not relevant for slice draft PRs.
 
 ## References
 
@@ -480,7 +505,7 @@ All material questions resolved. Items to confirm during planning:
 - `docs/discovery-track.md` — opt-in track shape (mirrored here).
 - `.claude/skills/orchestrate/SKILL.md` — conductor pattern.
 - `.claude/skills/_shared/conductor-pattern.md` — gating + escalation.
-- `.claude/skills/tracer-bullet/SKILL.md` — slice decomposition (dispatched by this skill).
+- `.claude/skills/tracer-bullet/SKILL.md` — produces `tasks.md` upstream during `/spec:tasks`. This conductor consumes that artifact; it does not invoke the skill at runtime.
 - `agents/operational/review-bot/` — operational-bot shape (mirrored for Phase 2).
 - `templates/adr-template.md` — ADR template.
 - `.claude/memory/feedback_pr_hygiene.md` — branch-per-concern rule.
