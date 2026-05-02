@@ -2,7 +2,7 @@
 description: Project Manager Track — Bootstrap. Scaffold a new project folder under projects/<slug>/ with project-state.md initialised.
 argument-hint: <project-slug>
 allowed-tools: [Read, Edit, Write, Bash]
-model: sonnet
+model: haiku
 ---
 
 # /project:start

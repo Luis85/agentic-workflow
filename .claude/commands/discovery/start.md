@@ -2,7 +2,7 @@
 description: Discovery Track — Bootstrap. Scaffold a new sprint folder under discovery/<slug>/ with discovery-state.md initialised.
 argument-hint: <sprint-slug>
 allowed-tools: [Read, Edit, Write, Bash]
-model: sonnet
+model: haiku
 ---
 
 # /discovery:start
