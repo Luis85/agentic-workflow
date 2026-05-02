@@ -103,7 +103,7 @@ Pipeline shape:
 5. Workflow step runs `npm pack ./.release-staging` so the resulting tarball reflects the staged tree.
 6. Layer 2 readiness asserts assertions 1, 2, 3 against the extracted tree.
 
-Defence-in-depth: a `.npmignore` at the repo root excludes numbered ADRs and `.worktrees/` so a maintainer running `npm pack` directly from the repo root (bypassing the build script) does not accidentally publish a built-up archive that would fail Layer 2.
+Defence-in-depth: `scripts/release-prepack-guard.mjs` is wired as the npm `prepack` lifecycle script. It refuses `npm pack` of `@luis85/agentic-workflow` from any cwd that lacks the `.release-staging-marker` file (written by `build:release-archive` at the root of the staged tree), so a maintainer who bypasses the build script and runs bare `npm pack` from the repo root fails closed before any tarball is produced. The guard is a no-op for any other package name, so a downstream fork that copies the template into a renamed package does not inherit the upstream-only constraint. `.npmignore` is no longer the primary defence for filtering ADRs — npm's `package.json#files` allowlist takes precedence over a top-level `.npmignore`, so paths inside `files`-listed directories cannot be excluded that way (Codex P2 on PR #202). The file is retained only for paths that are not in `files` (`.worktrees/`, `.release-staging/`).
 
 Rationale for the staged-tree shape rather than a `prepack` lifecycle hook: `prepack` mutates the working tree before `npm pack` and would either need a paired `postpack` revert (race-prone) or commit the stub form into the codebase (loses maintainer surface). The staged-tree shape keeps the codebase untouched and makes the transform inspectable on the runner before the publish step.
 
@@ -125,7 +125,9 @@ Rationale for the staged-tree shape rather than a `prepack` lifecycle hook: `pre
 | `scripts/check-release-package-contents.ts` (new, future T-V05-004 surface) | Validate the published archive against ADR-0021 exclusion classes. |
 | `templates/release-package-stub.md` (new) | Reference stub shape for docs that ship in the released package. |
 | `scripts/build-release-archive.ts` + `scripts/lib/release-archive-builder.ts` + `scripts/lib/release-stubify.ts` (new, T-V05-013 surface) | Build-time transform that produces the released form on a runner-local staging dir. |
-| `.npmignore` (new) | Defence-in-depth exclusion for numbered ADRs and `.worktrees/` if a maintainer runs `npm pack` directly. |
+| `.npmignore` (new) | Belt-and-braces exclusion for paths NOT in `package.json#files` (`.worktrees/`, `.release-staging/`). Top-level `.npmignore` cannot filter `files`-listed paths (Codex P2 on PR #202). |
+| `scripts/release-prepack-guard.mjs` (new, T-V05-013 round-2 surface) | Prepack lifecycle guard — refuses `npm pack` of `@luis85/agentic-workflow` from any cwd that lacks the `.release-staging-marker`, so bare `npm pack` from the repo root fails closed. Plain ESM so it runs under `node` without `tsx` (the staged tree has no `node_modules`). |
+| `scripts/lib/release-staging-safety.ts` (new, T-V05-013 round-2 surface) | Reusable helpers — `STAGING_MARKER_FILE`, `assertSafeOutDir`, `writeStagingMarker`, `hasStagingMarker`. The `assertSafeOutDir` guard refuses to clean a `--out` target that resolves to the filesystem root, repo root, repo parent, user home, an ancestor of the repo root, or any non-empty existing dir without the marker (Codex P1 on PR #202). |
 
 ## Authorization boundary
 

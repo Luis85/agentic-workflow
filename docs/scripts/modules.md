@@ -53,6 +53,7 @@
 - [lib/release-archive-builder](lib/release-archive-builder/README.md)
 - [lib/release-package-contract](lib/release-package-contract/README.md)
 - [lib/release-readiness](lib/release-readiness/README.md)
+- [lib/release-staging-safety](lib/release-staging-safety/README.md)
 - [lib/release-stubify](lib/release-stubify/README.md)
 - [lib/repo](lib/repo/README.md)
 - [lib/roadmaps](lib/roadmaps/README.md)

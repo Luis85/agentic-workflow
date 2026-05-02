@@ -4,6 +4,7 @@ import { execSync } from "node:child_process";
 import { buildReleaseArchive } from "./lib/release-archive-builder.js";
 import { repoRoot, toPosix } from "./lib/repo.js";
 import { wantsJson } from "./lib/diagnostics.js";
+import { assertSafeOutDir, writeStagingMarker } from "./lib/release-staging-safety.js";
 
 /**
  * CLI for the build-time release-archive transform (T-V05-013).
@@ -103,6 +104,13 @@ try {
   process.exit(1);
 }
 
+try {
+  assertSafeOutDir(parsed.outDir, repoRoot);
+} catch (err) {
+  console.error(`${heading}: ${(err as Error).message}`);
+  process.exit(1);
+}
+
 if (parsed.cleanFirst && fs.existsSync(parsed.outDir)) {
   fs.rmSync(parsed.outDir, { recursive: true, force: true });
 }
@@ -122,6 +130,10 @@ const report = buildReleaseArchive({
   outDir: parsed.outDir,
   files,
 });
+
+// Write the staging marker so subsequent re-runs (and the prepack guard on
+// `npm pack ./.release-staging`) can prove this directory is the build output.
+writeStagingMarker(parsed.outDir);
 
 if (wantsJson()) {
   console.log(

@@ -349,6 +349,16 @@ entries:
     emits_json: true
     used_by: [human, agent, ci]
     rerun_command: npm run build:release-archive -- --out <dir>
+  - id: prepack
+    kind: script
+    command: npm run prepack
+    path: scripts/release-prepack-guard.mjs
+    purpose: npm prepack lifecycle guard (T-V05-013 round-2) — refuses npm pack of @luis85/agentic-workflow from any cwd that lacks the .release-staging-marker, so bare npm pack from the repo root fails closed before a tarball is produced. No-op for any other package name.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: false
+    used_by: [human, agent, ci]
+    rerun_command: npm run prepack
   - id: docs:scripts
     kind: script
     command: npm run docs:scripts

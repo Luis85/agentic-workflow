@@ -1,26 +1,29 @@
-# Defence-in-depth exclusions for `npm pack` and `npm publish` from the repo
-# root. The canonical release pipeline runs `npm run build:release-archive`
-# first to stage a transformed copy of the repository under `.release-staging/`
-# (T-V05-013, ADR-0021, SPEC-V05-010), then packs from that staging dir — so
-# this file is the secondary safety net for an operator who packs the repo
-# directly without staging.
+# Exclusions for `npm pack` from paths NOT covered by `package.json#files`.
 #
-# `package.json#files` is the primary include allowlist. Anything not listed
-# there is already excluded by npm. The patterns below cover paths that COULD
-# end up in a packed archive if the `files` field were broadened by accident
-# or if a maintainer ran `npm pack` outside the release pipeline.
+# `package.json#files` is the include allowlist. Per npm's documented
+# precedence, paths inside `files`-listed directories CANNOT be excluded by a
+# top-level `.npmignore`, so this file is not the right tool for filtering
+# specific files out of `docs/`, `scripts/`, etc.
+#
+# The canonical defenses are:
+# - `npm run build:release-archive` (T-V05-013) stages a transformed copy under
+#   `.release-staging/` with numbered ADRs filtered and shipping `docs/**/*.md`
+#   replaced by the stub form. The release workflow packs that staged tree.
+# - `scripts/release-prepack-guard.mjs` (wired as the `prepack` lifecycle
+#   script) refuses `npm pack` of `@luis85/agentic-workflow` from any cwd that
+#   lacks the `.release-staging-marker`, so a maintainer who bypasses the
+#   build script and runs bare `npm pack` from the repo root fails closed.
+#
+# The exclusions below cover paths that are NOT in `package.json#files` and
+# therefore would only appear in the tarball if the `files` field were widened
+# by accident — pure belt-and-braces.
 #
 # When changing this file, also update:
 # - `package.json#files` (the canonical include list).
-# - `scripts/lib/release-archive-builder.ts` (build-time filter that produces
-#   the staged tree).
+# - `scripts/lib/release-archive-builder.ts` (build-time filter).
+# - `scripts/release-prepack-guard.mjs` (prepack guard).
 # - `docs/release-package-contents.md` (the contract documentation).
 # - `tools/automation-registry.yml` (the automation inventory).
-
-# Numbered ADRs ship in the codebase only — the consumer's first ADR is
-# their own ADR-0001, not a continuation of ours (ADR-0021 §Decision.2,
-# SPEC-V05-010 assertion 1).
-docs/adr/[0-9][0-9][0-9][0-9]-*.md
 
 # Local maintainer state — never relevant to consumers.
 .worktrees/
