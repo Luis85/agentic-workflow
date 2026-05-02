@@ -137,6 +137,15 @@ A running record of *what* was implemented, *why* a deviation was taken, and *wh
 - **Deviation from spec:** none.
 - **Notes:** Additive only — every page kept its existing voice and brand surface. README "Status" pill and roadmap row left unchanged (out of T-V05-009 scope; v0.5 status flips to Done in PR #162 once T-V05-011 verifies the release). Product-page edits use existing `faq-item` and `step` components — no new visual treatment, no new tokens, no emoji — to stay within `brand-reviewer` rules. The product page now answers an evaluator's "is there a tagged release?" question without over-promising: it names the registry and scope, points at the operator guide, and leaves the install prerequisites in `package-contract.md` §7.
 
+### 2026-05-04 — Review fix — Codex round-3 P2 on PR #161 (trap-based credential cleanup)
+
+- **Files changed:** `docs/release-operator-guide.md` (§7.1 manual recovery script — `trap` set immediately after exporting `NODE_AUTH_TOKEN`; explicit cleanup tail removed).
+- **Spec reference:** SPEC-V05-009 (REQ-V05-011); NFR-V05-005 (recoverability) — recovery path must be safe.
+- **Owner:** orchestrator
+- **Outcome:** done
+- **Deviation from spec:** none (doc-only correctness fix).
+- **Notes:** Codex round-3 P2 on commit `b08fff7` flagged that the explicit cleanup block at the bottom of the script (`rm -f .npmrc; unset NODE_AUTH_TOKEN`) was unreachable on the non-E404 branch (`exit 1`), leaving a populated `.npmrc` with `_authToken=${NODE_AUTH_TOKEN}` and an exported `NODE_AUTH_TOKEN` in the operator's shell — easy credential leak into later commands. Replaced the trailing cleanup with `trap 'rm -f .npmrc; unset NODE_AUTH_TOKEN' EXIT` set immediately after the token is exported, so cleanup runs on every exit path (normal completion, `exit 1` on non-404, `^C`). Comment on the exit branch points back to the trap so a reader skimming only that branch still knows credentials are cleared.
+
 ### 2026-05-04 — Review fix — Codex round-2 P1 ×2 on PR #161 (manual recovery — npm auth + non-E404 branch)
 
 - **Files changed:** `docs/release-operator-guide.md` (§7.1 manual recovery script).
