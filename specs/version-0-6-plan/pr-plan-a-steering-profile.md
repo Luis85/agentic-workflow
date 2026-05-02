@@ -67,7 +67,7 @@ If the decision changes ownership semantics → file ADR-0022 via [`/adr:new`](.
 - [ ] T-V06-002 Specorator steering filled at chosen location
 - [ ] Adopter template guidance preserved (no silent overwrite)
 - [ ] `AGENTS.md` + `CLAUDE.md` point to the correct steering source for template improvements
-- [ ] Append entry to [`specs/version-0-6-plan/implementation-log.md`](./implementation-log.md) per Stage 7
+- [ ] Append entry to `specs/version-0-6-plan/implementation-log.md` per Stage 7 (file is pending — first task to land creates it)
 - [ ] `npm run verify` green
 - [ ] PR title matches `feat(v06): ...` Conventional Commit pattern (PR-title CI)
 - [ ] References issue #91 + task IDs in commits
