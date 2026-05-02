@@ -59,6 +59,8 @@ Look-it-up, normative. Authoritative; not narrative.
 - [`roadmap-management-track.md`](./roadmap-management-track.md) — product/project roadmap management, stakeholder alignment, and team communication workflow.
 - [`quality-assurance-track.md`](./quality-assurance-track.md) — ISO 9001-aligned quality assurance review workflow.
 - [`release-readiness-guide.md`](./release-readiness-guide.md) — Stage 10 go/no-go guide for product perspectives and stakeholder requirements.
+- [`release-operator-guide.md`](./release-operator-guide.md) — runnable operator path for publishing a tagged GitHub Release and (when enabled) a GitHub Package.
+- [`release-package-contents.md`](./release-package-contents.md) — fresh-surface contract for what ships in the released template package.
 - [`workflow-overview.md`](./workflow-overview.md) — one-page cheat sheet + slash-command list.
 - [`ears-notation.md`](./ears-notation.md) — the requirement-syntax catalogue.
 - [`traceability.md`](./traceability.md) — the ID scheme and the requirement → spec → task → code → test chain.

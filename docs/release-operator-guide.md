@@ -1,0 +1,277 @@
+---
+title: "Release operator guide"
+folder: "docs"
+description: "Step-by-step path for the human release operator to publish a Specorator GitHub Release and (when enabled) a GitHub Package — covers dry run, authorization, publish, rollback, failed publish recovery, and post-release cleanup."
+entry_point: false
+---
+
+# Release operator guide
+
+This guide is the runnable, version-by-version operator path for publishing a Specorator release through the manual workflow at [`.github/workflows/release.yml`](../.github/workflows/release.yml). It satisfies [SPEC-V05-006](../specs/version-0-5-plan/spec.md) and is consumed before every publish from v0.5 onward.
+
+> **Audience.** A maintainer who has not authored the release. The guide assumes you can read `package.json`, run `gh` locally, and trigger `workflow_dispatch` in the GitHub Actions UI. It does not assume you wrote the v0.5 plan.
+
+> **Authorization boundary.** Cutting and merging the `release/vX.Y.Z` PR is ordinary topic-branch work ([`docs/branching.md`](branching.md)). **Publishing** the GitHub Release and (when enabled) the GitHub Package is a separate, manually authorized action. The workflow refuses to publish without an explicit `confirm` input that matches the requested `version` ([SPEC-V05-002](../specs/version-0-5-plan/spec.md), [NFR-V05-001](../specs/version-0-5-plan/requirements.md)).
+
+## 1. Before you start
+
+You should already have:
+
+1. A merged `release/vX.Y.Z` PR on `main` per [ADR-0020](adr/0020-v05-release-branch-strategy.md):
+   - `package.json#version` equals `X.Y.Z`,
+   - `CHANGELOG.md` has an unreleased-promoted heading for `[vX.Y.Z]`,
+   - `specs/version-X-Y-plan/release-notes.md` is finalised.
+2. The canonical tag `vX.Y.Z` cut on `main` after the merge (never on the release branch). The workflow uses `gh release create … --verify-tag` and refuses to fall back to auto-tagging.
+3. Green v0.4 quality signals available to the readiness check, surfaced through the `RELEASE_*` repository variables (or an explicit operator waiver via `RELEASE_QUALITY_WAIVER`). See `scripts/lib/release-readiness.ts` (`QualitySignals`) for the contract.
+4. A GitHub Packages publish credential available to the workflow as `GITHUB_TOKEN` with `packages: write` already declared at the workflow level ([NFR-V05-001](../specs/version-0-5-plan/requirements.md)).
+
+If any of these is missing, **stop**. The readiness check will fail closed (preferred), but the operator should not paper over a missing precondition by retrying.
+
+## 2. Workflow inputs
+
+The five `workflow_dispatch` inputs of `release.yml` are the authoritative control surface:
+
+| Input | Type | Default | Meaning |
+|---|---|---|---|
+| `version` | string | (required) | `X.Y.Z`. Must equal `package.json#version` and the existing `vX.Y.Z` tag on `main`. |
+| `dry_run` | boolean | `true` | `true` runs readiness + lifecycle steps without creating a Release ([SPEC-V05-009](../specs/version-0-5-plan/spec.md)). `false` enters the publish path. |
+| `prerelease` | boolean | `false` | Marks the published Release as a pre-release. |
+| `draft` | boolean | `false` | Creates the Release in draft state; operator finalises before publish. |
+| `confirm` | string | `""` | When `dry_run == false`, must equal `version` literally. Mismatch fails the workflow before any irreversible step ([SPEC-V05-002](../specs/version-0-5-plan/spec.md)). |
+| `publish_package` | boolean | `false` | When `true` and `dry_run == false`, publishes the package to GitHub Packages. Default `false` so a `draft` or `prerelease` candidate run does not push an irreversible `npm publish`. |
+
+Inputs flow through `env:` mappings — never directly into a `run:` shell string — so no operator value is interpolated into shell text (zizmor template-injection guard).
+
+## 3. Pre-flight — Layer 1 readiness, locally
+
+Run the readiness check on your laptop before triggering the workflow. Same script the workflow runs:
+
+```bash
+RELEASE_VERSION=X.Y.Z \
+RELEASE_CI_STATUS=green \
+RELEASE_VALIDATION_STATUS=pass \
+npm run check:release-readiness -- --json
+```
+
+A green run prints `{"diagnostics": []}`; a failed run prints one or more diagnostics with the codes listed in §10. Resolve every diagnostic before triggering the workflow — the workflow runs the same check and will fail closed.
+
+## 4. Dry run path
+
+Use this for every release until you are convinced the artifact is correct. Dry run is **non-destructive**: it runs the full readiness pipeline, builds a candidate archive with `npm pack`, runs the Layer 2 fresh-surface assertions ([SPEC-V05-010](../specs/version-0-5-plan/spec.md)), and prints a generated-notes preview without creating a public Release or publishing the package.
+
+Trigger:
+
+1. Go to **Actions → Release → Run workflow**.
+2. Inputs:
+   - `version`: `X.Y.Z`
+   - `dry_run`: `true` (default)
+   - `prerelease`, `draft`, `publish_package`: leave defaults
+   - `confirm`: leave empty
+3. Run.
+
+Inspect the run log:
+
+- Step "Readiness — Layer 1" → green.
+- Step "Build candidate archive" → tarball name + extracted dir.
+- Step "Readiness — Layer 2 (fresh-surface)" → green.
+- Step "Log dry-run candidate (no Release created)" → printed candidate tag and generated release-notes body.
+
+If any step fails, fix the underlying cause (do **not** rerun without a fix) and trigger another dry run.
+
+## 5. Stable publish path
+
+Only after at least one fully green dry run, request a stable publish.
+
+1. Trigger **Actions → Release → Run workflow** with:
+   - `version`: `X.Y.Z`
+   - `dry_run`: `false`
+   - `prerelease`: `false`
+   - `draft`: `false`
+   - `confirm`: type the literal `X.Y.Z` (the confirm gate compares it to `version` and fails if they differ — [SPEC-V05-002](../specs/version-0-5-plan/spec.md)).
+   - `publish_package`: `true` if you intend to push the GitHub Package on this run; `false` if you only want to publish the Release this run.
+
+2. The workflow executes, in order:
+   - Layer 1 readiness — release metadata.
+   - `npm pack` — candidate archive built and extracted.
+   - Layer 2 readiness — fresh-surface contract ([ADR-0021](adr/0021-release-package-fresh-surface.md)).
+   - Confirm gate — refuses to continue unless `confirm == version`.
+   - `gh release create vX.Y.Z --target main --verify-tag --generate-notes` — creates the GitHub Release using the `.github/release.yml` categories.
+   - `npm publish` — only when `publish_package: true`; idempotent (see §7.1).
+   - `gh release upload vX.Y.Z … --clobber` — attaches the candidate tarball as a release asset.
+
+3. Verify on `https://github.com/Luis85/agentic-workflow/releases/tag/vX.Y.Z`:
+   - Release notes body matches the dry-run preview.
+   - Tarball asset is attached.
+   - GitHub Packages page shows `@luis85/agentic-workflow@X.Y.Z` (only if `publish_package: true`).
+
+4. Smoke-test consumer install path against the published package. Per `package-contract.md` §7:
+
+   ```bash
+   # in a throwaway directory with a token in NODE_AUTH_TOKEN
+   echo "@luis85:registry=https://npm.pkg.github.com" > .npmrc
+   npm install --save-dev @luis85/agentic-workflow@X.Y.Z
+   ```
+
+   Failure here is a release-quality bug, not a publish bug — capture it and decide whether to deprecate or supersede before announcing.
+
+## 6. Rollback
+
+Tag creation, GitHub Release publication, and GitHub Packages publication are **all irreversible** under the rules in [Article IX](../memory/constitution.md) of the constitution. Rollback is therefore *forward-only*: you supersede, you do not undo.
+
+| Symptom | Action | Why this and not "delete" |
+|---|---|---|
+| Release notes are wrong but artifact is correct. | Edit the Release in the GitHub UI ("Edit release"), regenerate body if needed. The tag and assets stay. | Reversible content fix; no new version needed. |
+| Artifact is wrong (bad tarball, wrong fresh-surface) but the package is **not** published. | Edit the Release to `draft` in the UI; re-run workflow with corrected source on the same `vX.Y.Z` (delete the release first if needed) — see §7.2. | Asset reupload via `--clobber` covers most cases; a never-public release can be reset cleanly. |
+| Artifact and package are published, and consumers will hit an issue. | Cut `vX.Y.(Z+1)` with a fix, deprecate the broken version on GitHub Packages (`npm deprecate @luis85/agentic-workflow@X.Y.Z "<reason>"`), and update the broken Release notes to point to the superseding version. **Do not** force-push or rewrite tags. | Force-push to `main` and tag deletion are denied by `.claude/settings.json` and break consumer caches; supersession preserves history. [NFR-V05-005](../specs/version-0-5-plan/requirements.md). |
+| Catastrophic problem (license violation, secret leak). | Yank the package version (`npm unpublish @luis85/agentic-workflow@X.Y.Z` within the registry's allowed window), make the Release a draft, file an incident, and supersede with `vX.Y.(Z+1)`. | Documented escape hatch; do not use for ordinary mistakes. |
+
+In every case, append an entry to `specs/version-X-Y-plan/release-notes.md` and the implementation log naming the rollback action and the superseding version.
+
+## 7. Failed publish recovery
+
+The workflow is built to be **rerunnable** with the same inputs after a partial failure. The recovery rules below describe what each failure class looks like and what to do about it.
+
+### 7.1 `npm publish` failed after `gh release create` succeeded
+
+Symptom: the GitHub Release exists (and possibly the tarball is attached), but `npm view @luis85/agentic-workflow@X.Y.Z` reports `404`. Cause: network blip, registry hiccup, or `EPUBLISHCONFLICT` from a prior partial run.
+
+Recovery — rerun the workflow with the same `version`, `confirm`, and `publish_package: true`:
+
+- Layer 1 + Layer 2 readiness re-run unchanged (they are deterministic).
+- `gh release create --verify-tag` is idempotent against an existing tag.
+- The publish step queries `npm view "@luis85/agentic-workflow@X.Y.Z" version --json` first:
+  - **Already published** → emits `::notice::version X.Y.Z already published — skipping npm publish` and continues to step 11.
+  - **`E404`** → `npm publish` runs.
+  - **Other non-zero (transient registry / auth / DNS)** → fails closed. Do **not** mask with `--force`; investigate the registry signal first.
+- `gh release upload --clobber` replaces any partial asset from the earlier failed run.
+
+This satisfies [NFR-V05-005](../specs/version-0-5-plan/requirements.md) recoverability without force-pushing protected branches.
+
+### 7.2 `gh release create` failed before tag verification
+
+Symptom: workflow stops at "Create GitHub Release" with `tag vX.Y.Z does not exist` (`--verify-tag`).
+
+Recovery: cut the missing tag on `main` (do **not** let `gh release create` auto-create it):
+
+```bash
+git fetch origin
+git checkout main
+git pull --ff-only
+git tag vX.Y.Z
+git push origin vX.Y.Z
+```
+
+Then rerun the workflow.
+
+### 7.3 Layer 1 readiness diagnostic
+
+Symptom: workflow stops at "Readiness — Layer 1" with one or more `RELEASE_READINESS_*` codes (§10).
+
+Recovery: read the JSON diagnostics, fix the underlying source (version mismatch, missing CHANGELOG entry, missing tag, drifted package metadata, widened workflow permissions, missing quality signal), and rerun. Do not rerun until the cause is fixed.
+
+### 7.4 Layer 2 fresh-surface diagnostic
+
+Symptom: workflow stops at "Readiness — Layer 2 (fresh-surface)" with one of `RELEASE_PKG_ADR`, `RELEASE_PKG_INTAKE`, `RELEASE_PKG_DOC_STUB`, `RELEASE_PKG_STUB_TEMPLATE_MISSING`.
+
+Recovery: the candidate archive violates the fresh-surface contract from [ADR-0021](adr/0021-release-package-fresh-surface.md) / [SPEC-V05-010](../specs/version-0-5-plan/spec.md). Either:
+
+- An ADR file leaked into the archive — confirm `package.json#files` and codebase ADR placement; the contract says no numbered ADR files ship.
+- An intake folder under `inputs/`, `specs/`, `discovery/`, `projects/`, `portfolio/`, `roadmaps/`, `quality/`, `scaffolding/`, `stock-taking/`, or `sales/` shipped non-empty — strip per-engagement state from the codebase before cutting, or update the manual stub-form step (OQ-V05-003 in `package-contract.md` is the open automation gap).
+- A `docs/` page is not in stub form — restore the stub shape from `templates/release-package-stub.md`.
+
+### 7.5 Confirm gate refused
+
+Symptom: workflow stops at "Confirm gate" with `confirm input does not match version — refusing to publish (SPEC-V05-002)`.
+
+Recovery: trigger a new run with `confirm` set to the literal `X.Y.Z`. Do not paste a different version into `confirm`; the gate is the explicit-authorisation boundary [Article IX](../memory/constitution.md) of the constitution requires.
+
+### 7.6 Operator waiver path (last resort)
+
+If a Layer 1 quality signal is genuinely not available (e.g. v0.4 maturity evidence cannot be regenerated in time), the human release operator may set `RELEASE_QUALITY_WAIVER` for the workflow run with a free-text justification. The waiver:
+
+- Suppresses only the `RELEASE_READINESS_QUALITY` diagnostic; never `Version`, `TagMissing`, `TagNotAtMain`, `ChangelogMissing`, fresh-surface, or workflow-permissions diagnostics.
+- Must be recorded verbatim in `specs/version-X-Y-plan/release-notes.md` and the implementation log entry for the publish ([REQ-V05-010](../specs/version-0-5-plan/requirements.md) acceptance — *explicit* waiver).
+
+A waiver with no recorded justification is a release defect.
+
+## 8. Post-release cleanup
+
+After a successful stable publish:
+
+1. **Delete the release branch.**
+   ```bash
+   git push origin --delete release/vX.Y.Z
+   git branch -D release/vX.Y.Z   # or in the worktree
+   ```
+   Release branches are not reused per [`docs/branching.md`](branching.md).
+
+2. **Close v0.4 quality `RELEASE_*` waivers** if any were used. Reset the variables to their post-release state (`green` for pass-through, unset waiver).
+
+3. **Record the publish in the implementation log.** Append a `Release published` entry to `specs/version-X-Y-plan/implementation-log.md` naming: tag SHA, GitHub Release URL, package version URL, any rollback or waiver, the operator who triggered the run.
+
+4. **Update the changelog.** If `CHANGELOG.md` still has `[Unreleased]` content for items that shipped in `vX.Y.Z`, fold them into the released heading.
+
+5. **Trigger Stage 11 (Retrospective)** for the release feature folder via `/spec:retro` so the loop closes.
+
+## 9. Quick-reference command bundle
+
+```bash
+# Pre-flight — Layer 1 readiness, locally
+RELEASE_VERSION=X.Y.Z RELEASE_CI_STATUS=green RELEASE_VALIDATION_STATUS=pass \
+  npm run check:release-readiness -- --json
+
+# Pre-flight — Layer 2 fresh-surface, locally
+npm pack --dry-run --json | jq '.[0].files | length'   # spot-check shape
+RELEASE_PACKAGE_ARCHIVE=./release-staging \
+  npm run check:release-package-contents -- --json
+
+# Cut canonical tag on main (after release branch is merged)
+git tag vX.Y.Z && git push origin vX.Y.Z
+
+# Trigger the workflow — UI: Actions → Release → Run workflow
+# Inputs: version=X.Y.Z, dry_run=true|false, confirm=X.Y.Z (publish only),
+#         publish_package=true (only when pushing the GitHub Package)
+```
+
+## 10. Diagnostic codes — quick reference
+
+The release-readiness scripts emit machine-stable codes. Treat them as the contract.
+
+### Layer 1 — `scripts/lib/release-readiness.ts`
+
+| Code | Meaning |
+|---|---|
+| `RELEASE_READINESS_VERSION_MISMATCH` | `package.json#version` ≠ requested `version`. |
+| `RELEASE_READINESS_TAG_MISSING` | `vX.Y.Z` tag does not exist. |
+| `RELEASE_READINESS_TAG_NOT_AT_MAIN` | Tag does not point to a commit on `main`. |
+| `RELEASE_READINESS_CHANGELOG_MISSING` | `CHANGELOG.md` missing or has no `[vX.Y.Z]` heading. |
+| `RELEASE_READINESS_RELEASE_YML_MISSING` | `.github/release.yml` (PR-categorisation config) missing. |
+| `RELEASE_READINESS_RELEASE_YML_SHAPE` | `.github/release.yml` shape is invalid. |
+| `RELEASE_READINESS_PKG_NAME` | `package.json#name` ≠ `@luis85/agentic-workflow`. |
+| `RELEASE_READINESS_PKG_REGISTRY` | `publishConfig.registry` ≠ `https://npm.pkg.github.com`. |
+| `RELEASE_READINESS_PKG_REPOSITORY` | `package.json#repository` ≠ `https://github.com/Luis85/agentic-workflow`. |
+| `RELEASE_READINESS_PKG_FILES` | `package.json#files` is missing required entries. |
+| `RELEASE_READINESS_PACKAGE_JSON_MISSING` | `package.json` not found or unreadable. |
+| `RELEASE_READINESS_WORKFLOW_MISSING` | `.github/workflows/release.yml` not found. |
+| `RELEASE_READINESS_WORKFLOW_PERMISSIONS` | Top-level `permissions:` block ≠ `{ contents: write, packages: write }`. |
+| `RELEASE_READINESS_QUALITY` | A v0.4 quality signal is missing or not green and no waiver is recorded. |
+
+### Layer 2 — `scripts/lib/release-package-contract.ts`
+
+| Code | Meaning |
+|---|---|
+| `RELEASE_PKG_ADR` | A numbered ADR file matched `docs/adr/[0-9][0-9][0-9][0-9]-*.md` in the candidate archive. |
+| `RELEASE_PKG_INTAKE` | An enumerated intake folder shipped with state beyond a top-level `README.md`. |
+| `RELEASE_PKG_DOC_STUB` | A `docs/` page in the candidate archive is not in stub form. |
+| `RELEASE_PKG_STUB_TEMPLATE_MISSING` | `templates/release-package-stub.md` is missing — Layer 2 cannot validate. |
+
+## 11. References
+
+- Workflow file: [`.github/workflows/release.yml`](../.github/workflows/release.yml).
+- Release readiness library: [`scripts/lib/release-readiness.ts`](../scripts/lib/release-readiness.ts) — diagnostic codes are the contract.
+- Fresh-surface library: [`scripts/lib/release-package-contract.ts`](../scripts/lib/release-package-contract.ts).
+- Release branch + tag rules: [ADR-0020](adr/0020-v05-release-branch-strategy.md), [`docs/branching.md`](branching.md).
+- Released package shape: [ADR-0021](adr/0021-release-package-fresh-surface.md), [`docs/release-package-contents.md`](release-package-contents.md).
+- Package contract: [`specs/version-0-5-plan/package-contract.md`](../specs/version-0-5-plan/package-contract.md).
+- Stage 10 companion artifact (optional): [`docs/release-readiness-guide.md`](release-readiness-guide.md).
+- Requirements and spec: [`specs/version-0-5-plan/requirements.md`](../specs/version-0-5-plan/requirements.md), [`specs/version-0-5-plan/spec.md`](../specs/version-0-5-plan/spec.md). REQ-V05-008, REQ-V05-010, REQ-V05-011, NFR-V05-004, NFR-V05-005, SPEC-V05-006, SPEC-V05-008, SPEC-V05-009.
