@@ -4,11 +4,11 @@ folder: "docs/scripts/lib/adr"
 description: "Entry point for generated API reference for the lib/adr script helper module."
 entry_point: true
 ---
-[**agentic-workflow**](../../README.md)
+[**@luis85/agentic-workflow**](../../README.md)
 
 ***
 
-[agentic-workflow](../../modules.md) / lib/adr
+[@luis85/agentic-workflow](../../modules.md) / lib/adr
 
 # lib/adr
 

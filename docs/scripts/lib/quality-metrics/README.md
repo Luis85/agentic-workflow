@@ -4,11 +4,11 @@ folder: "docs/scripts/lib/quality-metrics"
 description: "Entry point for generated API reference for the lib/quality-metrics script helper module."
 entry_point: true
 ---
-[**agentic-workflow**](../../README.md)
+[**@luis85/agentic-workflow**](../../README.md)
 
 ***
 
-[agentic-workflow](../../modules.md) / lib/quality-metrics
+[@luis85/agentic-workflow](../../modules.md) / lib/quality-metrics
 
 # lib/quality-metrics
 

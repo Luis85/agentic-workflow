@@ -4,7 +4,7 @@ folder: "docs/scripts"
 description: "Entry point for generated TypeDoc reference for repository scripts."
 entry_point: true
 ---
-**agentic-workflow**
+**@luis85/agentic-workflow**
 
 ***
 

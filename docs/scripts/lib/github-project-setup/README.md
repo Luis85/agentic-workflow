@@ -4,11 +4,11 @@ folder: "docs/scripts/lib/github-project-setup"
 description: "Entry point for generated API reference for the lib/github-project-setup script helper module."
 entry_point: true
 ---
-[**agentic-workflow**](../../README.md)
+[**@luis85/agentic-workflow**](../../README.md)
 
 ***
 
-[agentic-workflow](../../modules.md) / lib/github-project-setup
+[@luis85/agentic-workflow](../../modules.md) / lib/github-project-setup
 
 # lib/github-project-setup
 

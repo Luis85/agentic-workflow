@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../../README.md)
+[**@luis85/agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../../modules.md) / [lib/self-check](../README.md) / actionableMaturityGaps
+[@luis85/agentic-workflow](../../../modules.md) / [lib/self-check](../README.md) / actionableMaturityGaps
 
 # Function: actionableMaturityGaps()
 

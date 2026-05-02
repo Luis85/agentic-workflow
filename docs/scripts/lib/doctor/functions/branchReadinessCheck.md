@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../../README.md)
+[**@luis85/agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../../modules.md) / [lib/doctor](../README.md) / branchReadinessCheck
+[@luis85/agentic-workflow](../../../modules.md) / [lib/doctor](../README.md) / branchReadinessCheck
 
 # Function: branchReadinessCheck()
 

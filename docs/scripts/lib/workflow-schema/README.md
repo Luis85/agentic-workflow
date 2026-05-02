@@ -4,11 +4,11 @@ folder: "docs/scripts/lib/workflow-schema"
 description: "Entry point for generated API reference for the lib/workflow-schema script helper module."
 entry_point: true
 ---
-[**agentic-workflow**](../../README.md)
+[**@luis85/agentic-workflow**](../../README.md)
 
 ***
 
-[agentic-workflow](../../modules.md) / lib/workflow-schema
+[@luis85/agentic-workflow](../../modules.md) / lib/workflow-schema
 
 # lib/workflow-schema
 

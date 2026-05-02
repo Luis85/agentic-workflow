@@ -4,11 +4,11 @@ folder: "docs/scripts/lib/self-check"
 description: "Entry point for generated API reference for the lib/self-check script helper module."
 entry_point: true
 ---
-[**agentic-workflow**](../../README.md)
+[**@luis85/agentic-workflow**](../../README.md)
 
 ***
 
-[agentic-workflow](../../modules.md) / lib/self-check
+[@luis85/agentic-workflow](../../modules.md) / lib/self-check
 
 # lib/self-check
 

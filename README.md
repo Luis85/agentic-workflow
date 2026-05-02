@@ -270,6 +270,10 @@ cp templates/release-readiness-guide-template.md specs/my-feature/release-readin
 
 Use the Release Readiness Guide when an increment needs product, stakeholder, operational, support, security, privacy, compliance, commercial, or communications evidence before production. It feeds `release-notes.md` and the explicit authorization step; it does not deploy by itself.
 
+### I want to publish a tagged release of this template
+
+From v0.5 onward, Specorator ships as both a **GitHub Release** (source archive plus tarball asset) and a **GitHub Package** (`@luis85/agentic-workflow` on `https://npm.pkg.github.com`). Publishing is a manually authorized action triggered through the [`Release` workflow](.github/workflows/release.yml); a maintainer follows the step-by-step path in [`docs/release-operator-guide.md`](docs/release-operator-guide.md) (dry run → confirm gate → publish → asset upload → cleanup). The released archive is a fresh-surface starter — see [`docs/release-package-contents.md`](docs/release-package-contents.md) and [ADR-0021](docs/adr/0021-release-package-fresh-surface.md).
+
 ### I want to manage a product or project roadmap
 
 ```
@@ -350,6 +354,10 @@ Each arrow is a quality gate. See [`docs/workflow-overview.md`](docs/workflow-ov
 # Decisions:
 /adr:new
 
+# design:
+/design:frame    /design:handoff  /design:mock
+/design:sketch   /design:start
+
 # Discovery Track:
 /discovery:converge   /discovery:diverge    /discovery:frame
 /discovery:handoff    /discovery:prototype  /discovery:start
@@ -425,7 +433,7 @@ Full path-by-path map: [`docs/repo-map.md`](docs/repo-map.md). Quick pointers:
 - **Workflow definition** — [`docs/specorator.md`](docs/specorator.md), [`docs/workflow-overview.md`](docs/workflow-overview.md).
 - **Conventions** — [`AGENTS.md`](AGENTS.md), [`CLAUDE.md`](CLAUDE.md), [`memory/constitution.md`](memory/constitution.md).
 - **Quality** — [`docs/quality-framework.md`](docs/quality-framework.md), [`docs/ears-notation.md`](docs/ears-notation.md), [`docs/traceability.md`](docs/traceability.md).
-- **Release readiness** — [`docs/release-readiness-guide.md`](docs/release-readiness-guide.md).
+- **Release** — [`docs/release-operator-guide.md`](docs/release-operator-guide.md) (operator path), [`docs/release-readiness-guide.md`](docs/release-readiness-guide.md) (Stage 10 companion), [`docs/release-package-contents.md`](docs/release-package-contents.md) (released archive shape).
 - **Sink + ADRs** — [`docs/sink.md`](docs/sink.md), [`docs/adr/`](docs/adr/).
 - **Agent and skill libraries** — [`.claude/agents/`](.claude/agents/), [`.claude/skills/`](.claude/skills/), [`agents/operational/`](agents/operational/).
 - **Worked examples** — [`examples/`](examples/) (top-level files are trimmed excerpts; `examples/<slug>/full/` holds the unabridged historical mirror).
@@ -453,11 +461,12 @@ Full version in [`memory/constitution.md`](memory/constitution.md).
 | v0.1 | Done | Workflow definition, templates, agents, slash commands |
 | v0.2 | Done | Skills layer, operational bots, branching / verify / worktrees guides |
 | v0.3 | Done | [Worked end-to-end examples, artifact validation](specs/version-0-3-plan/release-notes.md) |
-| v0.4 | Planned | [CI quality gates, metrics, maturity model](specs/version-0-4-plan/tasks.md) |
+| v0.4 | Done | [CI quality gates, metrics, maturity model](specs/version-0-4-plan/release-notes.md) |
 | v0.5 | Planned | [Release workflow, branching strategy, GitHub Releases and Packages](specs/version-0-5-plan/tasks.md) |
 | v0.6 | Planned | [Productization, cross-tool adapters, live proof, hooks, and agentic security](specs/version-0-6-plan/tasks.md) |
 | v0.7 | Planned | [Automation quality hardening for agents and humans](https://github.com/Luis85/agentic-workflow/issues/98) |
 | v0.8 | Planned | [Content-driven product page generation](specs/version-0-8-plan/tasks.md) |
+| v0.8.1 | Planned | [Product box feature](docs/superpowers/plans/2026-05-01-product-box.md) ([issue #145](https://github.com/Luis85/agentic-workflow/issues/145)) |
 | v0.9 | Planned | [Stakeholder sparring partner for roadmap communication](specs/version-0-9-plan/tasks.md) ([issue #125](https://github.com/Luis85/agentic-workflow/issues/125)) |
 
 ---

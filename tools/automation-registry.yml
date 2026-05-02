@@ -109,6 +109,16 @@ entries:
     emits_json: false
     used_by: [human, agent, ci]
     rerun_command: npm run typecheck:scripts
+  - id: script:test
+    kind: check
+    command: npm run test
+    path: scripts/test-scripts.ts
+    purpose: Standard npm test idiom alias delegating to test:scripts.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: false
+    used_by: [human, agent, ci]
+    rerun_command: npm run test
   - id: script:test-scripts
     kind: check
     command: npm run test:scripts
@@ -309,6 +319,26 @@ entries:
     emits_json: false
     used_by: [human, agent, ci]
     rerun_command: npm run check:token-budget
+  - id: check:release-package-contents
+    kind: check
+    command: npm run check:release-package-contents
+    path: scripts/check-release-package-contents.ts
+    purpose: Assert a candidate published archive matches the v0.5 fresh-surface contract (ADR-0021 / SPEC-V05-010) — no numbered ADRs, intake folders empty, docs in stub form.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: true
+    used_by: [human, agent, ci]
+    rerun_command: npm run check:release-package-contents -- --archive <dir>
+  - id: check:release-readiness
+    kind: check
+    command: npm run check:release-readiness
+    path: scripts/check-release-readiness.ts
+    purpose: Validate a v0.5 release candidate against SPEC-V05-005 / SPEC-V05-008 / SPEC-V05-010 — Layer 1 release metadata correctness plus Layer 2 fresh-surface composition when --archive is provided.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: true
+    used_by: [human, agent, ci]
+    rerun_command: npm run check:release-readiness -- --version <X.Y.Z> [--archive <dir>]
   - id: docs:scripts
     kind: script
     command: npm run docs:scripts
@@ -414,6 +444,15 @@ entries:
     emits_json: false
     used_by: [ci]
     rerun_command: gh run list --workflow pr-title.yml
+  - id: workflow:release
+    kind: workflow
+    path: .github/workflows/release.yml
+    purpose: Manual GitHub Release workflow — composes Layer 1 readiness, `npm pack`, Layer 2 fresh-surface readiness (ADR-0021 / SPEC-V05-010), `gh release create`, `npm publish` to GitHub Packages, and `gh release upload` for the v0.5 release pipeline (T-V05-006 + T-V05-007).
+    read_only: false
+    safe_to_run_locally: false
+    emits_json: false
+    used_by: [ci]
+    rerun_command: gh workflow run release.yml -f version=<X.Y.Z> -f dry_run=true
   - id: workflow:typos
     kind: workflow
     path: .github/workflows/typos.yml
