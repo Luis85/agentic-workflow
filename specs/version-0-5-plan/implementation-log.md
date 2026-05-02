@@ -137,6 +137,15 @@ A running record of *what* was implemented, *why* a deviation was taken, and *wh
 - **Deviation from spec:** none.
 - **Notes:** Additive only — every page kept its existing voice and brand surface. README "Status" pill and roadmap row left unchanged (out of T-V05-009 scope; v0.5 status flips to Done in PR #162 once T-V05-011 verifies the release). Product-page edits use existing `faq-item` and `step` components — no new visual treatment, no new tokens, no emoji — to stay within `brand-reviewer` rules. The product page now answers an evaluator's "is there a tagged release?" question without over-promising: it names the registry and scope, points at the operator guide, and leaves the install prerequisites in `package-contract.md` §7.
 
+### 2026-05-04 — Review fix — Codex round-6 P3 ×2 on PR #161 (input count + rerun semantics)
+
+- **Files changed:** `docs/release-operator-guide.md` (§2 lead-in word "five" → "six"); `docs/specorator.md` (§3.10 Operator path bullet — "idempotent rerun" replaced with the accurate failure-mode description).
+- **Spec reference:** SPEC-V05-006 (REQ-V05-008) — operator guide accuracy; SPEC-V05-007 (REQ-V05-009) — distribution doc accuracy.
+- **Owner:** orchestrator
+- **Outcome:** done
+- **Deviation from spec:** none.
+- **Notes:** Codex round-6 on commit `490173b` raised two P3 consistency findings, both correct. (1) **Input count off-by-one.** §2 lead-in said "five `workflow_dispatch` inputs" but the table below documents six (`version`, `dry_run`, `prerelease`, `draft`, `confirm`, `publish_package`). The `publish_package` input was added in PR #160 (T-V05-007) after the chunk plan was first written; the operator guide picked up the count from the chunk plan and never refreshed. Fixed to "six". (2) **Rerun-semantics drift between docs.** `docs/specorator.md` §3.10 Operator path bullet (added by T-V05-009 in this PR) summarised failed-publish recovery as "idempotent rerun" — directly contradicted by the operator guide's §7.1 + §7 intro, which round-1 P1 had just established as "manual targeted commands once `gh release create` has succeeded; do not rerun the workflow". A maintainer who read `docs/specorator.md` first would attempt a rerun that predictably fails with HTTP 422 on the existing Release. Replaced "idempotent rerun" in the specorator bullet with "manual targeted commands once `gh release create` has succeeded — the workflow is not rerunnable past that step", which matches the operator guide's actual posture.
+
 ### 2026-05-04 — Review fix — Codex round-5 P2 + P3 on PR #161 (smoke-test auth + Layer-2 quick-check archive)
 
 - **Files changed:** `docs/release-operator-guide.md` (§5 step 4 smoke-test snippet; §9 quick-reference command bundle).

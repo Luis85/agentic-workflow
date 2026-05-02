@@ -29,7 +29,7 @@ If any of these is missing, **stop**. The readiness check will fail closed (pref
 
 ## 2. Workflow inputs
 
-The five `workflow_dispatch` inputs of `release.yml` are the authoritative control surface:
+The six `workflow_dispatch` inputs of `release.yml` are the authoritative control surface:
 
 | Input | Type | Default | Meaning |
 |---|---|---|---|
