@@ -19,4 +19,5 @@ entry_point: true
 ## Functions
 
 - [frontmatterDiagnostic](functions/frontmatterDiagnostic.md)
+- [futureDateDiagnostics](functions/futureDateDiagnostics.md)
 - [requiredKeyDiagnostics](functions/requiredKeyDiagnostics.md)

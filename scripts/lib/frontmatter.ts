@@ -1,6 +1,7 @@
 import type { Diagnostic } from "./diagnostics.js";
 
 export type FrontmatterDiagnosticCode =
+  | "FRONTMATTER_FUTURE_DATE"
   | "FM_README_NAME"
   | "FM_README_DUPLICATE"
   | "FM_MISSING"
@@ -52,4 +53,37 @@ export function requiredKeyDiagnostics(
   return keys
     .filter((key) => data[key] === undefined || data[key] === "")
     .map((key) => frontmatterDiagnostic("FM_KEY", filePath, `missing frontmatter key: ${key}`));
+}
+
+/**
+ * Validate repository-maintained frontmatter date fields against the current UTC day.
+ *
+ * @param {string} filePath - Repository-relative Markdown file path.
+ * @param {string} raw - Raw frontmatter without delimiter lines.
+ * @param {Date} [today=new Date()] - Date used for UTC comparison.
+ * @returns {Diagnostic[]} Future-date diagnostics.
+ */
+export function futureDateDiagnostics(filePath: string, raw: string, today = new Date()): Diagnostic[] {
+  const todayKey = utcDateKey(today);
+  return raw
+    .split("\n")
+    .flatMap((line, index) => {
+      const match = line.match(/^(last_updated|updated):\s*["']?(\d{4}-\d{2}-\d{2})["']?\s*(?:#.*)?$/);
+      if (!match || match[2] <= todayKey) return [];
+
+      return [
+        {
+          ...frontmatterDiagnostic(
+            "FRONTMATTER_FUTURE_DATE",
+            filePath,
+            `${match[1]} must not be later than today's UTC date (${todayKey}): ${match[2]}`,
+          ),
+          line: index + 2,
+        },
+      ];
+    });
+}
+
+function utcDateKey(date: Date): string {
+  return date.toISOString().slice(0, 10);
 }
