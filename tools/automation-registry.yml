@@ -253,7 +253,7 @@ entries:
     kind: check
     command: npm run check:frontmatter
     path: scripts/check-frontmatter.ts
-    purpose: Validate required frontmatter conventions.
+    purpose: Validate required frontmatter conventions and reject future-dated update fields.
     read_only: true
     safe_to_run_locally: true
     emits_json: true

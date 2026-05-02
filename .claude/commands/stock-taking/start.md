@@ -2,7 +2,7 @@
 description: Stock-taking Track — Bootstrap. Scaffold a new project folder under stock-taking/<slug>/ with stock-taking-state.md initialised.
 argument-hint: <project-slug>
 allowed-tools: [Read, Edit, Write, Bash]
-model: sonnet
+model: haiku
 ---
 
 # /stock:start

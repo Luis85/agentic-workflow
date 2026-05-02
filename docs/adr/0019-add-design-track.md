@@ -1,7 +1,7 @@
 ---
 id: ADR-0019
 title: Add a Design Track as an opt-in first-party workflow
-status: proposed
+status: accepted
 date: 2026-05-01
 deciders:
   - human
@@ -20,7 +20,7 @@ tags: [design-system, brand, track, workflow, design]
 
 ## Status
 
-Proposed
+Accepted
 
 ## Context
 
