@@ -31,7 +31,7 @@
 - Manual release steps must be recorded in release notes or readiness docs.
 - Release-package contents must preserve fresh-surface starter semantics for downstream adopters.
 - Generated release notes use `.github/release.yml`; update categories with Conventional Commit policy changes.
-- **Repo Setting → "Immutable releases" must be DISABLED before every release dispatch.** When on, GitHub auto-flags every new Release immutable; a failed asset upload — or operator deletion — permanently burns the tag. Verify with `gh api repos/{owner}/{repo}/immutable-releases` before every dispatch — `{"enabled": false, "enforced_by_owner": false}` is the safe state. The v0.5.0 incident burned `v0.5.0` and forced the v0.5.1 recovery release ([#233](https://github.com/Luis85/agentic-workflow/issues/233)). The release operator guide §1 lists this as pre-condition 5 and §7.7 documents the recovery path.
+- **Repo Setting → "Immutable releases" must be DISABLED before every release dispatch.** When on, GitHub auto-flags every new Release immutable; a failed asset upload — or operator deletion — permanently burns the tag. Verify with `gh api repos/{owner}/{repo}/immutable-releases` before every dispatch — the safe state is either HTTP 404 (setting never enabled on this repo) or HTTP 200 with `{"enabled": false, "enforced_by_owner": false}`; HTTP 200 with `"enabled": true` or `"enforced_by_owner": true` is hot. The v0.5.0 incident burned `v0.5.0` and forced the v0.5.1 recovery release ([#233](https://github.com/Luis85/agentic-workflow/issues/233)). The release operator guide §1 lists this as pre-condition 5 and §7.7 documents the recovery path.
 
 ## Rollback
 
