@@ -160,7 +160,7 @@ The conductor parses these template-guaranteed anchors:
 |---|---|
 | Slice ordinal `<NN>` | `## Parallelisable batches` body, line prefix `- **Batch N:**`, zero-padded to 2 digits. |
 | Tasks in slice | Same line; comma-separated `T-<AREA>-NNN` tokens. |
-| Per-task heading | `### T-<AREA>-NNN <emoji> — <short title>` — regex `^### (T-[A-Z0-9]+-\d{3}) ([🧪🔨📐📚🚀🪓]+) — (.+)$`. Goal = `<short title>`. |
+| Per-task heading | `### T-<AREA>-NNN <emoji> — <short title>` — regex `^### (T-[A-Z0-9]+-\d{3}) ([🧪🔨📐📚🚀🪓]) — (.+)$`. Goal = `<short title>`. |
 | Per-task description | Bullet `- **Description:**` under the heading. |
 | Per-task DoD | Bullet `- **Definition of done:**` followed by checklist items. |
 | Per-task `Depends on` | Bullet `- **Depends on:**` (used to cross-check that the batch is actually independent — surface a warning if not). |
@@ -170,7 +170,7 @@ The conductor parses these template-guaranteed anchors:
 
 There is **no** "Acceptance criteria" or "Test approach" section in the template — these are the planner's discretion inside `**Description:**` or `**Definition of done:**`. The conductor does not require them as anchors.
 
-There is **no** whole-spec "Definition of done" section either — the analogous gate is `## Quality gate` (line 87 of the template), which the conductor copies into the PR body's "Definition of done" block as the final gate.
+There is **no** whole-spec "Definition of done" section either — the analogous gate is the `## Quality gate` heading at the bottom of the template, which the conductor copies into the PR body's "Definition of done" block as the final gate.
 
 **Refuse-on-missing-anchor.** The conductor hard-stops if any of these are absent or malformed:
 
@@ -198,7 +198,7 @@ Tool scoping rationale (per Article VI):
 - **Read / Grep / Glob** — read `specs/<slug>/`, `tasks.md`, templates.
 - **Edit / Write** —
   - Write `specs/<slug>/issue-breakdown-log.md` (new artifact, owned by this agent — see "Sink update" below).
-  - Append one dated line to the `## Hand-off notes` free-form section of `specs/<slug>/workflow-state.md`. The frontmatter schema is **not** modified. This append is sanctioned by `docs/sink.md` line 423 ("the active feature's `workflow-state.md` gets a dated one-line entry appended … so the workflow has a paper trail") and is not exclusive to the orchestrator.
+  - Append one dated line to the `## Hand-off notes` free-form section of `specs/<slug>/workflow-state.md`. The frontmatter schema is **not** modified. This append is sanctioned by the `### Append-only` paragraph in `docs/sink.md` ("the active feature's `workflow-state.md` gets a dated one-line entry appended … so the workflow has a paper trail") and is not exclusive to the orchestrator.
   - Stage transient PR/issue body files under `<repo-root>/.issue-breakdown-staging/` (gitignored; never committed). Files are deleted at end of run. The PR body is fed to `gh` via `--body-file`.
 - **Bash** — `git`, `gh`. Pushes to `main` / `develop` already denied by `.claude/settings.json`. Branch pushes to `feat/*` allowed.
 - **No Agent tool** — no further dispatch. `tasks.md` is parsed in-process; no sub-agent is spawned.
@@ -397,7 +397,7 @@ Two updates to `docs/sink.md` (the real sink schema is `| Path | Owner | Mutabil
    | `specs/<slug>/issue-breakdown-log.md` | `issue-breakdown` agent | Append-only — dated entries, never rewritten |
    ```
 
-2. **Append-only paragraph extension** — add `specs/<slug>/issue-breakdown-log.md` to the existing list at lines 268–270 of `docs/sink.md`, alongside `implementation-log.md` and the `## Hand-off notes` section. New text:
+2. **Append-only paragraph extension** — add `specs/<slug>/issue-breakdown-log.md` to the existing list under the `### Append-only` heading of `docs/sink.md`, alongside `implementation-log.md` and the `## Hand-off notes` section. New text:
 
    > `docs/CONTEXT.md`, `docs/glossary/*.md` …, `specs/<slug>/implementation-log.md`, **`specs/<slug>/issue-breakdown-log.md`**, and the `## Hand-off notes` free-form section of `workflow-state.md` are append-only in spirit. …
 
@@ -426,7 +426,7 @@ The sentinel-bracketed re-edit zone is the conductor's idempotency primitive. It
 | User has 2+ candidate `specs/<slug>/` matches | `AskUserQuestion` to disambiguate. |
 | `tasks.md` parse yields 0 slices | Surface to user; abort. |
 | `tasks.md` parse yields 1 slice | Confirm — single PR may be more friction than `gh pr create --draft` by hand. Offer to abort. |
-| `tasks.md` parse missing required anchor (heading, ID, AC, DoD) | Hard-stop. Surface offending heading. Direct user to fix `tasks.md` or re-run `tracer-bullet`. |
+| `tasks.md` parse missing required anchor (`## Parallelisable batches`, `### T-<AREA>-NNN` heading, `**Description:**`, `**Definition of done:**`) | Hard-stop. Surface offending heading. Direct user to fix `tasks.md` or re-run `tracer-bullet`. |
 | Issue body has no `specs/` link AND no `spec:` label | `AskUserQuestion` lists all `tasks.md`-complete features. |
 | User aborts confirmation | No git or gh side-effects. |
 | Sentinel block in issue body deleted between runs | Refuse and surface (see Idempotency section). Offer `--force-rebuild`. |
