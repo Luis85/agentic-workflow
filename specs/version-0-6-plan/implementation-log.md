@@ -21,7 +21,7 @@ A running record of what was implemented, why a deviation was taken, and what wa
 ### 2026-05-02 - T-V06-001 - Decide steering profile location
 
 - **Files changed:** `docs/specorator-product/README.md` (new); `docs/steering/README.md`; `AGENTS.md`; `CLAUDE.md`; `specs/version-0-6-plan/workflow-state.md`
-- **Commit:** *(staged in PR #175; commit SHA recorded after `npm run verify`)*
+- **Commit:** PR #175 - bda2ec6.
 - **Spec reference:** SPEC-V06-001 (REQ-V06-001, NFR-V06-001)
 - **Owner:** architect
 - **Outcome:** done
@@ -31,7 +31,7 @@ A running record of what was implemented, why a deviation was taken, and what wa
 ### 2026-05-02 - T-V06-002 - Fill Specorator product steering
 
 - **Files changed:** `docs/specorator-product/product.md` (new); `docs/specorator-product/ux.md` (new); `docs/specorator-product/tech.md` (new); `docs/specorator-product/quality.md` (new); `docs/specorator-product/operations.md` (new); `docs/steering/README.md`; `AGENTS.md`; `CLAUDE.md`
-- **Commit:** *(staged in PR #175; commit SHA recorded after `npm run verify`)*
+- **Commit:** PR #175 - bda2ec6.
 - **Spec reference:** SPEC-V06-001 (REQ-V06-001, NFR-V06-001)
 - **Owner:** pm
 - **Outcome:** done
