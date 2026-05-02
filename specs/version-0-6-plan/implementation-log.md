@@ -40,13 +40,13 @@ A running record of what was implemented, why a deviation was taken, and what wa
 
 ### 2026-05-02 - #195 - Record v0.6 scope-cut verdicts
 
-- **Files changed:** `specs/version-0-6-plan/workflow-state.md`; `specs/version-0-6-plan/implementation-log.md`
+- **Files changed:** `specs/version-0-6-plan/workflow-state.md`; `specs/version-0-6-plan/tasks.md`; `specs/version-0-6-plan/implementation-log.md`
 - **Commit:** this PR.
 - **Spec reference:** T-V06-003 through T-V06-014 scope governance
 - **Owner:** codex
 - **Outcome:** done
 - **Deviation from spec:** PR-D hook packs (T-V06-008/T-V06-009) slips to v0.7.
-- **Notes:** To protect the v1.0 timeline, v0.6 keeps PR-B golden-path proof, PR-C thin adapter set, PR-E QA/reviewer security path, PR-F adoption profiles, and PR-G ISO watch item. PR-D remains valuable but is optional automation hardening and should not block v0.6, PR-H positioning, PR-I release readiness, or v1.0 readiness.
+- **Notes:** To protect the v1.0 timeline, v0.6 keeps PR-B golden-path proof, PR-C thin adapter set, PR-E QA/reviewer security path, PR-F adoption profiles, and PR-G ISO watch item. PR-D remains valuable but is optional automation hardening and should not block v0.6, PR-H positioning, PR-I release readiness, or v1.0 readiness. T-V06-012 no longer depends on T-V06-009; hook-pack positioning waits for v0.7.
 
 ## Deviations summary
 
