@@ -206,10 +206,10 @@ The conductor parses `tasks.md` directly using its template-guaranteed anchors (
 - [ ] **Step 4: Verify ADR index picks it up**
 
 ```bash
-npm run check:adr -- --quiet || npx tsx scripts/check-adr-index.ts
+npm run check:adr-index
 ```
 
-Expected: passes (the index regenerator picks up `0022`).
+Expected: passes (the index regenerator picks up `0022`). If it auto-updates `docs/adr/README.md`, stage that too in step 5.
 
 - [ ] **Step 5: Commit**
 
@@ -311,13 +311,13 @@ Not for:
 - Branching: [`docs/branching.md`](branching.md).
 ```
 
-- [ ] **Step 3: Verify links**
+- [ ] **Step 3: Verify links repo-wide**
 
 ```bash
-npx tsx scripts/check-markdown-links.ts -- docs/issue-breakdown-track.md
+npm run check:links
 ```
 
-Expected: all relative links resolve.
+Expected: green. The link checker walks the whole repo; it does not accept a single-file argument.
 
 - [ ] **Step 4: Commit**
 
@@ -385,13 +385,13 @@ Refs #<issue-number>
 <!-- The conductor appends the verbatim contents of .github/PULL_REQUEST_TEMPLATE.md here at runtime. -->
 ```
 
-- [ ] **Step 2: Verify frontmatter**
+- [ ] **Step 2: Verify frontmatter repo-wide**
 
 ```bash
-npx tsx scripts/check-frontmatter.ts -- templates/issue-breakdown-pr-body-template.md
+npm run check:frontmatter
 ```
 
-Expected: passes.
+Expected: green. (Walks the whole repo — does not accept a single-file argument.)
 
 - [ ] **Step 3: Commit**
 
@@ -428,13 +428,13 @@ Spec: `specs/<slug>/`. Re-run with `/issue:breakdown <n>` to refresh.
 <!-- END issue-breakdown:<slug> -->
 ```
 
-- [ ] **Step 2: Verify frontmatter**
+- [ ] **Step 2: Verify frontmatter repo-wide**
 
 ```bash
-npx tsx scripts/check-frontmatter.ts -- templates/issue-breakdown-issue-section.md
+npm run check:frontmatter
 ```
 
-Expected: passes.
+Expected: green.
 
 - [ ] **Step 3: Commit**
 
@@ -612,20 +612,13 @@ You **escalate to the conductor**, not to the user. The conductor surfaces choic
 - [ ] **Step 3: Verify agent registration**
 
 ```bash
-npx tsx scripts/check-agents.ts
+npm run check:agents
+npm run check:frontmatter
 ```
 
-Expected: passes (the new agent is registered automatically by name).
+Expected: both green. `check:agents` validates frontmatter shape (`name`, `description`, non-empty `tools` list, `## Scope` heading). `check:frontmatter` walks the whole repo.
 
-- [ ] **Step 4: Verify frontmatter**
-
-```bash
-npx tsx scripts/check-frontmatter.ts -- .claude/agents/issue-breakdown.md
-```
-
-Expected: passes.
-
-- [ ] **Step 5: Commit**
+- [ ] **Step 4: Commit**
 
 ```bash
 git add .claude/agents/issue-breakdown.md
@@ -687,10 +680,10 @@ See [`docs/issue-breakdown-track.md`](../../../docs/issue-breakdown-track.md) fo
 - [ ] **Step 4: Verify command registration**
 
 ```bash
-npx tsx scripts/check-command-docs.ts
+npm run check:commands
 ```
 
-Expected: passes.
+Expected: **fails** on this run, because `.claude/commands/README.md`, `README.md`, and `docs/workflow-overview.md` each contain auto-generated inventory blocks that need refreshing — Chunk 6 handles those. For now confirm the failure mode is *only* "generated block out of date", not a frontmatter or path issue. If the script complains about anything other than the BEGIN/END GENERATED blocks, fix that here before moving on.
 
 - [ ] **Step 5: Commit**
 
@@ -871,11 +864,12 @@ Do not bleed `/issue:breakdown` concerns back into `/spec:tasks` or vice versa.
 - [ ] **Step 3: Verify skill registration**
 
 ```bash
-npx tsx scripts/check-frontmatter.ts -- .claude/skills/issue-breakdown/SKILL.md
-npx tsx scripts/check-markdown-links.ts -- .claude/skills/issue-breakdown/SKILL.md
+npm run check:agents
+npm run check:frontmatter
+npm run check:links
 ```
 
-Expected: both pass.
+Expected: all green. `check:agents` also validates skill files (it discovers any `SKILL.md` under `.claude/skills/`). `check:links` walks the whole repo.
 
 - [ ] **Step 4: Commit**
 
@@ -884,69 +878,98 @@ git add .claude/skills/issue-breakdown/SKILL.md
 git commit -m "feat(issue-breakdown): add conductor skill"
 ```
 
+> **Note on `inputs/` intake gate.** The shared conductor pattern (`_shared/conductor-pattern.md`) and `CLAUDE.md` both say "every conductor's scope phase lists `inputs/`". This conductor intentionally *skips* the mandatory intake step because the input is the GitHub issue + an already-completed `tasks.md`, not a new work package. The methodology doc at `docs/issue-breakdown-track.md` documents this deviation. Call it out in the PR description so reviewers reading the conductor pattern don't flag a missing intake step.
+
 ---
 
 ## Chunk 6: Cross-references — wire the new track into existing indexes
 
 The check-scripts already pick up the new files automatically; this chunk only updates human-facing inventory pages so the track is discoverable.
 
-### Task 6.1: Update `.claude/commands/README.md`
+### Task 6.1: Register `issue/` namespace + regenerate command-inventory blocks
 
-**Files:** Modify `.claude/commands/README.md`.
+**Files:** Modify `scripts/lib/commands.ts`, `.claude/commands/README.md`, `README.md`, `docs/workflow-overview.md`.
 
-- [ ] **Step 1: Find the right insertion point**
+The slash-command inventory in three files is **auto-generated** between `<!-- BEGIN GENERATED: ... -->` / `<!-- END GENERATED: ... -->` markers. `npm run check:commands` regenerates the expected content and refuses if the file is out of sync. Touching the README tables by hand will fail verify.
 
-```bash
-grep -n "^|.*issue.*\|^| `/" .claude/commands/README.md | head
-grep -n "## " .claude/commands/README.md
+- [ ] **Step 1: Add the new namespace label**
+
+Open `scripts/lib/commands.ts`. Add an entry to the `labels` map (alphabetical insertion):
+
+```ts
+const labels = new Map([
+  ["adr", "Decisions"],
+  ["discovery", "Discovery Track"],
+  ["issue", "Issue Breakdown Track"],   // NEW
+  ["portfolio", "Portfolio Track"],
+  ...
+]);
 ```
 
-Expected: a "Slash commands" or namespaced table that lists `/spec:*`, `/discovery:*`, `/sales:*`, etc. Add `issue/` alongside.
-
-- [ ] **Step 2: Add row(s)**
-
-In the namespaces table, add a new row for the `issue/` namespace and a new row in the per-command table for `/issue:breakdown`. Match the surrounding table shape exactly.
-
-- [ ] **Step 3: Verify**
+- [ ] **Step 2: Regenerate the inventory blocks**
 
 ```bash
-npx tsx scripts/check-command-docs.ts
+npm run check:commands
 ```
 
-Expected: passes.
+Expected: **fails the first time**, but the failure output prints the exact regenerated block expected for each of the three files. Read the failure carefully.
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 3: Apply the regenerated blocks**
+
+Most repos ship a `fix-command-docs.ts` companion script that auto-writes the regenerated content. Run it if present:
 
 ```bash
-git add .claude/commands/README.md
-git commit -m "docs(commands): register issue/ namespace + /issue:breakdown"
+ls scripts/fix-command-docs.ts && npx tsx scripts/fix-command-docs.ts
+```
+
+If the fix script doesn't exist, paste the expected blocks from the failure output into:
+
+- `.claude/commands/README.md` (between `<!-- BEGIN GENERATED: command-inventory -->` and `<!-- END GENERATED: command-inventory -->`).
+- `README.md` (between `<!-- BEGIN GENERATED: slash-commands -->` and `<!-- END GENERATED: slash-commands -->`, around line 345).
+- `docs/workflow-overview.md` (between `<!-- BEGIN GENERATED: slash-commands -->` and `<!-- END GENERATED: slash-commands -->`, around line 110).
+
+- [ ] **Step 4: Verify**
+
+```bash
+npm run check:commands
+```
+
+Expected: green.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add scripts/lib/commands.ts .claude/commands/README.md README.md docs/workflow-overview.md
+git commit -m "docs(commands): register issue/ namespace and regenerate inventories"
 ```
 
 ### Task 6.2: Update `.claude/skills/README.md`
 
 **Files:** Modify `.claude/skills/README.md`.
 
-- [ ] **Step 1: Find the conductor-skills section**
+- [ ] **Step 1: Inspect the existing Workflow-conductors table**
 
 ```bash
-grep -n "orchestrate\|discovery-sprint\|sales-cycle" .claude/skills/README.md
+sed -n '40,60p' .claude/skills/README.md
 ```
 
-Expected: a list of conductor skills. Add `issue-breakdown` in alphabetical order or in the same logical grouping as `orchestrate`.
+Expected: a 3-column markdown table headed `| Skill | Triggers when… | What it does |` listing each conductor (`orchestrate/`, `discovery-sprint/`, `sales-cycle/`, etc.). Add a new row matching the existing column shape — **not** a bullet.
 
-- [ ] **Step 2: Add row**
+- [ ] **Step 2: Add the table row**
+
+Insert in alphabetical order:
 
 ```markdown
-- [`issue-breakdown`](issue-breakdown/SKILL.md) — post-/spec:tasks conductor that decomposes an issue into independent draft PRs.
+| [`issue-breakdown/`](issue-breakdown/SKILL.md) | post-/spec:tasks; "break this issue down", "decompose issue", `/issue:breakdown <n>` | Decompose a GitHub issue into independent draft PRs by parsing tasks.md `## Parallelisable batches`. |
 ```
 
-- [ ] **Step 3: Verify links**
+- [ ] **Step 3: Verify links repo-wide**
 
 ```bash
-npx tsx scripts/check-markdown-links.ts -- .claude/skills/README.md
+npm run check:links
 ```
 
-Expected: passes.
+Expected: green.
 
 - [ ] **Step 4: Commit**
 
@@ -977,15 +1000,17 @@ Add a new row after the "Quality assurance" row (or in the closest logical posit
 
 - [ ] **Step 3: Update conductor-skill summary line**
 
-Find the existing line listing all workflow-conductor skills (something like *"Ten workflow-conductor skills (`orchestrate`, `project-scaffolding`, …) are the conversational entry points."*) and bump the count + add `issue-breakdown` to the parenthesised list.
+Find the existing sentence: *"Ten workflow-conductor skills (`orchestrate`, `project-scaffolding`, `discovery-sprint`, `stock-taking`, `sales-cycle`, `project-run`, `roadmap-management`, `portfolio-track`, `quality-assurance`, `specorator-improvement`) are the conversational entry points."*
 
-- [ ] **Step 4: Verify**
+Change `Ten` to `Eleven` and append `, issue-breakdown` to the parenthesised list (after `specorator-improvement`).
+
+- [ ] **Step 4: Verify links repo-wide**
 
 ```bash
-npx tsx scripts/check-markdown-links.ts -- AGENTS.md
+npm run check:links
 ```
 
-Expected: passes.
+Expected: green.
 
 - [ ] **Step 5: Commit**
 
@@ -1014,13 +1039,13 @@ Expected: one match, with a table of opt-in tracks (Discovery, Stock-taking, Sal
 
 Place it after the "Portfolio" row to preserve the existing pre-/post-Specorator ordering.
 
-- [ ] **Step 3: Verify**
+- [ ] **Step 3: Verify links repo-wide**
 
 ```bash
-npx tsx scripts/check-markdown-links.ts -- CLAUDE.md
+npm run check:links
 ```
 
-Expected: passes.
+Expected: green.
 
 - [ ] **Step 4: Commit**
 
@@ -1063,13 +1088,13 @@ Edit the inline list to include `specs/<slug>/issue-breakdown-log.md` between `i
 
 > `docs/CONTEXT.md`, `docs/glossary/*.md` …, `specs/<slug>/implementation-log.md`, `specs/<slug>/issue-breakdown-log.md`, and the `## Hand-off notes` free-form section of `workflow-state.md` are append-only in spirit. …
 
-- [ ] **Step 5: Verify**
+- [ ] **Step 5: Verify links repo-wide**
 
 ```bash
-npx tsx scripts/check-markdown-links.ts -- docs/sink.md
+npm run check:links
 ```
 
-Expected: passes.
+Expected: green.
 
 - [ ] **Step 6: Commit**
 
@@ -1099,11 +1124,11 @@ Expected: green. Common failure modes and fixes:
 | Failure | Fix |
 |---|---|
 | `check:frontmatter` flags a new file | Add the missing frontmatter fields (compare against a sibling file). |
-| `check:command-docs` says `/issue:breakdown` is undocumented | Step 2 of Task 6.1 missed the per-command table. |
-| `check:agents` says `issue-breakdown` is unregistered | Step 2 of Task 6.3 missed the agent classes table. |
-| `check:markdown-links` reports a broken link | The slash-command file's relative path back to the skill is wrong (count `../` carefully — it's `../../skills/...`). |
-| `check:adr` says ADR-0022 isn't indexed | Re-run `npx tsx scripts/check-adr-index.ts` and stage `docs/adr/README.md` in the next commit. |
-| `check:obsidian` flags missing folder frontmatter | Each new doc folder requires a folder-level `README.md` with frontmatter; if a new folder was created, add one. |
+| `check:commands` says inventory blocks are stale | Re-run Task 6.1 — the three generated blocks must be regenerated together. |
+| `check:agents` says `issue-breakdown` is unregistered | Inspect the agent file's frontmatter (`name`, `description`, `tools` non-empty, `## Scope` heading present). |
+| `check:links` reports a broken link | The slash-command file's relative path back to the skill is wrong (count `../` carefully — from `.claude/commands/issue/breakdown.md` to the skill is `../../skills/issue-breakdown/SKILL.md`). |
+| `check:adr-index` says ADR-0022 isn't indexed | Re-run `npm run check:adr-index`; if it auto-updates `docs/adr/README.md`, stage that file in the fix-up commit. |
+| `check:frontmatter` flags missing folder-level frontmatter | If a new doc folder was created (e.g. `docs/superpowers/plans/` if absent), add a `README.md` with `title`, `folder`, `description`, `entry_point` frontmatter. (This plan creates no new folders, so this should not fire.) |
 
 If any check fails, fix the root cause; never `--no-verify`.
 
@@ -1125,10 +1150,10 @@ git commit -m "fix(issue-breakdown): satisfy verify gate"
 
 ```bash
 ls .claude/commands/issue/breakdown.md
-grep -l "issue-breakdown" .claude/commands/README.md .claude/skills/README.md AGENTS.md CLAUDE.md
+grep -l "issue-breakdown" .claude/commands/README.md .claude/skills/README.md AGENTS.md CLAUDE.md README.md docs/workflow-overview.md docs/sink.md
 ```
 
-Expected: the file exists; all four index files mention `issue-breakdown` at least once.
+Expected: the file exists; all seven index files mention `issue-breakdown` at least once.
 
 - [ ] **Step 2: Confirm the conductor skill resolves the slash command**
 
@@ -1180,6 +1205,11 @@ Phase 1 of the issue-breakdown track:
 - Cross-references in `AGENTS.md`, `CLAUDE.md`, `.claude/skills/README.md`, `.claude/commands/README.md`, `docs/sink.md`.
 
 Phase 2 (operational bot under `agents/operational/issue-breakdown-bot/`) is deferred to a follow-up PR.
+
+## Notes for reviewers
+
+- `/issue:breakdown` intentionally skips the canonical `inputs/` intake gate that the shared conductor pattern (`_shared/conductor-pattern.md`) requires of new conductors. Rationale: the input is the GitHub issue + an already-completed `tasks.md`, not a fresh work package. Documented in `docs/issue-breakdown-track.md`.
+- ADR-0022 explains the trade-offs that led to a post-/spec:tasks track instead of extending `/spec:tasks` itself.
 
 ## Spec / design
 
