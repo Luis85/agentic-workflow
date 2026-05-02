@@ -99,15 +99,14 @@ test("collectQualityMetrics counts skipped canonical artifacts as expected-compl
 });
 
 test("collectQualityMetrics surfaces open clarifications in workflow counts and signals", () => {
-  const fixtureDir = path.join("specs", "__quality-metrics-open-clarification-fixture");
-  fs.rmSync(fixtureDir, { recursive: true, force: true });
-  fs.mkdirSync(fixtureDir, { recursive: true });
+  const fixtureDir = fs.mkdtempSync(path.join("specs", "__quality-metrics-open-clarification-fixture-"));
+  const feature = path.basename(fixtureDir);
 
   try {
     fs.writeFileSync(
       path.join(fixtureDir, "workflow-state.md"),
       `---
-feature: __quality-metrics-open-clarification-fixture
+feature: ${feature}
 area: QMO
 current_stage: idea
 status: active
@@ -155,13 +154,11 @@ artifacts:
 `,
     );
 
-    const metrics = collectQualityMetrics({ feature: "__quality-metrics-open-clarification-fixture" });
+    const metrics = collectQualityMetrics({ feature });
     const workflow = metrics.workflows[0];
     assert.equal(workflow.openClarifications, 1);
     assert.equal(
-      metrics.signals.openClarifications.some((signal) =>
-        signal.includes("__quality-metrics-open-clarification-fixture"),
-      ),
+      metrics.signals.openClarifications.some((signal) => signal.includes(feature)),
       true,
     );
   } finally {
