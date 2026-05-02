@@ -30,6 +30,7 @@ State lives in `specs/<feature-slug>/workflow-state.md`. Each `/spec:*` command 
 | **Sales** | service provider, pre-contract (RFP / SOW) | [`sales-cycle`](.claude/skills/sales-cycle/SKILL.md) | `/sales:start` | [`docs/sales-cycle.md`](docs/sales-cycle.md) ([ADR-0006](docs/adr/0006-add-sales-cycle-track-before-discovery.md)) |
 | **Project Manager** | client engagement governance (P3.Express) | [`project-run`](.claude/skills/project-run/SKILL.md) | `/project:start` | [`docs/project-track.md`](docs/project-track.md) ([ADR-0008](docs/adr/0008-add-project-manager-track.md)) |
 | **Portfolio** | multi-feature / multi-program (P5 Express) | [`portfolio-track`](.claude/skills/portfolio-track/SKILL.md) | `/portfolio:start` | [`docs/portfolio-track.md`](docs/portfolio-track.md) ([ADR-0009](docs/adr/0009-add-portfolio-manager-role.md)) |
+| **Issue-breakdown** | post-/spec:tasks, decompose issue into draft PRs | [`issue-breakdown`](.claude/skills/issue-breakdown/SKILL.md) | `/issue:breakdown <n>` | [`docs/issue-breakdown-track.md`](docs/issue-breakdown-track.md) ([ADR-0022](docs/adr/0022-add-issue-breakdown-track.md)) |
 
 Each track produces a handoff artifact that feeds the next: `chosen-brief.md`, `stock-taking-inventory.md`, `order.md`. See the per-track methodology doc for details.
 
