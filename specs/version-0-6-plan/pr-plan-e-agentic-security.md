@@ -74,13 +74,14 @@ Add an OWASP-aligned review path for risks unique to autonomous tool-using agent
 - [ ] Finding-record template landed
 - [ ] Public-facing language states limits + avoids certification claims
 - [ ] Path wired as opt-in (no default-path change)
+- [ ] Append entry to `specs/version-0-6-plan/implementation-log.md` per Stage 7 (file is pending — first task to land creates it)
 - [ ] `npm run verify` green
 - [ ] PR title matches `feat(v06): ...`
 
 ## Workflow refs
 
 - [`AGENTS.md`](../../AGENTS.md)
-- [`docs/specorator.md`](../../docs/specorator.md)
+- [`docs/specorator.md`](../../docs/specorator.md) — full lifecycle (Stage 7 = Implementation, current stage)
 - [`docs/quality-framework.md`](../../docs/quality-framework.md)
 - [`docs/quality-assurance-track.md`](../../docs/quality-assurance-track.md)
 - [`docs/security-ci.md`](../../docs/security-ci.md)
@@ -88,5 +89,7 @@ Add an OWASP-aligned review path for risks unique to autonomous tool-using agent
 
 ## Coordination
 
-- No file overlap with other Wave 1 PRs.
+- **`AGENTS.md` + `CLAUDE.md` collision** — also touched by PR-A (#175 *Read these first*) and PR-C (#177 *Tool-specific notes*). Per [`feedback_parallel_pr_conflicts.md`](../../.claude/memory/feedback_parallel_pr_conflicts.md): merge not rebase. Land PR-A first if practical.
+- **`tools/automation-registry.yml` collision** — also touched by PR-B (#176), PR-C (#177), PR-D (#178).
+- **`docs/quality-framework.md` + `docs/quality-assurance-track.md` collision** — also touched by PR-G (#181 ISO 9001 watch). Coordinate watch-item placement vs new section additions.
 - T-V06-012 (positioning) cites this path after merge — coordinate language.
