@@ -121,7 +121,7 @@ Tag creation, GitHub Release publication, and GitHub Packages publication are **
 | Symptom | Action | Why this and not "delete" |
 |---|---|---|
 | Release notes are wrong but artifact is correct. | Edit the Release in the GitHub UI ("Edit release"), regenerate body if needed. The tag and assets stay. | Reversible content fix; no new version needed. |
-| Artifact is wrong (bad tarball, wrong fresh-surface) but the package is **not** published. | Edit the Release to `draft` in the UI; re-run workflow with corrected source on the same `vX.Y.Z` (delete the release first if needed) — see §7.2. | Asset reupload via `--clobber` covers most cases; a never-public release can be reset cleanly. |
+| Artifact is wrong (bad tarball, wrong fresh-surface) but the package is **not** published. | Edit the Release to `draft` in the UI to remove it from the public list, then supersede via `vX.Y.(Z+1)` with the corrected source. Update the broken Release's notes to point at the superseding tag. **Do not** delete or move the `vX.Y.Z` tag and **do not** rerun the workflow on the same `vX.Y.Z`. | The workflow's `RELEASE_READINESS_TAG_NOT_AT_MAIN` and `gh release create` (HTTP 422 on existing Release) both refuse a same-tag rerun once a fix lands on `main`; tag move / deletion are denied by `.claude/settings.json`. Same-version supersession is the only forward-only path the gates permit. [NFR-V05-005](../specs/version-0-5-plan/requirements.md). |
 | Artifact and package are published, and consumers will hit an issue. | Cut `vX.Y.(Z+1)` with a fix, deprecate the broken version on GitHub Packages (`npm deprecate @luis85/agentic-workflow@X.Y.Z "<reason>"`), and update the broken Release notes to point to the superseding version. **Do not** force-push or rewrite tags. | Force-push to `main` and tag deletion are denied by `.claude/settings.json` and break consumer caches; supersession preserves history. [NFR-V05-005](../specs/version-0-5-plan/requirements.md). |
 | Catastrophic problem (license violation, secret leak). | Yank the package version (`npm unpublish @luis85/agentic-workflow@X.Y.Z` within the registry's allowed window), make the Release a draft, file an incident, and supersede with `vX.Y.(Z+1)`. | Documented escape hatch; do not use for ordinary mistakes. |
 
@@ -129,23 +129,44 @@ In every case, append an entry to `specs/version-X-Y-plan/release-notes.md` and 
 
 ## 7. Failed publish recovery
 
-The workflow is built to be **rerunnable** with the same inputs after a partial failure. The recovery rules below describe what each failure class looks like and what to do about it.
+Recoverability differs per step:
+
+- `npm publish` (the workflow's idempotency guard wraps `npm view` so a successful publish is detected on a rerun) — idempotent.
+- `gh release upload --clobber` — idempotent.
+- `gh release create` — **not idempotent**: an existing Release at `vX.Y.Z` makes the step fail with HTTP 422 ("release already exists"). The workflow has no skip branch.
+
+So the rule is: **do not rerun the workflow as a recovery primitive once `gh release create` has succeeded**. Use the targeted manual commands below instead. The recovery scenarios are numbered by the failing step.
 
 ### 7.1 `npm publish` failed after `gh release create` succeeded
 
-Symptom: the GitHub Release exists (and possibly the tarball is attached), but `npm view @luis85/agentic-workflow@X.Y.Z` reports `404`. Cause: network blip, registry hiccup, or `EPUBLISHCONFLICT` from a prior partial run.
+Symptom: the GitHub Release exists (the tarball may or may not be attached), but `npm view @luis85/agentic-workflow@X.Y.Z` reports `404`. Cause: network blip, registry hiccup, or `EPUBLISHCONFLICT` from a prior partial run.
 
-Recovery — rerun the workflow with the same `version`, `confirm`, and `publish_package: true`:
+Recovery — run the failed steps manually from a local checkout of `vX.Y.Z`. **Do not** rerun the workflow; `gh release create` will fail on the existing Release before the publish-recovery logic is reached.
 
-- Layer 1 + Layer 2 readiness re-run unchanged (they are deterministic).
-- `gh release create --verify-tag` is idempotent against an existing tag.
-- The publish step queries `npm view "@luis85/agentic-workflow@X.Y.Z" version --json` first:
-  - **Already published** → emits `::notice::version X.Y.Z already published — skipping npm publish` and continues to step 11.
-  - **`E404`** → `npm publish` runs.
-  - **Other non-zero (transient registry / auth / DNS)** → fails closed. Do **not** mask with `--force`; investigate the registry signal first.
-- `gh release upload --clobber` replaces any partial asset from the earlier failed run.
+```bash
+# from a clean clone, on the exact tagged commit
+git fetch --tags origin
+git checkout vX.Y.Z
 
-This satisfies [NFR-V05-005](../specs/version-0-5-plan/requirements.md) recoverability without force-pushing protected branches.
+npm ci
+# stage the publication-canonical lockfile (mirrors what the workflow does on the runner)
+cp package-lock.json npm-shrinkwrap.json
+TARBALL="$(npm pack --silent)"
+
+# Idempotent publish — same guard the workflow uses, run by hand
+if npm view "@luis85/agentic-workflow@X.Y.Z" version --json >/dev/null 2>&1; then
+  echo "Already published — skipping npm publish"
+else
+  NODE_AUTH_TOKEN=<your-PAT-with-write:packages> npm publish
+fi
+
+# Replace any partial release asset
+gh release upload "vX.Y.Z" "${TARBALL}" --clobber
+```
+
+If `npm view` exits non-zero with anything other than `E404` (transient registry / auth / DNS), **stop**: do not paper over with `--force`. Investigate the registry signal first.
+
+This satisfies [NFR-V05-005](../specs/version-0-5-plan/requirements.md) recoverability without force-pushing protected branches and without depending on a workflow rerun the gates would refuse. Hardening the workflow itself to make `gh release create` skip an existing Release is tracked as future work; until then, manual recovery is the supported path.
 
 ### 7.2 `gh release create` failed before tag verification
 
