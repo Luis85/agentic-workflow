@@ -4,7 +4,7 @@ area: V05
 current_stage: implementation
 status: active
 last_updated: 2026-05-04
-last_agent: release-manager
+last_agent: qa
 artifacts:
   idea.md: complete
   research.md: complete
@@ -13,8 +13,8 @@ artifacts:
   spec.md: complete
   tasks.md: complete
   implementation-log.md: in-progress
-  test-plan.md: pending
-  test-report.md: pending
+  test-plan.md: complete
+  test-report.md: complete
   review.md: pending
   traceability.md: pending
   release-notes.md: pending
@@ -34,7 +34,7 @@ artifacts:
 | 5. Specification | `spec.md` | complete |
 | 6. Tasks | `tasks.md` | complete |
 | 7. Implementation | `implementation-log.md` + code | in-progress |
-| 8. Testing | `test-plan.md`, `test-report.md` | pending |
+| 8. Testing | `test-plan.md`, `test-report.md` | complete |
 | 9. Review | `review.md`, `traceability.md` | pending |
 | 10. Release | `release-notes.md` | pending |
 | 11. Learning | `retrospective.md` | pending |
@@ -62,6 +62,8 @@ artifacts:
 - 2026-05-04 (dev): T-V05-007 complete — adopted the v0.5 package identity in `package.json` (`name: "@luis85/agentic-workflow"`, `version: "0.5.0"`, `repository`, `publishConfig.registry: "https://npm.pkg.github.com"`, `files` allowlist matching `EXPECTED_PACKAGE_FILES`, dropped `private: true`, added `description` / `license: "MIT"` / `homepage` / `bugs` / `keywords` / `author` so the manifest is npm-publish-ready). `package-lock.json` re-locked for the renamed root package; no dependency changes. `.github/workflows/release.yml` extended: `actions/setup-node` now writes `~/.npmrc` with `registry-url: https://npm.pkg.github.com` and `scope: '@luis85'`; the three T-V05-007 stubs replaced with real steps — step 5 builds a candidate archive via `npm pack` and exposes the tarball + extracted directory as step outputs, step 6 runs `npm run check:release-package-contents -- --json` against the extracted directory (Layer 2 fresh-surface readiness, ADR-0021 / SPEC-V05-010), step 10 runs `npm publish` to GitHub Packages with `NODE_AUTH_TOKEN: secrets.GITHUB_TOKEN` (gated `if: ${{ ! inputs.dry_run }}`) after a `node -p` pre-flight that fails closed if `package.json#name@version` drifted from `INPUT_VERSION` between Layer 1 readiness and now, and step 11 attaches the tarball as a release asset via `gh release upload --clobber` so a partial-asset rerun is idempotent (NFR-V05-005 recoverability). `tools/automation-registry.yml` `workflow:release` `purpose` updated. `actionlint` + `zizmor` gate the workflow shape; the readiness checks it composes are already covered by 21 tests in PR #158 (`check:release-readiness`) and 12 tests in PR #173 (`check:release-package-contents`). Satisfies SPEC-V05-004 (REQ-V05-005, REQ-V05-006); also exercises NFR-V05-001 (least-privilege publish) and NFR-V05-002 (traceable artefacts — the same `vX.Y.Z` resolves the tag, the GitHub Release, the GitHub Packages version, and the release asset). Unblocks PR #161 (T-V05-008/T-V05-009 docs) and PR #162 (T-V05-010 end-to-end dry run). PR #160.
 
 - 2026-05-04 (release-manager): T-V05-008 + T-V05-009 complete — added `docs/release-operator-guide.md` (the runnable, version-by-version operator path consumed before every publish: pre-conditions, the six `workflow_dispatch` inputs, pre-flight Layer 1 readiness, dry-run path, stable publish path, rollback rules, six failed-publish recovery scenarios — including the per-step recoverability matrix that documents `gh release create` is **not** rerunnable on an existing Release (HTTP 422), so §7.1 ships runnable manual targeted commands rather than a workflow rerun, plus the `RELEASE_QUALITY_WAIVER` last-resort path with explicit-record rule from REQ-V05-010 — post-release cleanup, a quick-reference command bundle, and a stable diagnostic-code table covering both `RELEASE_READINESS_*` and `RELEASE_PKG_*`). Distribution surface updates: `README.md` recipe + Release pointer; `docs/specorator.md` §3.10 Distribution channels + Operator path bullets (failed-publish recovery worded as "manual targeted commands once `gh release create` has succeeded — the workflow is not rerunnable past that step", aligned with the operator guide's actual posture); `docs/release-package-contents.md` cross-link; `docs/README.md` + `docs/repo-map.md` + `docs/sink.md` + `docs/workflow-overview.md` entry-point and tree updates; `sites/index.html` new FAQ item + step 1 mention of the GitHub Release + GitHub Package channels (additive, reuses existing `faq-item` and `step` components, no new visual treatment). Satisfies SPEC-V05-006 (REQ-V05-008), SPEC-V05-008 (REQ-V05-010), SPEC-V05-009 (REQ-V05-011), SPEC-V05-007 (REQ-V05-009); NFR-V05-004, NFR-V05-005. Unblocks PR #162 (T-V05-010 dry run consumes the operator guide as its runnable script; T-V05-011 final readiness consumes the distribution docs for REQ-V05-009 acceptance). PR #161.
+
+- 2026-05-04 (qa): T-V05-010 + T-V05-011 complete locally. All 209 unit tests pass (26 release-readiness, 18 release-package-contract, 165 pre-existing). `npm run verify` green (18 gates, 14.6 s). Layer 1 readiness (`check:release-readiness`) correctly blocks on pre-release gaps (`RELEASE_READINESS_TAG_MISSING`, `RELEASE_READINESS_CHANGELOG_MISSING`) and quality signals — expected states on a feature branch; waiver suppresses Quality codes leaving only structural blockers. `npm pack` candidate: `luis85-agentic-workflow-0.5.0.tgz`, 864,582 bytes, SHA-256 `2b9a4d2c5a43acf05df7f3c8d2f7f12757d49bf081defaa302713e25d27e62a4`, 814 extracted files. Layer 2 (`check:release-package-contents`) correctly fails — **DEFECT-V05-001 raised (dev-owned)**: 22 numbered ADR files and multiple built-up docs pages ship in the candidate archive (SPEC-V05-010 assertions 1 and 3 violated; OQ-V05-003 automation gap). Operator guide §7.1 internal consistency confirmed. `test-plan.md` and `test-report.md` written. Artifacts complete for Stage 8. **Next step:** (1) `dev` resolves DEFECT-V05-001 (fresh-surface preparation — exclude ADR files from archive, convert docs to stubs); (2) orchestrator merges PR #162; (3) operator cuts `v0.5.0` tag on `main`, promotes CHANGELOG entry; (4) operator runs the exact remote dry-run command documented in `test-report.md` §7: `gh workflow run release.yml --ref main -f version=0.5.0 -f dry_run=true -f prerelease=false -f draft=false -f confirm="" -f publish_package=false`; (5) CLAR-V05-003 closed; (6) PR #162 ready-for-review.
 
 ## Open clarifications
 
