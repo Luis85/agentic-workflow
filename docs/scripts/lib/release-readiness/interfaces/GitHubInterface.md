@@ -13,19 +13,12 @@ cannot answer. [checkRepoImmutableSetting](../functions/checkRepoImmutableSettin
 PR #242 — the dedicated REST endpoint is documented and live, so the
 earlier most-recent-Release heuristic is unnecessary).
 
-Returns:
-
-- `true` — setting is enabled on the repo (or enforced by the org).
-- `false` — setting is explicitly disabled.
-- `null` — endpoint unavailable (older `gh` / API access denied / network
-  error). Fail quiet so a missing signal cannot block dispatch.
-
 ## Methods
 
-### immutableReleasesEnabled()
+### immutableReleasesSetting()
 
-> **immutableReleasesEnabled**(): `boolean` \| `null`
+> **immutableReleasesSetting**(): [`ImmutableSettingProbe`](../type-aliases/ImmutableSettingProbe.md)
 
 #### Returns
 
-`boolean` \| `null`
+[`ImmutableSettingProbe`](../type-aliases/ImmutableSettingProbe.md)

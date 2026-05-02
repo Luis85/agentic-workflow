@@ -7,6 +7,7 @@ import {
   parseReleaseReadinessArgs,
   type GitHubInterface,
   type GitInterface,
+  type ImmutableSettingProbe,
   type QualitySignals,
 } from "./lib/release-readiness.js";
 import { collectQualityMetrics } from "./lib/quality-metrics.js";
@@ -205,26 +206,26 @@ function realGit(): GitInterface {
 
 function realGitHub(): GitHubInterface {
   return {
-    immutableReleasesEnabled(): boolean | null {
+    immutableReleasesSetting(): ImmutableSettingProbe {
       // `gh api repos/{owner}/{repo}/immutable-releases` returns
       // `{enabled: bool, enforced_by_owner: bool}`. The setting is on if
       // either flag is true (org-level enforcement counts even when the
       // repo's own toggle is off).
       //
-      // Failure handling distinguishes three cases (Codex P1 round 3 on
-      // PR #242 — the bare `catch { return null }` would silently
-      // swallow auth / permission errors and the warning would never
-      // fire in production):
+      // Failure handling returns four distinct states (Codex P2 round 4
+      // on PR #242 — round 3 coerced 401/403 -> true, which produced an
+      // indistinguishable false positive against repos where the
+      // workflow token cannot read the endpoint):
       //
-      //   - Endpoint missing (404 — older GitHub instance) → `null`,
+      //   - 401/403/Bad credentials/Resource not accessible -> "denied"
+      //     so checkRepoImmutableSetting emits ImmutableProbeDenied
+      //     ("could not verify; check manually") instead of pretending
+      //     the setting is confirmed on.
+      //   - Endpoint missing (404 — older GitHub instance) -> "unknown",
       //     fail quiet. The warning was never going to be authoritative
       //     on a host without the endpoint.
-      //   - Auth / permission failure (401, 403) → return `true`. The
-      //     setting MIGHT be on; we cannot tell. Surface the warning
-      //     instead of staying silent so the operator does not get a
-      //     false sense the probe ran cleanly.
-      //   - Anything else (network blip, parse error) → `null`, fail
-      //     quiet. Transient errors should not pollute the warning.
+      //   - Anything else (network blip, parse error) -> "unknown",
+      //     fail quiet. Transient errors should not pollute the warning.
       //
       // GITHUB_REPOSITORY is set on every workflow run; locally, gh's
       // default repo (configured via `gh repo set-default` or the current
@@ -248,18 +249,15 @@ function realGitHub(): GitHubInterface {
         );
       } catch (err) {
         const stderr = String((err as { stderr?: Buffer | string }).stderr ?? "");
-        // 401 / 403 mean the probe could not verify the setting — the
-        // safe default is "warn anyway" so operators do not act on a
-        // silent skip.
         if (/HTTP 401|HTTP 403|Bad credentials|Resource not accessible/i.test(stderr)) {
-          return true;
+          return "denied";
         }
-        return null;
+        return "unknown";
       }
       const trimmed = out.trim();
-      if (trimmed === "true") return true;
-      if (trimmed === "false") return false;
-      return null;
+      if (trimmed === "true") return "enabled";
+      if (trimmed === "false") return "disabled";
+      return "unknown";
     },
   };
 }

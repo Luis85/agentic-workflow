@@ -17,6 +17,10 @@ CLI as `::notice::` annotations and do not block dispatch.
 
 ## Type Declaration
 
+### ImmutableProbeDenied
+
+> `readonly` **ImmutableProbeDenied**: `"RELEASE_READINESS_IMMUTABLE_PROBE_DENIED"` = `"RELEASE_READINESS_IMMUTABLE_PROBE_DENIED"`
+
 ### ImmutableRepo
 
 > `readonly` **ImmutableRepo**: `"RELEASE_READINESS_IMMUTABLE_REPO"` = `"RELEASE_READINESS_IMMUTABLE_REPO"`

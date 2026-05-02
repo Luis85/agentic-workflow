@@ -23,6 +23,7 @@ entry_point: true
 
 ## Type Aliases
 
+- [ImmutableSettingProbe](type-aliases/ImmutableSettingProbe.md)
 - [ParsedReleaseReadinessArgs](type-aliases/ParsedReleaseReadinessArgs.md)
 
 ## Variables

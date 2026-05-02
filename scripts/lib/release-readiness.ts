@@ -104,7 +104,30 @@ export const MIN_QUALITY_MATURITY_LEVEL = 3;
  */
 export const RELEASE_READINESS_WARNING_CODES = {
   ImmutableRepo: "RELEASE_READINESS_IMMUTABLE_REPO",
+  ImmutableProbeDenied: "RELEASE_READINESS_IMMUTABLE_PROBE_DENIED",
 } as const;
+
+/**
+ * Result of probing the "Immutable releases" repo setting.
+ *
+ * Discriminated four-state instead of `boolean | null` so the warning
+ * surface can distinguish "setting confirmed on" from "probe could not
+ * verify" (Codex P2 round 4 on PR #242). Round 3 coerced 401/403 -> true
+ * to surface a warning, but that produced an indistinguishable false
+ * positive against repos where the workflow token simply cannot read the
+ * endpoint — operators saw "ENABLED" every dispatch even when the setting
+ * was off.
+ *
+ * - `enabled` — endpoint returned `enabled=true` (or org-level enforcement).
+ * - `disabled` — endpoint returned `enabled=false`.
+ * - `denied` — endpoint returned 401 / 403 / "Bad credentials" /
+ *   "Resource not accessible". The probe could not verify the setting;
+ *   surface a distinct warning so the operator checks manually.
+ * - `unknown` — endpoint missing (404, older GitHub instance), network
+ *   blip, parse error. Fail quiet — a transient signal must not block
+ *   dispatch.
+ */
+export type ImmutableSettingProbe = "enabled" | "disabled" | "denied" | "unknown";
 
 /**
  * Minimal GitHub API facade for repository-state probes that the git CLI
@@ -113,16 +136,9 @@ export const RELEASE_READINESS_WARNING_CODES = {
  * `GET /repos/{owner}/{repo}/immutable-releases` (Codex round 2 on
  * PR #242 — the dedicated REST endpoint is documented and live, so the
  * earlier most-recent-Release heuristic is unnecessary).
- *
- * Returns:
- *
- * - `true` — setting is enabled on the repo (or enforced by the org).
- * - `false` — setting is explicitly disabled.
- * - `null` — endpoint unavailable (older `gh` / API access denied / network
- *   error). Fail quiet so a missing signal cannot block dispatch.
  */
 export interface GitHubInterface {
-  immutableReleasesEnabled(): boolean | null;
+  immutableReleasesSetting(): ImmutableSettingProbe;
 }
 
 /**
@@ -145,36 +161,48 @@ export interface ReadinessWarning {
  * or operator deletion then permanently burns the tag — exactly the
  * v0.5.0 incident pattern.
  *
- * Per the {@link GitHubInterface.immutableReleasesEnabled} contract,
- * the implementation returns `true` not only when the setting is
- * actually on but also when the probe lacks permission to verify it
- * (HTTP 401 / 403). The "surface on auth failure" semantics is
- * intentional (Codex P1 round 3 on PR #242): silently skipping the
- * warning when `secrets.GITHUB_TOKEN` cannot read the endpoint would
- * give operators a false sense that the probe ran cleanly when it did
- * not, which is exactly the v0.5.0 incident pattern at one remove.
+ * Emits at most one warning, distinguishing the verified-on case from
+ * the probe-denied case (Codex P2 round 4 on PR #242):
  *
- * Returns one warning when the setting is (or might be) on, none
- * otherwise. Never returns a hard `Diagnostic` — the v0.5.0 retrospective
- * showed the setting is not always operator-controlled (org-level
- * defaults can propagate), so failing closed here could block legitimate
+ * - `enabled` -> `ImmutableRepo` ("setting is ON").
+ * - `denied`  -> `ImmutableProbeDenied` ("probe could not verify;
+ *   check manually"). Distinct code so operators do not misread an
+ *   auth failure as a confirmed-on setting.
+ * - `disabled` / `unknown` -> no warning.
+ *
+ * Never returns a hard `Diagnostic` — the v0.5.0 retrospective showed
+ * the setting is not always operator-controlled (org-level defaults
+ * can propagate), so failing closed here could block legitimate
  * dispatches against repos the operator does not own.
  */
 export function checkRepoImmutableSetting(github: GitHubInterface): ReadinessWarning[] {
-  const flag = github.immutableReleasesEnabled();
-  if (flag === true) {
+  const state = github.immutableReleasesSetting();
+  if (state === "enabled") {
     return [
       {
         code: RELEASE_READINESS_WARNING_CODES.ImmutableRepo,
         message:
-          "Repo Setting \"Immutable releases\" is ENABLED on this repository, " +
-          "OR the probe lacked permission to verify it. " +
-          "(GET /repos/{owner}/{repo}/immutable-releases returned enabled=true " +
-          "or 401/403; see scripts/check-release-readiness.ts realGitHub.) " +
+          "Repo Setting \"Immutable releases\" is ENABLED on this repository " +
+          "(GET /repos/{owner}/{repo}/immutable-releases returned enabled=true). " +
           "Every new Release will be auto-flagged immutable; a failed asset " +
           "upload or operator deletion permanently burns the tag (#233). " +
           "Verify the setting in Repo Settings -> General -> Releases, " +
           "disable it before dispatching, or accept the failure mode knowingly.",
+      },
+    ];
+  }
+  if (state === "denied") {
+    return [
+      {
+        code: RELEASE_READINESS_WARNING_CODES.ImmutableProbeDenied,
+        message:
+          "Could not verify Repo Setting \"Immutable releases\" — " +
+          "GET /repos/{owner}/{repo}/immutable-releases returned 401/403 " +
+          "(workflow token lacks the scope, or repo access is restricted). " +
+          "The setting may or may not be on; this is NOT a confirmation. " +
+          "Verify manually in Repo Settings -> General -> Releases before " +
+          "dispatching, or grant the workflow token sufficient scope so the " +
+          "probe can run cleanly on the next dispatch.",
       },
     ];
   }

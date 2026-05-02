@@ -374,7 +374,8 @@ The release-readiness scripts emit machine-stable codes. Treat them as the contr
 
 | Code | Meaning |
 |---|---|
-| `RELEASE_READINESS_IMMUTABLE_REPO` | The most recent Release on this repository was created immutable — heuristic that Repo Setting "Immutable releases" is on (#233 prevention E). Surfaces as a `::warning::` annotation; does not block dispatch. Disable the setting or accept the failure mode knowingly before triggering. |
+| `RELEASE_READINESS_IMMUTABLE_REPO` | Repo Setting "Immutable releases" is confirmed ENABLED (`GET /repos/{owner}/{repo}/immutable-releases` returned `enabled=true`). Every new Release is auto-flagged immutable; a failed asset upload or operator deletion permanently burns the tag (#233 prevention E). Surfaces as a `::warning::` annotation; does not block dispatch. Disable the setting or accept the failure mode knowingly before triggering. |
+| `RELEASE_READINESS_IMMUTABLE_PROBE_DENIED` | The probe could **not** verify the "Immutable releases" setting — endpoint returned 401/403/Bad credentials (workflow token lacks scope or repo access is restricted). The setting may or may not be on; this is **not** a confirmation. Verify manually in Repo Settings → General → Releases before dispatching, or grant the workflow token sufficient scope. Surfaces as a `::warning::` annotation; does not block dispatch. |
 
 ### Layer 2 — `scripts/lib/release-package-contract.ts`
 
