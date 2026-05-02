@@ -339,6 +339,16 @@ entries:
     emits_json: true
     used_by: [human, agent, ci]
     rerun_command: npm run check:release-readiness -- --version <X.Y.Z> [--archive <dir>]
+  - id: build:release-archive
+    kind: script
+    command: npm run build:release-archive
+    path: scripts/build-release-archive.ts
+    purpose: Stage a fresh-surface copy of the repository under .release-staging — strip numbered ADRs and stubify shipping docs/**/*.md per ADR-0021 / SPEC-V05-010 (T-V05-013) so npm pack ships the released form.
+    read_only: false
+    safe_to_run_locally: true
+    emits_json: true
+    used_by: [human, agent, ci]
+    rerun_command: npm run build:release-archive -- --out <dir>
   - id: docs:scripts
     kind: script
     command: npm run docs:scripts

@@ -285,6 +285,8 @@ RELEASE_PACKAGE_ARCHIVE=/tmp/qa-extract npm run check:release-package-contents -
 
 **Do not fix in this PR.** This is a `dev`-owned task. Raising as a finding for review.
 
+**Resolution (2026-05-02, dev, T-V05-013):** Resolved on the technical surface. Issue #90 §1's "convert codebase docs to stub form" reading was internally inconsistent with `docs/release-package-contents.md` line 40 ("the codebase form remains as authored — maintainers reading the codebase see one shape, consumers receive another"). Implemented the build-time-transform path instead: `scripts/build-release-archive.ts` stages a transformed copy under `.release-staging/` (numbered ADRs filtered, every shipping `docs/**/*.md` replaced with the stub form from `scripts/lib/release-stubify.ts`), and `.github/workflows/release.yml` step 5 calls the builder before `npm pack`. `.npmignore` excludes numbered ADRs, `.worktrees/`, and `.release-staging/` as defence-in-depth for direct-from-repo pack. Step 10 (`npm publish`) now publishes the byte-identical staged tarball so the published archive equals the GitHub Release asset and reflects the transform. Verified locally: rebuilt staging dir + `npm pack ./.release-staging` + Layer 2 check exits 0 with zero diagnostics. Closes OQ-V05-003 fully. CLAR-V05-003 and the operator-authorised remote dispatch remain as the v0.5 publish-readiness blockers; this defect is no longer one of them.
+
 ## 6. Skipped publish checks
 
 The following checks require GitHub infrastructure or publish credentials and were explicitly skipped in this local execution per Article IX (Reversibility) of the constitution.

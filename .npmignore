@@ -1,0 +1,31 @@
+# Defence-in-depth exclusions for `npm pack` and `npm publish` from the repo
+# root. The canonical release pipeline runs `npm run build:release-archive`
+# first to stage a transformed copy of the repository under `.release-staging/`
+# (T-V05-013, ADR-0021, SPEC-V05-010), then packs from that staging dir — so
+# this file is the secondary safety net for an operator who packs the repo
+# directly without staging.
+#
+# `package.json#files` is the primary include allowlist. Anything not listed
+# there is already excluded by npm. The patterns below cover paths that COULD
+# end up in a packed archive if the `files` field were broadened by accident
+# or if a maintainer ran `npm pack` outside the release pipeline.
+#
+# When changing this file, also update:
+# - `package.json#files` (the canonical include list).
+# - `scripts/lib/release-archive-builder.ts` (build-time filter that produces
+#   the staged tree).
+# - `docs/release-package-contents.md` (the contract documentation).
+# - `tools/automation-registry.yml` (the automation inventory).
+
+# Numbered ADRs ship in the codebase only — the consumer's first ADR is
+# their own ADR-0001, not a continuation of ours (ADR-0021 §Decision.2,
+# SPEC-V05-010 assertion 1).
+docs/adr/[0-9][0-9][0-9][0-9]-*.md
+
+# Local maintainer state — never relevant to consumers.
+.worktrees/
+
+# Build-time staging directory produced by `npm run build:release-archive`.
+# Excluded so that staging output cannot recursively land inside a packed
+# archive when the release pipeline is rerun against a dirty checkout.
+.release-staging/

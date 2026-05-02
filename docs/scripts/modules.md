@@ -7,6 +7,7 @@
 ## Modules
 
 - [automation-registry-discover](automation-registry-discover/README.md)
+- [build-release-archive](build-release-archive/README.md)
 - [check-adr-index](check-adr-index/README.md)
 - [check-agents](check-agents/README.md)
 - [check-automation-registry](check-automation-registry/README.md)
@@ -49,8 +50,10 @@
 - [lib/obsidian](lib/obsidian/README.md)
 - [lib/obsidian-assets](lib/obsidian-assets/README.md)
 - [lib/quality-metrics](lib/quality-metrics/README.md)
+- [lib/release-archive-builder](lib/release-archive-builder/README.md)
 - [lib/release-package-contract](lib/release-package-contract/README.md)
 - [lib/release-readiness](lib/release-readiness/README.md)
+- [lib/release-stubify](lib/release-stubify/README.md)
 - [lib/repo](lib/repo/README.md)
 - [lib/roadmaps](lib/roadmaps/README.md)
 - [lib/runner](lib/runner/README.md)
