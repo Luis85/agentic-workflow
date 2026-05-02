@@ -211,16 +211,27 @@ function realGitHub(): GitHubInterface {
       // either flag is true (org-level enforcement counts even when the
       // repo's own toggle is off).
       //
-      // Endpoint not found (older GitHub instances), API access denied
-      // (token lacks scope), or any network error fail quiet to `null` —
-      // the warning is informational, not a gate, so a missing signal
-      // must not block dispatch.
+      // Failure handling distinguishes three cases (Codex P1 round 3 on
+      // PR #242 — the bare `catch { return null }` would silently
+      // swallow auth / permission errors and the warning would never
+      // fire in production):
+      //
+      //   - Endpoint missing (404 — older GitHub instance) → `null`,
+      //     fail quiet. The warning was never going to be authoritative
+      //     on a host without the endpoint.
+      //   - Auth / permission failure (401, 403) → return `true`. The
+      //     setting MIGHT be on; we cannot tell. Surface the warning
+      //     instead of staying silent so the operator does not get a
+      //     false sense the probe ran cleanly.
+      //   - Anything else (network blip, parse error) → `null`, fail
+      //     quiet. Transient errors should not pollute the warning.
       //
       // GITHUB_REPOSITORY is set on every workflow run; locally, gh's
       // default repo (configured via `gh repo set-default` or the current
       // git remote) is used implicitly.
+      let out: string;
       try {
-        const out = execFileSync(
+        out = execFileSync(
           "gh",
           [
             "api",
@@ -232,16 +243,23 @@ function realGitHub(): GitHubInterface {
             cwd: repoRoot,
             encoding: "utf8",
             windowsHide: true,
-            stdio: ["ignore", "pipe", "ignore"],
+            stdio: ["ignore", "pipe", "pipe"],
           },
         );
-        const trimmed = out.trim();
-        if (trimmed === "true") return true;
-        if (trimmed === "false") return false;
-        return null;
-      } catch {
+      } catch (err) {
+        const stderr = String((err as { stderr?: Buffer | string }).stderr ?? "");
+        // 401 / 403 mean the probe could not verify the setting — the
+        // safe default is "warn anyway" so operators do not act on a
+        // silent skip.
+        if (/HTTP 401|HTTP 403|Bad credentials|Resource not accessible/i.test(stderr)) {
+          return true;
+        }
         return null;
       }
+      const trimmed = out.trim();
+      if (trimmed === "true") return true;
+      if (trimmed === "false") return false;
+      return null;
     },
   };
 }

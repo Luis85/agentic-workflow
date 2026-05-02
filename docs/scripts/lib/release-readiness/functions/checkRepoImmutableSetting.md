@@ -17,11 +17,20 @@ Release on the repo is auto-flagged immutable; a failed asset upload
 or operator deletion then permanently burns the tag — exactly the
 v0.5.0 incident pattern.
 
-Returns one warning when the setting is on, none otherwise. Never
-returns a hard `Diagnostic` — the v0.5.0 retrospective showed the
-setting is not always operator-controlled (org-level defaults can
-propagate), so failing closed here could block legitimate dispatches
-against repos the operator does not own.
+Per the [GitHubInterface.immutableReleasesEnabled](../interfaces/GitHubInterface.md#immutablereleasesenabled) contract,
+the implementation returns `true` not only when the setting is
+actually on but also when the probe lacks permission to verify it
+(HTTP 401 / 403). The "surface on auth failure" semantics is
+intentional (Codex P1 round 3 on PR #242): silently skipping the
+warning when `secrets.GITHUB_TOKEN` cannot read the endpoint would
+give operators a false sense that the probe ran cleanly when it did
+not, which is exactly the v0.5.0 incident pattern at one remove.
+
+Returns one warning when the setting is (or might be) on, none
+otherwise. Never returns a hard `Diagnostic` — the v0.5.0 retrospective
+showed the setting is not always operator-controlled (org-level
+defaults can propagate), so failing closed here could block legitimate
+dispatches against repos the operator does not own.
 
 ## Parameters
 
