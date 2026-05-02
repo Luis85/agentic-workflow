@@ -61,7 +61,7 @@ One paragraph for end users / stakeholders. What's new and why they care.
 
 How to confirm the release is healthy in production.
 
-1. …
+1. Run the standard script test suite with `npm test` when the release changes scripts or validators.
 2. …
 
 ## Rollback plan
