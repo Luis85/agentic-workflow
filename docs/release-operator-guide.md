@@ -217,15 +217,25 @@ This satisfies [NFR-V05-005](../specs/version-0-5-plan/requirements.md) recovera
 
 Symptom: workflow stops at "Create GitHub Release" with `tag vX.Y.Z does not exist` (`--verify-tag`).
 
-Recovery: cut the missing tag on `main` (do **not** let `gh release create` auto-create it):
+Recovery: cut the missing tag on the **exact intended release commit** (do **not** let `gh release create` auto-create it, and do **not** rely on `HEAD` — `main` may have advanced past the release commit while the missing-tag issue was being handled, and a bare `git tag vX.Y.Z` would then point at the wrong commit and publish unintended changes under that tag).
+
+Identify the canonical release commit on `main` — the merge commit of the `release/vX.Y.Z` PR — and tag that SHA explicitly:
 
 ```bash
 git fetch origin
-git checkout main
-git pull --ff-only
-git tag vX.Y.Z
+
+# Find the merge commit of the release/vX.Y.Z PR (replace <pr-num>):
+RELEASE_SHA="$(gh pr view <pr-num> --json mergeCommit --jq .mergeCommit.oid)"
+
+# Sanity-check before tagging — should print the release-prep PR's merge commit subject.
+git log -1 --pretty=%s "${RELEASE_SHA}"
+
+# Tag that exact SHA, not HEAD.
+git tag vX.Y.Z "${RELEASE_SHA}"
 git push origin vX.Y.Z
 ```
+
+If the release PR pre-dates `gh` access, resolve `RELEASE_SHA` by hand from `git log --first-parent main` and pin the SHA in the `git tag` invocation. Either way, **never run `git tag vX.Y.Z` without an explicit object argument** — `git tag` defaults to `HEAD` and will silently mis-tag if `main` moved.
 
 Then rerun the workflow.
 
@@ -297,8 +307,11 @@ RELEASE_PACKAGE_ARCHIVE=./release-staging \
   npm run check:release-package-contents -- --json
 rm -rf release-staging "${TARBALL}"
 
-# Cut canonical tag on main (after release branch is merged)
-git tag vX.Y.Z && git push origin vX.Y.Z
+# Cut canonical tag on main (after release branch is merged). Use the merge
+# commit of the release PR explicitly — never let `git tag` default to HEAD
+# (main may have advanced past the release commit).
+RELEASE_SHA="$(gh pr view <pr-num> --json mergeCommit --jq .mergeCommit.oid)"
+git tag vX.Y.Z "${RELEASE_SHA}" && git push origin vX.Y.Z
 
 # Trigger the workflow — UI: Actions → Release → Run workflow
 # Inputs: version=X.Y.Z, dry_run=true|false, confirm=X.Y.Z (publish only),
