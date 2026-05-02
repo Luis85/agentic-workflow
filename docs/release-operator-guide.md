@@ -95,9 +95,8 @@ Only after at least one fully green dry run, request a stable publish.
    - `npm pack` — candidate archive built and extracted.
    - Layer 2 readiness — fresh-surface contract ([ADR-0021](adr/0021-release-package-fresh-surface.md)).
    - Confirm gate — refuses to continue unless `confirm == version`.
-   - `gh release create vX.Y.Z --target main --verify-tag --generate-notes` — creates the GitHub Release using the `.github/release.yml` categories.
+   - `gh release create vX.Y.Z --target main --verify-tag --generate-notes ${TARBALL}` — creates the GitHub Release with the candidate tarball attached **in one call** when no Release for the tag exists. When a Release already exists (the two-step CLAR-V05-003 path), the workflow runs `gh release edit … --draft=<bool> --prerelease=<bool>` to flip flags in place and uploads the asset only if it is not already attached, so a single Release per tag is preserved (#233 prevention B + C). The promote branch refuses to demote an already-published stable Release back to draft or prerelease — that flip would unpublish a consumer-visible release; cut a new `vX.Y.(Z+1)` instead.
    - `npm publish` — only when `publish_package: true`; idempotent (see §7.1).
-   - `gh release upload vX.Y.Z … --clobber` — attaches the candidate tarball as a release asset.
 
 3. Verify on `https://github.com/Luis85/agentic-workflow/releases/tag/vX.Y.Z`:
    - Release notes body matches the dry-run preview.
@@ -142,15 +141,15 @@ Recoverability differs per step:
 
 - `npm publish` (the workflow's idempotency guard wraps `npm view` so a successful publish is detected on a rerun) — idempotent.
 - `gh release upload --clobber` — idempotent.
-- `gh release create` — **not idempotent**: an existing Release at `vX.Y.Z` makes the step fail with HTTP 422 ("release already exists"). The workflow has no skip branch.
+- `gh release create` — **not idempotent on its own**, but as of #233 prevention C the workflow's "Create or promote GitHub Release" step now detects an existing Release via `gh release view` and switches to `gh release edit` + `gh release upload --clobber` for the promote-in-place path. So a rerun against an existing draft is now safe and will flip the draft flag and replace the asset rather than failing closed with HTTP 422 ("release already exists"). A rerun against an existing **stable** Release (draft=false, asset already published) still flips no flags meaningfully and is wasted work — but it no longer fails the workflow.
 
-So the rule is: **do not rerun the workflow as a recovery primitive once `gh release create` has succeeded**. Use the targeted manual commands below instead. The recovery scenarios are numbered by the failing step.
+So the rule is: **the workflow is now safely rerunnable across the two-step CLAR-V05-003 path** (draft+prerelease → stable+publish). It is still not the right tool for surgical recovery — use the targeted manual commands below for `npm publish` failures or asset-upload-only retries. The recovery scenarios are numbered by the failing step.
 
 ### 7.1 `npm publish` failed after `gh release create` succeeded
 
 Symptom: the GitHub Release exists (the tarball may or may not be attached), but `npm view @luis85/agentic-workflow@X.Y.Z` reports `404`. Cause: network blip, registry hiccup, or `EPUBLISHCONFLICT` from a prior partial run.
 
-Recovery — run the failed steps manually from a local checkout of `vX.Y.Z`. **Do not** rerun the workflow; `gh release create` will fail on the existing Release before the publish-recovery logic is reached.
+Recovery — run the failed steps manually from a local checkout of `vX.Y.Z`. As of #233 prevention C the workflow's create step is rerunnable, but a rerun would also re-trigger the readiness gates and the build-archive step — slower and more side-effect-heavy than necessary for an `npm publish`-only retry. Stick with the manual commands below.
 
 You will need a GitHub Personal Access Token with the `write:packages` scope (or a fine-grained token with `Packages: write` on the repository). The workflow gets this for free via `actions/setup-node` + `secrets.GITHUB_TOKEN`; for manual recovery, configure it explicitly:
 

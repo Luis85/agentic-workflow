@@ -173,32 +173,109 @@ jobs:
             exit 1
           fi
 
-      # Step 9a — non-dry-run: create the GitHub Release. Generated notes use
-      # the `.github/release.yml` categories from PR #156 (T-V05-003).
-      - name: Create GitHub Release
+      # Step 9a — non-dry-run: create the GitHub Release and attach the
+      # candidate tarball in one call, OR promote-in-place if a Release for
+      # this tag already exists. Generated notes use the
+      # `.github/release.yml` categories from PR #156 (T-V05-003).
+      #
+      # Two changes from the original step (#233 prevention B + C):
+      #
+      # B — combine create + asset upload. The tarball is passed as a
+      #     positional argument to `gh release create`, so the Release page
+      #     and its asset land in one transaction. The original two-step
+      #     shape (create, then a separate `gh release upload` in step 11)
+      #     left a window where `gh release create` had succeeded but the
+      #     asset was missing — exactly the failure mode that turned the
+      #     v0.5.0 incident from "transient asset upload glitch" into
+      #     "operator deletes the Release, GitHub burns the tag" (#233).
+      #
+      # C — promote-draft-if-exists. The two-step CLAR-V05-003 dispatch
+      #     path (step 1: draft + prerelease; step 2: stable + publish)
+      #     used to call `gh release create` twice for one tag, which
+      #     creates two separate Releases — orphan draft from step 1,
+      #     stable from step 2. Now step 2 detects the draft via
+      #     `gh release view`, flips its flags via `gh release edit`, and
+      #     replaces the asset with `--clobber`. Result: one Release per
+      #     tag, regardless of dispatch shape.
+      #
+      # `--verify-tag` on the create branch makes `gh release create` fail
+      # if `vX.Y.Z` does not already exist (Codex P2 on PR #159). Without
+      # it, `gh release create` auto-creates the tag from `--target main`
+      # when it is missing, which would silently bypass the ADR-0020
+      # requirement that the canonical tag is cut on main *before* the
+      # workflow runs. Layer 1 readiness already enforces this, but
+      # `--verify-tag` is a cheap defence-in-depth against a tag-race or
+      # readiness-gap path.
+      - name: Create or promote GitHub Release
         if: ${{ ! inputs.dry_run }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           INPUT_VERSION: ${{ inputs.version }}
           INPUT_PRERELEASE: ${{ inputs.prerelease }}
           INPUT_DRAFT: ${{ inputs.draft }}
+          TARBALL: ${{ steps.pack.outputs.tarball }}
         run: |
-          flags=()
-          if [ "${INPUT_PRERELEASE}" = "true" ]; then flags+=(--prerelease); fi
-          if [ "${INPUT_DRAFT}" = "true" ]; then flags+=(--draft); fi
-          # `--verify-tag` makes `gh release create` fail if `vX.Y.Z` does not
-          # already exist (Codex P2 on PR #159). Without it, `gh release
-          # create` auto-creates the tag from `--target main` when it is
-          # missing, which would silently bypass the ADR-0020 requirement that
-          # the canonical tag is cut on main *before* the workflow runs.
-          # Layer 1 readiness already enforces this, but `--verify-tag` is a
-          # cheap defence-in-depth against a tag-race or readiness-gap path.
-          gh release create "v${INPUT_VERSION}" \
-            --target main \
-            --title "v${INPUT_VERSION}" \
-            --verify-tag \
-            --generate-notes \
-            "${flags[@]}"
+          # Detect existing Release for this tag. `gh release view` exits
+          # non-zero (and writes "release not found" to stderr) when no
+          # Release exists. We capture the JSON shape so we can inspect
+          # the existing Release's draft / prerelease / asset state and
+          # branch safely — the v0.5.1 cycle showed that "blindly apply
+          # inputs" creates two destructive failure modes (Codex P1
+          # round 2 on PR #241).
+          existing_json="$(gh release view "v${INPUT_VERSION}" --json isDraft,isPrerelease,assets 2>/dev/null || true)"
+          if [ -n "${existing_json}" ]; then
+            existing_draft="$(echo "${existing_json}" | jq -r '.isDraft')"
+            existing_prerelease="$(echo "${existing_json}" | jq -r '.isPrerelease')"
+            existing_has_asset="$(echo "${existing_json}" | jq -r '[.assets[]? | select(.name == "'"$(basename "${TARBALL}")"'")] | length > 0')"
+            # Refuse-to-demote guard (Codex P1 round 2 #1): if the
+            # existing Release is already a published stable (draft=false
+            # AND prerelease=false), do NOT let an old draft+prerelease
+            # dispatch flip it back. Such a flip would unpublish a
+            # consumer-visible release; the operator presumably did not
+            # intend that. Stable→stable rerun is a no-op and harmless.
+            if [ "${existing_draft}" = "false" ] && [ "${existing_prerelease}" = "false" ] \
+                && { [ "${INPUT_DRAFT}" = "true" ] || [ "${INPUT_PRERELEASE}" = "true" ]; }; then
+              echo "::error::Release for v${INPUT_VERSION} is already published as stable; refusing to demote it to draft=${INPUT_DRAFT} prerelease=${INPUT_PRERELEASE}. Cut a new vX.Y.(Z+1) instead." >&2
+              exit 1
+            fi
+            echo "::notice::Release for v${INPUT_VERSION} already exists — promoting in place (#233 prevention C)"
+            # Asset upload BEFORE flag flip (Codex P1 round 3 on PR #241):
+            # if the existing Release is a draft with no asset (e.g. a
+            # prior dispatch failed mid-create), and we publish first
+            # then upload, post-publish asset upload can fail when the
+            # repo's Immutable Releases setting is on (assets cannot be
+            # added to published immutable Releases — see operator-guide
+            # §7.7). Uploading while the Release is still in its current
+            # draft state preserves the recovery path. We still skip the
+            # upload entirely when the asset is already attached, so the
+            # two-step CLAR-V05-003 path with a step-1 asset present
+            # remains a no-op on the upload (Codex P1 round 2 #2).
+            if [ "${existing_has_asset}" = "true" ]; then
+              echo "::notice::Asset $(basename "${TARBALL}") already attached to v${INPUT_VERSION} — skipping upload to avoid clobber-then-fail data loss"
+            else
+              gh release upload "v${INPUT_VERSION}" "${TARBALL}"
+            fi
+            # `gh release edit` preserves generated notes from the prior
+            # create call. Pass `--draft=<bool>` and `--prerelease=<bool>`
+            # explicitly so flipping from draft+prerelease (step 1) to
+            # stable (step 2) takes effect deterministically. Runs AFTER
+            # the asset upload so we never publish-then-fail-to-attach.
+            gh release edit "v${INPUT_VERSION}" \
+              --draft="${INPUT_DRAFT}" \
+              --prerelease="${INPUT_PRERELEASE}"
+          else
+            echo "::notice::Creating fresh Release for v${INPUT_VERSION} with asset attached (#233 prevention B)"
+            flags=()
+            if [ "${INPUT_PRERELEASE}" = "true" ]; then flags+=(--prerelease); fi
+            if [ "${INPUT_DRAFT}" = "true" ]; then flags+=(--draft); fi
+            gh release create "v${INPUT_VERSION}" \
+              --target main \
+              --title "v${INPUT_VERSION}" \
+              --verify-tag \
+              --generate-notes \
+              "${flags[@]}" \
+              "${TARBALL}"
+          fi
 
       # Step 9b — dry run: log a generated-notes preview without creating any
       # public artifact (SPEC-V05-009). All readiness diagnostics from step 4
@@ -290,15 +367,12 @@ jobs:
             exit 1
           fi
 
-      # Step 11 — attach the candidate tarball as a release asset. Runs after
-      # `gh release create` (step 9) so the release exists; `--clobber` lets a
-      # rerun replace a partial asset from an earlier failed publish without
-      # manual cleanup (NFR-V05-005 recoverability).
-      - name: Attach release asset
-        if: ${{ ! inputs.dry_run }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          INPUT_VERSION: ${{ inputs.version }}
-          TARBALL: ${{ steps.pack.outputs.tarball }}
-        run: |
-          gh release upload "v${INPUT_VERSION}" "${TARBALL}" --clobber
+      # Step 11 was the standalone "Attach release asset" step. As of #233
+      # prevention B + C it has been folded into step 9a: a fresh Release
+      # gets the tarball as a positional argument to `gh release create`
+      # (one transaction); a promoted-in-place Release uses
+      # `gh release upload --clobber` immediately after `gh release edit`.
+      # Removing the standalone step closes the v0.5.0 failure window
+      # where the Release page existed but the asset upload had not yet
+      # run — that gap is what the operator was investigating when the
+      # Release got deleted and the tag got burned.
