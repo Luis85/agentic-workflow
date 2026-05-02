@@ -97,15 +97,25 @@ export const MIN_QUALITY_MATURITY_LEVEL = 3;
 /**
  * Minimal git facade for tag-readiness assertions.
  *
- * Implementations must return a **commit SHA** for the supplied ref,
+ * `resolveRef` must return a **commit SHA** for the supplied ref,
  * dereferencing (peeling) annotated tags so an annotated `vX.Y.Z` and
  * `refs/heads/main` are comparable. Real callers wire this with
  * `git rev-parse <ref>^{commit}` so annotated and lightweight tags resolve
  * the same way (Codex round-3 P1 on PR #158). Tests inject a stub mapping
  * directly to commit SHAs.
+ *
+ * `firstParentChain` returns `main`'s first-parent ancestry as a list of
+ * commit SHAs starting at `main` HEAD and walking back through merge-commit
+ * left parents. Tag readiness uses this to assert the release tag sits on
+ * `main`'s first-parent history (ADR-0020 §Compliance), not strictly at
+ * `main` HEAD. The strict-HEAD reading made the v0.5.0 / v0.5.1 publish
+ * dispatches trip whenever an unrelated PR merged into `main` between the
+ * tag cut and the dispatch (#233 prevention F). Returns `null` when the
+ * chain cannot be resolved (ref missing, git error).
  */
 export interface GitInterface {
   resolveRef(ref: string): string | null;
+  firstParentChain(ref: string): readonly string[] | null;
 }
 
 /**
@@ -230,7 +240,10 @@ export function parseReleaseReadinessArgs(
  * Runs Layer 1 (release metadata correctness) in fixed order:
  *
  * 1. Version alignment — `package.json#version` matches the release version.
- * 2. Tag readiness — release tag points at `main` HEAD per ADR-0020.
+ * 2. Tag readiness — release tag is on `main`'s first-parent history per
+ *    ADR-0020 §Compliance ("the tag commit is reachable from `main`"). The
+ *    earlier strict reading (tag SHA == `main` HEAD SHA) was relaxed in
+ *    #233 prevention F.
  * 3. CHANGELOG entry — `CHANGELOG.md` has a `## [vX.Y.Z]` heading.
  * 4. Lifecycle release notes — `.github/release.yml` shape per T-V05-003.
  * 5. Package metadata — name, registry, repository, files per package contract.
@@ -258,7 +271,7 @@ export function checkReleaseReadiness(opts: ReleaseReadinessOptions): ReleaseRea
   const pkg = readPackageJson(opts.repoRoot, packageJsonPath);
 
   diagnostics.push(...checkVersionAlignment(pkg, opts.version, packageJsonPath));
-  if (opts.git) diagnostics.push(...checkTagAtMain(opts.git, opts.version));
+  if (opts.git) diagnostics.push(...checkTagOnMainHistory(opts.git, opts.version));
   diagnostics.push(...checkChangelog(opts.repoRoot, changelogPath, opts.version));
   diagnostics.push(...checkReleaseNotesConfig(opts.repoRoot, releaseNotesPath));
   diagnostics.push(
@@ -333,7 +346,7 @@ function checkVersionAlignment(
   return [];
 }
 
-function checkTagAtMain(git: GitInterface, version: string): Diagnostic[] {
+function checkTagOnMainHistory(git: GitInterface, version: string): Diagnostic[] {
   const tagRef = `v${version}`;
   const tagSha = git.resolveRef(tagRef);
   if (!tagSha) {
@@ -353,11 +366,27 @@ function checkTagAtMain(git: GitInterface, version: string): Diagnostic[] {
       },
     ];
   }
-  if (tagSha !== mainSha) {
+  // Walk `main`'s first-parent chain. The tag may legitimately sit at any
+  // first-parent ancestor of HEAD — the strict-HEAD reading tripped twice
+  // during the v0.5.1 recovery dispatch when unrelated PRs merged between
+  // the tag cut and the dispatch (#233 prevention F). First-parent (not
+  // full reachability) keeps the rule "tag is on main proper" — a tag on
+  // a feature-branch tip merged via a PR is reachable but lives on the
+  // second-parent edge, which we still reject.
+  const chain = git.firstParentChain("refs/heads/main") ?? git.firstParentChain("main");
+  if (!chain) {
     return [
       {
         code: RELEASE_READINESS_DIAGNOSTIC_CODES.TagNotAtMain,
-        message: `tag \`${tagRef}\` (${tagSha.slice(0, 7)}) is not at \`main\` HEAD (${mainSha.slice(0, 7)}) — ADR-0020 requires tags cut from \`main\``,
+        message: "could not resolve `main` first-parent chain; tag readiness cannot be verified",
+      },
+    ];
+  }
+  if (!chain.includes(tagSha)) {
+    return [
+      {
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.TagNotAtMain,
+        message: `tag \`${tagRef}\` (${tagSha.slice(0, 7)}) is not on \`main\` first-parent history (HEAD ${mainSha.slice(0, 7)}) — ADR-0020 requires tags cut from \`main\``,
       },
     ];
   }

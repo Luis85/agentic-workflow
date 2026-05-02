@@ -132,6 +132,10 @@ This convention is documented in `docs/branching.md` and is the single answer re
 - `.claude/settings.json` — push deny for `main` and `develop`.
 - CLAR-V05-001 — open clarification resolved by this ADR.
 
+## Errata
+
+- **2026-05-02.** §Compliance reads "the readiness check validates the release source by asserting the tag commit is reachable from `main` and that the version on `main` matches the release tag." The first iteration of `scripts/lib/release-readiness.ts` implemented this with a strict `tag SHA == main HEAD SHA` comparison rather than reachability. During the v0.5.1 recovery dispatch (#233 prevention F) this strict reading tripped twice — once when an unrelated PR merged to `main` after the tag was cut, and again when a follow-up direct commit landed on `main` between the draft and stable dispatches. The check has been corrected to assert that the tag commit is on `main`'s **first-parent history** (one SHA per merge / direct commit, walking left parents from HEAD). This matches §Compliance's "reachable from `main`" wording and removes the tag-chase failure mode without weakening the rule that tags must originate on `main` proper — a tag on a feature-branch tip merged via a PR is still rejected because it sits on the second-parent edge. The decision recorded by this ADR — Shape A plus `release/vX.Y.Z`, with tags cut from `main` — is unchanged.
+
 ---
 
 > **ADR bodies are immutable.** To change a decision, supersede it with a new ADR; only the predecessor's `status` and `superseded-by` pointer fields may be updated.

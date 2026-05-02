@@ -157,6 +157,28 @@ function realGit(): GitInterface {
         return null;
       }
     },
+    firstParentChain(ref: string): readonly string[] | null {
+      // `git rev-list --first-parent <ref>` walks merge commits via their
+      // left parent only — exactly the chain a release tag may sit on per
+      // ADR-0020 §Compliance. Output is one SHA per line, newest first.
+      // Used by `checkTagOnMainHistory` to relax the strict-HEAD reading
+      // that tripped during the v0.5.1 recovery dispatch (#233 prevention F).
+      try {
+        const out = execFileSync(
+          "git",
+          ["rev-list", "--first-parent", ref],
+          {
+            cwd: repoRoot,
+            encoding: "utf8",
+            windowsHide: true,
+            stdio: ["ignore", "pipe", "ignore"],
+          },
+        );
+        return out.split(/\r?\n/).map((s) => s.trim()).filter((s) => s !== "");
+      } catch {
+        return null;
+      }
+    },
   };
 }
 
