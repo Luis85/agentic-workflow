@@ -74,9 +74,11 @@ Refuse if any required anchor is missing. Surface the offending heading.
 
 Stage rendered body files under `<repo-root>/.issue-breakdown-staging/` (gitignored). One file per slice plus one for the issue body.
 
-The PR body file is the template at `templates/issue-breakdown-pr-body-template.md` with placeholders substituted, then concatenated with the verbatim contents of `.github/PULL_REQUEST_TEMPLATE.md`.
+**Strip template frontmatter first.** Both `templates/issue-breakdown-pr-body-template.md` and `templates/issue-breakdown-issue-section.md` carry a leading YAML frontmatter block (`---\n…\n---\n`) required by `scripts/check-frontmatter.ts`. Before any placeholder substitution, peel off that block so it never reaches a PR body or issue update — leaking template metadata is user-visible noise *and* breaks the deterministic `<!-- BEGIN issue-breakdown:<slug> --> … <!-- END issue-breakdown:<slug> -->` sentinel matching on re-runs (an injected frontmatter block shifts the byte offsets the next render compares against). Concretely: read the template, drop everything from the first line up to and including the second `---` line on a line by itself, then operate on the remaining body.
 
-The issue body is rendered by reading the current issue body, finding the `<!-- BEGIN issue-breakdown:<slug> -->` … `<!-- END issue-breakdown:<slug> -->` block (if present), replacing its contents in-place; if absent, appending the template at the end. **Refuse** if a prior run is detected (slice-tag PRs exist) but the sentinel block is missing — surface the inconsistency.
+The PR body file is the frontmatter-stripped template body with placeholders substituted, then concatenated with the verbatim contents of `.github/PULL_REQUEST_TEMPLATE.md` (which has no frontmatter to strip).
+
+The issue body is rendered by reading the current issue body, finding the `<!-- BEGIN issue-breakdown:<slug> -->` … `<!-- END issue-breakdown:<slug> -->` block (if present), replacing its contents in-place with the frontmatter-stripped issue-section template body; if absent, appending that frontmatter-stripped body at the end. **Refuse** if a prior run is detected (slice-tag PRs exist) but the sentinel block is missing — surface the inconsistency.
 
 ### Step 7 — Per-slice loop (sequential)
 
