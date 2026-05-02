@@ -4,6 +4,15 @@ All notable changes to Specorator are documented here. Format follows [Keep a Ch
 
 ---
 
+## [v0.5.1] — 2026-05-02
+
+### Notes
+- Recovery release for v0.5: republishes a stable GitHub Release page after the `v0.5.0` publish dispatch hit GitHub's Immutable Releases tag-burn ([#233](https://github.com/Luis85/agentic-workflow/issues/233)). The `v0.5.0` tag remains permanently flagged "used by an immutable release" and cannot host a new Release.
+- Package contents are byte-equivalent to `v0.5.0` aside from version metadata in `package.json` and `package-lock.json`. No behavioural changes.
+- Repository setting "Immutable releases" is now disabled to prevent recurrence. Prevention work tracked under [#233](https://github.com/Luis85/agentic-workflow/issues/233).
+
+---
+
 ## [v0.5.0] — 2026-05-02
 
 ### Added
@@ -17,7 +26,7 @@ All notable changes to Specorator are documented here. Format follows [Keep a Ch
 
 ### Notes
 - npm `@luis85/agentic-workflow@0.5.0` shipped on 2026-05-02 to GitHub Packages.
-- The corresponding GitHub Release page exists only as a draft because the publish dispatch hit GitHub's Immutable Releases repo setting and the `v0.5.0` tag is now permanently flagged "used by an immutable release". Incident tracked in [#233](https://github.com/Luis85/agentic-workflow/issues/233); detail in `specs/version-0-5-plan/retrospective.md` §Incident. Package availability is unaffected.
+- The corresponding GitHub Release page exists only as a draft because the publish dispatch hit GitHub's Immutable Releases repo setting and the `v0.5.0` tag is now permanently flagged "used by an immutable release". Incident tracked in [#233](https://github.com/Luis85/agentic-workflow/issues/233); detail in `specs/version-0-5-plan/retrospective.md` §Incident. Package availability is unaffected. Recovery release: see `[v0.5.1]` above for the stable Release page.
 
 ---
 

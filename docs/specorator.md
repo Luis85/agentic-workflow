@@ -1,8 +1,8 @@
 # Specorator — Quality-Driven, Agentic Development Workflow
 
-**Version:** 0.5.0 · **Status:** Release infrastructure in review · **Purpose:** Spec-driven, agentic workflow template
+**Version:** 0.5.1 · **Status:** Release infrastructure in review · **Purpose:** Spec-driven, agentic workflow template
 
-v0.5.0 adds the release workflow, GitHub Release and Package distribution path, and fresh-surface package contract on top of the lifecycle, skills, automation, and quality-gate foundation.
+v0.5.1 is the recovery release for v0.5 — republishes the GitHub Release page after the Immutable Releases incident on the v0.5.0 publish dispatch ([#233](https://github.com/Luis85/agentic-workflow/issues/233)). v0.5.0 added the release workflow, GitHub Release and Package distribution path, and fresh-surface package contract on top of the lifecycle, skills, automation, and quality-gate foundation; v0.5.1 contents are byte-equivalent to v0.5.0 aside from version metadata.
 
 A solution-agnostic, **spec-driven** workflow for building software with humans and AI agents. Treats specifications as the source of truth and code as their artifact. Covers the full SDLC: Product → UX → UI → Engineering → Testing → Quality → Delivery → Operations.
 
