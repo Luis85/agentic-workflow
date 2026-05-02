@@ -20,6 +20,7 @@ export type BranchReadinessInput = {
 
 export type WorktreeHygieneInput = {
   registeredWorktrees: string[];
+  registeredWorktreeBranches?: Record<string, string>;
   worktreeDirectories: string[];
   mergedBranches: string[];
   currentBranch: string;
@@ -199,14 +200,30 @@ export function branchReadinessCheck(input: BranchReadinessInput): CheckResult {
  */
 export function worktreeHygieneCheck(input: WorktreeHygieneInput): CheckResult {
   const registeredNames = new Set(input.registeredWorktrees.map((entry) => normalizeWorktreeName(entry)).filter(Boolean));
+  const registeredBranches = input.registeredWorktreeBranches || {};
   const unregisteredDirectories = input.worktreeDirectories.filter((directory) => !registeredNames.has(directory));
   const staleBranches = input.mergedBranches.filter(
     (branch) => branch !== input.currentBranch && branch !== "main" && branch !== "develop",
   );
+  const registeredStaleWorktrees = input.registeredWorktrees
+    .map((worktreePath) => ({
+      path: worktreePath,
+      name: normalizeWorktreeName(worktreePath),
+      branch: registeredBranches[worktreePath] || "",
+    }))
+    .filter((entry) => entry.branch && staleBranches.includes(entry.branch));
+  const registeredStaleBranches = new Set(registeredStaleWorktrees.map((entry) => entry.branch));
 
   const warnings = [
-    ...unregisteredDirectories.map((directory) => `.worktrees/${directory} is not registered`),
-    ...staleBranches.map((branch) => `${branch} is already merged into origin/main`),
+    ...unregisteredDirectories.map(
+      (directory) => `.worktrees/${directory} is not registered (branch unknown; merge state unknown)`,
+    ),
+    ...registeredStaleWorktrees.map(
+      (entry) => `.worktrees/${entry.name} uses ${entry.branch}, already merged into origin/main`,
+    ),
+    ...staleBranches
+      .filter((branch) => !registeredStaleBranches.has(branch))
+      .map((branch) => `${branch} is already merged into origin/main`),
   ];
 
   if (warnings.length > 0) {
@@ -214,7 +231,7 @@ export function worktreeHygieneCheck(input: WorktreeHygieneInput): CheckResult {
       name: "worktrees",
       status: "warn",
       detail: `${input.registeredWorktrees.length} registered; ${warnings.length} hygiene warning(s)`,
-      hint: `${warnings.join("; ")}. After merged PRs are confirmed, remove stale worktrees/branches with the cleanup workflow.`,
+      hint: `${warnings.join("; ")}. Suggested action: run \`git worktree prune\`, then remove confirmed stale worktrees/branches with the cleanup workflow.`,
     };
   }
 

@@ -125,16 +125,14 @@ function checkWorktrees(): Check {
       const result = run("git", ["worktree", "list", "--porcelain"]);
       if (result.status !== 0) return { name: "worktrees", status: "fail", detail: "git worktree list failed" };
 
-      const registeredWorktrees = result.stdout
-        .split(/\r?\n/)
-        .filter((line) => line.startsWith("worktree "))
-        .map((line) => line.slice("worktree ".length));
+      const { registeredWorktrees, registeredWorktreeBranches } = parseWorktreePorcelain(result.stdout);
       const worktreeDirectories = worktreeDirectoryNames();
       const mergedBranches = mergedLocalBranches();
       const branch = run("git", ["branch", "--show-current"]);
 
       return worktreeHygieneCheck({
         registeredWorktrees,
+        registeredWorktreeBranches,
         worktreeDirectories,
         mergedBranches,
         currentBranch: branch.status === 0 ? firstLine(branch.stdout) : "",
@@ -192,6 +190,28 @@ function worktreeDirectoryNames(): string[] {
     .readdirSync(worktreesPath, { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name);
+}
+
+function parseWorktreePorcelain(output: string): {
+  registeredWorktrees: string[];
+  registeredWorktreeBranches: Record<string, string>;
+} {
+  const registeredWorktrees: string[] = [];
+  const registeredWorktreeBranches: Record<string, string> = {};
+  let currentPath = "";
+
+  for (const line of output.split(/\r?\n/)) {
+    if (line.startsWith("worktree ")) {
+      currentPath = line.slice("worktree ".length);
+      registeredWorktrees.push(currentPath);
+      continue;
+    }
+    if (currentPath && line.startsWith("branch ")) {
+      registeredWorktreeBranches[currentPath] = line.slice("branch ".length).replace(/^refs\/heads\//, "");
+    }
+  }
+
+  return { registeredWorktrees, registeredWorktreeBranches };
 }
 
 function mergedLocalBranches(): string[] {
