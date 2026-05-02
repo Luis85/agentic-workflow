@@ -104,6 +104,11 @@ jobs:
           RELEASE_CI_STATUS: ${{ vars.RELEASE_CI_STATUS }}
           RELEASE_VALIDATION_STATUS: ${{ vars.RELEASE_VALIDATION_STATUS }}
           RELEASE_QUALITY_WAIVER: ${{ vars.RELEASE_QUALITY_WAIVER }}
+          # `gh api` requires an explicit token via GH_TOKEN; without it
+          # the immutable-releases probe (#233 prevention E) silently
+          # fails through its catch block and the warning never fires
+          # in production dispatches (Codex P1 round 3 on PR #242).
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run check:release-readiness -- --json
 
       # Step 5 — build the candidate archive. The release pipeline runs the
