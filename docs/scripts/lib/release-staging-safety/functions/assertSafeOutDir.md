@@ -6,23 +6,28 @@
 
 # Function: assertSafeOutDir()
 
-> **assertSafeOutDir**(`outDir`, `repoRoot`): `void`
+> **assertSafeOutDir**(`outDir`, `repoRoot`, `__namedParameters?`): `void`
 
-Refuse to use `outDir` as a destructive `--out` target unless the path is
-obviously disposable.
+Refuse to use `outDir` as a build target unless the path is obviously safe.
 
-Rejects (in order):
+Always rejects:
 - the filesystem root, the user home, the repo root, or the repo parent;
-- any directory that is an ancestor of the repo root (would delete the
-  repo itself on clean);
-- an existing path that is not a directory;
+- any directory that is an ancestor of the repo root (would erase the
+  repo itself on a clean);
+- an existing path that is not a directory.
+
+Additionally, when `destructive` is true (default — the `cleanFirst`
+path), rejects:
 - an existing directory that contains a `.git` entry (almost certainly a
   real repository, never a disposable stage);
-- an existing non-empty directory that lacks the staging marker (could be
-  any maintainer's working dir; refuse to recursively delete it).
+- an existing non-empty directory that lacks the staging marker (could
+  be any maintainer's working dir; refuse to recursively delete it).
 
 Empty directories, non-existent paths, and previously-staged dirs (marker
-present) all pass.
+present) all pass. When `destructive` is false (the `--no-clean` path),
+any existing directory layout that survives the absolute-path guards
+passes — the build will write into it without erasing existing files,
+which is exactly what `--no-clean` promises (Codex P2 round-4 on PR #202).
 
 ## Parameters
 
@@ -33,6 +38,10 @@ present) all pass.
 ### repoRoot
 
 `string`
+
+### \_\_namedParameters?
+
+[`AssertSafeOutDirOptions`](../type-aliases/AssertSafeOutDirOptions.md) = `{}`
 
 ## Returns
 

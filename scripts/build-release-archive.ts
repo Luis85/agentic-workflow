@@ -113,7 +113,11 @@ try {
 }
 
 try {
-  assertSafeOutDir(parsed.outDir, repoRoot);
+  // The `.git`-entry and non-empty-without-marker rejections only fire on
+  // the destructive (`cleanFirst`) path; absolute-path guards run on both
+  // paths. `--no-clean` then preserves whatever already lives in the dir
+  // (Codex P2 round-4 on PR #202).
+  assertSafeOutDir(parsed.outDir, repoRoot, { destructive: parsed.cleanFirst });
 } catch (err) {
   console.error(`${heading}: ${(err as Error).message}`);
   process.exit(1);
