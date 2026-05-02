@@ -61,7 +61,10 @@ Look-it-up, normative. Authoritative; not narrative.
 - [`release-readiness-guide.md`](./release-readiness-guide.md) — Stage 10 go/no-go guide for product perspectives and stakeholder requirements.
 - [`release-operator-guide.md`](./release-operator-guide.md) — runnable operator path for publishing a tagged GitHub Release and (when enabled) a GitHub Package.
 - [`release-package-contents.md`](./release-package-contents.md) — fresh-surface contract for what ships in the released template package.
-- [`workflow-overview.md`](./workflow-overview.md) — one-page cheat sheet + slash-command list.
+- [`workflow-overview.md`](./workflow-overview.md) — one-page lifecycle cheat sheet.
+- [`slash-commands.md`](./slash-commands.md) — generated Claude Code slash-command inventory.
+- [`cross-tool/`](./cross-tool/) — walkthroughs for Codex, Cursor, Aider, Copilot, and Gemini.
+- [`onboarding/personas.md`](./onboarding/personas.md) — role-keyed first steps for product, engineering, team lead, solo builder, and non-Claude users.
 - [`ears-notation.md`](./ears-notation.md) — the requirement-syntax catalogue.
 - [`traceability.md`](./traceability.md) — the ID scheme and the requirement → spec → task → code → test chain.
 - [`obsidian-metadata.md`](./obsidian-metadata.md) — frontmatter compatibility rules for Obsidian source mode, Obsidian Properties UI, and repository checks.
