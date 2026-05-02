@@ -1,8 +1,45 @@
 {
-  "name": "agentic-workflow",
-  "version": "0.2.0",
-  "private": true,
+  "name": "@luis85/agentic-workflow",
+  "version": "0.5.0",
+  "description": "Specorator — template for spec-driven, agentic software development. The workflow is the deliverable.",
+  "keywords": [
+    "agents",
+    "agentic",
+    "claude-code",
+    "specorator",
+    "spec-driven",
+    "template",
+    "workflow"
+  ],
+  "homepage": "https://github.com/Luis85/agentic-workflow",
+  "bugs": {
+    "url": "https://github.com/Luis85/agentic-workflow/issues"
+  },
+  "license": "MIT",
+  "author": "Luis Mendez",
+  "repository": "https://github.com/Luis85/agentic-workflow",
   "type": "module",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
+  },
+  "files": [
+    ".claude/",
+    ".codex/",
+    ".github/",
+    "agents/",
+    "docs/",
+    "examples/",
+    "memory/",
+    "scripts/",
+    "sites/",
+    "templates/",
+    "tests/",
+    "AGENTS.md",
+    "CHANGELOG.md",
+    "CLAUDE.md",
+    "npm-shrinkwrap.json"
+  ],
   "scripts": {
     "doctor": "tsx scripts/doctor.ts",
     "self-check": "tsx scripts/self-check.ts",
@@ -15,6 +52,7 @@
     "roadmap:digest": "tsx scripts/roadmap-digest.ts",
     "roadmap:evidence": "tsx scripts/roadmap-evidence.ts",
     "typecheck:scripts": "tsc --project tsconfig.scripts.json --noEmit",
+    "test": "npm run test:scripts --",
     "test:scripts": "tsx scripts/test-scripts.ts",
     "check:fast": "tsx scripts/check-fast.ts",
     "check:content": "tsx scripts/check-content.ts",
@@ -35,6 +73,8 @@
     "check:roadmaps": "tsx scripts/check-roadmaps.ts",
     "check:traceability": "tsx scripts/check-traceability.ts",
     "check:token-budget": "tsx scripts/check-token-budget.ts",
+    "check:release-package-contents": "tsx scripts/check-release-package-contents.ts",
+    "check:release-readiness": "tsx scripts/check-release-readiness.ts",
     "docs:scripts": "typedoc --options typedoc.json",
     "fix": "tsx scripts/fix-generated.ts",
     "fix:obsidian": "tsx scripts/fix-obsidian.ts",

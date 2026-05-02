@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../../README.md)
+[**@luis85/agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../../modules.md) / [lib/runner](../README.md) / runNodeTasksJson
+[@luis85/agentic-workflow](../../../modules.md) / [lib/runner](../README.md) / runNodeTasksJson
 
 # Function: runNodeTasksJson()
 

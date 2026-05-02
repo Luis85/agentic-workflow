@@ -1,8 +1,8 @@
-[**agentic-workflow**](README.md)
+[**@luis85/agentic-workflow**](README.md)
 
 ***
 
-# agentic-workflow
+# @luis85/agentic-workflow
 
 ## Modules
 
@@ -18,6 +18,8 @@
 - [check-obsidian](check-obsidian/README.md)
 - [check-obsidian-assets](check-obsidian-assets/README.md)
 - [check-product-page](check-product-page/README.md)
+- [check-release-package-contents](check-release-package-contents/README.md)
+- [check-release-readiness](check-release-readiness/README.md)
 - [check-roadmaps](check-roadmaps/README.md)
 - [check-script-docs](check-script-docs/README.md)
 - [check-sites-tokens-mirror](check-sites-tokens-mirror/README.md)
@@ -47,6 +49,8 @@
 - [lib/obsidian](lib/obsidian/README.md)
 - [lib/obsidian-assets](lib/obsidian-assets/README.md)
 - [lib/quality-metrics](lib/quality-metrics/README.md)
+- [lib/release-package-contract](lib/release-package-contract/README.md)
+- [lib/release-readiness](lib/release-readiness/README.md)
 - [lib/repo](lib/repo/README.md)
 - [lib/roadmaps](lib/roadmaps/README.md)
 - [lib/runner](lib/runner/README.md)

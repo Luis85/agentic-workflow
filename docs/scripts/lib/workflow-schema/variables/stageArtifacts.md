@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../../README.md)
+[**@luis85/agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../../modules.md) / [lib/workflow-schema](../README.md) / stageArtifacts
+[@luis85/agentic-workflow](../../../modules.md) / [lib/workflow-schema](../README.md) / stageArtifacts
 
 # Variable: stageArtifacts
 

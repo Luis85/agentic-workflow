@@ -4,10 +4,10 @@ folder: "docs/scripts/test-scripts"
 description: "Entry point for generated API reference for the test-scripts script."
 entry_point: true
 ---
-[**agentic-workflow**](../README.md)
+[**@luis85/agentic-workflow**](../README.md)
 
 ***
 
-[agentic-workflow](../modules.md) / test-scripts
+[@luis85/agentic-workflow](../modules.md) / test-scripts
 
 # test-scripts

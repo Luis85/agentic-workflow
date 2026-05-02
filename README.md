@@ -350,6 +350,10 @@ Each arrow is a quality gate. See [`docs/workflow-overview.md`](docs/workflow-ov
 # Decisions:
 /adr:new
 
+# design:
+/design:frame    /design:handoff  /design:mock
+/design:sketch   /design:start
+
 # Discovery Track:
 /discovery:converge   /discovery:diverge    /discovery:frame
 /discovery:handoff    /discovery:prototype  /discovery:start
@@ -453,11 +457,12 @@ Full version in [`memory/constitution.md`](memory/constitution.md).
 | v0.1 | Done | Workflow definition, templates, agents, slash commands |
 | v0.2 | Done | Skills layer, operational bots, branching / verify / worktrees guides |
 | v0.3 | Done | [Worked end-to-end examples, artifact validation](specs/version-0-3-plan/release-notes.md) |
-| v0.4 | Planned | [CI quality gates, metrics, maturity model](specs/version-0-4-plan/tasks.md) |
+| v0.4 | Done | [CI quality gates, metrics, maturity model](specs/version-0-4-plan/release-notes.md) |
 | v0.5 | Planned | [Release workflow, branching strategy, GitHub Releases and Packages](specs/version-0-5-plan/tasks.md) |
 | v0.6 | Planned | [Productization, cross-tool adapters, live proof, hooks, and agentic security](specs/version-0-6-plan/tasks.md) |
 | v0.7 | Planned | [Automation quality hardening for agents and humans](https://github.com/Luis85/agentic-workflow/issues/98) |
 | v0.8 | Planned | [Content-driven product page generation](specs/version-0-8-plan/tasks.md) |
+| v0.8.1 | Planned | [Product box feature](docs/superpowers/plans/2026-05-01-product-box.md) ([issue #145](https://github.com/Luis85/agentic-workflow/issues/145)) |
 | v0.9 | Planned | [Stakeholder sparring partner for roadmap communication](specs/version-0-9-plan/tasks.md) ([issue #125](https://github.com/Luis85/agentic-workflow/issues/125)) |
 
 ---

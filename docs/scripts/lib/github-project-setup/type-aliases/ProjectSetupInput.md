@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../../README.md)
+[**@luis85/agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../../modules.md) / [lib/github-project-setup](../README.md) / ProjectSetupInput
+[@luis85/agentic-workflow](../../../modules.md) / [lib/github-project-setup](../README.md) / ProjectSetupInput
 
 # Type Alias: ProjectSetupInput
 

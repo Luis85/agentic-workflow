@@ -1,8 +1,8 @@
-[**agentic-workflow**](../../../README.md)
+[**@luis85/agentic-workflow**](../../../README.md)
 
 ***
 
-[agentic-workflow](../../../modules.md) / [lib/agent-artifacts](../README.md) / validateAgentArtifacts
+[@luis85/agentic-workflow](../../../modules.md) / [lib/agent-artifacts](../README.md) / validateAgentArtifacts
 
 # Function: validateAgentArtifacts()
 
