@@ -205,14 +205,16 @@ function realGit(): GitInterface {
 
 function realGitHub(): GitHubInterface {
   return {
-    latestReleaseImmutable(): boolean | null {
-      // `gh api repos/{owner}/{repo}/releases?per_page=1` returns an array
-      // of the most recent Releases (newest first). The `immutable` flag
-      // on entry [0] is the heuristic for whether the repo's Immutable
-      // Releases setting is on — see `checkRepoImmutableSetting` for why
-      // the heuristic is necessary. Empty array (no releases yet) and any
-      // gh / API error fail quiet to `null` — the warning is informational,
-      // not a gate, so a missing signal must not block dispatch.
+    immutableReleasesEnabled(): boolean | null {
+      // `gh api repos/{owner}/{repo}/immutable-releases` returns
+      // `{enabled: bool, enforced_by_owner: bool}`. The setting is on if
+      // either flag is true (org-level enforcement counts even when the
+      // repo's own toggle is off).
+      //
+      // Endpoint not found (older GitHub instances), API access denied
+      // (token lacks scope), or any network error fail quiet to `null` —
+      // the warning is informational, not a gate, so a missing signal
+      // must not block dispatch.
       //
       // GITHUB_REPOSITORY is set on every workflow run; locally, gh's
       // default repo (configured via `gh repo set-default` or the current
@@ -222,9 +224,9 @@ function realGitHub(): GitHubInterface {
           "gh",
           [
             "api",
-            "repos/{owner}/{repo}/releases?per_page=1",
+            "repos/{owner}/{repo}/immutable-releases",
             "--jq",
-            ".[0].immutable",
+            ".enabled or (.enforced_by_owner // false)",
           ],
           {
             cwd: repoRoot,

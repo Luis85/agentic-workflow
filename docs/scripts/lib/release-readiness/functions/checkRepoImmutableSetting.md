@@ -8,21 +8,20 @@
 
 > **checkRepoImmutableSetting**(`github`): [`ReadinessWarning`](../interfaces/ReadinessWarning.md)[]
 
-Probe the most recent Release for the `immutable` flag (#233 prevention E).
+Probe the "Immutable releases" repo setting (#233 prevention E).
 
-The GitHub `/repos/{owner}/{repo}` endpoint does not expose the
-"Immutable releases" repo setting today (UI-only beta), so the only way
-to detect that the setting is on is to look at the latest Release and
-check whether GitHub auto-flagged it immutable. This is a heuristic —
-the operator could in principle have toggled the setting between the
-latest Release and the current dispatch — but it is the best signal
-available before a publish and it is exactly the signal the v0.5.0
-incident retrospective surfaced as the missing precondition.
+Reads the setting directly via
+`GET /repos/{owner}/{repo}/immutable-releases`. When the endpoint
+returns `enabled: true` (or the org enforces the setting) every new
+Release on the repo is auto-flagged immutable; a failed asset upload
+or operator deletion then permanently burns the tag — exactly the
+v0.5.0 incident pattern.
 
-Returns one warning when the latest Release is immutable, none otherwise.
-Never returns a hard `Diagnostic` — the v0.5.0 incident showed the
-setting itself is not always operator-controlled (org-level defaults can
-propagate), so failing closed here would block legitimate dispatches.
+Returns one warning when the setting is on, none otherwise. Never
+returns a hard `Diagnostic` — the v0.5.0 retrospective showed the
+setting is not always operator-controlled (org-level defaults can
+propagate), so failing closed here could block legitimate dispatches
+against repos the operator does not own.
 
 ## Parameters
 

@@ -108,17 +108,21 @@ export const RELEASE_READINESS_WARNING_CODES = {
 
 /**
  * Minimal GitHub API facade for repository-state probes that the git CLI
- * cannot answer. {@link checkRepoImmutableSetting} uses this to inspect
- * the most recent Release's `immutable` flag — a workaround because the
- * `/repos/{owner}/{repo}` API does not currently expose the
- * "Immutable releases" repo setting (UI-only beta). Returns:
+ * cannot answer. {@link checkRepoImmutableSetting} uses this to read the
+ * "Immutable releases" repo setting directly via
+ * `GET /repos/{owner}/{repo}/immutable-releases` (Codex round 2 on
+ * PR #242 — the dedicated REST endpoint is documented and live, so the
+ * earlier most-recent-Release heuristic is unnecessary).
  *
- * - `true` — most recent Release is immutable (heuristic: setting is on).
- * - `false` — most recent Release is mutable (heuristic: setting is off).
- * - `null` — no Releases yet, or API error (fail quiet; no warning).
+ * Returns:
+ *
+ * - `true` — setting is enabled on the repo (or enforced by the org).
+ * - `false` — setting is explicitly disabled.
+ * - `null` — endpoint unavailable (older `gh` / API access denied / network
+ *   error). Fail quiet so a missing signal cannot block dispatch.
  */
 export interface GitHubInterface {
-  latestReleaseImmutable(): boolean | null;
+  immutableReleasesEnabled(): boolean | null;
 }
 
 /**
@@ -132,33 +136,32 @@ export interface ReadinessWarning {
 }
 
 /**
- * Probe the most recent Release for the `immutable` flag (#233 prevention E).
+ * Probe the "Immutable releases" repo setting (#233 prevention E).
  *
- * The GitHub `/repos/{owner}/{repo}` endpoint does not expose the
- * "Immutable releases" repo setting today (UI-only beta), so the only way
- * to detect that the setting is on is to look at the latest Release and
- * check whether GitHub auto-flagged it immutable. This is a heuristic —
- * the operator could in principle have toggled the setting between the
- * latest Release and the current dispatch — but it is the best signal
- * available before a publish and it is exactly the signal the v0.5.0
- * incident retrospective surfaced as the missing precondition.
+ * Reads the setting directly via
+ * `GET /repos/{owner}/{repo}/immutable-releases`. When the endpoint
+ * returns `enabled: true` (or the org enforces the setting) every new
+ * Release on the repo is auto-flagged immutable; a failed asset upload
+ * or operator deletion then permanently burns the tag — exactly the
+ * v0.5.0 incident pattern.
  *
- * Returns one warning when the latest Release is immutable, none otherwise.
- * Never returns a hard `Diagnostic` — the v0.5.0 incident showed the
- * setting itself is not always operator-controlled (org-level defaults can
- * propagate), so failing closed here would block legitimate dispatches.
+ * Returns one warning when the setting is on, none otherwise. Never
+ * returns a hard `Diagnostic` — the v0.5.0 retrospective showed the
+ * setting is not always operator-controlled (org-level defaults can
+ * propagate), so failing closed here could block legitimate dispatches
+ * against repos the operator does not own.
  */
 export function checkRepoImmutableSetting(github: GitHubInterface): ReadinessWarning[] {
-  const flag = github.latestReleaseImmutable();
+  const flag = github.immutableReleasesEnabled();
   if (flag === true) {
     return [
       {
         code: RELEASE_READINESS_WARNING_CODES.ImmutableRepo,
         message:
-          "the most recent Release on this repository was created immutable. " +
-          "If Repo Settings -> General -> Releases -> \"Immutable releases\" is on, " +
-          "every new Release will be auto-flagged immutable; a failed asset upload " +
-          "or operator deletion permanently burns the tag (#233). " +
+          "Repo Setting \"Immutable releases\" is ENABLED on this repository " +
+          "(GET /repos/{owner}/{repo}/immutable-releases returned enabled=true). " +
+          "Every new Release will be auto-flagged immutable; a failed asset " +
+          "upload or operator deletion permanently burns the tag (#233). " +
           "Disable the setting before dispatching, or accept the failure mode " +
           "knowingly.",
       },

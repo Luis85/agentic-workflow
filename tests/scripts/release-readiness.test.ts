@@ -706,8 +706,8 @@ test("tag readiness: unresolvable first-parent chain fails TagNotAtMain", () => 
   }
 });
 
-test("checkRepoImmutableSetting: latest Release immutable -> emits warning (#233 prevention E)", () => {
-  const github: GitHubInterface = { latestReleaseImmutable: () => true };
+test("checkRepoImmutableSetting: setting enabled -> emits warning (#233 prevention E)", () => {
+  const github: GitHubInterface = { immutableReleasesEnabled: () => true };
   const warnings = checkRepoImmutableSetting(github);
   assert.equal(warnings.length, 1, "expected exactly one warning");
   assert.equal(warnings[0].code, RELEASE_READINESS_WARNING_CODES.ImmutableRepo);
@@ -715,13 +715,13 @@ test("checkRepoImmutableSetting: latest Release immutable -> emits warning (#233
   assert.match(warnings[0].message, /tag/);
 });
 
-test("checkRepoImmutableSetting: latest Release mutable -> no warning", () => {
-  const github: GitHubInterface = { latestReleaseImmutable: () => false };
+test("checkRepoImmutableSetting: setting disabled -> no warning", () => {
+  const github: GitHubInterface = { immutableReleasesEnabled: () => false };
   assert.deepEqual(checkRepoImmutableSetting(github), []);
 });
 
-test("checkRepoImmutableSetting: probe failed (no releases / API error) -> no warning, fail-quiet", () => {
-  const github: GitHubInterface = { latestReleaseImmutable: () => null };
+test("checkRepoImmutableSetting: probe failed (endpoint missing / API error) -> no warning, fail-quiet", () => {
+  const github: GitHubInterface = { immutableReleasesEnabled: () => null };
   assert.deepEqual(
     checkRepoImmutableSetting(github),
     [],

@@ -7,20 +7,24 @@
 # Interface: GitHubInterface
 
 Minimal GitHub API facade for repository-state probes that the git CLI
-cannot answer. [checkRepoImmutableSetting](../functions/checkRepoImmutableSetting.md) uses this to inspect
-the most recent Release's `immutable` flag — a workaround because the
-`/repos/{owner}/{repo}` API does not currently expose the
-"Immutable releases" repo setting (UI-only beta). Returns:
+cannot answer. [checkRepoImmutableSetting](../functions/checkRepoImmutableSetting.md) uses this to read the
+"Immutable releases" repo setting directly via
+`GET /repos/{owner}/{repo}/immutable-releases` (Codex round 2 on
+PR #242 — the dedicated REST endpoint is documented and live, so the
+earlier most-recent-Release heuristic is unnecessary).
 
-- `true` — most recent Release is immutable (heuristic: setting is on).
-- `false` — most recent Release is mutable (heuristic: setting is off).
-- `null` — no Releases yet, or API error (fail quiet; no warning).
+Returns:
+
+- `true` — setting is enabled on the repo (or enforced by the org).
+- `false` — setting is explicitly disabled.
+- `null` — endpoint unavailable (older `gh` / API access denied / network
+  error). Fail quiet so a missing signal cannot block dispatch.
 
 ## Methods
 
-### latestReleaseImmutable()
+### immutableReleasesEnabled()
 
-> **latestReleaseImmutable**(): `boolean` \| `null`
+> **immutableReleasesEnabled**(): `boolean` \| `null`
 
 #### Returns
 
