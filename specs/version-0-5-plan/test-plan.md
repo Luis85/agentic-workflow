@@ -10,8 +10,8 @@ inputs:
   - SPECDOC-V05-001
   - TASKS-V05-001
   - PKG-CONTRACT-V05-001
-created: 2026-05-02
-updated: 2026-05-02
+created: 2026-05-04
+updated: 2026-05-04
 ---
 
 # Test plan — Version 0.5 release and distribution plan (Stage 8)
