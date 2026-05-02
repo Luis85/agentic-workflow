@@ -64,6 +64,7 @@
     "check:commands": "tsx scripts/check-command-docs.ts",
     "check:script-docs": "tsx scripts/check-script-docs.ts",
     "check:product-page": "tsx scripts/check-product-page.ts",
+    "check:public-surfaces": "tsx scripts/check-public-surfaces.ts",
     "check:sites-tokens-mirror": "tsx scripts/check-sites-tokens-mirror.ts",
     "check:workflow-docs": "tsx scripts/check-workflow-docs.ts",
     "check:frontmatter": "tsx scripts/check-frontmatter.ts",
