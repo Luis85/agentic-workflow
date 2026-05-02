@@ -131,9 +131,17 @@ jobs:
           flags=()
           if [ "${INPUT_PRERELEASE}" = "true" ]; then flags+=(--prerelease); fi
           if [ "${INPUT_DRAFT}" = "true" ]; then flags+=(--draft); fi
+          # `--verify-tag` makes `gh release create` fail if `vX.Y.Z` does not
+          # already exist (Codex P2 on PR #159). Without it, `gh release
+          # create` auto-creates the tag from `--target main` when it is
+          # missing, which would silently bypass the ADR-0020 requirement that
+          # the canonical tag is cut on main *before* the workflow runs.
+          # Layer 1 readiness already enforces this, but `--verify-tag` is a
+          # cheap defence-in-depth against a tag-race or readiness-gap path.
           gh release create "v${INPUT_VERSION}" \
             --target main \
             --title "v${INPUT_VERSION}" \
+            --verify-tag \
             --generate-notes \
             "${flags[@]}"
 
