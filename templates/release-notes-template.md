@@ -95,3 +95,4 @@ How to confirm the release is healthy in production.
 - [ ] Rollback plan documented.
 - [ ] Observability hooks in place.
 - [ ] Communication plan ready.
+- [ ] Merged worktrees pruned (`git worktree prune`) and stale topic worktrees/branches cleaned up.
