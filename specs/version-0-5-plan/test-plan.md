@@ -131,13 +131,13 @@ Expected: Layer 2 fails with `RELEASE_PKG_ADR` (numbered ADR files present), `RE
 
 **This is a defect finding, not a test failure.** See §5 of `test-report.md` for the formal finding.
 
-### 4.6 TEST-V05-005 — Targeted tests: release-readiness.test.ts and release-package-contract.test.ts
+### 4.6 TEST-V05-007 + TEST-V05-012 — Targeted tests: release-readiness.test.ts and release-package-contract.test.ts
 
 ```bash
 npm run test:scripts
 ```
 
-Expected: all tests pass. The full suite includes the 26 release-readiness tests and 18 release-package-contract tests.
+Expected: all tests pass. The full suite includes the 26 release-readiness tests (TEST-V05-007) and 18 release-package-contract tests (TEST-V05-012).
 
 ### 4.7 TEST-V05-008 — npm run verify (all gates)
 
