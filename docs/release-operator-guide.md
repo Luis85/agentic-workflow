@@ -24,8 +24,9 @@ You should already have:
 2. The canonical tag `vX.Y.Z` cut on `main` after the merge (never on the release branch). The workflow uses `gh release create … --verify-tag` and refuses to fall back to auto-tagging.
 3. Green v0.4 quality signals available to the readiness check, surfaced through the `RELEASE_*` repository variables (or an explicit operator waiver via `RELEASE_QUALITY_WAIVER`). See `scripts/lib/release-readiness.ts` (`QualitySignals`) for the contract.
 4. A GitHub Packages publish credential available to the workflow as `GITHUB_TOKEN` with `packages: write` already declared at the workflow level ([NFR-V05-001](../specs/version-0-5-plan/requirements.md)).
+5. **Repo Settings → General → Releases → "Immutable releases" is DISABLED.** When the setting is on, GitHub auto-flags every new Release immutable. If asset upload then fails — or the operator deletes the Release — the tag is **permanently burned**: the GitHub API returns HTTP 422 `tag_name was used by an immutable release` to every later attempt to host a Release on that tag, including a fresh draft. The v0.5.0 publish dispatch hit exactly this and forced the v0.5.1 recovery release ([#233](https://github.com/Luis85/agentic-workflow/issues/233); incident timeline in `specs/version-0-5-plan/retrospective.md` §Incident). Verify with `gh api repos/{owner}/{repo}/immutable-releases`. Per the GitHub REST contract the endpoint returns HTTP 404 (`Not Found`) when the setting is **disabled** — that is the safe state. HTTP 200 means the setting is enabled; the JSON body's `enforced_by_owner` field tells you whether the toggle came from this repo or an org-level default. Disable before dispatching, or accept the failure mode knowingly.
 
-If any of these is missing, **stop**. The readiness check will fail closed (preferred), but the operator should not paper over a missing precondition by retrying.
+If any of items 1–4 is missing, **stop**. The readiness check fails closed on those (preferred). Item 5 is owned by the operator: the v0.5.0 retrospective showed the setting is not always operator-controlled (org-level defaults can propagate via `enforced_by_owner: true`), so the readiness check cannot always fail closed on it without blocking legitimate dispatches against repos the operator does not own. Verify by hand before every dispatch.
 
 ## 2. Workflow inputs
 
@@ -132,6 +133,7 @@ Tag creation, GitHub Release publication, and GitHub Packages publication are **
 | Artifact is wrong (bad tarball, wrong fresh-surface) but the package is **not** published. | Edit the Release to `draft` in the UI to remove it from the public list, then supersede via `vX.Y.(Z+1)` with the corrected source. Update the broken Release's notes to point at the superseding tag. **Do not** delete or move the `vX.Y.Z` tag and **do not** rerun the workflow on the same `vX.Y.Z`. | The workflow's `RELEASE_READINESS_TAG_NOT_AT_MAIN` and `gh release create` (HTTP 422 on existing Release) both refuse a same-tag rerun once a fix lands on `main`; tag move / deletion are denied by `.claude/settings.json`. Same-version supersession is the only forward-only path the gates permit. [NFR-V05-005](../specs/version-0-5-plan/requirements.md). |
 | Artifact and package are published, and consumers will hit an issue. | Cut `vX.Y.(Z+1)` with a fix, deprecate the broken version on GitHub Packages (`npm deprecate @luis85/agentic-workflow@X.Y.Z "<reason>"`), and update the broken Release notes to point to the superseding version. **Do not** force-push or rewrite tags. | Force-push to `main` and tag deletion are denied by `.claude/settings.json` and break consumer caches; supersession preserves history. [NFR-V05-005](../specs/version-0-5-plan/requirements.md). |
 | Catastrophic problem (license violation, secret leak). | Yank the package version (`npm unpublish @luis85/agentic-workflow@X.Y.Z` within the registry's allowed window), make the Release a draft, file an incident, and supersede with `vX.Y.(Z+1)`. | Documented escape hatch; do not use for ordinary mistakes. |
+| Asset upload failed against a Release that GitHub auto-flagged immutable (Repo Setting → "Immutable releases" was on). | **Do NOT delete the Release.** GitHub blocks asset modification on a published immutable Release, so the existing tag cannot recover its asset. Either accept an asset-less Release and rely on `npm install @luis85/agentic-workflow@X.Y.Z` as the consumer-facing artifact, or supersede with `vX.Y.(Z+1)`. Then disable the Immutable Releases setting before the next dispatch. See §7.7. | Deleting an immutable Release **permanently burns the tag**: every later attempt to host a Release on that tag returns HTTP 422 `tag_name was used by an immutable release`. The v0.5.0 incident burned `v0.5.0` and forced the v0.5.1 recovery release ([#233](https://github.com/Luis85/agentic-workflow/issues/233)). |
 
 In every case, append an entry to `specs/version-X-Y-plan/release-notes.md` and the implementation log naming the rollback action and the superseding version.
 
@@ -283,6 +285,22 @@ If a Layer 1 quality signal is genuinely not available (e.g. v0.4 maturity evide
 
 A waiver with no recorded justification is a release defect.
 
+### 7.7 Immutable-release failures (create-time tag burn vs upload-time asset refusal)
+
+Two distinct failure points share root cause "Repo Setting → 'Immutable releases' was on at dispatch time and §1 pre-condition 5 was not honoured":
+
+- **Create-time tag burn** — `gh release create` itself fails with HTTP 422 `tag_name was used by an immutable release`. The tag was already used by a prior immutable Release on this repo (and possibly deleted), and GitHub permanently refuses any later Release on it. Recovery cannot run on the original tag — only path (2) below.
+- **Upload-time asset refusal** — `gh release create` succeeded but `gh release upload` (or the workflow's "Attach release asset" step) fails with `Cannot upload assets to an immutable release`. The Release exists; only the asset is missing.
+
+**Do not delete the Release in either case.** Deleting an immutable Release permanently burns the tag — see §6 rollback table for why and what that costs.
+
+GitHub's immutable-release contract blocks asset modification once a Release is published, and `gh release create` only attaches assets while the Release is still a draft. So for a *published* immutable Release with a missing asset — the v0.5.0 case — you cannot recover the asset on the existing tag. The two paths:
+
+1. **Accept an asset-less Release** *(only viable when the GitHub Package was already published this dispatch — i.e. `publish_package: true` and the workflow's package step ran cleanly)*. The npm package on GitHub Packages becomes the consumer-facing artifact (`npm install --save-dev @luis85/agentic-workflow@X.Y.Z`); document the missing asset in `specs/version-X-Y-plan/release-notes.md` §Known limitations and move on. The Release page still exists, the tag is still cut, the package is still installable. **Verify the package version actually published** before choosing this path — `npm view @luis85/agentic-workflow versions --registry https://npm.pkg.github.com` — because `publish_package` defaults to `false` and a draft / prerelease run typically skips it.
+2. **Ship a recovery release.** If (1) is not viable — package was never published, the Release page is the consumer-facing artifact, or the original tag is burned at create-time — bump to `vX.Y.(Z+1)`, restate the v0.5 incident pattern in the new release notes, disable the Immutable Releases setting **before** the new dispatch, and run the standard publish path. The original burned tag stays burned forever; only the new tag carries a stable Release. This is the path the v0.5.1 recovery release took, and the only path for a create-time tag burn.
+
+After either (1) or (2): disable the Immutable Releases setting if it is still on, update §1 pre-conditions in your operator runbook, and file the incident in the project's retrospective and `#233` punch list.
+
 ## 8. Post-release cleanup
 
 After a successful stable publish:
@@ -384,6 +402,16 @@ The release-readiness scripts emit machine-stable codes. Treat them as the contr
 | `RELEASE_PKG_INTAKE` | An enumerated intake folder shipped with state beyond a top-level `README.md`. |
 | `RELEASE_PKG_DOC_STUB` | A `docs/` page in the candidate archive is not in stub form. |
 | `RELEASE_PKG_STUB_TEMPLATE_MISSING` | `templates/release-package-stub.md` is missing — Layer 2 cannot validate. |
+
+### Operator-facing GitHub API errors
+
+These are not readiness diagnostics but `gh` API errors a release operator may see during dispatch or recovery; they map to documented incidents.
+
+| Error | Likely cause | Recovery |
+|---|---|---|
+| `tag_name was used by an immutable release` (HTTP 422) | Repo Setting → "Immutable releases" was on; a prior Release on this tag was created (and possibly deleted) under that setting and burned the tag. | §7.7. The tag cannot host a new Release; ship a recovery release on `vX.Y.(Z+1)`. |
+| `Cannot upload assets to an immutable release` (HTTP 422) | The current Release was auto-flagged immutable; asset upload via the API is refused. | §7.7. For a published immutable Release, accept an asset-less Release or supersede on `vX.Y.(Z+1)` — GitHub blocks asset modification post-publish, so neither API nor UI upload can recover. **Do not delete the Release.** |
+| `release already exists` (HTTP 422 from `gh release create`) | A Release for this tag exists from a prior dispatch (often a draft from the two-step CLAR-V05-003 path). | §7. Resume from the existing Release rather than rerunning the workflow as a recovery primitive — `gh release create` is not idempotent. |
 
 ## 11. References
 
