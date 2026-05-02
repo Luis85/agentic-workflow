@@ -4,6 +4,7 @@ import { repoRoot, walkFiles } from "./repo.js";
 const labels = new Map([
   ["adr", "Decisions"],
   ["discovery", "Discovery Track"],
+  ["issue", "Issue Breakdown Track"],
   ["portfolio", "Portfolio Track"],
   ["product", "Product"],
   ["project", "Project Manager Track"],

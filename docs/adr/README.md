@@ -34,6 +34,7 @@ Records of architecturally significant decisions. Format follows Michael Nygard'
 | [0019](0019-add-design-track.md) | Add a Design Track as an opt-in first-party workflow | Proposed |
 | [0020](0020-v05-release-branch-strategy.md) | Adopt Shape A with release/vX.Y.Z branches for v0.5 releases | Accepted |
 | [0021](0021-release-package-fresh-surface.md) | Ship the released template package as a fresh-surface starter | Accepted |
+| [0022](0022-add-issue-breakdown-track.md) | Adopt issue-breakdown track for parallelising post-tasks issue work | Proposed |
 <!-- END GENERATED: adr-index -->
 
 ## Conventions

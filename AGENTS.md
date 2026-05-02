@@ -54,9 +54,10 @@ Repo = **template for spec-driven, agentic software development**. Defines workf
 | **Portfolio** *(opt-in)* | `.claude/agents/portfolio-manager.md` | P5 Express X/Y/Z cycles. Reads `specs/*/workflow-state.md`; never modifies spec artifacts. | [`docs/portfolio-track.md`](docs/portfolio-track.md) ([ADR-0009](docs/adr/0009-add-portfolio-manager-role.md)) |
 | **Project scaffolder** *(opt-in)* | `.claude/agents/project-scaffolder.md` | Source-led onboarding from collected docs/folders. State lives `scaffolding/<slug>/`. | [`docs/project-scaffolding-track.md`](docs/project-scaffolding-track.md) ([ADR-0011](docs/adr/0011-add-project-scaffolding-track.md)) |
 | **Quality assurance** *(opt-in)* | `.claude/skills/quality-assurance/SKILL.md` | ISO 9001-aligned readiness review. State lives `quality/<slug>/`. | [`docs/quality-assurance-track.md`](docs/quality-assurance-track.md) |
+| **Issue-breakdown** *(opt-in)* | `.claude/agents/issue-breakdown.md` | Post-tasks. Issue → draft PRs. Appends log + hand-off. | [`docs/issue-breakdown-track.md`](docs/issue-breakdown-track.md) |
 | **Operational bots** | `agents/operational/` | Scheduled routines (review-bot, docs-review-bot, plan-recon-bot, dep-triage-bot, actions-bump-bot). `PROMPT.md` + `README.md` per bot. | — |
 
-Skills (`.claude/skills/`) = reusable how-tos any agent invokes (`verify`, `new-adr`, `review-fix`). Ten workflow-conductor skills (`orchestrate`, `project-scaffolding`, `discovery-sprint`, `stock-taking`, `sales-cycle`, `project-run`, `roadmap-management`, `portfolio-track`, `quality-assurance`, `specorator-improvement`) are the conversational entry points.
+Skills (`.claude/skills/`) = reusable how-tos any agent invokes (`verify`, `new-adr`, `review-fix`). Eleven workflow-conductor skills are the conversational entry points — see [`.claude/skills/README.md`](.claude/skills/README.md).
 
 ## Tool-specific notes
 

@@ -27,5 +27,9 @@ node_modules/
 # See docs/worktrees.md.
 .worktrees/
 
+# issue-breakdown skill — transient PR/issue body files staged for `gh ... --body-file`.
+# Never committed; deleted at end of run. See docs/issue-breakdown-track.md.
+.issue-breakdown-staging/
+
 # caveman:compress backups — kept locally for diff/sanity checks only.
 *.original.md

@@ -366,6 +366,9 @@ Each arrow is a quality gate. See [`docs/workflow-overview.md`](docs/workflow-ov
 # glossary:
 /glossary:new
 
+# Issue Breakdown Track:
+/issue:breakdown
+
 # Portfolio Track:
 /portfolio:start  /portfolio:x      /portfolio:y
 /portfolio:z
