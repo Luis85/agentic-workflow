@@ -3,7 +3,7 @@ id: PKG-CONTRACT-V05-001
 title: Version 0.5 package contract
 stage: implementation
 feature: version-0-5-plan
-status: draft
+status: accepted
 owner: pm
 inputs:
   - PRD-V05-001
@@ -176,3 +176,4 @@ Publishing is gated by explicit human authorization in the workflow dispatch inp
 | 2026-05-02 | Initial draft — T-V05-002 deliverable. Package identity, contents, exclusions, version source, consumer promise, install path, and open questions established. | pm |
 | 2026-05-02 | Clarified §3 lockfile shipping: the publication-canonical lockfile is `npm-shrinkwrap.json` (staged from `package-lock.json` by the release workflow), not `package-lock.json` directly. `npm pack` strips `package-lock.json` even when listed in `files`. T-V05-007 implementation surfaced the gap; resolves Codex round-3 P2 on PR #160 (lockfile actually ships under the canonical publication name, byte-equal to the codebase `package-lock.json`). | orchestrator |
 | 2026-05-02 | OQ-V05-003 closed by T-V05-013 — strip-and-stubify packaging step is now automated via `scripts/build-release-archive.ts` (with `scripts/lib/release-archive-builder.ts` and `scripts/lib/release-stubify.ts`). `.github/workflows/release.yml` step 5 calls the builder before `npm pack`; step 10 publishes the byte-identical staged tarball so the published archive equals the GitHub Release asset and reflects the build-time transform. Maintainers no longer strip manually. | dev |
+| 2026-05-02 | Status promoted from `draft` to `accepted`. All three open questions closed: OQ-V05-001 closed (repository is public, `publishConfig.access: "public"` confirmed); OQ-V05-002 closed by T-V05-007 (`package.json#files` glob aligned with `EXPECTED_PACKAGE_FILES`); OQ-V05-003 closed by T-V05-013 (build-time transform automated). Resolves review finding R-V05-005 (REVIEW-V05-001). | release-manager |
