@@ -31,6 +31,7 @@
 - Manual release steps must be recorded in release notes or readiness docs.
 - Release-package contents must preserve fresh-surface starter semantics for downstream adopters.
 - Generated release notes use `.github/release.yml`; update categories with Conventional Commit policy changes.
+- **Repo Setting → "Immutable releases" must be DISABLED before every release dispatch.** When on, GitHub auto-flags every new Release immutable; a failed asset upload — or operator deletion — permanently burns the tag. Verify the setting by hand; the readiness check cannot probe it (UI-only beta, not exposed by `/repos/{owner}/{repo}`). The v0.5.0 incident burned `v0.5.0` and forced the v0.5.1 recovery release ([#233](https://github.com/Luis85/agentic-workflow/issues/233)). The release operator guide §1 lists this as pre-condition 5 and §7.7 documents the recovery path.
 
 ## Rollback
 
