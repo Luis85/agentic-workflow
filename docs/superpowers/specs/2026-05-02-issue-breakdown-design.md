@@ -27,7 +27,7 @@ We need an integrated workflow that: (a) decomposes a `tasks.md` into vertical s
 ## Goals
 
 1. **Conversational entry point.** A new `/issue:breakdown <issue-number>` slash command and matching conductor skill drive the flow end-to-end, gating with `AskUserQuestion`.
-2. **Vertical-slice decomposition** of `tasks.md` rows into independent draft PRs via the existing `tracer-bullet` skill — no parallel slicing engine.
+2. **Vertical-slice decomposition** of `tasks.md` rows into independent draft PRs by parsing `specs/<slug>/tasks.md` (which is itself produced by `tracer-bullet` during `/spec:tasks`). The conductor does **not** dispatch `tracer-bullet` — `tasks.md` is the canonical input and already contains the slice structure, dependency graph, IDs, acceptance criteria, and Definition of Done. See "Slicing input" below.
 3. **Body-only PRs.** Each PR is opened with a generated body (spec lineage, task IDs, DoD, references, standard PR template) and a single empty scaffold commit (no source diff). Implementers write the first real commit.
 4. **Issue stays canonical.** Conductor edits the parent issue body once to add a `## Work packages` section linking each draft PR. GitHub's task-list-link feature auto-strikes entries when PRs close.
 5. **Branch per slice, off `main`.** Honours the repo's `branch per concern` rule. No worktrees pre-created — implementers run the worktree skill themselves when picking up a slice.
@@ -73,8 +73,9 @@ These are recorded in the ADR (see "Decisions" below).
    │                        existing PRs found → AskUserQuestion
    │                        (resume / re-plan / abort)
    │
-   ├─ Slice ─────────────── dispatch tracer-bullet skill on tasks.md
-   │                        → [{slug, goal, task_ids[], dod[], depends_on[]}]
+   ├─ Slice ─────────────── parse specs/<slug>/tasks.md
+   │                        (already produced by tracer-bullet in /spec:tasks)
+   │                        → [{ordinal, scope, goal, task_ids[], dod[], blocked_by[]}]
    │
    ├─ Confirm ──────────── AskUserQuestion: open drafts / edit / abort
    │
@@ -120,8 +121,9 @@ Updates to existing files:
 - `.claude/commands/README.md` — add `issue/` namespace.
 - `.claude/skills/README.md` — list new skill.
 - `AGENTS.md` — add row to skill table; add row to agent classes table.
-- `docs/sink.md` — declare sink for `specs/<slug>/issue-breakdown-log.md`.
+- `docs/sink.md` — add row for `specs/<slug>/issue-breakdown-log.md` (lifecycle: append-only; owner: `issue-breakdown` agent).
 - `CLAUDE.md` — link new track from "Other tracks (opt-in)" table.
+- `.gitignore` — add `.issue-breakdown-staging/` so transient PR/issue body files never land in version control.
 
 ### Conductor skill (`.claude/skills/issue-breakdown/SKILL.md`)
 
@@ -134,13 +136,35 @@ Body sections:
 3. Resolve spec lineage (3 fallback strategies).
 4. Verify gate (`tasks.md` complete).
 5. Idempotency check.
-6. Slice (dispatch `tracer-bullet`; parse output).
+6. Parse `tasks.md` (no skill dispatch; see "Slicing input" below).
 7. Confirm (single `AskUserQuestion`).
 8. Per-slice loop (branch → empty commit → push → draft PR).
 9. Update parent issue body (sentinel-bracketed re-edit zone).
 10. Audit log + hand-off note.
 11. Constraints (idempotent; never `--no-verify`; sequential; no `main` writes).
 12. References.
+
+### Slicing input — parsing `tasks.md`
+
+`tasks.md` is produced by the `tracer-bullet` skill during `/spec:tasks` and follows `templates/tasks-template.md`. It is **markdown**, not structured data. The conductor parses it directly using stable anchors that the template guarantees:
+
+| Field | Source in `tasks.md` |
+|---|---|
+| Ordinal `NN` | Conductor-assigned (1-based) over slice headings in document order. |
+| Task ID `T-<AREA>-NNN` | Per-slice heading line, regex `T-[A-Z0-9]+-\d{3}`. |
+| Slice goal | Slice heading text after the ID. |
+| Acceptance criteria | "Acceptance criteria" section under each slice (bullet list). |
+| Test approach | "Test approach" section under each slice. |
+| Risk level (L/M/H) | "Risk level" line. |
+| Blocked by | "Blocked by" line; comma-separated `T-<AREA>-NNN` list. |
+| DoD (whole spec) | Final "Definition of done" section. |
+
+This contract is fragile (heading-based regex). Two mitigations:
+
+1. The conductor refuses to proceed if any slice is missing one of the above anchors and surfaces the offending heading. This forces `tasks.md` authors (and `tracer-bullet`) to keep the template stable.
+2. A separate, deferred deliverable (out of scope here) may extend `tracer-bullet` to also emit a structured side-car (e.g. `specs/<slug>/tasks.json`). That extension is *not* a precondition for v1; if/when it lands, the conductor can switch to consuming it. This is recorded in the ADR's "consequences" as a deferred refinement.
+
+If a slice's `<goal>` is empty or `<area>` cannot be derived from `<AREA>`, the conductor refuses and surfaces the parse error.
 
 ### Subagent (`.claude/agents/issue-breakdown.md`)
 
@@ -155,9 +179,12 @@ tools: [Read, Edit, Write, Bash, Grep, Glob]
 Tool scoping rationale (per Article VI):
 
 - **Read / Grep / Glob** — read `specs/<slug>/`, `tasks.md`, templates.
-- **Edit / Write** — write `issue-breakdown-log.md`; staged PR/issue body files; one-line hand-off note in `workflow-state.md`.
+- **Edit / Write** —
+  - Write `specs/<slug>/issue-breakdown-log.md` (new artifact, owned by this agent — see "Sink update" below).
+  - Append one dated line to the `## Hand-off notes` free-form section of `specs/<slug>/workflow-state.md`. The frontmatter schema is **not** modified. This append is sanctioned by `docs/sink.md` line 423 ("the active feature's `workflow-state.md` gets a dated one-line entry appended … so the workflow has a paper trail") and is not exclusive to the orchestrator.
+  - Stage transient PR/issue body files under `<repo-root>/.issue-breakdown-staging/` (gitignored; never committed). Files are deleted at end of run. The PR body is fed to `gh` via `--body-file`.
 - **Bash** — `git`, `gh`. Pushes to `main` / `develop` already denied by `.claude/settings.json`. Branch pushes to `feat/*` allowed.
-- **No Agent tool** — no further dispatch; `tracer-bullet` runs as a Skill not a subagent.
+- **No Agent tool** — no further dispatch. `tasks.md` is parsed in-process; no sub-agent is spawned.
 
 ### Slash command (`.claude/commands/issue/breakdown.md`)
 
@@ -176,6 +203,7 @@ Run the issue-breakdown skill for issue #$ARGUMENTS.
 
 ```markdown
 <!-- Generated by issue-breakdown skill. Edit freely after first real commit. -->
+<!-- issue-breakdown-slice: issue-<issue-number>-<NN> -->
 
 ## Slice <NN>/<N>: <goal>
 
@@ -233,9 +261,11 @@ The `<!-- BEGIN ... -->` / `<!-- END ... -->` sentinel comments delimit the cond
 
 ### Phase 2 — operational bot
 
-`agents/operational/issue-breakdown-bot/PROMPT.md` is the source-of-truth prompt loaded by the scheduled GitHub Action. Same logic as the conductor agent, with these differences:
+`agents/operational/issue-breakdown-bot/PROMPT.md` is the source-of-truth prompt loaded by the scheduled GitHub Action. **It is a stand-alone file**, not a transclusion of the conductor agent. The two are kept in sync by both being derived from the same design spec (this document) and by a smoke-test that runs the same fixture through both surfaces. This matches the existing operational-bot precedent (`agents/operational/review-bot/PROMPT.md` is also stand-alone).
 
-- Headless: no `AskUserQuestion`. Auto-picks "Open drafts" at confirm step; auto-picks "Resume" at idempotency check.
+Behaviour differences from Phase 1:
+
+- Headless: no `AskUserQuestion`. Auto-picks "Open drafts" at confirm step; auto-picks "Resume" at idempotency check; refuses on any condition Phase 1 would surface as a clarification (missing sentinel, multiple spec candidates, dirty tree N/A in CI, etc.).
 - Reads issue context from the GitHub Action environment (`GITHUB_EVENT_PATH` issue payload).
 - On finish: removes `breakdown-me` label, comments `Created N draft PRs: #x #y …`.
 - On error: comments error trace, leaves the label so the issue is visibly stuck.
@@ -254,7 +284,7 @@ jobs:
     permissions:
       issues: write
       pull-requests: write
-      contents: write
+      contents: write          # branch push for feat/* only
     concurrency:
       group: issue-breakdown-${{ github.event.issue.number }}
       cancel-in-progress: false
@@ -263,7 +293,15 @@ jobs:
       # Run Claude Code action with PROMPT.md + issue context.
 ```
 
-Bot ships in a follow-up PR after the conductor stabilises. The two share `PROMPT.md` content via reference (bot's `PROMPT.md` includes the conductor agent body and overrides the gating sections).
+Branch prefix is `feat/` (same as Phase 1) so a single set of branch-protection rules covers both. The GitHub Action's `GITHUB_TOKEN` is the credential — repo `.claude/settings.json` deny rules govern only Claude-driven local pushes; CI pushes go through the Action token, which inherits branch-protection rules but not the local Claude permission set.
+
+**Phase 1 / Phase 2 coupling.** To keep the bot a follow-up rather than co-shipped, Phase 1 must:
+
+- Centralise gating logic in clearly-marked sections of the conductor skill body (so Phase 2 can mirror the same step boundaries without copying gating UI).
+- Avoid encoding Phase-2-only state (workflow run inspection, label removal) in Phase 1 surfaces.
+- Document the contract between conductor and `tasks.md` (the "Slicing input" section above) so Phase 2 can implement the same parser independently.
+
+No source code or prompt content is shared between them at v1.
 
 ## Data flow
 
@@ -298,7 +336,59 @@ issue-breakdown agent
                          ## Work packages section (sentinel-bracketed)
 ```
 
-## Edge cases
+## Naming, identifiers, and conventions
+
+Three identifier schemes coexist; this section pins them to avoid ambiguity:
+
+| Token | Domain | Example |
+|---|---|---|
+| `<NN>` | Conductor-assigned slice ordinal, 1-based, zero-padded to 2 digits. Document order in `tasks.md`. | `01`, `02` |
+| `T-<AREA>-NNN` | Inner task ID(s) inside the slice, sourced from `tasks.md`. | `T-AUTH-014` |
+| `<AREA>` | Uppercase area code from the spec's `workflow-state.md` (e.g. `AUTH`). Used in IDs. | `AUTH` |
+| `<area>` | Lowercase Conventional Commits scope, derived as `<AREA>.toLowerCase()` unless the feature's `workflow-state.md` declares an override. | `auth` |
+| `<short>` | Kebab-case short title, derived from slice goal: lowercase, ASCII-only, ≤32 chars. | `password-reset` |
+| `<slug>` | Feature slug (matches `specs/<slug>/`). | `password-reset` |
+
+Derived strings:
+
+- **Branch name**: `feat/<slug>-slice-<NN>-<short>` — kebab-case, hard-capped at 60 chars; if exceeded, `<short>` is truncated.
+- **PR title**: `feat(<area>): <goal> (slice <NN>/<N>)` — Conventional Commits scope (lowercase). Validated against `.github/workflows/pr-title.yml`.
+- **Empty scaffold commit message**: `chore(<area>): scaffold <T-<AREA>-NNN> slice` — `chore`, not `scaffold`, to match repo's existing CC type set.
+- **Slice tag** (PR body discriminator): `<!-- issue-breakdown-slice: issue-<n>-<NN> -->` — primary idempotency key (preferred over `Refs #<n>` which matches any PR mentioning the issue).
+
+## CI implications of body-only / empty-commit PRs
+
+The repo's verify gate is **manual** — no `.husky/` directory and no client-side `pre-commit` hook is installed. `npm run verify` is run by the human/agent before push. Empty commits therefore pass locally without ceremony.
+
+CI gates that *do* run on PR open:
+
+- **`pr-title.yml`** — Conventional Commits validation. PR title format above complies.
+- **`verify.yml`** — runs `npm run verify` in CI on PR. With zero source diff, every check should be a no-op pass; nothing runs against changed files. The conductor does **not** suppress this CI run; reviewers expect it to be green.
+- **`gitleaks.yml` / `typos.yml` / `actionlint.yml` / `zizmor.yml`** — secret scan, typo check, action-lint, GHA security. All no-op on empty diffs.
+- **GitHub Pages deploy (`pages.yml`)** — only triggers on `main` writes; not affected.
+
+If any CI gate fails on an empty PR, that's a CI misconfiguration to fix at the gate, not a reason to skip the gate (`--no-verify` remains forbidden by `.claude/settings.json` and `feedback_verify_gate.md`).
+
+The conductor also does **not** create changesets. Empty PRs deliberately have no user-facing change to release-note. Implementers add changesets in their first real commit if the slice is user-visible.
+
+## Sink update — `specs/<slug>/issue-breakdown-log.md`
+
+Lifecycle classification (per `docs/sink.md`): **append-only**. Same shape as `implementation-log.md`. Added by this PR to the sink table:
+
+| Path | Owner | Lifecycle | Notes |
+|---|---|---|---|
+| `specs/<slug>/issue-breakdown-log.md` | `issue-breakdown` agent | append-only | Audit log of `/issue:breakdown` runs against this feature. Free-form markdown; no schema. |
+
+The append-only contract mirrors `implementation-log.md`: dated entries, never rewritten, agents may refine wording but historical narrative survives.
+
+## Idempotency — concurrency model and failure modes
+
+The sentinel-bracketed re-edit zone is the conductor's idempotency primitive. Its limits, made explicit:
+
+- **No optimistic lock.** `gh issue edit --body` is last-write-wins. Two concurrent runs (e.g. interactive conductor + label-triggered bot in Phase 2) can race. Phase 2 mitigates this with a workflow `concurrency.group: issue-breakdown-${{ github.event.issue.number }}` so a queued bot run waits for an earlier one. Phase 1 (interactive) is single-user-per-tty by construction; the conductor checks for an in-flight Phase 2 run by inspecting the workflow run list before proceeding.
+- **In-block edits are silently overwritten.** Anything a human writes between `<!-- BEGIN issue-breakdown:<slug> -->` and `<!-- END issue-breakdown:<slug> -->` is replaced on re-run. The block is conductor-owned. Humans annotate *outside* the block.
+- **Missing block on a known-prior-run issue.** If `gh pr list --search "issue-breakdown-slice: issue-<n>" --state all` returns ≥ 1 PR but the issue body has no `BEGIN/END` block, the conductor **refuses** and surfaces: "prior run detected (PRs #x #y) but issue body block missing — restore manually or pass `--force-rebuild` to re-emit." It never silently appends a second block.
+- **Discriminator.** Idempotency on the PR side keys off the `<!-- issue-breakdown-slice: issue-<n>-<NN> -->` HTML comment in the PR body — searched via `gh pr list --search`. `Refs #<n>` is informational only, not the key.
 
 | Case | Handling |
 |---|---|
@@ -311,10 +401,14 @@ issue-breakdown agent
 | `verify` hook fails on empty commit | Triage; never `--no-verify`. Empty commit means no source diff; failures indicate a hook misconfiguration to fix. |
 | `gh pr create` fails (rate limit / perms) | Abort run; partial state recoverable via re-run idempotency. Audit log records what got created before the failure. |
 | User has 2+ candidate `specs/<slug>/` matches | `AskUserQuestion` to disambiguate. |
-| `tracer-bullet` returns 0 slices | Surface to user; abort. |
-| `tracer-bullet` returns 1 slice | Confirm — single PR may not need this skill. Offer to abort. |
+| `tasks.md` parse yields 0 slices | Surface to user; abort. |
+| `tasks.md` parse yields 1 slice | Confirm — single PR may be more friction than `gh pr create --draft` by hand. Offer to abort. |
+| `tasks.md` parse missing required anchor (heading, ID, AC, DoD) | Hard-stop. Surface offending heading. Direct user to fix `tasks.md` or re-run `tracer-bullet`. |
 | Issue body has no `specs/` link AND no `spec:` label | `AskUserQuestion` lists all `tasks.md`-complete features. |
 | User aborts confirmation | No git or gh side-effects. |
+| Sentinel block in issue body deleted between runs | Refuse and surface (see Idempotency section). Offer `--force-rebuild`. |
+| Concurrent run already in flight (Phase 2 active) | Refuse; report active workflow run; suggest waiting. |
+| Empty PR's `verify.yml` CI passes but reviewer expects diff | Documented in PR template; reviewer-side education, not a defect. |
 
 ## Verify-gate impact
 
@@ -343,8 +437,9 @@ ADR captures:
   3. Mechanical 1:1 task→PR (rejected: ignores blockedBy chains, produces tiny PRs).
 - **Consequences.**
   - **Positive.** Standard surface for parallelisable work; preserves spec lineage in PR bodies; idempotent.
-  - **Negative.** Extra skill+agent+bot to maintain; coupled to `tracer-bullet` shape (drift risk); empty-commit per slice is mildly noisy in `git log`.
-  - **Neutral.** New audit-log artifact under `specs/<slug>/`; no schema change.
+  - **Negative.** Extra skill+agent+bot to maintain; coupled to the heading layout of `templates/tasks-template.md` (drift risk if `tracer-bullet` rewrites the template — mitigated by the conductor's "refuse on missing anchor" rule); empty-commit per slice is mildly noisy in `git log`; sentinel-block re-edits are last-write-wins (documented above).
+  - **Neutral.** New append-only audit-log artifact under `specs/<slug>/issue-breakdown-log.md`; no schema change to `workflow-state.md`.
+  - **Deferred refinement.** A structured side-car (`specs/<slug>/tasks.json`) emitted by `tracer-bullet` would replace the regex parser. Out of scope for v1.
 
 ## Testing strategy
 
@@ -361,13 +456,22 @@ ADR captures:
 | Phase 2 | Operational bot + Action workflow | Follow-up |
 | Phase 3 | Optional refinements (e.g., GitHub Project board sync, CODEOWNERS-aware PR assignees) | Backlog |
 
+## Bootstrap — first-run caveat
+
+The conductor doesn't exist when the work to *build it* starts. The dogfood plan ("first slice PR is the conductor itself, subsequent slices are templates / ADR / docs / bot") therefore requires:
+
+1. Bootstrap by hand: open the tracking issue, run `/spec:start … /spec:tasks` through `/orchestrate`, then **manually open the first ~3 draft PRs** (conductor skill + slash command + agent) using `gh pr create --draft` from the user's terminal.
+2. Once those PRs merge and the conductor is on `main`, run `/issue:breakdown <n>` against the same tracking issue. Idempotency (sentinel-block check + slice-tag search) ensures the already-merged PRs are recognised and only the *remaining* slices are opened.
+
+This is a one-time bootstrap; subsequent issues use the conductor end-to-end.
+
 ## Open questions
 
-None at design time. All material questions resolved during brainstorming. Surfaces to revisit during planning:
+All material questions resolved. Items to confirm during planning:
 
-- Exact format of `tracer-bullet`'s output that the conductor parses (heading-based regex vs. structured emit).
-- Whether the empty scaffold commit should be `chore(<area>):` or `scaffold(<area>):` (existing repo uses `chore` for non-functional commits — go with `chore`).
+- Whether the empty scaffold commit message should be `chore(<area>):` or `chore(scope):` — go with `chore(<area>)` to mirror the PR title's scope.
 - Whether to emit the audit log in YAML frontmatter + body, or pure markdown (markdown for v1; promote to YAML if downstream tooling needs it).
+- Whether `<AREA>` casing override (lowercase scope distinct from uppercase ID prefix) needs a `workflow-state.md` field — current plan: derive `<area>` mechanically as `<AREA>.toLowerCase()`, no field added.
 
 ## References
 
