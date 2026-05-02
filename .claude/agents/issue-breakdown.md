@@ -59,16 +59,29 @@ If `gh search` proves unreliable for the literal tag, fall back: `gh pr list --s
 
 ### Step 5 — Parse tasks.md
 
-Parse `specs/<slug>/tasks.md` per the spec's "Slicing input" section:
+Parse `specs/<slug>/tasks.md` per the spec's "Slicing input" section. The parser must work on **both** the canonical `templates/tasks-template.md` shape *and* the legacy shape used by every pre-template `tasks.md: complete` feature in the repo (e.g. `specs/version-0-6-plan/tasks.md` — `### T-V06-001 - Decide steering profile location`, no emoji, hyphen separator, no `## Task list` / `## Parallelisable batches` / `## Quality gate` subheaders). Be liberal in what you accept; only the things that are genuinely required to compute slices are hard-stops.
 
-- Required headings: `## Parallelisable batches`, `## Task list`.
-- Per-batch line: `- **Batch N:** T-<AREA>-NNN, T-<AREA>-NNN, …`. One slice per batch (zero-padded ordinal).
-- Per-task heading: `### T-<AREA>-NNN <emoji-block> — <short title>`. The `<emoji-block>` is one or more of the legend emojis (`🧪 🔨 📐 📚 🚀 🪓`) — `templates/tasks-template.md` requires `🪓` to be added *in addition to* the task-type emoji on may-slice tasks (e.g. `### T-AUTH-014 🔨🪓 — Password reset`), so the parser must accept the full set in any order, with or without separating spaces. Use a regex along the lines of `^### (T-[A-Z0-9]+-\d{3})\s+([🧪🔨📐📚🚀🪓\s]+?)\s+— (.+)$` and post-process the captured `<emoji-block>` to detect the may-slice flag.
-- Per-task fields: `**Description:**`, `**Definition of done:**`, `**Depends on:**`.
-- `🪓 may-slice` flag is present when the captured `<emoji-block>` contains `🪓` (anywhere in the run); such tasks override the batch grouping and split into their own slice using the `**Slice plan:**` line. Tasks without `🪓` are batched per `## Parallelisable batches`.
-- Final gate: `## Quality gate` (copied verbatim into each PR's DoD block).
+**Hard requirements (refuse + surface offending location if missing):**
 
-Refuse if any required anchor is missing. Surface the offending heading.
+- The file exists and contains at least one `### T-<AREA>-NNN …` heading.
+- Each task heading carries a `**Description:**` bullet underneath it.
+
+**Optional anchors (synthesise sensible defaults when absent):**
+
+| Anchor | If present | If absent |
+|---|---|---|
+| `## Task list` | Use it as the section boundary; only `### T-…` headings inside count. | Treat every `### T-<AREA>-NNN …` heading in the file as a task. |
+| `## Parallelisable batches` | One slice per `- **Batch N:** T-…, T-…` line; zero-pad ordinal `<NN>`. | Synthesise a single batch containing every task in document order — yields one PR. Surface the synthesis to the conductor so the user can confirm or abort. |
+| `## Quality gate` | Copied verbatim into every PR body's DoD block. | Use the default DoD shipped in `templates/issue-breakdown-pr-body-template.md` (verify green, all task IDs done, tests pass, docs updated, PR template complete). |
+| `**Definition of done:**` per task | Aggregated into the slice DoD. | Skip the per-task aggregation; the slice DoD falls back to the (possibly-default) `## Quality gate`. |
+| `**Depends on:**` per task | Cross-check that the batch is independent — surface a warning if not. | No cross-check. |
+| `**Satisfies:**` per task | Surface in the slice's "Spec lineage" block. | Omit. |
+
+**Per-task heading regex (legacy + canonical):** `^### (T-[A-Z0-9]+-\d{3})(?:\s+([🧪🔨📐📚🚀🪓\s]+?))?\s+[—-]\s+(.+)$`. Three capture groups: task ID, optional `<emoji-block>` (one or more of `🧪 🔨 📐 📚 🚀 🪓` in any order, with or without spaces), short title. Either em-dash (`—`) or ASCII hyphen-with-spaces (`-`) is accepted as the separator. The `<emoji-block>` is optional — legacy headings have none.
+
+**`🪓 may-slice` flag** fires when the captured `<emoji-block>` contains `🪓`. Legacy headings without an emoji-block are never may-slice. May-slice tasks override the batch grouping and split into their own slice using the `**Slice plan:**` bullet under the heading (when present); when `**Slice plan:**` is also absent, treat the may-slice task as one slice on its own.
+
+**Refuse-on-missing-anchor surfaces the offending location** (file path + line number) and tells the user to either fix `tasks.md` or re-run `tracer-bullet`.
 
 ### Step 6 — Render PR body and issue section
 
@@ -123,9 +136,39 @@ Append one dated line to the `## Hand-off notes` free-form section of `specs/<sl
 2026-05-02 (issue-breakdown): opened N draft PRs for issue #<n> (#<x>-#<y>).
 ```
 
+### Step 10.5 — Persist audit + hand-off edits on a housekeeping branch
+
+Steps 9 + 10 have just appended to two tracked files (`specs/<slug>/issue-breakdown-log.md` and `specs/<slug>/workflow-state.md`). Leaving them uncommitted breaks Step 1's `git status --porcelain` clean-tree gate on the next run *and* loses the audit trail unless the operator commits by hand. The conductor commits them itself on a small housekeeping branch — never on the integration branch (which is push-denied per `.claude/settings.json`).
+
+Sequence (ordered, on `<integration-branch>` after the per-slice loop has switched back):
+
+```bash
+# Run-id is YYYYMMDDHHMM (UTC, minute granularity) so re-runs in the same minute
+# collide loudly rather than silently overwrite.
+RUNID=$(date -u +%Y%m%d%H%M)
+HOUSEKEEPING="chore/issue-breakdown-audit-issue-<n>-${RUNID}"
+
+git switch -c "${HOUSEKEEPING}" <integration-branch>
+git add specs/<slug>/issue-breakdown-log.md specs/<slug>/workflow-state.md
+git commit -m "chore(issue-breakdown): record /issue:breakdown run for issue #<n>"
+git push -u origin "${HOUSEKEEPING}"
+
+gh pr create \
+  --base <integration-branch> \
+  --head "${HOUSEKEEPING}" \
+  --title "chore(issue-breakdown): record run for issue #<n>" \
+  --body "Audit log + hand-off note appended by the issue-breakdown conductor for issue #<n>. Created N draft slice PRs (#<x>-#<y>); see specs/<slug>/issue-breakdown-log.md for the run record. Safe to merge whenever convenient — does not block the slice PRs."
+
+git switch <integration-branch>
+```
+
+Capture the housekeeping PR number into the run summary (Step 10 of the conductor skill prints it alongside the slice PRs). The housekeeping PR is **non-draft** because it is small, safe, and unambiguous; `verify` runs on it as an empty-content concern (no source diff, only docs append).
+
+If `git push` to the housekeeping branch is denied (e.g. the operator's permissions don't allow `chore/*` pushes), surface the failure with the local commit SHA so the operator can rescue the audit trail manually. Do not silently swallow.
+
 ### Step 11 — Cleanup
 
-`rm -rf .issue-breakdown-staging/` at end of run.
+`rm -rf .issue-breakdown-staging/` at end of run. Working tree is clean — Step 10.5 has committed and pushed the audit + hand-off edits.
 
 ## Constraints
 

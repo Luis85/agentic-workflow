@@ -35,6 +35,11 @@ Not for:
 - A `## Work packages` section appended to the parent issue body inside a sentinel-bracketed re-edit zone.
 - A new append-only `specs/<slug>/issue-breakdown-log.md` with one timestamped entry per run.
 - One dated line appended to the `## Hand-off notes` free-form section of `specs/<slug>/workflow-state.md`.
+- One non-draft `chore(issue-breakdown)` PR (cut from the integration branch on a `chore/issue-breakdown-audit-issue-<n>-<runid>` branch) carrying those two append commits, so the working tree is left clean for the next `/issue:breakdown` run.
+
+## Legacy `tasks.md` support
+
+`/issue:breakdown` runs against any feature with a `tasks.md` (legacy or canonical). Only two anchors are hard-required: at least one `### T-<AREA>-NNN …` heading and a `**Description:**` bullet under it. `## Task list`, `## Parallelisable batches`, `## Quality gate`, the per-task `**Definition of done:**`, and `**Depends on:**` are optional — the parser synthesises sensible defaults when they are absent. When `## Parallelisable batches` is missing, the conductor synthesises a single batch containing every task in document order (one PR) and surfaces the synthesis at the confirm step. Heading separator may be either em-dash (`—`) or ASCII hyphen-with-spaces (`-`); emoji-block is optional.
 
 ## Flow
 
@@ -46,12 +51,16 @@ Not for:
    │                        → AskUserQuestion (list candidates).
    ├─ Verify gate ───────── workflow-state.md tasks.md == complete?
    ├─ Idempotency ───────── gh pr list --search slice-tag → resume / re-plan / abort.
-   ├─ Parse tasks.md ────── ## Parallelisable batches → slice list.
+   ├─ Parse tasks.md ────── ## Parallelisable batches → slice list
+   │                        (or single synthesised batch if absent).
    ├─ Confirm ──────────── AskUserQuestion (open / edit / abort).
    ├─ Per-slice loop ────── branch → empty commit → push → draft PR.
    ├─ Update issue body ─── sentinel-bracketed ## Work packages section.
    ├─ Audit log ────────── append specs/<slug>/issue-breakdown-log.md.
-   └─ Hand-off note ────── append one line to workflow-state.md.
+   ├─ Hand-off note ────── append one line to workflow-state.md.
+   └─ Persist audit ────── housekeeping branch + non-draft chore PR for
+                            the audit + hand-off appends so working tree is
+                            clean for the next /issue:breakdown run.
 ```
 
 ## Constraints

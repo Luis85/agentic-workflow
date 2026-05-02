@@ -74,9 +74,9 @@ If the agent returns `parse-error`, surface the offending heading to the user an
 
 ### Step 6 — Confirm slices
 
-Batch one `AskUserQuestion`. Include the integration branch the agent resolved in Step 1 so the user can spot a Shape-A vs Shape-B mismatch before any PR is opened:
+Batch one `AskUserQuestion`. Include the integration branch the agent resolved in Step 1 so the user can spot a Shape-A vs Shape-B mismatch before any PR is opened, and surface whether the slice list came from a real `## Parallelisable batches` section or was synthesised because that section was absent (legacy `tasks.md`):
 
-> N slices computed from `## Parallelisable batches` in `tasks.md`:
+> N slices computed from `## Parallelisable batches` in `tasks.md` *(or: `tasks.md` has no `## Parallelisable batches` section — single batch synthesised from all tasks in document order)*:
 >
 > - 01 — <goal> (T-AUTH-001, T-AUTH-005)
 > - 02 — <goal> (T-AUTH-002)
@@ -106,12 +106,19 @@ Agent renders and applies the sentinel-bracketed `## Work packages` section to t
 
 Agent writes `specs/<slug>/issue-breakdown-log.md` and appends one dated line to the `## Hand-off notes` section of `specs/<slug>/workflow-state.md`.
 
+### Step 9.5 — Persist audit edits on a housekeeping branch
+
+Agent stages and commits both edits on a fresh `chore/issue-breakdown-audit-issue-<n>-<runid>` branch cut from `<integration-branch>`, pushes it, and opens a non-draft `chore(issue-breakdown): record run for issue #<n>` PR. This leaves the working tree clean for the next `/issue:breakdown` run (Step 1's `git status --porcelain` clean-tree gate would otherwise refuse) and surfaces the audit trail through the same review path as every other change in the repo. The housekeeping PR is independent of the slice PRs and safe to merge whenever convenient.
+
+If the housekeeping push is denied (operator's permissions don't allow `chore/*`), surface the failure with the local commit SHA so the operator can rescue the audit trail manually.
+
 ### Step 10 — Report
 
-Print a 3-line summary to the user:
+Print a 4-line summary to the user:
 
 - Path to feature folder.
-- Count of PRs opened (with numbers).
+- Count of slice PRs opened (with numbers).
+- Housekeeping PR number (Step 9.5).
 - Path to audit log.
 
 ## Constraints (issue-breakdown-specific)

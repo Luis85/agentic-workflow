@@ -92,8 +92,14 @@ These are recorded in the ADR (see "Decisions" below).
    │
    ├─ Audit log ─────────── append specs/<slug>/issue-breakdown-log.md
    │
-   └─ Hand-off note ─────── append one line to specs/<slug>/workflow-state.md
-                            ## Hand-off notes section
+   ├─ Hand-off note ─────── append one line to specs/<slug>/workflow-state.md
+   │                        ## Hand-off notes section
+   │
+   └─ Persist audit ──────── chore/issue-breakdown-audit-issue-<n>-<runid> branch
+                             cut from <integration-branch>; commit + push +
+                             open non-draft chore PR for the two appends so
+                             working tree is clean for the next /issue:breakdown
+                             run (Step 1's clean-tree gate would otherwise refuse).
 ```
 
 ## Components
@@ -172,14 +178,27 @@ There is **no** "Acceptance criteria" or "Test approach" section in the template
 
 There is **no** whole-spec "Definition of done" section either — the analogous gate is the `## Quality gate` heading at the bottom of the template, which the conductor copies into the PR body's "Definition of done" block as the final gate.
 
-**Refuse-on-missing-anchor.** The conductor hard-stops if any of these are absent or malformed:
+**Legacy `tasks.md` support.** Every pre-template `tasks.md: complete` feature in the repo (e.g. `specs/version-0-6-plan/tasks.md`) uses the legacy heading shape `### T-V06-001 - Decide steering profile location` (no emoji, ASCII hyphen separator) and omits `## Task list`, `## Parallelisable batches`, and `## Quality gate` entirely. The parser must accept these so `/issue:breakdown` can act on already-shipped features without first migrating them to the new template. Be liberal in what is accepted; only the things genuinely required to compute slices are hard-stops.
 
-- `## Parallelisable batches` heading.
-- At least one `- **Batch N:**` line under it.
-- Every `T-<AREA>-NNN` referenced in a batch line resolves to a `### T-<AREA>-NNN …` heading in `## Task list`.
-- The matching task heading has both `**Description:**` and `**Definition of done:**` bullets.
+**Hard requirements (refuse + surface offending location if missing):**
 
-The error message names the offending line and instructs the user to either fix `tasks.md` directly or re-run `/spec:tasks`.
+- The file exists and contains at least one `### T-<AREA>-NNN …` heading.
+- Each task heading carries a `**Description:**` bullet underneath it.
+
+**Optional anchors (synthesise sensible defaults when absent):**
+
+| Anchor | If present | If absent |
+|---|---|---|
+| `## Task list` | Use it as the section boundary; only `### T-…` headings inside count. | Treat every `### T-<AREA>-NNN …` heading in the file as a task. |
+| `## Parallelisable batches` | One slice per `- **Batch N:** T-…, T-…` line; zero-pad ordinal `<NN>`. | Synthesise a single batch containing every task in document order — yields one PR. Surface the synthesis to the conductor so the user can confirm or abort. |
+| `## Quality gate` | Copied verbatim into every PR body's DoD block. | Use the default DoD shipped in `templates/issue-breakdown-pr-body-template.md` (verify green, all task IDs done, tests pass, docs updated, PR template complete). |
+| `**Definition of done:**` per task | Aggregated into the slice DoD. | Skip the per-task aggregation; the slice DoD falls back to the (possibly-default) `## Quality gate`. |
+| `**Depends on:**` per task | Cross-check that the batch is independent — surface a warning if not. | No cross-check. |
+| `**Satisfies:**` per task | Surface in the slice's "Spec lineage" block. | Omit. |
+
+**Per-task heading regex (legacy + canonical):** `^### (T-[A-Z0-9]+-\d{3})(?:\s+([🧪🔨📐📚🚀🪓\s]+?))?\s+[—-]\s+(.+)$`. Either em-dash (`—`) or ASCII hyphen-with-spaces (`-`) is accepted as the separator; the `<emoji-block>` capture is optional (legacy headings have none).
+
+The error message names the offending location (file path + line number) and instructs the user to either fix `tasks.md` directly or re-run `/spec:tasks`.
 
 **Deferred refinement.** A future `tasks.json` side-car (out of scope here) would replace this regex parser. Recorded in the ADR's "consequences".
 
