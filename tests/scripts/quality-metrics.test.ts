@@ -99,14 +99,71 @@ test("collectQualityMetrics counts skipped canonical artifacts as expected-compl
 });
 
 test("collectQualityMetrics surfaces open clarifications in workflow counts and signals", () => {
-  const metrics = collectQualityMetrics({ feature: "project-consistency-hardening" });
-  const workflow = metrics.workflows[0];
-  // Two unresolved CLAR-CONS-* checklist items in workflow-state.md §Open clarifications.
-  assert.equal(workflow.openClarifications >= 2, true);
-  assert.equal(
-    metrics.signals.openClarifications.some((signal) => signal.includes("project-consistency-hardening")),
-    true,
-  );
+  const fixtureDir = fs.mkdtempSync(path.join("specs", "__quality-metrics-open-clarification-fixture-"));
+  const feature = path.basename(fixtureDir);
+
+  try {
+    fs.writeFileSync(
+      path.join(fixtureDir, "workflow-state.md"),
+      `---
+feature: ${feature}
+area: QMO
+current_stage: idea
+status: active
+last_updated: 2026-05-02
+last_agent: test
+artifacts:
+  idea.md: pending
+  research.md: pending
+  requirements.md: pending
+  design.md: pending
+  spec.md: pending
+  tasks.md: pending
+  implementation-log.md: pending
+  test-plan.md: pending
+  test-report.md: pending
+  review.md: pending
+  traceability.md: pending
+  release-notes.md: pending
+  retrospective.md: pending
+---
+
+# Workflow state - quality metrics open clarification fixture
+
+## Stage progress
+
+| Stage | Artifact | Status |
+|---|---|---|
+| 1. Idea | \`idea.md\` | pending |
+
+## Skips
+
+- None.
+
+## Blocks
+
+- None.
+
+## Hand-off notes
+
+- Test fixture.
+
+## Open clarifications
+
+- [ ] CLAR-QMO-001 - Fixture open question.
+`,
+    );
+
+    const metrics = collectQualityMetrics({ feature });
+    const workflow = metrics.workflows[0];
+    assert.equal(workflow.openClarifications, 1);
+    assert.equal(
+      metrics.signals.openClarifications.some((signal) => signal.includes(feature)),
+      true,
+    );
+  } finally {
+    fs.rmSync(fixtureDir, { recursive: true, force: true });
+  }
 });
 
 test("collectQualityMetrics ignores resolved clarification checklist items", () => {
