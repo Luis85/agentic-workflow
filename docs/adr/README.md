@@ -35,6 +35,7 @@ Records of architecturally significant decisions. Format follows Michael Nygard'
 | [0020](0020-v05-release-branch-strategy.md) | Adopt Shape A with release/vX.Y.Z branches for v0.5 releases | Accepted |
 | [0021](0021-release-package-fresh-surface.md) | Ship the released template package as a fresh-surface starter | Accepted |
 | [0022](0022-add-issue-breakdown-track.md) | Adopt issue-breakdown track for parallelising post-tasks issue work | Proposed |
+| [0023](0023-adopt-zod-as-first-runtime-dependency.md) | Adopt zod as the first runtime dependency for script-layer validation | Accepted |
 | [0024](0024-lock-specorator-agentic-workflow-naming-contract.md) | Lock the Specorator and agentic-workflow naming contract | Accepted |
 <!-- END GENERATED: adr-index -->
 
