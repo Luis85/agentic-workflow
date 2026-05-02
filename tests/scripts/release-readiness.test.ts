@@ -11,8 +11,11 @@ import {
   EXPECTED_PACKAGE_REGISTRY,
   EXPECTED_PACKAGE_REPOSITORY,
   RELEASE_READINESS_DIAGNOSTIC_CODES,
+  RELEASE_READINESS_WARNING_CODES,
   checkReleaseReadiness,
+  checkRepoImmutableSetting,
   parseReleaseReadinessArgs,
+  type GitHubInterface,
   type GitInterface,
   type QualitySignals,
 } from "../../scripts/lib/release-readiness.js";
@@ -701,6 +704,43 @@ test("tag readiness: unresolvable first-parent chain fails TagNotAtMain", () => 
   } finally {
     cleanup(repoRoot);
   }
+});
+
+test("checkRepoImmutableSetting: setting enabled -> emits ImmutableRepo (#233 prevention E)", () => {
+  const github: GitHubInterface = { immutableReleasesSetting: () => "enabled" };
+  const warnings = checkRepoImmutableSetting(github);
+  assert.equal(warnings.length, 1, "expected exactly one warning");
+  assert.equal(warnings[0].code, RELEASE_READINESS_WARNING_CODES.ImmutableRepo);
+  assert.match(warnings[0].message, /ENABLED/);
+  assert.match(warnings[0].message, /tag/);
+});
+
+test("checkRepoImmutableSetting: setting disabled -> no warning", () => {
+  const github: GitHubInterface = { immutableReleasesSetting: () => "disabled" };
+  assert.deepEqual(checkRepoImmutableSetting(github), []);
+});
+
+test("checkRepoImmutableSetting: probe denied (401/403) -> emits distinct ImmutableProbeDenied (Codex P2 round 4)", () => {
+  // Round-3 coerced 401/403 to enabled which created a persistent false
+  // positive against repos where the workflow token cannot read the
+  // endpoint — operators saw "ENABLED" every dispatch even when the
+  // setting was off. Distinct code lets the operator tell "confirmed on"
+  // from "could not verify".
+  const github: GitHubInterface = { immutableReleasesSetting: () => "denied" };
+  const warnings = checkRepoImmutableSetting(github);
+  assert.equal(warnings.length, 1, "expected exactly one warning for denied probe");
+  assert.equal(warnings[0].code, RELEASE_READINESS_WARNING_CODES.ImmutableProbeDenied);
+  assert.match(warnings[0].message, /Could not verify/);
+  assert.match(warnings[0].message, /401\/403/);
+});
+
+test("checkRepoImmutableSetting: probe unknown (endpoint missing / network) -> no warning, fail-quiet", () => {
+  const github: GitHubInterface = { immutableReleasesSetting: () => "unknown" };
+  assert.deepEqual(
+    checkRepoImmutableSetting(github),
+    [],
+    "unknown result must NOT emit a warning — the probe is informational and a missing signal must not block dispatch",
+  );
 });
 
 test("parseReleaseReadinessArgs accepts --version and --archive in argv and env", () => {
