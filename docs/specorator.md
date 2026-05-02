@@ -237,7 +237,9 @@ artifacts:                             # status enum: pending | in-progress | co
   retrospective.md: pending
 ```
 
-Plus the body sections (Skips, Blocks, Hand-off notes, Open clarifications) per the canonical template at [`templates/workflow-state-template.md`](../templates/workflow-state-template.md).
+Plus the body sections (Notes on meta-features, Skips, Blocks, Hand-off notes, Open clarifications) per the canonical template at [`templates/workflow-state-template.md`](../templates/workflow-state-template.md).
+
+Meta-features are plan-level features whose implementation is a sequence of sub-task PRs rather than a single source tree. They may skip Stage 7-9 canonical artifacts (`implementation-log.md`, `test-plan.md`, `test-report.md`, `review.md`, `traceability.md`) only when each sub-task PR carries its own implementation evidence, tests, review, and trace links. The `## Skips` section must name each skipped artifact, explain the rationale, and point to the per-PR evidence. See [`templates/_shared/state-file-sections.md`](../templates/_shared/state-file-sections.md) for the full rule and [`specs/version-0-3-plan/workflow-state.md`](../specs/version-0-3-plan/workflow-state.md) for the precedent.
 
 ### 5.2 Orchestrator responsibilities
 
