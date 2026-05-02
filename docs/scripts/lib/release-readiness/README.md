@@ -14,8 +14,10 @@ entry_point: true
 
 ## Interfaces
 
+- [GitHubInterface](interfaces/GitHubInterface.md)
 - [GitInterface](interfaces/GitInterface.md)
 - [QualitySignals](interfaces/QualitySignals.md)
+- [ReadinessWarning](interfaces/ReadinessWarning.md)
 - [ReleaseReadinessOptions](interfaces/ReleaseReadinessOptions.md)
 - [ReleaseReadinessReport](interfaces/ReleaseReadinessReport.md)
 
@@ -31,9 +33,11 @@ entry_point: true
 - [EXPECTED\_PACKAGE\_REPOSITORY](variables/EXPECTED_PACKAGE_REPOSITORY.md)
 - [MIN\_QUALITY\_MATURITY\_LEVEL](variables/MIN_QUALITY_MATURITY_LEVEL.md)
 - [RELEASE\_READINESS\_DIAGNOSTIC\_CODES](variables/RELEASE_READINESS_DIAGNOSTIC_CODES.md)
+- [RELEASE\_READINESS\_WARNING\_CODES](variables/RELEASE_READINESS_WARNING_CODES.md)
 - [REQUIRED\_WORKFLOW\_PERMISSIONS](variables/REQUIRED_WORKFLOW_PERMISSIONS.md)
 
 ## Functions
 
 - [checkReleaseReadiness](functions/checkReleaseReadiness.md)
+- [checkRepoImmutableSetting](functions/checkRepoImmutableSetting.md)
 - [parseReleaseReadinessArgs](functions/parseReleaseReadinessArgs.md)

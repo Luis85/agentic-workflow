@@ -95,6 +95,79 @@ export const EXPECTED_PACKAGE_FILES: readonly string[] = [
 export const MIN_QUALITY_MATURITY_LEVEL = 3;
 
 /**
+ * Diagnostic codes emitted as **warnings** (informational, do not fail
+ * closed). Kept separate from {@link RELEASE_READINESS_DIAGNOSTIC_CODES}
+ * because the existing JSON output contract guarantees that any entry in
+ * `diagnostics` is a hard failure — operators (and the dispatch workflow)
+ * rely on that for the "fail closed" gate. Warnings surface through the
+ * CLI as `::notice::` annotations and do not block dispatch.
+ */
+export const RELEASE_READINESS_WARNING_CODES = {
+  ImmutableRepo: "RELEASE_READINESS_IMMUTABLE_REPO",
+} as const;
+
+/**
+ * Minimal GitHub API facade for repository-state probes that the git CLI
+ * cannot answer. {@link checkRepoImmutableSetting} uses this to inspect
+ * the most recent Release's `immutable` flag — a workaround because the
+ * `/repos/{owner}/{repo}` API does not currently expose the
+ * "Immutable releases" repo setting (UI-only beta). Returns:
+ *
+ * - `true` — most recent Release is immutable (heuristic: setting is on).
+ * - `false` — most recent Release is mutable (heuristic: setting is off).
+ * - `null` — no Releases yet, or API error (fail quiet; no warning).
+ */
+export interface GitHubInterface {
+  latestReleaseImmutable(): boolean | null;
+}
+
+/**
+ * A non-blocking informational signal about release readiness.
+ * Distinct from {@link Diagnostic} to preserve the existing contract that
+ * any entry in `report.diagnostics` is a hard failure.
+ */
+export interface ReadinessWarning {
+  code: string;
+  message: string;
+}
+
+/**
+ * Probe the most recent Release for the `immutable` flag (#233 prevention E).
+ *
+ * The GitHub `/repos/{owner}/{repo}` endpoint does not expose the
+ * "Immutable releases" repo setting today (UI-only beta), so the only way
+ * to detect that the setting is on is to look at the latest Release and
+ * check whether GitHub auto-flagged it immutable. This is a heuristic —
+ * the operator could in principle have toggled the setting between the
+ * latest Release and the current dispatch — but it is the best signal
+ * available before a publish and it is exactly the signal the v0.5.0
+ * incident retrospective surfaced as the missing precondition.
+ *
+ * Returns one warning when the latest Release is immutable, none otherwise.
+ * Never returns a hard `Diagnostic` — the v0.5.0 incident showed the
+ * setting itself is not always operator-controlled (org-level defaults can
+ * propagate), so failing closed here would block legitimate dispatches.
+ */
+export function checkRepoImmutableSetting(github: GitHubInterface): ReadinessWarning[] {
+  const flag = github.latestReleaseImmutable();
+  if (flag === true) {
+    return [
+      {
+        code: RELEASE_READINESS_WARNING_CODES.ImmutableRepo,
+        message:
+          "the most recent Release on this repository was created immutable. " +
+          "If Repo Settings -> General -> Releases -> \"Immutable releases\" is on, " +
+          "every new Release will be auto-flagged immutable; a failed asset upload " +
+          "or operator deletion permanently burns the tag (#233). " +
+          "Disable the setting before dispatching, or accept the failure mode " +
+          "knowingly.",
+      },
+    ];
+  }
+  return [];
+}
+
+/**
  * Minimal git facade for tag-readiness assertions.
  *
  * `resolveRef` must return a **commit SHA** for the supplied ref,

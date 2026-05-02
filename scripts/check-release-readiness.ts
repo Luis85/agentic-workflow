@@ -3,7 +3,9 @@ import fs from "node:fs";
 import path from "node:path";
 import {
   checkReleaseReadiness,
+  checkRepoImmutableSetting,
   parseReleaseReadinessArgs,
+  type GitHubInterface,
   type GitInterface,
   type QualitySignals,
 } from "./lib/release-readiness.js";
@@ -128,6 +130,23 @@ const report = checkReleaseReadiness({
   qualitySignals,
 });
 
+// Prevention E from #233 — emit a non-blocking warning when the most
+// recent Release is immutable (heuristic: Repo Setting "Immutable
+// releases" is on). Surface as a GitHub Actions `::warning::` annotation
+// so dispatch operators see it inline; also write to stderr for local
+// CLI invocations. The probe never adds to `report.diagnostics` so it
+// cannot fail the gate (the v0.5.0 incident showed the setting is not
+// always operator-controlled — failing closed could block legitimate
+// dispatches). The probe is skipped under `--json` to keep the JSON
+// contract clean for downstream consumers; `--json` callers can run
+// the API call themselves if they want the signal.
+if (!process.argv.includes("--json")) {
+  const warnings = checkRepoImmutableSetting(realGitHub());
+  for (const warning of warnings) {
+    console.error(`::warning::${warning.code}: ${warning.message}`);
+  }
+}
+
 failIfErrors(report.diagnostics, heading);
 
 function realGit(): GitInterface {
@@ -175,6 +194,47 @@ function realGit(): GitInterface {
           },
         );
         return out.split(/\r?\n/).map((s) => s.trim()).filter((s) => s !== "");
+      } catch {
+        return null;
+      }
+    },
+  };
+}
+
+function realGitHub(): GitHubInterface {
+  return {
+    latestReleaseImmutable(): boolean | null {
+      // `gh api repos/{owner}/{repo}/releases?per_page=1` returns an array
+      // of the most recent Releases (newest first). The `immutable` flag
+      // on entry [0] is the heuristic for whether the repo's Immutable
+      // Releases setting is on — see `checkRepoImmutableSetting` for why
+      // the heuristic is necessary. Empty array (no releases yet) and any
+      // gh / API error fail quiet to `null` — the warning is informational,
+      // not a gate, so a missing signal must not block dispatch.
+      //
+      // GITHUB_REPOSITORY is set on every workflow run; locally, gh's
+      // default repo (configured via `gh repo set-default` or the current
+      // git remote) is used implicitly.
+      try {
+        const out = execFileSync(
+          "gh",
+          [
+            "api",
+            "repos/{owner}/{repo}/releases?per_page=1",
+            "--jq",
+            ".[0].immutable",
+          ],
+          {
+            cwd: repoRoot,
+            encoding: "utf8",
+            windowsHide: true,
+            stdio: ["ignore", "pipe", "ignore"],
+          },
+        );
+        const trimmed = out.trim();
+        if (trimmed === "true") return true;
+        if (trimmed === "false") return false;
+        return null;
       } catch {
         return null;
       }

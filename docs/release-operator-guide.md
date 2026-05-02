@@ -370,6 +370,12 @@ The release-readiness scripts emit machine-stable codes. Treat them as the contr
 | `RELEASE_READINESS_WORKFLOW_PERMISSIONS` | Top-level `permissions:` block ≠ `{ contents: write, packages: write }`. |
 | `RELEASE_READINESS_QUALITY` | A v0.4 quality signal is missing or not green and no waiver is recorded. |
 
+### Layer 1 warnings (informational, do not fail the gate)
+
+| Code | Meaning |
+|---|---|
+| `RELEASE_READINESS_IMMUTABLE_REPO` | The most recent Release on this repository was created immutable — heuristic that Repo Setting "Immutable releases" is on (#233 prevention E). Surfaces as a `::warning::` annotation; does not block dispatch. Disable the setting or accept the failure mode knowingly before triggering. |
+
 ### Layer 2 — `scripts/lib/release-package-contract.ts`
 
 | Code | Meaning |

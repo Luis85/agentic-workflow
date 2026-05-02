@@ -11,8 +11,11 @@ import {
   EXPECTED_PACKAGE_REGISTRY,
   EXPECTED_PACKAGE_REPOSITORY,
   RELEASE_READINESS_DIAGNOSTIC_CODES,
+  RELEASE_READINESS_WARNING_CODES,
   checkReleaseReadiness,
+  checkRepoImmutableSetting,
   parseReleaseReadinessArgs,
+  type GitHubInterface,
   type GitInterface,
   type QualitySignals,
 } from "../../scripts/lib/release-readiness.js";
@@ -701,6 +704,29 @@ test("tag readiness: unresolvable first-parent chain fails TagNotAtMain", () => 
   } finally {
     cleanup(repoRoot);
   }
+});
+
+test("checkRepoImmutableSetting: latest Release immutable -> emits warning (#233 prevention E)", () => {
+  const github: GitHubInterface = { latestReleaseImmutable: () => true };
+  const warnings = checkRepoImmutableSetting(github);
+  assert.equal(warnings.length, 1, "expected exactly one warning");
+  assert.equal(warnings[0].code, RELEASE_READINESS_WARNING_CODES.ImmutableRepo);
+  assert.match(warnings[0].message, /Immutable releases/);
+  assert.match(warnings[0].message, /tag/);
+});
+
+test("checkRepoImmutableSetting: latest Release mutable -> no warning", () => {
+  const github: GitHubInterface = { latestReleaseImmutable: () => false };
+  assert.deepEqual(checkRepoImmutableSetting(github), []);
+});
+
+test("checkRepoImmutableSetting: probe failed (no releases / API error) -> no warning, fail-quiet", () => {
+  const github: GitHubInterface = { latestReleaseImmutable: () => null };
+  assert.deepEqual(
+    checkRepoImmutableSetting(github),
+    [],
+    "null result must NOT emit a warning — the probe is informational and a missing signal must not block dispatch",
+  );
 });
 
 test("parseReleaseReadinessArgs accepts --version and --archive in argv and env", () => {
