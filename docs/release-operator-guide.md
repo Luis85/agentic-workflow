@@ -104,12 +104,21 @@ Only after at least one fully green dry run, request a stable publish.
    - Tarball asset is attached.
    - GitHub Packages page shows `@luis85/agentic-workflow@X.Y.Z` (only if `publish_package: true`).
 
-4. Smoke-test consumer install path against the published package. Per `package-contract.md` §7:
+4. Smoke-test consumer install path against the published package. Per `package-contract.md` §7 — note that the `@luis85:registry=…` line on its own is not enough; npm needs the matching `_authToken` line on `npm.pkg.github.com/` even for public packages, otherwise `npm install` fails with `401 Unauthorized` against GitHub Packages and is easy to misread as a package bug:
 
    ```bash
-   # in a throwaway directory with a token in NODE_AUTH_TOKEN
-   echo "@luis85:registry=https://npm.pkg.github.com" > .npmrc
-   npm install --save-dev @luis85/agentic-workflow@X.Y.Z
+   # in a throwaway directory; subshell scopes NODE_AUTH_TOKEN and the trap
+   # removes the credential file regardless of how the block exits.
+   (
+     export NODE_AUTH_TOKEN=<your-PAT-with-read:packages>
+     trap 'rm -f .npmrc' EXIT
+     cat > .npmrc <<'EOF'
+   @luis85:registry=https://npm.pkg.github.com
+   //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+   always-auth=true
+   EOF
+     npm install --save-dev @luis85/agentic-workflow@X.Y.Z
+   )
    ```
 
    Failure here is a release-quality bug, not a publish bug — capture it and decide whether to deprecate or supersede before announcing.
@@ -277,10 +286,16 @@ After a successful stable publish:
 RELEASE_VERSION=X.Y.Z RELEASE_CI_STATUS=green RELEASE_VALIDATION_STATUS=pass \
   npm run check:release-readiness -- --json
 
-# Pre-flight — Layer 2 fresh-surface, locally
-npm pack --dry-run --json | jq '.[0].files | length'   # spot-check shape
+# Pre-flight — Layer 2 fresh-surface, locally. The check walks an extracted
+# archive directory, not the codebase, so build + extract first; same shape the
+# workflow uses (`tar --strip-components=1` flattens the `package/` top-level
+# the npm tarball wraps around the contents).
+TARBALL="$(npm pack --silent)"
+mkdir -p release-staging
+tar -xzf "${TARBALL}" -C release-staging --strip-components=1
 RELEASE_PACKAGE_ARCHIVE=./release-staging \
   npm run check:release-package-contents -- --json
+rm -rf release-staging "${TARBALL}"
 
 # Cut canonical tag on main (after release branch is merged)
 git tag vX.Y.Z && git push origin vX.Y.Z

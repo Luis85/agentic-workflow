@@ -137,6 +137,15 @@ A running record of *what* was implemented, *why* a deviation was taken, and *wh
 - **Deviation from spec:** none.
 - **Notes:** Additive only — every page kept its existing voice and brand surface. README "Status" pill and roadmap row left unchanged (out of T-V05-009 scope; v0.5 status flips to Done in PR #162 once T-V05-011 verifies the release). Product-page edits use existing `faq-item` and `step` components — no new visual treatment, no new tokens, no emoji — to stay within `brand-reviewer` rules. The product page now answers an evaluator's "is there a tagged release?" question without over-promising: it names the registry and scope, points at the operator guide, and leaves the install prerequisites in `package-contract.md` §7.
 
+### 2026-05-04 — Review fix — Codex round-5 P2 + P3 on PR #161 (smoke-test auth + Layer-2 quick-check archive)
+
+- **Files changed:** `docs/release-operator-guide.md` (§5 step 4 smoke-test snippet; §9 quick-reference command bundle).
+- **Spec reference:** SPEC-V05-007 (REQ-V05-009) — distribution docs accuracy; SPEC-V05-009 (REQ-V05-011) — runnable readiness pre-flight.
+- **Owner:** orchestrator
+- **Outcome:** done
+- **Deviation from spec:** none.
+- **Notes:** Codex round-5 on commit `7cef4f7` raised one P2 + one P3, both technically valid against the runnable-as-written promise of the page. (1) **P2 — smoke-test auth missing.** §5 step 4 wrote only `@luis85:registry=https://npm.pkg.github.com` and ran `npm install` with `NODE_AUTH_TOKEN` exported. GitHub Packages requires both the registry mapping AND the `//npm.pkg.github.com/:_authToken=…` line on the same `.npmrc`; without the second line, `NODE_AUTH_TOKEN` is not consumed for the registry and `npm install` fails with `401 Unauthorized` even for public packages — a failure mode trivially misread as a package bug. Replaced the snippet with the same subshell + trap pattern as §7.1, writing both lines plus `always-auth=true` to `.npmrc`. Lead-in sentence now spells out the auth requirement so the reader does not learn it from a failed install. (2) **P3 — Layer-2 quick-check at a non-existent path.** §9 set `RELEASE_PACKAGE_ARCHIVE=./release-staging` but never created or populated `release-staging`, so the runnable bundle would fail `check:release-package-contents` with a missing-archive error. Replaced the dry-run-only `npm pack --dry-run` line with a real `npm pack` + extract sequence that mirrors the workflow's step 5 (`tar --strip-components=1` flattens the npm `package/` wrapper) and a cleanup pair that removes the staging dir + tarball after the check runs. The bundle is now copy-paste-runnable end-to-end.
+
 ### 2026-05-04 — Review fix — Codex round-4 P2 on PR #161 (subshell-scoped credentials)
 
 - **Files changed:** `docs/release-operator-guide.md` (§7.1 manual recovery script — wrapped in `(...)` subshell; trap scoped to subshell; `NODE_AUTH_TOKEN` never reaches parent shell).
