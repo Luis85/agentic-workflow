@@ -1,10 +1,10 @@
 ---
 feature: version-0-5-plan
 area: V05
-current_stage: release
-status: paused
+current_stage: learning
+status: done
 last_updated: 2026-05-02
-last_agent: release-manager
+last_agent: retrospective
 artifacts:
   idea.md: complete
   research.md: complete
@@ -12,13 +12,13 @@ artifacts:
   design.md: complete
   spec.md: complete
   tasks.md: complete
-  implementation-log.md: in-progress
+  implementation-log.md: complete
   test-plan.md: complete
   test-report.md: complete
   review.md: complete
   traceability.md: complete
   release-notes.md: complete
-  retrospective.md: pending
+  retrospective.md: complete
 ---
 
 # Workflow state — version-0-5-plan
@@ -33,11 +33,11 @@ artifacts:
 | 4. Design | `design.md` | complete |
 | 5. Specification | `spec.md` | complete |
 | 6. Tasks | `tasks.md` | complete |
-| 7. Implementation | `implementation-log.md` + code | in-progress |
+| 7. Implementation | `implementation-log.md` + code | complete |
 | 8. Testing | `test-plan.md`, `test-report.md` | complete |
 | 9. Review | `review.md`, `traceability.md` | complete |
 | 10. Release | `release-notes.md` | complete |
-| 11. Learning | `retrospective.md` | pending |
+| 11. Learning | `retrospective.md` | complete |
 
 ## Skips
 
@@ -76,6 +76,8 @@ artifacts:
 - 2026-05-02 (dev): T-V05-013 round-2 — Codex review on PR #202 drained. Two findings, both addressed in commit on `fix/v05-defect-001-fresh-surface`. **Codex P1** (`scripts/build-release-archive.ts:107`) — destructive clean had no path guard; `--out .` or `--out ..` would have erased the repo. **Fix:** new `scripts/lib/release-staging-safety.ts` exports `assertSafeOutDir(outDir, repoRoot)`. Rejects filesystem root, user home, repo root, repo parent, ancestors of the repo root, paths with a `.git` entry, and any non-empty existing dir without the staging marker. CLI now calls the guard before `fs.rmSync`. **Codex P2** (`.npmignore:23`) — top-level `.npmignore` cannot filter paths inside `package.json#files`-listed dirs (npm precedence rule); the round-1 ADR exclusion was a false defence. **Fix:** new `scripts/release-prepack-guard.mjs` (plain ESM so it runs under `node` without `tsx`) wired as `package.json#scripts.prepack`. Refuses `npm pack` of `@luis85/agentic-workflow` from any cwd that lacks the `.release-staging-marker`. Marker is written by `build:release-archive` at the staged root, so `npm pack ./.release-staging` passes; bare `npm pack` from the repo root fails closed. Marker is not in `package.json#files` so it does not ship. Guard is a no-op for any other package name (downstream forks). `.npmignore` rewritten to call out the precedence rule and retain only entries npm honours. 18 new tests (13 safety + 5 prepack guard). `design.md` defence-in-depth paragraph rewritten + two affected-surface row updates. CLAR-V05-003 + operator-authorised remote dispatch remain. **Hand-off:** PR #202 re-requested Codex review on the round-2 head SHA.
 
 - 2026-05-02 (qa): T-V05-010 + T-V05-011 complete locally. All 209 unit tests pass (26 release-readiness, 18 release-package-contract, 165 pre-existing). `npm run verify` green (18 gates, 14.6 s). Layer 1 readiness (`check:release-readiness`) correctly blocks on pre-release gaps (`RELEASE_READINESS_TAG_MISSING`, `RELEASE_READINESS_CHANGELOG_MISSING`) and quality signals — expected states on a feature branch; waiver suppresses Quality codes leaving only structural blockers. `npm pack` candidate: `luis85-agentic-workflow-0.5.0.tgz`, 864,582 bytes, SHA-256 `2b9a4d2c5a43acf05df7f3c8d2f7f12757d49bf081defaa302713e25d27e62a4`, 814 extracted files. Layer 2 (`check:release-package-contents`) correctly fails — **DEFECT-V05-001 raised (dev-owned)**: 22 numbered ADR files and multiple built-up docs pages ship in the candidate archive (SPEC-V05-010 assertions 1 and 3 violated; OQ-V05-003 automation gap). Operator guide §7.1 internal consistency confirmed. `test-plan.md` and `test-report.md` written. Artifacts complete for Stage 8. **Next step:** (1) `dev` resolves DEFECT-V05-001 (fresh-surface preparation — exclude ADR files from archive, convert docs to stubs); (2) orchestrator merges PR #162; (3) operator cuts `v0.5.0` tag on `main`, promotes CHANGELOG entry; (4) operator runs the exact remote dry-run command documented in `test-report.md` §7: `gh workflow run release.yml --ref main -f version=0.5.0 -f dry_run=true -f prerelease=false -f draft=false -f confirm="" -f publish_package=false`; (5) CLAR-V05-003 closed; (6) PR #162 ready-for-review.
+
+- 2026-05-02 (retrospective): Stage 11 complete. `retrospective.md` (RETRO-V05-001) written. Seven owned actions captured (A-V05-001 through A-V05-007); four amendments proposed to templates/memory/quality-framework (no changes made in this artifact). Quality baseline saved to `quality/metrics/feature-version-0-5-plan/2026-05-02T14-59-53-184Z.json`. **Remaining work:** operator-led stable publish (Article IX + CLAR-V05-003 step 2); backfill TEST-V05-006 into `test-report.md` after stable publish completes (A-V05-002, triggered by publish); closeout PR to merge Stage 11 artifact. **Post-publish follow-up (A-V05-002):** after operator runs the stable `gh workflow run release.yml` dispatch and confirms the GitHub Package is live, qa updates `test-report.md` §Coverage gaps Gap 1 and marks TEST-V05-006 PASS with the workflow run URL.
 
 - 2026-05-02 (Decider): CLAR-V05-003 resolved — first publish is **draft + prerelease**, then promoted to stable in a second workflow run. Repo vars `RELEASE_CI_STATUS=green` and `RELEASE_VALIDATION_STATUS=green` set on `Luis85/agentic-workflow` so Layer 1 readiness can pass in non-quality-waiver mode (item 7 of the v0.5 closeout punch list).
 

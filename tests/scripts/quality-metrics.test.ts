@@ -58,16 +58,16 @@ test("renderQualityMetrics includes the headline KPIs and attention signals", ()
 test("collectQualityMetrics scores active workflows by current stage", () => {
   const metrics = collectQualityMetrics({ feature: "version-0-5-plan" });
   const workflow = metrics.workflows[0];
-  assert.equal(workflow.status, "paused");
-  // v0.5 is at Stage 10 (release) with release-notes.md complete; status is
-  // paused while waiting for the operator to cut the v0.5.0 tag and run the
-  // release workflow. Expectations track the live `current_stage` so this
+  assert.equal(workflow.status, "done");
+  // v0.5 is at Stage 11 (learning) with retrospective.md complete; status is
+  // done after closeout. Expectations track the live `current_stage` so this
   // test must be updated when the feature advances.
-  assert.equal(workflow.currentStage, "release");
+  assert.equal(workflow.currentStage, "learning");
   assert.equal(workflow.testCoverageExpected, true);
   assert.equal(workflow.testCoverage > 0, true);
   assert.equal(workflow.earsCoverage, 100);
-  assert.equal(workflow.stageScore > workflow.artifactCompletion, true);
+  assert.equal(workflow.artifactCompletion, 100);
+  assert.equal(workflow.stageScore >= 95, true);
 });
 
 test("collectQualityMetrics treats done workflows as fully expected", () => {
