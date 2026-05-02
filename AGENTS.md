@@ -43,6 +43,8 @@ Repo = **template for spec-driven, agentic software development**. Defines workf
 
 ## Agent classes
 
+The canonical v1.0 track taxonomy is frozen in [`ADR-0026`](docs/adr/0026-freeze-v1-workflow-track-taxonomy.md). Agent classes below implement the core lifecycle and the opt-in/companion tracks in that taxonomy.
+
 | Class | Location | Purpose | Methodology |
 |---|---|---|---|
 | **Lifecycle (Stage 1–11 specialists)** | `.claude/agents/` | Build one feature: analyst, pm, ux/ui-designer, architect, planner, dev, qa, reviewer, release-manager, sre, retrospective. | [`docs/specorator.md`](docs/specorator.md) |
@@ -55,6 +57,8 @@ Repo = **template for spec-driven, agentic software development**. Defines workf
 | **Project scaffolder** *(opt-in)* | `.claude/agents/project-scaffolder.md` | Source-led onboarding from collected docs/folders. State lives `scaffolding/<slug>/`. | [`docs/project-scaffolding-track.md`](docs/project-scaffolding-track.md) ([ADR-0011](docs/adr/0011-add-project-scaffolding-track.md)) |
 | **Quality assurance** *(opt-in)* | `.claude/skills/quality-assurance/SKILL.md` | ISO 9001-aligned readiness review. State lives `quality/<slug>/`. | [`docs/quality-assurance-track.md`](docs/quality-assurance-track.md) |
 | **Issue-breakdown** *(opt-in)* | `.claude/agents/issue-breakdown.md` | Post-tasks. Issue → draft PRs. Appends log + hand-off. | [`docs/issue-breakdown-track.md`](docs/issue-breakdown-track.md) |
+| **Design** *(opt-in)* | `.claude/agents/design-lead.md` | Brand-aware surface creation. State lives `designs/<slug>/`. | [`docs/design-track.md`](docs/design-track.md) ([ADR-0019](docs/adr/0019-add-design-track.md)) |
+| **Specorator improvement** *(companion)* | `.claude/skills/specorator-improvement/SKILL.md` | Improve this template's scripts, tooling, workflows, docs, agents, skills, templates, state, or operations. | [`docs/specorator.md`](docs/specorator.md#14-improving-specorator-itself) |
 | **Operational bots** | `agents/operational/` | Scheduled routines (review-bot, docs-review-bot, plan-recon-bot, dep-triage-bot, actions-bump-bot). `PROMPT.md` + `README.md` per bot. | — |
 
 Skills (`.claude/skills/`) = reusable how-tos any agent invokes (`verify`, `new-adr`, `review-fix`). Eleven workflow-conductor skills are the conversational entry points — see [`.claude/skills/README.md`](.claude/skills/README.md).

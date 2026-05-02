@@ -56,6 +56,8 @@ Look-it-up, normative. Authoritative; not narrative.
 
 - [`specorator.md`](./specorator.md) — the full workflow definition.
 - [`project-scaffolding-track.md`](./project-scaffolding-track.md) — source-led onboarding track for turning collected docs into starter artifacts.
+- [`design-track.md`](./design-track.md) — brand-aware surface creation workflow.
+- [`issue-breakdown-track.md`](./issue-breakdown-track.md) — post-tasks issue-to-draft-PR decomposition workflow.
 - [`roadmap-management-track.md`](./roadmap-management-track.md) — product/project roadmap management, stakeholder alignment, and team communication workflow.
 - [`quality-assurance-track.md`](./quality-assurance-track.md) — ISO 9001-aligned quality assurance review workflow.
 - [`release-readiness-guide.md`](./release-readiness-guide.md) — Stage 10 go/no-go guide for product perspectives and stakeholder requirements.
@@ -103,6 +105,8 @@ Understanding-oriented. Background, rationale, and the *why* behind decisions.
 - [`quality-assurance-track.md`](./quality-assurance-track.md) — why project execution health needs evidence-backed QA checklists and corrective actions.
 - [`portfolio-track.md`](./portfolio-track.md) — why portfolios sit above the Specorator lifecycle.
 - [`stock-taking-track.md`](./stock-taking-track.md) — why brownfield projects need a separate inventory step.
+- [`design-track.md`](./design-track.md) — why branded surface creation is separate from feature-level Stage 4 design.
+- [`issue-breakdown-track.md`](./issue-breakdown-track.md) — why post-tasks issue work gets its own decomposition workflow.
 - [`adr/`](./adr/) — the rationale half of each ADR file. (The index lives under Reference above.)
 
 *Quadrant last reviewed: 2026-04-28.*

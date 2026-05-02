@@ -44,6 +44,8 @@ Skills MAY include supporting files (templates, scripts, fixtures) next to `SKIL
 
 ### Workflow conductors
 
+The canonical v1.0 track taxonomy is frozen in [ADR-0026](../../docs/adr/0026-freeze-v1-workflow-track-taxonomy.md). This table lists conductor skills for that taxonomy; practice and operational skills below are not tracks by themselves.
+
 | Skill | Triggers when… | What it does |
 |---|---|---|
 | [`orchestrate/`](orchestrate/SKILL.md) | "start a feature", "kick off", "from scratch", "what's next?", "orchestrate" | Drive full 11-stage Specorator workflow conversationally. Read `workflow-state.md`, gate with `AskUserQuestion`, dispatch `/spec:*` commands in sequence. |
@@ -51,7 +53,11 @@ Skills MAY include supporting files (templates, scripts, fixtures) next to `SKIL
 | [`specorator-improvement/`](specorator-improvement/SKILL.md) | "improve Specorator", "add script", "add tooling", "add workflow", "quality drift review" | Guide improvements to template itself across scripts, tooling, workflows, docs, agents, skills, generated references, verification, PR delivery. |
 | [`project-scaffolding/`](project-scaffolding/SKILL.md) | "scaffold this project", "seed from docs", "fresh install with existing documentation", "guided setup" | Drive source-led Project Scaffolding Track. Inventory provided folders or Markdown files, extract evidence-backed context, assemble starter pack, route to right downstream track. |
 | [`discovery-sprint/`](discovery-sprint/SKILL.md) | "design sprint", "ideation", "brainstorm new product ideas", "blank page", "discovery sprint" | Drive 5-phase Discovery Track (Frame → Diverge → Converge → Prototype → Validate → Handoff) conversationally. Dispatch `facilitator` and 6 specialist consults. Output: `chosen-brief.md` feed `/spec:idea`. **Skip when brief already exists — go to `orchestrate`.** |
+| [`stock-taking/`](stock-taking/SKILL.md) | "brownfield", "legacy audit", "inventory existing system", "stock taking" | Drive the Stock-taking Track. Scope, audit, synthesize, and hand off an inventory before new feature work. |
+| [`sales-cycle/`](sales-cycle/SKILL.md) | "sales", "proposal", "RFP", "SOW", "qualify this lead" | Drive the Sales Cycle Track from qualification through order handoff for service-provider work. |
+| [`project-run/`](project-run/SKILL.md) | "project manager", "client engagement", "weekly report", "change request" | Drive the Project Manager Track for P3.Express-style engagement governance. |
 | [`roadmap-management/`](roadmap-management/SKILL.md) | "roadmap", "product roadmap", "project roadmap", "stakeholder update", "communicate roadmap", "align the team" | Drive Roadmap Management Track. Maintain outcome roadmaps, delivery-plan signals, stakeholder maps, communication logs, roadmap decisions. |
+| [`portfolio-track/`](portfolio-track/SKILL.md) | "portfolio", "program", "multi-feature", "portfolio review" | Drive the Portfolio Track for P5 Express X/Y/Z cycles above individual specs. |
 | [`issue-breakdown/`](issue-breakdown/SKILL.md) | post-/spec:tasks; "break this issue down", "decompose issue", /issue:breakdown <n> | Decompose a GitHub issue into independent draft PRs by parsing tasks.md ## Parallelisable batches. |
 
 ### Practice skills (used by stage agents)
