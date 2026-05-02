@@ -120,7 +120,7 @@ The generalised lesson: when a flag that started as optional becomes internally 
 - `blockers` = 0.
 - `requirementsWithTests` = 0 (tooling miscount — R-V05-001; actual test coverage is 12/12 via manually verified REQ → TEST chains).
 
-No prior baseline existed for this feature; the post-retro save (`npm run quality:metrics -- --feature version-0-5-plan --save`) creates the first baseline at `quality/metrics/feature-version-0-5-plan/2026-05-02T14-59-53-184Z.json`. Future cycles can compare against this.
+No prior baseline existed for this feature; the post-retro save (`npm run quality:metrics -- --feature version-0-5-plan --save`) creates the first baseline at `quality/metrics/feature-version-0-5-plan/2026-05-02T15-36-02-157Z.json` (regenerated post-closeout so the snapshot matches the `status: done` terminal state — see PR #230 round-2 fix). Future cycles can compare against this.
 
 **Quality direction: net positive.** The v0.5 feature score (97.1 at review; 92.9 at retro due to mid-sequence artifact state) is consistent with the v0.4 pattern (97.1 feature score at release-readiness). The `requirementsWithTests: 0` miscount is the one structural metric gap; fixing R-V05-001 will lift the reported score to reflect actual coverage.
 
