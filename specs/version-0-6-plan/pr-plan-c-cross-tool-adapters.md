@@ -79,7 +79,7 @@ Make Copilot, Codex, Cursor/Aider-style consumers first-class without fragmentin
 - `AGENTS.md` — *Tool-specific notes* section
 - `.github/copilot-instructions.md` (new)
 - `.codex/instructions.md`, `.codex/README.md`
-- `.claude/CLAUDE.md` (root)
+- `CLAUDE.md` (root)
 - `.cursor/rules/` (new)
 - `.aider.conf.yml` (new, optional)
 - `docs/adapters.md` (new)
@@ -93,18 +93,21 @@ Make Copilot, Codex, Cursor/Aider-style consumers first-class without fragmentin
 - [ ] T-V06-006 adapter surfaces for at least Copilot + Codex + one editor-agent path
 - [ ] All adapter files reference `AGENTS.md` as source of truth
 - [ ] T-V06-007 drift check or maintenance doc landed
+- [ ] Append entry to `specs/version-0-6-plan/implementation-log.md` per Stage 7 (file is pending — first task to land creates it)
 - [ ] `npm run verify` green
 - [ ] PR title matches `feat(v06): ...`
 
 ## Workflow refs
 
 - [`AGENTS.md`](../../AGENTS.md)
-- [`docs/specorator.md`](../../docs/specorator.md)
+- [`docs/specorator.md`](../../docs/specorator.md) — full lifecycle (Stage 7 = Implementation, current stage)
 - [`.codex/README.md`](../../.codex/README.md)
 - [`docs/verify-gate.md`](../../docs/verify-gate.md)
 - [`tools/automation-registry.yml`](../../tools/automation-registry.yml)
 
 ## Coordination
 
-- No file overlap with other Wave 1 PRs (`AGENTS.md` may overlap with PR-A "Read these first" — coordinate via merge if both touch).
+- **`AGENTS.md` collision** — also touched by PR-A (#175 *Read these first*) and PR-E (#179 pointer entry). Per [`feedback_parallel_pr_conflicts.md`](../../.claude/memory/feedback_parallel_pr_conflicts.md): merge not rebase. Land PR-A first if practical so the *Read these first* shape stabilises.
+- **`CLAUDE.md` collision** — also touched by PR-A (#175) and PR-E (#179).
+- **`tools/automation-registry.yml` collision** — also touched by PR-B (#176), PR-D (#178), PR-E (#179).
 - T-V06-012 (positioning) cites adapters after merge.
