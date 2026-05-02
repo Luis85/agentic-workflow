@@ -212,9 +212,27 @@ jobs:
         run: |
           # Detect existing Release for this tag. `gh release view` exits
           # non-zero (and writes "release not found" to stderr) when no
-          # Release exists, so a clean exit means we promote-in-place.
-          # Output is discarded — only the exit code matters here.
-          if gh release view "v${INPUT_VERSION}" --json tagName,isDraft >/dev/null 2>&1; then
+          # Release exists. We capture the JSON shape so we can inspect
+          # the existing Release's draft / prerelease / asset state and
+          # branch safely — the v0.5.1 cycle showed that "blindly apply
+          # inputs" creates two destructive failure modes (Codex P1
+          # round 2 on PR #241).
+          existing_json="$(gh release view "v${INPUT_VERSION}" --json isDraft,isPrerelease,assets 2>/dev/null || true)"
+          if [ -n "${existing_json}" ]; then
+            existing_draft="$(echo "${existing_json}" | jq -r '.isDraft')"
+            existing_prerelease="$(echo "${existing_json}" | jq -r '.isPrerelease')"
+            existing_has_asset="$(echo "${existing_json}" | jq -r '[.assets[]? | select(.name == "'"$(basename "${TARBALL}")"'")] | length > 0')"
+            # Refuse-to-demote guard (Codex P1 round 2 #1): if the
+            # existing Release is already a published stable (draft=false
+            # AND prerelease=false), do NOT let an old draft+prerelease
+            # dispatch flip it back. Such a flip would unpublish a
+            # consumer-visible release; the operator presumably did not
+            # intend that. Stable→stable rerun is a no-op and harmless.
+            if [ "${existing_draft}" = "false" ] && [ "${existing_prerelease}" = "false" ] \
+                && { [ "${INPUT_DRAFT}" = "true" ] || [ "${INPUT_PRERELEASE}" = "true" ]; }; then
+              echo "::error::Release for v${INPUT_VERSION} is already published as stable; refusing to demote it to draft=${INPUT_DRAFT} prerelease=${INPUT_PRERELEASE}. Cut a new vX.Y.(Z+1) instead." >&2
+              exit 1
+            fi
             echo "::notice::Release for v${INPUT_VERSION} already exists — promoting in place (#233 prevention C)"
             # `gh release edit` preserves generated notes from the prior
             # create call. Pass `--draft=<bool>` and `--prerelease=<bool>`
@@ -223,9 +241,21 @@ jobs:
             gh release edit "v${INPUT_VERSION}" \
               --draft="${INPUT_DRAFT}" \
               --prerelease="${INPUT_PRERELEASE}"
-            # `--clobber` replaces a stale or partial asset from the
-            # earlier dispatch. Idempotent (NFR-V05-005).
-            gh release upload "v${INPUT_VERSION}" "${TARBALL}" --clobber
+            # Asset upload guard (Codex P1 round 2 #2): only upload when
+            # the named asset is NOT already attached. `gh release upload
+            # --clobber` deletes the existing asset before uploading the
+            # new one, and a network/API failure mid-upload would leave
+            # the published Release with no asset at all — strictly
+            # worse than skipping the upload. Step 9a's create-with-asset
+            # transaction (B path) already attached the tarball when the
+            # draft was created, so the two-step CLAR-V05-003 path
+            # reaches this branch with the asset already present and
+            # nothing to do.
+            if [ "${existing_has_asset}" = "true" ]; then
+              echo "::notice::Asset $(basename "${TARBALL}") already attached to v${INPUT_VERSION} — skipping upload to avoid clobber-then-fail data loss"
+            else
+              gh release upload "v${INPUT_VERSION}" "${TARBALL}"
+            fi
           else
             echo "::notice::Creating fresh Release for v${INPUT_VERSION} with asset attached (#233 prevention B)"
             flags=()

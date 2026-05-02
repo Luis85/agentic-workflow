@@ -95,7 +95,7 @@ Only after at least one fully green dry run, request a stable publish.
    - `npm pack` — candidate archive built and extracted.
    - Layer 2 readiness — fresh-surface contract ([ADR-0021](adr/0021-release-package-fresh-surface.md)).
    - Confirm gate — refuses to continue unless `confirm == version`.
-   - `gh release create vX.Y.Z --target main --verify-tag --generate-notes ${TARBALL}` — creates the GitHub Release with the candidate tarball attached **in one call** when no Release for the tag exists. When a draft from a prior dispatch already exists for the tag (the two-step CLAR-V05-003 path), the workflow uses `gh release edit … --draft=<bool> --prerelease=<bool>` followed by `gh release upload --clobber` instead, so a single Release per tag is preserved (#233 prevention B + C).
+   - `gh release create vX.Y.Z --target main --verify-tag --generate-notes ${TARBALL}` — creates the GitHub Release with the candidate tarball attached **in one call** when no Release for the tag exists. When a Release already exists (the two-step CLAR-V05-003 path), the workflow runs `gh release edit … --draft=<bool> --prerelease=<bool>` to flip flags in place and uploads the asset only if it is not already attached, so a single Release per tag is preserved (#233 prevention B + C). The promote branch refuses to demote an already-published stable Release back to draft or prerelease — that flip would unpublish a consumer-visible release; cut a new `vX.Y.(Z+1)` instead.
    - `npm publish` — only when `publish_package: true`; idempotent (see §7.1).
 
 3. Verify on `https://github.com/Luis85/agentic-workflow/releases/tag/vX.Y.Z`:
