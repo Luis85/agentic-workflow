@@ -55,7 +55,7 @@ Every EARS clause that requires testing is mapped to one or more TEST-V05-* iden
 | `TEST-V05-008` | REQ-V05-008 | SPEC-V05-006 | Operator guide provides runnable path from dry run through publish, rollback, recovery, and cleanup. | Review `docs/release-operator-guide.md` sections §1–§11; verify each command is internally consistent per §7.1 (`gh release create` not-idempotent, manual recovery commands provided). | Remote dispatch dry run exercises §4 of the guide. | `test-report.md` §2 |
 | `TEST-V05-010` | REQ-V05-010 | SPEC-V05-008 | Quality signals (CI status, validation status, open blockers, open clarifications, maturity) must be green or explicitly waived. | `npm run check:release-readiness -- --version 0.5.0 --json` without env produces `RELEASE_READINESS_QUALITY` diagnostics; with `RELEASE_QUALITY_WAIVER` set, Quality codes are suppressed; unit tests `quality signals: missing signals fail closed with Quality code`, `quality signals: explicit operator waiver bypasses Quality assertions`. | (Covered by local deterministic path.) | `test-report.md` §2 |
 | `TEST-V05-011` | REQ-V05-011 | SPEC-V05-009 | Operator workflow can create or validate a draft/pre-release candidate without publishing a stable package. | `npm pack --dry-run` validates archive shape without writing tarball; `npm pack` produces real candidate; `check:release-package-contents` validates archive against fresh-surface contract. Remote dispatch with `dry_run: true` logs generated-notes preview without creating a Release. | `gh workflow run release.yml --ref main -f version=0.5.0 -f dry_run=true -f prerelease=false -f draft=false -f confirm="" -f publish_package=false` | `test-report.md` §4 + §5 |
-| `TEST-V05-012` | REQ-V05-005, REQ-V05-012 | SPEC-V05-010 | Released archive conforms to fresh-surface contract: no numbered ADRs, intake folders empty, docs in stub form. | `npm pack` + extract + `npm run check:release-package-contents -- --archive <extracted-dir> --json`; unit tests in `release-package-contract.test.ts` (12 tests). | Layer 2 readiness step runs in remote workflow dispatch; fails closed on any fresh-surface violation. | `test-report.md` §4 |
+| `TEST-V05-012` | REQ-V05-005, REQ-V05-012 | SPEC-V05-010 | Released archive conforms to fresh-surface contract: no numbered ADRs, intake folders empty, docs in stub form. | `npm pack` + extract + `npm run check:release-package-contents -- --archive <extracted-dir> --json`; unit tests in `release-package-contract.test.ts` (18 tests). | Layer 2 readiness step runs in remote workflow dispatch; fails closed on any fresh-surface violation. | `test-report.md` §4 |
 
 ### Additional coverage rows (non-functional and structural)
 
@@ -137,7 +137,7 @@ Expected: Layer 2 fails with `RELEASE_PKG_ADR` (numbered ADR files present), `RE
 npm run test:scripts
 ```
 
-Expected: all tests pass. The full suite includes the 21 release-readiness tests and 12 release-package-contract tests.
+Expected: all tests pass. The full suite includes the 26 release-readiness tests and 18 release-package-contract tests.
 
 ### 4.7 TEST-V05-008 — npm run verify (all gates)
 

@@ -197,7 +197,7 @@ Full run: `verify: ok in 14.6s`. All gates passed. Relevant highlights:
 
 ### 4.1 tests/scripts/release-readiness.test.ts
 
-Run via `npm run test:scripts`. 21 tests in the file, all green.
+Run via `npm run test:scripts`. 26 tests in the file, all green.
 
 | Test | Result |
 |---|---|
@@ -230,7 +230,7 @@ Run via `npm run test:scripts`. 21 tests in the file, all green.
 
 ### 4.2 tests/scripts/release-package-contract.test.ts
 
-Run via `npm run test:scripts`. 12 tests in the file, all green.
+Run via `npm run test:scripts`. 18 tests in the file, all green.
 
 | Test | Result |
 |---|---|
