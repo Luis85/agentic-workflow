@@ -34,7 +34,9 @@
       "Bash(git push -u origin claude/*)",
       "Bash(git push origin claude/*)",
       "Bash(git push -u origin portfolio/*)",
-      "Bash(git push origin portfolio/*)"
+      "Bash(git push origin portfolio/*)",
+      "Bash(git push -u origin release/*)",
+      "Bash(git push origin release/*)"
     ],
     "deny": [
       "Bash(git push origin main:*)",

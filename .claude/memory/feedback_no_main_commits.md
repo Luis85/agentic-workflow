@@ -32,7 +32,7 @@ There is **no** "small enough to land directly on `main`" exception. Typo fixes,
 Before *any* change to a file under version control:
 
 1. From the integration branch, run `git switch <integration-branch> && git pull --ff-only`.
-2. Cut a topic branch with one of the allowed prefixes — `feat/`, `fix/`, `refactor/`, `chore/`, `docs/`, `claude/`. See [`docs/branching.md`](../../docs/branching.md).
+2. Cut a topic branch with one of the allowed prefixes — `feat/`, `fix/`, `refactor/`, `chore/`, `docs/`, `release/`, `claude/`. See [`docs/branching.md`](../../docs/branching.md). `release/vX.Y.Z` is reserved for versioned release prep per ADR-0020.
 3. Make changes inside that branch, ideally inside a worktree under `.worktrees/<slug>/` per [`feedback_worktrees_required.md`](./feedback_worktrees_required.md).
 4. Verify, push the branch, open a PR.
 5. The maintainer (or the autonomous-merge rule per [`feedback_autonomous_merge.md`](./feedback_autonomous_merge.md)) merges — never the author from inside the same change.

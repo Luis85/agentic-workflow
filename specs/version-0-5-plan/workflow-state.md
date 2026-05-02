@@ -3,8 +3,8 @@ feature: version-0-5-plan
 area: V05
 current_stage: implementation
 status: active
-last_updated: 2026-04-28
-last_agent: planner
+last_updated: 2026-05-04
+last_agent: qa
 artifacts:
   idea.md: complete
   research.md: complete
@@ -12,7 +12,7 @@ artifacts:
   design.md: complete
   spec.md: complete
   tasks.md: complete
-  implementation-log.md: pending
+  implementation-log.md: in-progress
   test-plan.md: pending
   test-report.md: pending
   review.md: pending
@@ -33,7 +33,7 @@ artifacts:
 | 4. Design | `design.md` | complete |
 | 5. Specification | `spec.md` | complete |
 | 6. Tasks | `tasks.md` | complete |
-| 7. Implementation | `implementation-log.md` + code | pending |
+| 7. Implementation | `implementation-log.md` + code | in-progress |
 | 8. Testing | `test-plan.md`, `test-report.md` | pending |
 | 9. Review | `review.md`, `traceability.md` | pending |
 | 10. Release | `release-notes.md` | pending |
@@ -50,9 +50,20 @@ artifacts:
 ## Hand-off notes
 
 - 2026-04-28 (codex): Planned v0.5 through Stage 6. Recommended implementation order is branch strategy decision, package contract, release notes configuration, release readiness check that consumes v0.4 quality signals, manual GitHub Release workflow with release-candidate mode, package publish path, operator guide, public docs/product page update, dry run, then release readiness verification.
+- 2026-05-02 (architect): T-V05-001 complete — adopted Shape A with `release/vX.Y.Z` branches and `main` as canonical release source and tag origin via [ADR-0020](../../docs/adr/0020-v05-release-branch-strategy.md); `docs/branching.md` updated; CLAR-V05-001 resolved.
+- 2026-05-02 (dev): T-V05-003 complete — added `.github/release.yml` mapping merged-PR labels to v0.5 generated release-note categories (Breaking Changes first, then Features / Bug Fixes / Documentation / Performance / Refactor / Tests / Build & CI / Reverts / Chores & Dependencies / Other Changes catch-all) and excluding `release` / `chore-release` / `skip-changelog` labels plus `dependabot` and `github-actions` author handles. Satisfies SPEC-V05-003 (REQ-V05-003, REQ-V05-004); the release workflow itself follows in T-V05-006. PR #156 stages T-V05-001 + T-V05-003 together.
+- 2026-05-02 (architect): Per Article X (Iteration), PR #157 re-opens Stages 3–5 of v0.5 to absorb a new template-wide requirement: the released package ships as a **fresh-surface starter** — docs as stubs, ADRs excluded, 10 intake folders empty (`inputs/`, `specs/`, `discovery/`, `projects/`, `portfolio/`, `roadmaps/`, `quality/`, `scaffolding/`, `stock-taking/`, `sales/`). Filed [ADR-0021](../../docs/adr/0021-release-package-fresh-surface.md) (Accepted), added Stage 4 design section "Release package contents (fresh-surface contract)" plus three new affected-surface rows, added `SPEC-V05-010` and `TEST-V05-012`, added `templates/release-package-stub.md` and `docs/release-package-contents.md`, updated `docs/specorator.md` §3.10 and `docs/sink.md`. `current_stage` remains `implementation` — this is an iteration loop, not a stage rewind. **Hand-off to `pm`:** add `REQ-V05-012` (fresh-surface contract requirement) to `requirements.md` and write the package-contract document (T-V05-002 deliverable) using ADR-0021 as the include / exclude source of truth. **Hand-off to orchestrator / planner:** broaden `T-V05-002` (package contract document) to incorporate the fresh-surface include / exclude lists, and add a new `T-V05-012` task for `scripts/check-release-package-contents.ts` that asserts the three exclusion classes; sequence it before the release readiness implementation task so SPEC-V05-005 can call into it.
+- 2026-05-02 (pm): Added REQ-V05-012 (fresh-surface starter, EARS event-driven form) to `requirements.md` and wrote the T-V05-002 deliverable `specs/version-0-5-plan/package-contract.md` (PKG-CONTRACT-V05-001, status `draft`). Package name committed to `@luis85/agentic-workflow` (GitHub login confirmed `Luis85` from README + product page URL). Three open questions logged in the contract (OQ-V05-001 visibility confirmation, OQ-V05-002 final `package.json#files` glob, OQ-V05-003 manual stub-form packaging step until T-V05-012 lands). Resolves CLAR-V05-002 (package type, name, scope, contents). **Hand-off to orchestrator:** broadened T-V05-002 + added T-V05-012 in `tasks.md`; ready for verify + commit per concern + push.
+- 2026-05-02 (dev): T-V05-012 complete — added `scripts/check-release-package-contents.ts` + `scripts/lib/release-package-contract.ts` (the building block) and `tests/scripts/release-package-contract.test.ts` (12 unit tests covering the four required scenarios plus invariants and the SPEC-V05-010 fail-closed edge case). The check is exposed via `npm run check:release-package-contents -- --archive <dir>`, supports `--json` via the shared `failIfErrors` helper, and skips cleanly with exit 0 when no candidate archive is provided. Diagnostic codes are stable: `RELEASE_PKG_ADR`, `RELEASE_PKG_INTAKE`, `RELEASE_PKG_DOC_STUB`, `RELEASE_PKG_STUB_TEMPLATE_MISSING`. The script is not wired into `npm run verify` by default — it is the building block T-V05-004 (release readiness, PR #158) composes after preparing a candidate archive. `tools/automation-registry.yml` and the typedoc-generated `docs/scripts/` shells were regenerated in lockstep. Satisfies SPEC-V05-010 (REQ-V05-005, REQ-V05-012); unblocks PR #158. PR #173.
+- 2026-05-02 (orchestrator): Codex review feedback drained on PR #157 (4 findings — 2× P1, 2× P2). Fixes applied in a single review-fix commit: (1) ADR-file glob notation corrected from the regex/glob mix `0\d{3}-*.md` to the unambiguous shell glob `[0-9][0-9][0-9][0-9]-*.md` across `requirements.md`, `spec.md`, `design.md`, `tasks.md`, `package-contract.md`, `docs/release-package-contents.md`, and `docs/sink.md`; an Errata addendum was added to ADR-0021 calling out the typo and the canonical operational form (decision unchanged). (2) `package-contract.md` §7 Install path expanded with the GitHub Packages prerequisites (`read:packages` PAT, `~/.npmrc` auth line, scope-to-registry mapping in the consumer project's `.npmrc`); the bare `npm install` command no longer over-promises. (3) `templates/release-package-stub.md` no longer links to ADR-0021 (which the contract excludes from the released archive); the trailer points at `docs/release-package-contents.md` (which ships in stub form) and notes the ADR ships in the codebase only. (4) `tasks.md` DAG inverted around the fresh-surface gate — `T-V05-012` now depends on `T-V05-002` only, and `T-V05-004` (release readiness) depends on `T-V05-001`, `T-V05-002`, `T-V05-012`; this prevents a path where readiness can pass before the fresh-surface assertions are wired in. T-V05-004 satisfies expanded to include REQ-V05-012 and SPEC-V05-010.
+- 2026-05-04 (dev): T-V05-004 complete — added `scripts/check-release-readiness.ts` + `scripts/lib/release-readiness.ts`. CLI exposed via `npm run check:release-readiness -- --version <X.Y.Z> [--archive <dir>] [--json]`; skips cleanly when invoked without `--version` and without `RELEASE_VERSION`, so `npm run verify` can host it. Layer 1 (release metadata) covers version alignment, tag-at-main readiness via injectable `GitInterface`, CHANGELOG entry, `.github/release.yml` shape, `package.json` metadata against `package-contract.md` §2–§3 with one diagnostic code per drifting field, manual release workflow least-privilege permissions, and v0.4 quality signals (SPEC-V05-008) with explicit operator waiver bypass. Layer 2 imports `checkReleasePackageContents` from T-V05-012 and surfaces `RELEASE_PKG_*` diagnostics unchanged when `--archive` is supplied; Layer 1 still runs when `--archive` is absent. Diagnostic codes are stable: `RELEASE_READINESS_VERSION_MISMATCH`, `RELEASE_READINESS_TAG_MISSING`, `RELEASE_READINESS_TAG_NOT_AT_MAIN`, `RELEASE_READINESS_CHANGELOG_MISSING`, `RELEASE_READINESS_RELEASE_YML_MISSING`, `RELEASE_READINESS_RELEASE_YML_SHAPE`, `RELEASE_READINESS_PKG_NAME`, `RELEASE_READINESS_PKG_REGISTRY`, `RELEASE_READINESS_PKG_REPOSITORY`, `RELEASE_READINESS_PKG_FILES`, `RELEASE_READINESS_WORKFLOW_MISSING`, `RELEASE_READINESS_WORKFLOW_PERMISSIONS`, `RELEASE_READINESS_QUALITY`. `package.json` and `tools/automation-registry.yml` wired; `docs/scripts/` shells regenerated via `npm run fix:script-docs`. Satisfies SPEC-V05-005 (REQ-V05-007), SPEC-V05-008 (REQ-V05-010), SPEC-V05-010 (REQ-V05-005, REQ-V05-012); composes T-V05-012; unblocks PR #159 (T-V05-006) and PR #162 (T-V05-010 / T-V05-011). PR #158.
+- 2026-05-04 (qa): T-V05-005 complete — added `tests/scripts/release-readiness.test.ts` covering the six scenarios from the chunk plan (valid release passes; missing CHANGELOG entry fails; missing lifecycle notes fails; package metadata drift fails per drifting field; unsafe workflow permissions fail; fresh-surface composition wired) plus tag-readiness, quality-signal, waiver-bypass, and argv-parser invariants. Tests use `node:test` + `node:assert/strict` with fixtures under `fs.mkdtempSync` and a stub `GitInterface`; no real git or repo filesystem touched. 21 new tests; full suite 203 green.
 
 ## Open clarifications
 
-- [ ] CLAR-V05-001 — Confirm whether v0.5 should keep Shape A with `release/vX.Y.Z` branches or adopt Shape B with a permanent `develop` branch.
-- [ ] CLAR-V05-002 — Confirm the first GitHub Package type, package name, scope, visibility, and contents.
 - [ ] CLAR-V05-003 — Confirm whether the first publish should be draft/pre-release only before a stable GitHub Release and package are published.
+
+## Resolved clarifications
+
+- [x] CLAR-V05-001 (resolved 2026-05-02 by architect, [ADR-0020](../../docs/adr/0020-v05-release-branch-strategy.md)) — v0.5 keeps Shape A with explicit `release/vX.Y.Z` branches; `main` remains the canonical release source and tag origin; `develop` is not introduced.
+- [x] CLAR-V05-002 (resolved 2026-05-02 by pm) — GitHub Packages npm registry; package name `@luis85/agentic-workflow`; visibility public (subject to OQ-V05-001 repo-visibility confirmation); contents per `package-contract.md` §3 (include) and §4 (exclude), encoding ADR-0021 fresh-surface rules.
