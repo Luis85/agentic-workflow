@@ -74,7 +74,7 @@ If the agent returns `parse-error`, surface the offending heading to the user an
 
 ### Step 6 — Confirm slices
 
-Batch one `AskUserQuestion`:
+Batch one `AskUserQuestion`. Include the integration branch the agent resolved in Step 1 so the user can spot a Shape-A vs Shape-B mismatch before any PR is opened:
 
 > N slices computed from `## Parallelisable batches` in `tasks.md`:
 >
@@ -82,7 +82,7 @@ Batch one `AskUserQuestion`:
 > - 02 — <goal> (T-AUTH-002)
 > - …
 >
-> Open N draft PRs against issue #<n>?
+> Open N draft PRs against issue #<n>, branched off `<integration-branch>` (resolved from `git symbolic-ref refs/remotes/origin/HEAD`)?
 
 Options:
 

@@ -28,6 +28,12 @@ You produce N draft PRs from a single GitHub issue whose feature has reached `/s
 - `gh auth status` must succeed.
 - `gh issue view <n> --json number,title,body,labels,state,url` — refuse if `state != "OPEN"`.
 - `git status --porcelain` — refuse if working tree is dirty.
+- **Detect the integration branch** (`<integration-branch>`) — the repo supports both Shape A (`main`) and Shape B (`develop`); see `docs/branching.md`. Resolve once per run, in order:
+  1. `git symbolic-ref --short refs/remotes/origin/HEAD` (strip the `origin/` prefix). This is the remote's default branch as advertised by `gh repo set-default` / `git remote set-head origin --auto`.
+  2. If unset, prefer `develop` when `git show-ref --verify --quiet refs/remotes/origin/develop` succeeds.
+  3. Otherwise fall back to `main`.
+
+  Use the resolved value for every subsequent `git switch`, `git switch -c <branch> <integration-branch>`, and `gh pr create --base <integration-branch>` invocation. Surface the resolved branch to the conductor in the slice-confirm payload so the user sees which branch slices will target before any PR is opened.
 
 ### Step 2 — Resolve spec lineage
 
@@ -77,12 +83,12 @@ The issue body is rendered by reading the current issue body, finding the `<!-- 
 For each slice in document order:
 
 1. Compute branch name `feat/<slug>-slice-<NN>-<short>` (truncate `<short>` so total ≤ 60 chars).
-2. `git switch -c <branch> main`. If branch exists remotely, append `-NN` numeric suffix and retry.
+2. `git switch -c <branch> <integration-branch>` (the value resolved in Step 1 — `main` in Shape A, `develop` in Shape B). If the branch exists remotely, append `-NN` numeric suffix and retry.
 3. `git commit --allow-empty -m "chore(<area>): scaffold <T-<AREA>-NNN> slice"`.
 4. `git push -u origin <branch>`.
-5. `gh pr create --draft --base main --head <branch> --title "feat(<area>): <goal> (slice <NN>/<N>)" --body-file .issue-breakdown-staging/slice-<NN>.md`.
+5. `gh pr create --draft --base <integration-branch> --head <branch> --title "feat(<area>): <goal> (slice <NN>/<N>)" --body-file .issue-breakdown-staging/slice-<NN>.md`.
 6. Capture the PR number; record into the run log.
-7. `git switch main` before the next iteration so each slice branches off `main`.
+7. `git switch <integration-branch>` before the next iteration so each slice branches off the integration branch.
 
 If any step fails, abort the run. Partial state is recoverable on re-run via the idempotency check.
 

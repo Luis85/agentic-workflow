@@ -57,7 +57,7 @@ Not for:
 ## Constraints
 
 - **No `--no-verify`.** Empty scaffold commits must pass the verify gate cleanly. If they don't, fix the gate, not the commit.
-- **No direct writes to `main`.** Slice branches use the `feat/<slug>-slice-<NN>-<short>` pattern.
+- **No direct writes to the integration branch.** The conductor detects the integration branch (`main` in Shape A, `develop` in Shape B — see [`docs/branching.md`](./branching.md)) and bases every slice off it. Slice branches use the `feat/<slug>-slice-<NN>-<short>` pattern.
 - **One PR per parallelisable batch.** `🪓 may-slice` annotations override.
 - **Sentinel-block discipline.** The `<!-- BEGIN issue-breakdown:<slug> --> … <!-- END issue-breakdown:<slug> -->` block in the parent issue body is conductor-owned; humans annotate outside it.
 - **Phase 2 file boundary.** The operational bot (`agents/operational/issue-breakdown-bot/`) is a separate PR; it must not import or transclude any file under `.claude/skills/issue-breakdown/`.
