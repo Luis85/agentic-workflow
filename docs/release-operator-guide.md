@@ -303,6 +303,19 @@ After a successful stable publish:
 
 5. **Trigger Stage 11 (Retrospective)** for the release feature folder via `/spec:retro` so the loop closes.
 
+## 8.1 Stage 10 state while the tag is pending
+
+When the readiness check is green but the tag, GitHub Release, package publish, or stable promotion still needs explicit human authorization, keep the feature in Stage 10 rather than advancing to Learning.
+
+In `specs/version-X-Y-plan/workflow-state.md`:
+
+- keep `current_stage: release`,
+- keep `status: active`,
+- keep `artifacts.release-notes.md: in-progress` until the irreversible action finishes,
+- add a dated `## Hand-off notes` entry that starts with `release-tag hold` and names the readiness verdict, verification command, pending irreversible action, required human authorization, and owning issue / PR.
+
+Use this hold for the period between release-readiness completion and the authorized release action. Once the tag / publish / promotion is complete, update the release notes, mark Stage 10 complete, then run the retrospective.
+
 ## 9. Quick-reference command bundle
 
 ```bash

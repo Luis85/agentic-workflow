@@ -20,6 +20,15 @@ Anything currently blocking progress. One bullet per blocker — name the artifa
 
 Free-form, append-only. What does the next agent / human need to know? Where did the previous agent stop? Format is one dated entry per hand-off (`YYYY-MM-DD (role): note`). Useful for resume-from-pause and for rerunning a phase against partial outputs.
 
+**Release-tag hold.** Stage 10 can have release readiness complete while an irreversible tag or publish action is still waiting on human authorization. Keep `current_stage: release` and `status: active`, keep `release-notes.md: in-progress` until the release tag / publish step is complete, and add a dated hand-off note that says `release-tag hold` with:
+
+- the readiness verdict and verification command,
+- the pending irreversible action (`tag`, `GitHub Release`, `package publish`, or `stable promotion`),
+- the explicit human authorization still needed,
+- the issue, PR, or release branch that owns the follow-up.
+
+Do not add a new workflow-state frontmatter field for this hold. The existing stage, status, artifact status, and hand-off note fields are the schema; the hold is a documented convention inside Stage 10.
+
 ## Open clarifications section
 
 Add and resolve as they come up. Unresolved clarifications block phase / stage transitions. A track cannot be marked `status: done` (or the track's equivalent terminal status) while any `- [ ]` clarification remains. Active engagements may carry unresolved clarifications as visible advisory signals.
