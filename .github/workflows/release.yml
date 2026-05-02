@@ -111,9 +111,20 @@ jobs:
       # tarball that mirrors what `npm publish` would ship. Extract into a
       # sibling directory so step 6 can run the fresh-surface assertions
       # against the candidate tree without re-tar'ing.
+      #
+      # `package-lock.json` is intentionally stripped by `npm pack` even when
+      # listed in `files`; `npm-shrinkwrap.json` is the npm-canonical
+      # publication lockfile, listed in `package.json#files` so it ships in
+      # the tarball. `package-contract.md` §3 promises a shipped lockfile so
+      # consumers have a deterministic `npm ci` baseline after copying the
+      # template (Codex P2 on PR #160). Stage the lockfile under the canonical
+      # name on the runner before pack; the codebase form keeps
+      # `package-lock.json` for day-to-day development and the runner is
+      # ephemeral so no codebase cleanup is needed.
       - name: Build candidate archive
         id: pack
         run: |
+          cp package-lock.json npm-shrinkwrap.json
           archive_root="$(mktemp -d)"
           tarball_name="$(npm pack --silent --pack-destination "$archive_root")"
           tarball_path="${archive_root}/${tarball_name}"

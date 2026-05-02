@@ -129,6 +129,15 @@ PR #156 (`feat/v05-branch-strategy-and-release-notes`) stages two tasks together
 |---|---|---|---|---|
 | — | — | none | — | — |
 
+### 2026-05-04 — Review fix — Codex P2 on PR #160 (lockfile shipping)
+
+- **Files changed:** `.github/workflows/release.yml` (step 5 stages `npm-shrinkwrap.json` from `package-lock.json` before `npm pack`); `package.json` (`files` allowlist gains `npm-shrinkwrap.json`); `specs/version-0-5-plan/chunks/pr5-package-publish.md` (surface + step 5 description).
+- **Spec reference:** `package-contract.md` §3 (lockfile ships); REQ-V05-005 (package contract); SPEC-V05-004.
+- **Owner:** orchestrator
+- **Outcome:** done
+- **Deviation from spec:** none (spec-aligning fix — original PR #160 left `package.json#files` without a lockfile entry, so the published tarball had no lockfile despite `package-contract.md` §3 promising one).
+- **Notes:** Codex P2 on commit `958cee6` flagged that `npm pack --dry-run` omitted `package-lock.json` even though `package-contract.md` §3 promises a shipped lockfile. Confirmed locally: `npm pack` strips `package-lock.json` even when listed in `files`, and `npm-shrinkwrap.json` is **not** auto-included on this npm version (810 files in the tarball, 0 lockfile of either name). Fixed by staging `package-lock.json` as `npm-shrinkwrap.json` (the npm-canonical publication-lockfile name) before `npm pack` runs in workflow step 5, and listing `npm-shrinkwrap.json` in `package.json#files` so the allowlist permits it. The codebase form keeps `package-lock.json` for day-to-day development; the runner is ephemeral so no cleanup of the staged shrinkwrap is needed. Verified: with both edits, `npm pack --dry-run` reports `27.1kB npm-shrinkwrap.json` in the tarball file list. `EXPECTED_PACKAGE_FILES` subset assertion in `check:release-readiness` is unaffected because the readiness check accepts extras.
+
 ### 2026-05-04 — Review fix — Codex P1 on PR #160
 
 - **Files changed:** `.github/workflows/release.yml` (new `publish_package` input + tightened step 10 gate); `specs/version-0-5-plan/chunks/pr5-package-publish.md` (input list + step 10 description + edge case).

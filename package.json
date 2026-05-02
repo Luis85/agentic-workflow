@@ -37,7 +37,8 @@
     "tests/",
     "AGENTS.md",
     "CHANGELOG.md",
-    "CLAUDE.md"
+    "CLAUDE.md",
+    "npm-shrinkwrap.json"
   ],
   "scripts": {
     "doctor": "tsx scripts/doctor.ts",
