@@ -31,7 +31,7 @@ updated: 2026-05-04
 | `npm run verify` | PASS |
 | Layer 1 readiness | FAIL (expected pre-release state — see §2) |
 | Layer 2 fresh-surface check | FAIL — defect found (see §5) |
-| T-V05-010 verdict | CONDITIONALLY COMPLETE — local deterministic path complete; remote workflow dispatch operator-authorised follow-up documented in §5 |
+| T-V05-010 verdict | CONDITIONALLY COMPLETE — local deterministic path complete; remote workflow dispatch operator-authorised follow-up documented in §7 |
 | T-V05-011 verdict | CONDITIONALLY COMPLETE — all local gates pass; Layer 2 fresh-surface defect raised as a `dev`-owned finding; operator-authorised follow-ups documented |
 
 ## 2. Deterministic results table
@@ -157,8 +157,8 @@ npm run test:scripts
 | Cancelled | 0 |
 | Skipped | 0 |
 | Duration | 3,665 ms |
-| `release-readiness.test.ts` tests | 21 pass, 0 fail |
-| `release-package-contract.test.ts` tests | 12 pass, 0 fail (counted within the 209 total) |
+| `release-readiness.test.ts` tests | 26 pass, 0 fail |
+| `release-package-contract.test.ts` tests | 18 pass, 0 fail (counted within the 209 total) |
 
 Scenarios covered by `release-readiness.test.ts`: valid release passes (Scenario 1), missing CHANGELOG (Scenario 2), absent CHANGELOG.md (Scenario 2b), missing `release.yml` (Scenario 3), malformed `release.yml` (Scenario 3b), `exclude: {}` fails shape (Scenario 3c), package metadata drift per field (Scenario 4), missing `files` entries (Scenario 4d), empty files array (Scenario 4b), version mismatch (Scenario 4c), unsafe top-level permissions (Scenario 5), `write-all` permissions (Scenario 5b), job-level permissions widen scope (Scenario 5d), job-level `write-all` (Scenario 5e), workflow absent (Scenario 5c), fresh-surface composition surfaces `RELEASE_PKG_*` (Scenario 6), missing quality signals fail closed (quality test 1), red CI status fails quality (quality test 2), waiver bypasses quality (quality test 3), missing tag fails `TagMissing`, tag SHA differs from main fails `TagNotAtMain`, argv parser (`parseReleaseReadinessArgs`), empty `--version` flag rejected, skip path with no version, CLI archive-without-version fails closed, CLI relative archive resolves against repoRoot.
 
@@ -183,7 +183,7 @@ All 18 verify gates green.
 Full run: `verify: ok in 14.6s`. All gates passed. Relevant highlights:
 
 - `typecheck:scripts` — TypeScript compile for all scripts (including `release-readiness.ts` and `release-package-contract.ts`) passed.
-- `test:scripts` — 209 tests pass, including all 33 new tests from T-V05-005 (21) and T-V05-012 (12).
+- `test:scripts` — 209 tests pass, including all 44 release-specific tests in `release-readiness.test.ts` (26, T-V05-005 plus follow-up Codex regressions) and `release-package-contract.test.ts` (18, T-V05-012 plus follow-up Codex regressions).
 - `check:script-docs` — typedoc regenerated against release-readiness and release-package-contract libraries; no drift.
 - `check:workflow-docs` — `.github/workflows/release.yml` satisfies the workflow documentation contract.
 - `check:automation-registry` — `tools/automation-registry.yml` includes `check:release-readiness`, `check:release-package-contents`, and `workflow:release`.
@@ -371,7 +371,7 @@ Whether the first publish should be draft/pre-release only is unresolved. The op
 
 **Status: CONDITIONALLY COMPLETE**
 
-**Rationale:** The local deterministic path (Layer 1 readiness, Layer 2 fresh-surface check, `npm pack` candidate archive, targeted test suites, `npm run verify`) has been executed fully. The Layer 1 readiness check correctly identifies pre-release gaps (`RELEASE_READINESS_TAG_MISSING`, `RELEASE_READINESS_CHANGELOG_MISSING`) that are expected on a feature branch before merge to `main`. The Layer 2 check correctly identifies DEFECT-V05-001 (fresh-surface preparation needed). All 33 new unit tests (21 readiness + 12 package contract) pass. `npm run verify` is green.
+**Rationale:** The local deterministic path (Layer 1 readiness, Layer 2 fresh-surface check, `npm pack` candidate archive, targeted test suites, `npm run verify`) has been executed fully. The Layer 1 readiness check correctly identifies pre-release gaps (`RELEASE_READINESS_TAG_MISSING`, `RELEASE_READINESS_CHANGELOG_MISSING`) that are expected on a feature branch before merge to `main`. The Layer 2 check correctly identifies DEFECT-V05-001 (fresh-surface preparation needed). All 44 release-specific unit tests (26 readiness + 18 package contract) pass. `npm run verify` is green.
 
 The remote workflow dispatch path (the live GitHub Actions dry run that exercises SPEC-V05-009 against live infrastructure) is documented in §7 as the exact `gh workflow run` command, but has not been executed in this pass because it is a shared-state action requiring human authorisation (Article IX of the constitution). Once the operator runs the command documented in §7 after DEFECT-V05-001 is resolved and the prerequisites are met, T-V05-010 is fully complete.
 
@@ -385,7 +385,7 @@ The remote workflow dispatch path (the live GitHub Actions dry run that exercise
 
 **Status: CONDITIONALLY COMPLETE**
 
-**Rationale:** All deterministic gates within scope were run. The readiness check (`check:release-readiness`) is working correctly. Targeted tests pass (33 new tests, 209 total). Package dry-run check is working correctly and caught DEFECT-V05-001. `npm run verify` is green. Link checks, agent checks, frontmatter checks, automation registry, and all other verify gates pass. Skipped publish checks and remaining authorisation needs are documented in §6–§8.
+**Rationale:** All deterministic gates within scope were run. The readiness check (`check:release-readiness`) is working correctly. Targeted tests pass (44 release-specific tests, 209 total). Package dry-run check is working correctly and caught DEFECT-V05-001. `npm run verify` is green. Link checks, agent checks, frontmatter checks, automation registry, and all other verify gates pass. Skipped publish checks and remaining authorisation needs are documented in §6–§8.
 
 **Blockers before marking fully complete:**
 1. DEFECT-V05-001 resolved by `dev`.
