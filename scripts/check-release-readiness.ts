@@ -133,18 +133,20 @@ const report = checkReleaseReadiness({
 // Prevention E from #233 — emit a non-blocking warning when the most
 // recent Release is immutable (heuristic: Repo Setting "Immutable
 // releases" is on). Surface as a GitHub Actions `::warning::` annotation
-// so dispatch operators see it inline; also write to stderr for local
-// CLI invocations. The probe never adds to `report.diagnostics` so it
-// cannot fail the gate (the v0.5.0 incident showed the setting is not
-// always operator-controlled — failing closed could block legitimate
-// dispatches). The probe is skipped under `--json` to keep the JSON
-// contract clean for downstream consumers; `--json` callers can run
-// the API call themselves if they want the signal.
-if (!process.argv.includes("--json")) {
-  const warnings = checkRepoImmutableSetting(realGitHub());
-  for (const warning of warnings) {
-    console.error(`::warning::${warning.code}: ${warning.message}`);
-  }
+// to stderr so dispatch operators see it inline. The probe never adds to
+// `report.diagnostics` so it cannot fail the gate (the v0.5.0 incident
+// showed the setting is not always operator-controlled — failing closed
+// could block legitimate dispatches).
+//
+// Runs unconditionally — including under `--json`. The dispatch workflow
+// invokes this script as `npm run check:release-readiness -- --json`, so
+// gating the probe on `!--json` would have made it dead code in exactly
+// the path the prevention is meant for (Codex P1 on PR #242). The JSON
+// contract on `report.diagnostics` and `process.exit` is unchanged —
+// warnings only land on stderr as `::warning::` annotations.
+const warnings = checkRepoImmutableSetting(realGitHub());
+for (const warning of warnings) {
+  console.error(`::warning::${warning.code}: ${warning.message}`);
 }
 
 failIfErrors(report.diagnostics, heading);
