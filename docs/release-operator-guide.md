@@ -285,16 +285,19 @@ If a Layer 1 quality signal is genuinely not available (e.g. v0.4 maturity evide
 
 A waiver with no recorded justification is a release defect.
 
-### 7.7 Asset upload refused on an immutable Release
+### 7.7 Immutable-release failures (create-time tag burn vs upload-time asset refusal)
 
-Symptom: `gh release create` succeeded but `gh release upload` (or the workflow's "Attach release asset" step) fails with `Cannot upload assets to an immutable release` or HTTP 422 `tag_name was used by an immutable release`. Cause: Repo Setting → "Immutable releases" was on at dispatch time and §1 pre-condition 5 was not honoured.
+Two distinct failure points share root cause "Repo Setting → 'Immutable releases' was on at dispatch time and §1 pre-condition 5 was not honoured":
 
-**Do not delete the Release.** Deleting an immutable Release permanently burns the tag — see §6 rollback table for why and what that costs.
+- **Create-time tag burn** — `gh release create` itself fails with HTTP 422 `tag_name was used by an immutable release`. The tag was already used by a prior immutable Release on this repo (and possibly deleted), and GitHub permanently refuses any later Release on it. Recovery cannot run on the original tag — only path (2) below.
+- **Upload-time asset refusal** — `gh release create` succeeded but `gh release upload` (or the workflow's "Attach release asset" step) fails with `Cannot upload assets to an immutable release`. The Release exists; only the asset is missing.
 
-GitHub's immutable-release contract blocks asset modification once a Release is published, and `gh release create` only attaches assets while the Release is still a draft. So for a *published* immutable Release — the v0.5.0 case — you cannot recover the asset on the existing tag. Only two paths remain:
+**Do not delete the Release in either case.** Deleting an immutable Release permanently burns the tag — see §6 rollback table for why and what that costs.
 
-1. **Accept an asset-less Release.** The npm package on GitHub Packages remains the consumer-facing artifact (`npm install --save-dev @luis85/agentic-workflow@X.Y.Z`); document the missing asset in `specs/version-X-Y-plan/release-notes.md` §Known limitations and move on. The Release page still exists, the tag is still cut, the package is still installable.
-2. **Ship a recovery release.** If (1) is not acceptable — for example because the Release page is the consumer-facing artifact — bump to `vX.Y.(Z+1)`, restate the v0.5 incident pattern in the new release notes, disable the Immutable Releases setting **before** the new dispatch, and run the standard publish path. The original burned tag stays burned forever; only the new tag carries a stable Release. This is the path the v0.5.1 recovery release took.
+GitHub's immutable-release contract blocks asset modification once a Release is published, and `gh release create` only attaches assets while the Release is still a draft. So for a *published* immutable Release with a missing asset — the v0.5.0 case — you cannot recover the asset on the existing tag. The two paths:
+
+1. **Accept an asset-less Release** *(only viable when the GitHub Package was already published this dispatch — i.e. `publish_package: true` and the workflow's package step ran cleanly)*. The npm package on GitHub Packages becomes the consumer-facing artifact (`npm install --save-dev @luis85/agentic-workflow@X.Y.Z`); document the missing asset in `specs/version-X-Y-plan/release-notes.md` §Known limitations and move on. The Release page still exists, the tag is still cut, the package is still installable. **Verify the package version actually published** before choosing this path — `npm view @luis85/agentic-workflow versions --registry https://npm.pkg.github.com` — because `publish_package` defaults to `false` and a draft / prerelease run typically skips it.
+2. **Ship a recovery release.** If (1) is not viable — package was never published, the Release page is the consumer-facing artifact, or the original tag is burned at create-time — bump to `vX.Y.(Z+1)`, restate the v0.5 incident pattern in the new release notes, disable the Immutable Releases setting **before** the new dispatch, and run the standard publish path. The original burned tag stays burned forever; only the new tag carries a stable Release. This is the path the v0.5.1 recovery release took, and the only path for a create-time tag burn.
 
 After either (1) or (2): disable the Immutable Releases setting if it is still on, update §1 pre-conditions in your operator runbook, and file the incident in the project's retrospective and `#233` punch list.
 
