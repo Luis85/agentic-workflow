@@ -51,7 +51,7 @@ Claude Code gets the native commands, agents, and skills. Other tools use the sa
 ## What You Get
 
 - An 11-stage lifecycle: Idea, Research, Requirements, Design, Specification, Tasks, Implementation, Testing, Review, Release, Retrospective.
-- Optional tracks for Discovery, Stock-taking, Sales, Project Management, Roadmap, Portfolio, Quality Assurance, Project Scaffolding, and Issue Breakdown.
+- Optional and companion tracks for Discovery, Stock-taking, Sales, Project Management, Roadmap, Portfolio, Quality Assurance, Project Scaffolding, Design, Issue Breakdown, and Specorator Improvement. The canonical v1.0 track taxonomy is frozen in [ADR-0026](docs/adr/0026-freeze-v1-workflow-track-taxonomy.md).
 - Markdown artifacts in `specs/<feature>/`, stable IDs (`REQ-*`, `T-*`, `TEST-*`, `ADR-*`), and `npm run verify` as the local and CI gate.
 - Claude Code agents, skills, and slash commands in `.claude/`, with shared root context in `AGENTS.md`.
 

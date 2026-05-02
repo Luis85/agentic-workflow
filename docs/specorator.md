@@ -44,6 +44,8 @@ See [`memory/constitution.md`](../memory/constitution.md) for the full version. 
 
 ## 2. Workflow overview
 
+The canonical v1.0 workflow track taxonomy is frozen in [ADR-0026](adr/0026-freeze-v1-workflow-track-taxonomy.md). The core lifecycle is one track; 11 opt-in or companion tracks sit around it. Do not infer new tracks from new checklists, skills, or review paths unless a superseding ADR adds a new state-bearing workflow.
+
 ```mermaid
 flowchart LR
     scaffold["Project Scaffolding Track"]
@@ -97,6 +99,8 @@ flowchart LR
 - **Quality Assurance Track** — an ISO 9001-aligned evidence workflow for checking project execution health and delivery readiness. Produces `quality-plan.md`, checklists, `quality-review.md`, and `improvement-plan.md`. Defined in [`docs/quality-assurance-track.md`](quality-assurance-track.md). **Use for internal readiness, quality drift review, release readiness, supplier assurance, or audit preparation.**
 - **Roadmap Management Track** — an outcome-led product/project planning workflow for roadmaps, delivery confidence, stakeholder alignment, and team communication. Produces `roadmap-board.md`, `delivery-plan.md`, `stakeholder-map.md`, `communication-log.md`, and `decision-log.md` under `roadmaps/<slug>/`. Defined in [`docs/roadmap-management-track.md`](roadmap-management-track.md). **Use when product direction, project delivery constraints, stakeholder expectations, and team communication need one maintained source of truth.**
 - **Design Track** — a four-phase, brand-aware surface-creation workflow (Frame → Sketch → Mock → Handoff) for producing new user-visible surfaces under the Specorator brand system. Produces `design-brief.md`, `sketch.md`, an optional `mock.html`, and `design-handoff.md` under `designs/<slug>/`. Defined in [`docs/design-track.md`](design-track.md); rationale in [ADR-0019](adr/0019-add-design-track.md). **Use when creating a new surface (docs site, marketing page, onboarding flow, dashboard) or significantly redesigning an existing one. Do not use for feature-level UI work — use `/spec:design` (Stage 4) instead.**
+
+Agentic security review guidance is a QA/reviewer extension, not a separate track in the v1.0 taxonomy. See [ADR-0026](adr/0026-freeze-v1-workflow-track-taxonomy.md).
 
 ---
 

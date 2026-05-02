@@ -24,6 +24,8 @@ Specorator is a file-based operating system for agentic software delivery: specs
 4. Keep advanced controls optional and reversible until an ADR promotes them.
 5. Improve the template without breaking downstream starter value.
 
+The v1.0 workflow track taxonomy is frozen in [ADR-0026](../adr/0026-freeze-v1-workflow-track-taxonomy.md). New productization work may extend existing tracks, but it should not add another first-party track before v1.0 without a superseding ADR.
+
 ## Non-Goals
 
 - Do not turn Specorator into a hosted SaaS product.
