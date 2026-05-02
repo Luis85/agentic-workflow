@@ -1,7 +1,7 @@
 ---
 id: ADR-0012
 title: Add a Roadmap Management Track for product and project planning
-status: proposed
+status: accepted
 date: 2026-04-28
 deciders:
   - human
@@ -21,7 +21,7 @@ tags: [workflow, roadmap, product-management, project-management, stakeholder-ma
 
 ## Status
 
-Proposed
+Accepted
 
 ## Context
 

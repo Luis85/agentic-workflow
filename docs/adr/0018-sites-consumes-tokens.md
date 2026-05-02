@@ -1,7 +1,7 @@
 ---
 id: ADR-0018
 title: Flip sites/styles.css to consume design-system tokens
-status: proposed
+status: accepted
 date: 2026-05-01
 deciders:
   - human
@@ -19,7 +19,7 @@ tags: [design-system, brand, sites, tokens, refactor]
 
 ## Status
 
-Proposed
+Accepted
 
 ## Context
 
