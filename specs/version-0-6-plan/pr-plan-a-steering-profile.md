@@ -67,6 +67,7 @@ If the decision changes ownership semantics → file ADR-0022 via [`/adr:new`](.
 - [ ] T-V06-002 Specorator steering filled at chosen location
 - [ ] Adopter template guidance preserved (no silent overwrite)
 - [ ] `AGENTS.md` + `CLAUDE.md` point to the correct steering source for template improvements
+- [ ] Append entry to [`specs/version-0-6-plan/implementation-log.md`](./implementation-log.md) per Stage 7
 - [ ] `npm run verify` green
 - [ ] PR title matches `feat(v06): ...` Conventional Commit pattern (PR-title CI)
 - [ ] References issue #91 + task IDs in commits
@@ -74,7 +75,7 @@ If the decision changes ownership semantics → file ADR-0022 via [`/adr:new`](.
 ## Workflow refs
 
 - [`AGENTS.md`](../../AGENTS.md) — operating rules + agent classes
-- [`docs/specorator.md`](../../docs/specorator.md) — full lifecycle
+- [`docs/specorator.md`](../../docs/specorator.md) — full lifecycle (Stage 7 = Implementation, current stage)
 - [`docs/steering/README.md`](../../docs/steering/README.md)
 - [`docs/branching.md`](../../docs/branching.md) — branch-per-concern
 - [`docs/verify-gate.md`](../../docs/verify-gate.md) — verify before push
@@ -87,5 +88,7 @@ None.
 
 ## Coordination
 
-- No file-scope overlap with other Wave 1 PRs.
+- **`AGENTS.md` collision** — also touched by PR-C (#177 *Tool-specific notes*) and PR-E (#179 pointer entry). Per [`feedback_parallel_pr_conflicts.md`](../../.claude/memory/feedback_parallel_pr_conflicts.md): merge not rebase to preserve reviewer line anchors.
+- **`CLAUDE.md` collision** — also touched by PR-E (#179 pointer entry).
 - T-V06-012 (public positioning) reads the steering decision after this PR merges.
+- Land first if possible — PR-C/PR-E read the *Read these first* structure once it stabilises here.
