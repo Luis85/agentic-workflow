@@ -176,7 +176,7 @@ The following checks require live GitHub infrastructure or `packages: write` cre
 |---|---|---|---|
 | `v0.5.0` tag and CHANGELOG entry absent during local dry-run | Certain (pre-release state) | High — Layer 1 readiness fails | Expected pre-release state; readiness check correctly blocks publish; operator waiver used to isolate structural diagnostics from pre-release gaps. |
 | Fresh-surface preparation (OQ-V05-003) not automated | Certain (open question in package-contract.md) | High — Layer 2 readiness fails on actual pack | Layer 2 defect finding raised in test-report.md; dev must resolve before stable publish. |
-| Remote workflow dispatch not exercised locally | Certain (Article IX boundary) | Medium — T-V05-010 remote path not validated | Exact command documented in test-report.md §5; operator must run after human authorisation. |
+| Remote workflow dispatch not exercised locally | Certain (Article IX boundary) | Medium — T-V05-010 remote path not validated | Exact command documented in test-report.md §7; operator must run after human authorisation. |
 
 ## 7. Traceability
 
