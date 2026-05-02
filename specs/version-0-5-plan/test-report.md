@@ -273,8 +273,8 @@ Run via `npm run test:scripts`. 12 tests in the file, all green.
 **Reproduction:**
 ```bash
 cd <worktree>
+mkdir -p /tmp/qa-pack /tmp/qa-extract
 npm pack --pack-destination /tmp/qa-pack
-mkdir -p /tmp/qa-extract
 tar -xzf /tmp/qa-pack/luis85-agentic-workflow-0.5.0.tgz -C /tmp/qa-extract --strip-components=1
 RELEASE_PACKAGE_ARCHIVE=/tmp/qa-extract npm run check:release-package-contents -- --json
 ```
