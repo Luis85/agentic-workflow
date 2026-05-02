@@ -58,7 +58,8 @@ The released package ships as a **fresh-surface starter** per ADR-0021 and REQ-V
 | `LICENSE` | Ships as authored. |
 | `README.md` | Ships as authored. |
 | `package.json` | Ships with v0.5 identity fields (`name`, `version`, `publishConfig`, `repository`, `files`). |
-| `package-lock.json` | Ships as authored. |
+| `package-lock.json` | Codebase form retained for day-to-day development; **not** shipped under this name (`npm pack` strips `package-lock.json` even when listed in `files`, and the runner's npm version does not auto-include it). The publication-canonical lockfile is `npm-shrinkwrap.json` — see the next row. |
+| `npm-shrinkwrap.json` | Ships in the published archive. The release workflow stages it from `package-lock.json` (`cp package-lock.json npm-shrinkwrap.json`) on the runner before `npm pack` runs, and `package.json#files` lists it so the allowlist permits it. The shrinkwrap is byte-equal to `package-lock.json` at publish time, so consumers running `npm ci` get the same deterministic dependency tree the maintainers used. The runner is ephemeral so no codebase cleanup is needed. |
 | `tsconfig.json`, `tsconfig.scripts.json` | Ship as authored. |
 | `scripts/` | Ships as authored — TypeScript release readiness and validation scripts. |
 | `tests/` | Ships as authored — test files for release readiness scripts. |
@@ -173,3 +174,4 @@ Publishing is gated by explicit human authorization in the workflow dispatch inp
 | Date | Change | Author |
 |---|---|---|
 | 2026-05-02 | Initial draft — T-V05-002 deliverable. Package identity, contents, exclusions, version source, consumer promise, install path, and open questions established. | pm |
+| 2026-05-04 | Clarified §3 lockfile shipping: the publication-canonical lockfile is `npm-shrinkwrap.json` (staged from `package-lock.json` by the release workflow), not `package-lock.json` directly. `npm pack` strips `package-lock.json` even when listed in `files`. T-V05-007 implementation surfaced the gap; resolves Codex round-3 P2 on PR #160 (lockfile actually ships under the canonical publication name, byte-equal to the codebase `package-lock.json`). | orchestrator |

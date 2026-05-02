@@ -129,6 +129,15 @@ PR #156 (`feat/v05-branch-strategy-and-release-notes`) stages two tasks together
 |---|---|---|---|---|
 | — | — | none | — | — |
 
+### 2026-05-04 — Review fix — Codex round-3 on PR #160 (idempotent publish + contract clarification)
+
+- **Files changed:** `.github/workflows/release.yml` (step 10 idempotent rerun via `npm view` pre-check); `specs/version-0-5-plan/package-contract.md` (§3 row + change-log entry — canonicalise on `npm-shrinkwrap.json`).
+- **Spec reference:** REQ-V05-005 (package contract); SPEC-V05-004; NFR-V05-005 (recoverability); REQ-V05-006.
+- **Owner:** orchestrator
+- **Outcome:** done
+- **Deviation from spec:** none (one spec-aligning fix + one contract clarification).
+- **Notes:** Codex round-3 on commit `975a5ae` raised two findings. (1) **P1 — idempotent publish (NFR-V05-005).** When step 10 publishes successfully but step 11 (asset upload) fails, rerunning the workflow with the same inputs would die at `npm publish` because `npm publish` is not repeatable for the same `name@version` (`EPUBLISHCONFLICT`). Step 10 now queries the registry first via `npm view "@luis85/agentic-workflow@${INPUT_VERSION}" version --json`; if the version is already published, the step emits a `::notice::` and skips `npm publish`, letting the workflow continue to step 11 so the asset upload gets a chance to recover. Other `npm view` failures bubble up — no silent fallthrough. (2) **P2 — contract clarification.** Codex flagged the contract/implementation mismatch: `package-contract.md` §3 said `package-lock.json` ships as authored, but the published tarball ships `npm-shrinkwrap.json` instead (the npm-canonical publication-lockfile name; `npm pack` strips `package-lock.json` even when listed in `files`, and the runner's npm version does not auto-include it). The contract was the wrong artifact — the implementation choice is correct npm convention. Updated `package-contract.md` §3 to canonicalise on `npm-shrinkwrap.json` (with note that the codebase form keeps `package-lock.json` for day-to-day development; the workflow stages a byte-equal copy before pack), and appended a change-log entry. The workflow and `package.json` are unchanged from `975a5ae`.
+
 ### 2026-05-04 — Review fix — Codex P2 on PR #160 (lockfile shipping)
 
 - **Files changed:** `.github/workflows/release.yml` (step 5 stages `npm-shrinkwrap.json` from `package-lock.json` before `npm pack`); `package.json` (`files` allowlist gains `npm-shrinkwrap.json`); `specs/version-0-5-plan/chunks/pr5-package-publish.md` (surface + step 5 description).

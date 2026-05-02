@@ -245,7 +245,20 @@ jobs:
             echo "::error::package.json identity (${actual}) does not match expected (${expected}) — refusing to publish (T-V05-007)" >&2
             exit 1
           fi
-          npm publish
+          # Idempotency check (NFR-V05-005, Codex round-3 P1 on PR #160). When
+          # a previous run published successfully but failed in step 11
+          # (asset upload), rerunning the workflow with the same inputs would
+          # otherwise die here with `EPUBLISHCONFLICT` — `npm publish` is not
+          # repeatable for the same `name@version`. Query the registry first;
+          # if the version is already on GitHub Packages, treat the publish as
+          # done and let the workflow continue to step 11 so the asset upload
+          # gets a chance to recover. Failures of `npm view` other than
+          # not-found bubble up — no silent fallthrough.
+          if npm view "@luis85/agentic-workflow@${INPUT_VERSION}" version --json 2>/dev/null | grep -q "\"${INPUT_VERSION}\""; then
+            echo "::notice::version ${INPUT_VERSION} already published to GitHub Packages — skipping npm publish (idempotent rerun, NFR-V05-005)"
+          else
+            npm publish
+          fi
 
       # Step 11 — attach the candidate tarball as a release asset. Runs after
       # `gh release create` (step 9) so the release exists; `--clobber` lets a
