@@ -349,6 +349,26 @@ entries:
     emits_json: true
     used_by: [human, agent, ci]
     rerun_command: npm run check:release-readiness -- --version <X.Y.Z> [--archive <dir>]
+  - id: build:release-archive
+    kind: script
+    command: npm run build:release-archive
+    path: scripts/build-release-archive.ts
+    purpose: Stage a fresh-surface copy of the repository under .release-staging — strip numbered ADRs and stubify shipping docs/**/*.md per ADR-0021 / SPEC-V05-010 (T-V05-013) so npm pack ships the released form.
+    read_only: false
+    safe_to_run_locally: true
+    emits_json: true
+    used_by: [human, agent, ci]
+    rerun_command: npm run build:release-archive -- --out <dir>
+  - id: prepack
+    kind: script
+    command: npm run prepack
+    path: scripts/release-prepack-guard.mjs
+    purpose: npm prepack lifecycle guard (T-V05-013 round-2) — refuses npm pack of @luis85/agentic-workflow from any cwd that lacks the .release-staging-marker, so bare npm pack from the repo root fails closed before a tarball is produced. No-op for any other package name.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: false
+    used_by: [human, agent, ci]
+    rerun_command: npm run prepack
   - id: docs:scripts
     kind: script
     command: npm run docs:scripts
