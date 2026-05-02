@@ -41,13 +41,20 @@ on:
         default: ''
 
 # Least-privilege workflow permissions per ADR-0020 / SPEC-V05-002 / NFR-V05-001.
-# `packages: write` is reserved for T-V05-007 which adds the package publish
-# step; this workflow does not call any package action yet.
-# `RELEASE_READINESS_WORKFLOW_PERMISSIONS` self-validates this block once the
-# readiness check runs against the workflow file in step 4.
-permissions:
-  contents: write
-  packages: write
+# `RELEASE_READINESS_WORKFLOW_PERMISSIONS` (PR #158, scripts/lib/release-readiness.ts)
+# enforces the top-level block as exactly { contents: write, packages: write };
+# job-level overrides may only narrow, never widen. The single `release` job
+# below uses both: `contents: write` for `gh release create`, and `packages:
+# write` reserved for the T-V05-007 / PR #160 package publish step.
+#
+# zizmor's `excessive-permissions` and `undocumented-permissions` lints prefer
+# top-level `{}` with job-scoped writes. For a single-job workflow that uses
+# both writes, top-level == job-level effectively, and the spec requires the
+# top-level declaration so the readiness check can self-validate the workflow
+# file (REQ-V05-002 / NFR-V05-001). Documented exception, suppressed inline.
+permissions: # zizmor: ignore[excessive-permissions,undocumented-permissions]
+  contents: write # zizmor: ignore[excessive-permissions]
+  packages: write # zizmor: ignore[excessive-permissions]
 
 concurrency:
   group: release-${{ inputs.version }}
@@ -95,7 +102,7 @@ jobs:
       # T-V05-007 / PR #160 will wire `--archive <dir>` once step 5 lands.
       - name: Readiness — Layer 2 (fresh-surface, stub — T-V05-007)
         run: |
-          echo 'Stub: `npm run check:release-readiness -- --archive <dir>` wiring belongs to T-V05-007 / PR #160.'
+          echo 'Stub: Layer 2 readiness (--archive <dir>) wiring belongs to T-V05-007 / PR #160.'
 
       # Step 8 — confirm gate. SPEC-V05-002 requires the operator to type the
       # literal version to authorise a non-dry-run publish. Step 7 (tag at
