@@ -83,13 +83,14 @@ Replace the current desk-only tutorial caveat with a verified golden-path demo. 
 - [ ] T-V06-004 example folder + evidence note landed
 - [ ] Deterministic check passes against the example
 - [ ] Tutorial no longer carries "No live run yet" caveat
+- [ ] Append entry to `specs/version-0-6-plan/implementation-log.md` per Stage 7 (file is pending — first task to land creates it)
 - [ ] `npm run verify` green
 - [ ] PR title matches `feat(v06): ...` Conventional Commit pattern
 
 ## Workflow refs
 
 - [`AGENTS.md`](../../AGENTS.md)
-- [`docs/specorator.md`](../../docs/specorator.md)
+- [`docs/specorator.md`](../../docs/specorator.md) — full lifecycle (Stage 7 = Implementation, current stage)
 - [`docs/quality-framework.md`](../../docs/quality-framework.md)
 - [`docs/verify-gate.md`](../../docs/verify-gate.md)
 - [`docs/traceability.md`](../../docs/traceability.md)
@@ -97,6 +98,6 @@ Replace the current desk-only tutorial caveat with a verified golden-path demo. 
 
 ## Coordination
 
-- No file overlap with other Wave 1 PRs.
+- **`tools/automation-registry.yml` collision** — also touched by PR-C (#177), PR-D (#178), PR-E (#179) when registering new automation. Per [`feedback_parallel_pr_conflicts.md`](../../.claude/memory/feedback_parallel_pr_conflicts.md): merge not rebase to preserve reviewer line anchors.
 - T-V06-012 (positioning) cites this evidence after merge.
 - T-V06-014 (release readiness) re-runs the deterministic check.
