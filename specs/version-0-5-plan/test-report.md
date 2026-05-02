@@ -109,10 +109,14 @@ npm pack --dry-run
 # Stage shrinkwrap (mirrors workflow step 5)
 cp package-lock.json npm-shrinkwrap.json
 
-# Pack to temp directory
+# Pack to temp directory (create destination first so this is reproducible
+# on a clean machine — `npm pack --pack-destination` requires the dir to exist)
+mkdir -p /tmp/qa-pack
 npm pack --pack-destination /tmp/qa-pack
 
-# Extract with strip-components (mirrors workflow step 5 tar invocation)
+# Extract with strip-components (mirrors workflow step 5 tar invocation;
+# `tar -C` likewise requires an existing target dir)
+mkdir -p /tmp/qa-extract
 tar -xzf /tmp/qa-pack/luis85-agentic-workflow-0.5.0.tgz \
   -C /tmp/qa-extract --strip-components=1
 
