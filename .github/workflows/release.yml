@@ -213,11 +213,8 @@ jobs:
           # Detect existing Release for this tag. `gh release view` exits
           # non-zero (and writes "release not found" to stderr) when no
           # Release exists, so a clean exit means we promote-in-place.
-          set +e
-          existing="$(gh release view "v${INPUT_VERSION}" --json tagName,isDraft 2>/dev/null)"
-          existing_exit=$?
-          set -e
-          if [ "$existing_exit" -eq 0 ]; then
+          # Output is discarded — only the exit code matters here.
+          if gh release view "v${INPUT_VERSION}" --json tagName,isDraft >/dev/null 2>&1; then
             echo "::notice::Release for v${INPUT_VERSION} already exists — promoting in place (#233 prevention C)"
             # `gh release edit` preserves generated notes from the prior
             # create call. Pass `--draft=<bool>` and `--prerelease=<bool>`
