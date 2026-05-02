@@ -137,6 +137,15 @@ A running record of *what* was implemented, *why* a deviation was taken, and *wh
 - **Deviation from spec:** none.
 - **Notes:** Additive only — every page kept its existing voice and brand surface. README "Status" pill and roadmap row left unchanged (out of T-V05-009 scope; v0.5 status flips to Done in PR #162 once T-V05-011 verifies the release). Product-page edits use existing `faq-item` and `step` components — no new visual treatment, no new tokens, no emoji — to stay within `brand-reviewer` rules. The product page now answers an evaluator's "is there a tagged release?" question without over-promising: it names the registry and scope, points at the operator guide, and leaves the install prerequisites in `package-contract.md` §7.
 
+### 2026-05-04 — Review fix — Codex round-4 P2 on PR #161 (subshell-scoped credentials)
+
+- **Files changed:** `docs/release-operator-guide.md` (§7.1 manual recovery script — wrapped in `(...)` subshell; trap scoped to subshell; `NODE_AUTH_TOKEN` never reaches parent shell).
+- **Spec reference:** SPEC-V05-009 (REQ-V05-011); NFR-V05-005 (recoverability).
+- **Owner:** orchestrator
+- **Outcome:** done
+- **Deviation from spec:** none.
+- **Notes:** Codex round-4 P2 on commit `e243190` flagged that `trap … EXIT` only fires when the *shell* exits — not when a paste-block ends inside an interactive shell session. In the common operator flow (paste commands into a shell, then continue working), `.npmrc` and `NODE_AUTH_TOKEN` would remain live until the operator closed the terminal. Wrapped the whole recovery block in a `(...)` subshell so: (1) `export NODE_AUTH_TOKEN=…` is scoped to the subshell and never reaches the parent shell at all (no `unset` needed); (2) the trap fires when the subshell exits — every path: success, `exit 1` on non-404, `^C`; (3) `.npmrc` is removed by the trap regardless of which path exited the subshell. Added a tail comment after the `)` confirming the parent shell is clean. Mirrors the same isolation property the workflow gets for free from the runner being ephemeral.
+
 ### 2026-05-04 — Review fix — Codex round-3 P2 on PR #161 (trap-based credential cleanup)
 
 - **Files changed:** `docs/release-operator-guide.md` (§7.1 manual recovery script — `trap` set immediately after exporting `NODE_AUTH_TOKEN`; explicit cleanup tail removed).

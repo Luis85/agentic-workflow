@@ -145,51 +145,59 @@ Recovery — run the failed steps manually from a local checkout of `vX.Y.Z`. **
 
 You will need a GitHub Personal Access Token with the `write:packages` scope (or a fine-grained token with `Packages: write` on the repository). The workflow gets this for free via `actions/setup-node` + `secrets.GITHUB_TOKEN`; for manual recovery, configure it explicitly:
 
-```bash
-# from a clean clone, on the exact tagged commit
-git fetch --tags origin
-git checkout vX.Y.Z
+The whole recovery block is wrapped in a `(...)` subshell so the credential never enters the operator's interactive shell. The trap fires when the subshell exits — success, error, or `^C` — and removes the project-scoped `.npmrc`. `NODE_AUTH_TOKEN` is exported only inside the subshell, so it is not visible to the parent shell at all (no `unset` needed).
 
-# 1. Authenticate npm against GitHub Packages — actions/setup-node does this on the runner;
-# for manual recovery, write a project-scoped .npmrc so `npm publish` resolves the registry
-# and credential exactly the way the workflow does. The trap guarantees the credential file
-# and the in-shell token are removed on every exit path (success, error, ^C), so a non-E404
-# `npm view` failure (which exits 1 below) cannot leave a populated .npmrc / exported
-# NODE_AUTH_TOKEN behind for later commands to pick up.
-export NODE_AUTH_TOKEN=<your-PAT-with-write:packages>
-trap 'rm -f .npmrc; unset NODE_AUTH_TOKEN' EXIT
-cat > .npmrc <<'EOF'
+```bash
+# Run the whole block as a paste-once unit. Everything inside the (...)
+# subshell is scoped — NODE_AUTH_TOKEN never reaches the parent shell, and
+# the trap removes the credential file before the subshell returns control.
+(
+  set -e
+  trap 'rm -f .npmrc' EXIT
+
+  # 0. From a clean clone, check out the exact tagged commit.
+  git fetch --tags origin
+  git checkout vX.Y.Z
+
+  # 1. Authenticate npm against GitHub Packages — actions/setup-node does this
+  # on the runner; for manual recovery, write a project-scoped .npmrc so
+  # `npm publish` resolves the registry and credential exactly the way the
+  # workflow does.
+  export NODE_AUTH_TOKEN=<your-PAT-with-write:packages>
+  cat > .npmrc <<'EOF'
 @luis85:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
 always-auth=true
 EOF
 
-# 2. Build the publication-canonical archive — same shape the workflow ships.
-npm ci
-cp package-lock.json npm-shrinkwrap.json
-TARBALL="$(npm pack --silent)"
+  # 2. Build the publication-canonical archive — same shape the workflow ships.
+  npm ci
+  cp package-lock.json npm-shrinkwrap.json
+  TARBALL="$(npm pack --silent)"
 
-# 3. Idempotent publish — mirrors the workflow's exit-code + stderr branch, so a
-# transient registry / auth / DNS error fails closed instead of falling through
-# to `npm publish` and producing EPUBLISHCONFLICT on a real prior publish.
-set +e
-view_output="$(npm view "@luis85/agentic-workflow@X.Y.Z" version --json 2>&1)"
-view_exit=$?
-set -e
-if [ "$view_exit" -eq 0 ] && echo "$view_output" | grep -q '"X.Y.Z"'; then
-  echo "Already published — skipping npm publish"
-elif echo "$view_output" | grep -qE '"code": *"E404"|E404|code E404|404 Not Found'; then
-  npm publish
-else
-  echo "npm view failed with a non-404 error — refusing to publish" >&2
-  echo "$view_output" >&2
-  exit 1   # trap above cleans up .npmrc + NODE_AUTH_TOKEN
-fi
+  # 3. Idempotent publish — mirrors the workflow's exit-code + stderr branch,
+  # so a transient registry / auth / DNS error fails closed instead of
+  # falling through to `npm publish` and producing EPUBLISHCONFLICT on a
+  # real prior publish.
+  set +e
+  view_output="$(npm view "@luis85/agentic-workflow@X.Y.Z" version --json 2>&1)"
+  view_exit=$?
+  set -e
+  if [ "$view_exit" -eq 0 ] && echo "$view_output" | grep -q '"X.Y.Z"'; then
+    echo "Already published — skipping npm publish"
+  elif echo "$view_output" | grep -qE '"code": *"E404"|E404|code E404|404 Not Found'; then
+    npm publish
+  else
+    echo "npm view failed with a non-404 error — refusing to publish" >&2
+    echo "$view_output" >&2
+    exit 1   # trap removes .npmrc; subshell exit drops NODE_AUTH_TOKEN
+  fi
 
-# 4. Replace any partial release asset.
-gh release upload "vX.Y.Z" "${TARBALL}" --clobber
-
-# Trap fires on normal exit and removes .npmrc + unsets NODE_AUTH_TOKEN.
+  # 4. Replace any partial release asset.
+  gh release upload "vX.Y.Z" "${TARBALL}" --clobber
+)
+# Back in the parent shell — NODE_AUTH_TOKEN was never set here, and the
+# .npmrc the subshell created has already been removed by the trap.
 ```
 
 The exit-code + stderr branch on `npm view` is intentional: an `if npm view … >/dev/null 2>&1` check would treat **any** non-zero (auth, DNS, registry hiccup) as "not published" and run `npm publish`, which then either succeeds against a missing publish (good) or fires `EPUBLISHCONFLICT` against a real prior publish that the view could not confirm (bad — masks the real failure). The same guard ships in the workflow's step 10 (Codex round-4 P1 on PR #160).
