@@ -234,28 +234,30 @@ jobs:
               exit 1
             fi
             echo "::notice::Release for v${INPUT_VERSION} already exists — promoting in place (#233 prevention C)"
-            # `gh release edit` preserves generated notes from the prior
-            # create call. Pass `--draft=<bool>` and `--prerelease=<bool>`
-            # explicitly so flipping from draft+prerelease (step 1) to
-            # stable (step 2) takes effect deterministically.
-            gh release edit "v${INPUT_VERSION}" \
-              --draft="${INPUT_DRAFT}" \
-              --prerelease="${INPUT_PRERELEASE}"
-            # Asset upload guard (Codex P1 round 2 #2): only upload when
-            # the named asset is NOT already attached. `gh release upload
-            # --clobber` deletes the existing asset before uploading the
-            # new one, and a network/API failure mid-upload would leave
-            # the published Release with no asset at all — strictly
-            # worse than skipping the upload. Step 9a's create-with-asset
-            # transaction (B path) already attached the tarball when the
-            # draft was created, so the two-step CLAR-V05-003 path
-            # reaches this branch with the asset already present and
-            # nothing to do.
+            # Asset upload BEFORE flag flip (Codex P1 round 3 on PR #241):
+            # if the existing Release is a draft with no asset (e.g. a
+            # prior dispatch failed mid-create), and we publish first
+            # then upload, post-publish asset upload can fail when the
+            # repo's Immutable Releases setting is on (assets cannot be
+            # added to published immutable Releases — see operator-guide
+            # §7.7). Uploading while the Release is still in its current
+            # draft state preserves the recovery path. We still skip the
+            # upload entirely when the asset is already attached, so the
+            # two-step CLAR-V05-003 path with a step-1 asset present
+            # remains a no-op on the upload (Codex P1 round 2 #2).
             if [ "${existing_has_asset}" = "true" ]; then
               echo "::notice::Asset $(basename "${TARBALL}") already attached to v${INPUT_VERSION} — skipping upload to avoid clobber-then-fail data loss"
             else
               gh release upload "v${INPUT_VERSION}" "${TARBALL}"
             fi
+            # `gh release edit` preserves generated notes from the prior
+            # create call. Pass `--draft=<bool>` and `--prerelease=<bool>`
+            # explicitly so flipping from draft+prerelease (step 1) to
+            # stable (step 2) takes effect deterministically. Runs AFTER
+            # the asset upload so we never publish-then-fail-to-attach.
+            gh release edit "v${INPUT_VERSION}" \
+              --draft="${INPUT_DRAFT}" \
+              --prerelease="${INPUT_PRERELEASE}"
           else
             echo "::notice::Creating fresh Release for v${INPUT_VERSION} with asset attached (#233 prevention B)"
             flags=()
