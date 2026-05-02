@@ -61,6 +61,7 @@ Look-it-up, normative. Authoritative; not narrative.
 - [`release-readiness-guide.md`](./release-readiness-guide.md) — Stage 10 go/no-go guide for product perspectives and stakeholder requirements.
 - [`release-operator-guide.md`](./release-operator-guide.md) — runnable operator path for publishing a tagged GitHub Release and (when enabled) a GitHub Package.
 - [`release-package-contents.md`](./release-package-contents.md) — fresh-surface contract for what ships in the released template package.
+- [`cross-version-handoff.md`](./cross-version-handoff.md) — location, naming, and link rules for handoff contracts consumed by a later release cycle.
 - [`workflow-overview.md`](./workflow-overview.md) — one-page lifecycle cheat sheet.
 - [`slash-commands.md`](./slash-commands.md) — generated Claude Code slash-command inventory.
 - [`cross-tool/`](./cross-tool/) — walkthroughs for Codex, Cursor, Aider, Copilot, and Gemini.
