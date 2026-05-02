@@ -52,6 +52,7 @@ Skills MAY include supporting files (templates, scripts, fixtures) next to `SKIL
 | [`project-scaffolding/`](project-scaffolding/SKILL.md) | "scaffold this project", "seed from docs", "fresh install with existing documentation", "guided setup" | Drive source-led Project Scaffolding Track. Inventory provided folders or Markdown files, extract evidence-backed context, assemble starter pack, route to right downstream track. |
 | [`discovery-sprint/`](discovery-sprint/SKILL.md) | "design sprint", "ideation", "brainstorm new product ideas", "blank page", "discovery sprint" | Drive 5-phase Discovery Track (Frame → Diverge → Converge → Prototype → Validate → Handoff) conversationally. Dispatch `facilitator` and 6 specialist consults. Output: `chosen-brief.md` feed `/spec:idea`. **Skip when brief already exists — go to `orchestrate`.** |
 | [`roadmap-management/`](roadmap-management/SKILL.md) | "roadmap", "product roadmap", "project roadmap", "stakeholder update", "communicate roadmap", "align the team" | Drive Roadmap Management Track. Maintain outcome roadmaps, delivery-plan signals, stakeholder maps, communication logs, roadmap decisions. |
+| [`issue-breakdown/`](issue-breakdown/SKILL.md) | post-/spec:tasks; "break this issue down", "decompose issue", /issue:breakdown <n> | Decompose a GitHub issue into independent draft PRs by parsing tasks.md ## Parallelisable batches. |
 
 ### Practice skills (used by stage agents)
 
