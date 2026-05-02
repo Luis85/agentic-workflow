@@ -143,28 +143,54 @@ Symptom: the GitHub Release exists (the tarball may or may not be attached), but
 
 Recovery — run the failed steps manually from a local checkout of `vX.Y.Z`. **Do not** rerun the workflow; `gh release create` will fail on the existing Release before the publish-recovery logic is reached.
 
+You will need a GitHub Personal Access Token with the `write:packages` scope (or a fine-grained token with `Packages: write` on the repository). The workflow gets this for free via `actions/setup-node` + `secrets.GITHUB_TOKEN`; for manual recovery, configure it explicitly:
+
 ```bash
 # from a clean clone, on the exact tagged commit
 git fetch --tags origin
 git checkout vX.Y.Z
 
+# 1. Authenticate npm against GitHub Packages — actions/setup-node does this on the runner;
+# for manual recovery, write a project-scoped .npmrc so `npm publish` resolves the registry
+# and credential exactly the way the workflow does.
+export NODE_AUTH_TOKEN=<your-PAT-with-write:packages>
+cat > .npmrc <<'EOF'
+@luis85:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+always-auth=true
+EOF
+
+# 2. Build the publication-canonical archive — same shape the workflow ships.
 npm ci
-# stage the publication-canonical lockfile (mirrors what the workflow does on the runner)
 cp package-lock.json npm-shrinkwrap.json
 TARBALL="$(npm pack --silent)"
 
-# Idempotent publish — same guard the workflow uses, run by hand
-if npm view "@luis85/agentic-workflow@X.Y.Z" version --json >/dev/null 2>&1; then
+# 3. Idempotent publish — mirrors the workflow's exit-code + stderr branch, so a
+# transient registry / auth / DNS error fails closed instead of falling through
+# to `npm publish` and producing EPUBLISHCONFLICT on a real prior publish.
+set +e
+view_output="$(npm view "@luis85/agentic-workflow@X.Y.Z" version --json 2>&1)"
+view_exit=$?
+set -e
+if [ "$view_exit" -eq 0 ] && echo "$view_output" | grep -q '"X.Y.Z"'; then
   echo "Already published — skipping npm publish"
+elif echo "$view_output" | grep -qE '"code": *"E404"|E404|code E404|404 Not Found'; then
+  npm publish
 else
-  NODE_AUTH_TOKEN=<your-PAT-with-write:packages> npm publish
+  echo "npm view failed with a non-404 error — refusing to publish" >&2
+  echo "$view_output" >&2
+  exit 1
 fi
 
-# Replace any partial release asset
+# 4. Replace any partial release asset.
 gh release upload "vX.Y.Z" "${TARBALL}" --clobber
+
+# 5. Clean up the project-scoped .npmrc so the credential does not linger in the working tree.
+rm -f .npmrc
+unset NODE_AUTH_TOKEN
 ```
 
-If `npm view` exits non-zero with anything other than `E404` (transient registry / auth / DNS), **stop**: do not paper over with `--force`. Investigate the registry signal first.
+The exit-code + stderr branch on `npm view` is intentional: an `if npm view … >/dev/null 2>&1` check would treat **any** non-zero (auth, DNS, registry hiccup) as "not published" and run `npm publish`, which then either succeeds against a missing publish (good) or fires `EPUBLISHCONFLICT` against a real prior publish that the view could not confirm (bad — masks the real failure). The same guard ships in the workflow's step 10 (Codex round-4 P1 on PR #160).
 
 This satisfies [NFR-V05-005](../specs/version-0-5-plan/requirements.md) recoverability without force-pushing protected branches and without depending on a workflow rerun the gates would refuse. Hardening the workflow itself to make `gh release create` skip an existing Release is tracked as future work; until then, manual recovery is the supported path.
 

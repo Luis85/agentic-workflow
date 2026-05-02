@@ -137,6 +137,15 @@ A running record of *what* was implemented, *why* a deviation was taken, and *wh
 - **Deviation from spec:** none.
 - **Notes:** Additive only — every page kept its existing voice and brand surface. README "Status" pill and roadmap row left unchanged (out of T-V05-009 scope; v0.5 status flips to Done in PR #162 once T-V05-011 verifies the release). Product-page edits use existing `faq-item` and `step` components — no new visual treatment, no new tokens, no emoji — to stay within `brand-reviewer` rules. The product page now answers an evaluator's "is there a tagged release?" question without over-promising: it names the registry and scope, points at the operator guide, and leaves the install prerequisites in `package-contract.md` §7.
 
+### 2026-05-04 — Review fix — Codex round-2 P1 ×2 on PR #161 (manual recovery — npm auth + non-E404 branch)
+
+- **Files changed:** `docs/release-operator-guide.md` (§7.1 manual recovery script).
+- **Spec reference:** SPEC-V05-009 (REQ-V05-011); NFR-V05-005 (recoverability).
+- **Owner:** orchestrator
+- **Outcome:** done
+- **Deviation from spec:** none (doc-only correctness fix).
+- **Notes:** Codex round-2 on commit `47e45b6` raised two P1 findings on the new manual recovery script. (1) **npm auth missing** — the script called `NODE_AUTH_TOKEN=… npm publish` from a clean clone but never wrote a `.npmrc`. Without scope-to-registry mapping, npm targets the public registry, not GitHub Packages, and the credential is not consumed; the publish fails with auth/registry errors. The workflow gets this for free via `actions/setup-node` + `registry-url: https://npm.pkg.github.com` + `scope: '@luis85'`; for manual recovery the operator must spell it out. Recovery script now writes a project-scoped `.npmrc` (`@luis85:registry=…`, `//npm.pkg.github.com/:_authToken=…`, `always-auth=true`), and a final cleanup step removes the file + unsets `NODE_AUTH_TOKEN` so the credential does not linger in the working tree. (2) **Non-E404 view failures fell through to publish** — the original guard `if npm view … >/dev/null 2>&1; then … else npm publish; fi` treated **any** non-zero exit (auth, DNS, transient registry) as "not published" and immediately ran `npm publish`, exactly the bug Codex round-4 P1 caught in the workflow shell on PR #160. The doc's safety rule below the snippet ("If `npm view` exits non-zero with anything other than E404, stop") was therefore inconsistent with the runnable command. Recovery script now mirrors the workflow's exit-code + stderr branch: capture exit code with `set +e`, branch on (exit 0 + version present → skip), (E404 in stderr → publish), (other → fail closed with the captured output). The "why" paragraph after the script explains why the simpler `if npm view` form is unsafe, naming the EPUBLISHCONFLICT mask path. Consistent with the workflow guard now.
+
 ### 2026-05-04 — Review fix — Codex round-1 P1 ×2 on PR #161 (rollback path + rerun guidance)
 
 - **Files changed:** `docs/release-operator-guide.md` (§6 rollback table row 2; §7 intro; §7.1 recovery procedure).
