@@ -8,7 +8,7 @@ All notable changes to Specorator are documented here. Format follows [Keep a Ch
 
 ### Notes
 - Recovery release for v0.5: republishes a stable GitHub Release page after the `v0.5.0` publish dispatch hit GitHub's Immutable Releases tag-burn ([#233](https://github.com/Luis85/agentic-workflow/issues/233)). The `v0.5.0` tag remains permanently flagged "used by an immutable release" and cannot host a new Release.
-- Package contents are byte-equivalent to `v0.5.0` aside from version metadata in `package.json` and `package-lock.json`. No behavioural changes.
+- No behavioural or runtime changes versus `v0.5.0`. The tarball differs in version metadata (`package.json`, `package-lock.json`) and in the documentation surfaces that mirror the version (`README.md`, `CHANGELOG.md`, `docs/specorator.md`, `sites/index.html`, `specs/version-0-5-plan/release-notes.md`).
 - Repository setting "Immutable releases" is now disabled to prevent recurrence. Prevention work tracked under [#233](https://github.com/Luis85/agentic-workflow/issues/233).
 
 ---

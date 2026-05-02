@@ -6,7 +6,7 @@
 
 **Build software the right way with AI.** Specorator is a spec-driven workflow template: humans decide what to build, specialist agents handle how, and every requirement, decision, task, test, and release note stays traceable.
 
-> **Status:** v0.5.1 — recovery release for v0.5 (republished GitHub Release page after the [Immutable Releases incident](https://github.com/Luis85/agentic-workflow/issues/233)). Package contents byte-equivalent to v0.5.0. Claude Code is first-class; Codex, Cursor, Aider, Copilot, and Gemini have Markdown-based walkthroughs.
+> **Status:** v0.5.1 — recovery release for v0.5 (republished GitHub Release page after the [Immutable Releases incident](https://github.com/Luis85/agentic-workflow/issues/233)). No behavioural changes versus v0.5.0; only version metadata, release notes, and version-mirror surfaces differ. Claude Code is first-class; Codex, Cursor, Aider, Copilot, and Gemini have Markdown-based walkthroughs.
 
 Product page: <https://luis85.github.io/agentic-workflow/>
 
