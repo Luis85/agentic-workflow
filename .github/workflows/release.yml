@@ -1,0 +1,159 @@
+name: Release
+
+# Manual GitHub Release workflow for v0.5 (T-V05-006).
+#
+# Composes `npm run check:release-readiness` (Layer 1 — release metadata) and
+# `gh release create` to publish a GitHub Release for the canonical `vX.Y.Z`
+# tag on `main` per ADR-0020. Layer 2 (fresh-surface composition) and the
+# release-asset attachment are intentional stubs that T-V05-007 / PR #160 will
+# fill once package publishing is wired.
+#
+# Inputs and the confirm gate satisfy SPEC-V05-002 (explicit publish
+# authorisation), SPEC-V05-003 (GitHub Release publication), and SPEC-V05-009
+# (release candidate dry run).
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Semantic version X.Y.Z to release. Must equal `package.json#version` and the existing `v<version>` tag on main.'
+        type: string
+        required: true
+      dry_run:
+        description: 'Dry run — execute readiness + lifecycle steps without creating a GitHub Release (REQ-V05-011 / SPEC-V05-009).'
+        type: boolean
+        required: false
+        default: true
+      prerelease:
+        description: 'Mark the published Release as a pre-release.'
+        type: boolean
+        required: false
+        default: false
+      draft:
+        description: 'Create the Release in draft state (operator finalises before publishing).'
+        type: boolean
+        required: false
+        default: false
+      confirm:
+        description: 'Type the literal version (X.Y.Z) to authorise non-dry-run publish (SPEC-V05-002).'
+        type: string
+        required: false
+        default: ''
+
+# Least-privilege workflow permissions per ADR-0020 / SPEC-V05-002 / NFR-V05-001.
+# `packages: write` is reserved for T-V05-007 which adds the package publish
+# step; this workflow does not call any package action yet.
+# `RELEASE_READINESS_WORKFLOW_PERMISSIONS` self-validates this block once the
+# readiness check runs against the workflow file in step 4.
+permissions:
+  contents: write
+  packages: write
+
+concurrency:
+  group: release-${{ inputs.version }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Manual GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Step 4 — Layer 1 readiness (release metadata only). The CLI reads
+      # version + quality signals from the env mapping below, so no
+      # `${{ inputs.* }}` value lands inside the `run:` shell string (zizmor
+      # template-injection guard).
+      - name: Readiness — Layer 1 (release metadata)
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+          RELEASE_CI_STATUS: ${{ vars.RELEASE_CI_STATUS }}
+          RELEASE_VALIDATION_STATUS: ${{ vars.RELEASE_VALIDATION_STATUS }}
+          RELEASE_QUALITY_WAIVER: ${{ vars.RELEASE_QUALITY_WAIVER }}
+        run: npm run check:release-readiness -- --json
+
+      # Step 5 — fresh-surface archive prep (stub). T-V05-007 / PR #160 will
+      # replace this with the actual packaging step.
+      - name: Build candidate archive (stub — T-V05-007)
+        run: |
+          echo 'Stub: candidate fresh-surface archive prep belongs to T-V05-007 / PR #160.'
+
+      # Step 6 — Layer 2 readiness against the candidate archive (stub).
+      # T-V05-007 / PR #160 will wire `--archive <dir>` once step 5 lands.
+      - name: Readiness — Layer 2 (fresh-surface, stub — T-V05-007)
+        run: |
+          echo 'Stub: `npm run check:release-readiness -- --archive <dir>` wiring belongs to T-V05-007 / PR #160.'
+
+      # Step 8 — confirm gate. SPEC-V05-002 requires the operator to type the
+      # literal version to authorise a non-dry-run publish. Step 7 (tag at
+      # main) is already covered by Layer 1 readiness above.
+      - name: Confirm gate
+        if: ${{ ! inputs.dry_run }}
+        env:
+          INPUT_CONFIRM: ${{ inputs.confirm }}
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          if [ "${INPUT_CONFIRM}" != "${INPUT_VERSION}" ]; then
+            echo "::error::confirm input does not match version — refusing to publish (SPEC-V05-002)" >&2
+            exit 1
+          fi
+
+      # Step 9a — non-dry-run: create the GitHub Release. Generated notes use
+      # the `.github/release.yml` categories from PR #156 (T-V05-003).
+      - name: Create GitHub Release
+        if: ${{ ! inputs.dry_run }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_VERSION: ${{ inputs.version }}
+          INPUT_PRERELEASE: ${{ inputs.prerelease }}
+          INPUT_DRAFT: ${{ inputs.draft }}
+        run: |
+          flags=()
+          if [ "${INPUT_PRERELEASE}" = "true" ]; then flags+=(--prerelease); fi
+          if [ "${INPUT_DRAFT}" = "true" ]; then flags+=(--draft); fi
+          gh release create "v${INPUT_VERSION}" \
+            --target main \
+            --title "v${INPUT_VERSION}" \
+            --generate-notes \
+            "${flags[@]}"
+
+      # Step 9b — dry run: log a generated-notes preview without creating any
+      # public artifact (SPEC-V05-009). All readiness diagnostics from step 4
+      # have already gated the run.
+      - name: Log dry-run candidate (no Release created)
+        if: ${{ inputs.dry_run }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_VERSION: ${{ inputs.version }}
+          INPUT_PRERELEASE: ${{ inputs.prerelease }}
+          INPUT_DRAFT: ${{ inputs.draft }}
+        run: |
+          echo 'Dry run — no GitHub Release created.'
+          echo "Candidate tag: v${INPUT_VERSION}"
+          echo "Prerelease flag: ${INPUT_PRERELEASE}"
+          echo "Draft flag: ${INPUT_DRAFT}"
+          echo '--- Generated release notes preview ---'
+          gh api -X POST "repos/${GITHUB_REPOSITORY}/releases/generate-notes" \
+            -f "tag_name=v${INPUT_VERSION}" \
+            -f target_commitish=main \
+            --jq '.body' \
+            || echo '(generate-notes preview unavailable; readiness diagnostics above remain authoritative)'
+
+      # Step 10 — release-asset attachment (stub). T-V05-007 / PR #160 will
+      # attach the fresh-surface archive built in step 5.
+      - name: Release asset attachment (stub — T-V05-007)
+        run: |
+          echo 'Stub: release-asset attachment belongs to T-V05-007 / PR #160.'

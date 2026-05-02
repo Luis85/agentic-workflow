@@ -444,6 +444,15 @@ entries:
     emits_json: false
     used_by: [ci]
     rerun_command: gh run list --workflow pr-title.yml
+  - id: workflow:release
+    kind: workflow
+    path: .github/workflows/release.yml
+    purpose: Manual GitHub Release workflow — composes the readiness check (Layer 1) and `gh release create` for v0.5 (T-V05-006). Stubs Layer 2 fresh-surface composition and asset attachment for T-V05-007.
+    read_only: false
+    safe_to_run_locally: false
+    emits_json: false
+    used_by: [ci]
+    rerun_command: gh workflow run release.yml -f version=<X.Y.Z> -f dry_run=true
   - id: workflow:typos
     kind: workflow
     path: .github/workflows/typos.yml
