@@ -15,6 +15,10 @@ All notable changes to Specorator are documented here. Format follows [Keep a Ch
 - Public distribution docs now describe the v0.5 release path and the `@luis85/agentic-workflow` package identity.
 - Repository automation registry tracks the release workflow and release-readiness checks.
 
+### Notes
+- npm `@luis85/agentic-workflow@0.5.0` shipped on 2026-05-02 to GitHub Packages.
+- The corresponding GitHub Release page exists only as a draft because the publish dispatch hit GitHub's Immutable Releases repo setting and the `v0.5.0` tag is now permanently flagged "used by an immutable release". Incident tracked in [#233](https://github.com/Luis85/agentic-workflow/issues/233); detail in `specs/version-0-5-plan/retrospective.md` §Incident. Package availability is unaffected.
+
 ---
 
 ## [v0.4.0] — 2026-05-01

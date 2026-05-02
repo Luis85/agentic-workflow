@@ -18,7 +18,7 @@ updated: 2026-05-02
 
 ## Outcome
 
-**Shipped on plan.** All 13 tasks (T-V05-001 through T-V05-013, including the Article X iteration task T-V05-012 and the DEFECT-V05-001 resolution task T-V05-013) are complete. The `v0.5.0` lightweight tag is cut on `main` at commit `03f4a4c` and pushed to origin. CI is green across all 18 verify gates; 94 release-surface tests pass on `main`. Quality metrics score: `overallScore` 97.1, maturity level 3 (Traceable), `requirementCoverage` 100%, `earsCoverage` 100%, 0 blockers, 0 open clarifications.
+**Shipped with one degraded surface — see §Incident: GitHub Immutable Releases tag burn below.** All 13 tasks (T-V05-001 through T-V05-013, including the Article X iteration task T-V05-012 and the DEFECT-V05-001 resolution task T-V05-013) are complete. The `v0.5.0` lightweight tag is on `main` at commit `96ff77a` (originally cut at `03f4a4c`, advanced after closeout merge per Layer 1 readiness rule). CI is green across all 18 verify gates; 94 release-surface tests pass on `main`. Quality metrics score: `overallScore` 97.1, maturity level 3 (Traceable), `requirementCoverage` 100%, `earsCoverage` 100%, 0 blockers, 0 open clarifications. **npm `@luis85/agentic-workflow@0.5.0` shipped successfully** on 2026-05-02; **GitHub Release page exists only as a draft** because the tag was burned by the Immutable Releases repo setting — see incident details below.
 
 **PRD goals met:**
 
@@ -176,6 +176,41 @@ Until R-V05-001 (A-V05-001) is fixed, add a known-limitation note to the quality
 
 ---
 
+## Incident: GitHub Immutable Releases tag burn
+
+**Date:** 2026-05-02. **Severity:** medium (degraded GitHub Release page; npm package unaffected). **Tracked in:** [#233](https://github.com/Luis85/agentic-workflow/issues/233).
+
+**Sequence:**
+
+1. Step-1 dispatch (`dry_run=false prerelease=true draft=true`) created draft Release `316716256` carrying tarball + generated notes.
+2. Step-2 dispatch (`dry_run=false prerelease=false draft=false publish_package=true`) ran `gh release create v0.5.0 --target main --verify-tag --generate-notes`. GitHub created a **new** stable Release `316716370` (it did not promote the draft) and auto-flagged it `immutable: true` because the repo's Immutable Releases beta setting was on.
+3. `npm publish` succeeded — `+ @luis85/agentic-workflow@0.5.0` confirmed in run logs.
+4. `gh release upload v0.5.0 ... --clobber` (asset attach) failed `HTTP 422 Cannot upload assets to an immutable release`. Workflow exit 1.
+5. Operator deleted Release `316716370` to retry. The tag did not unburn — GitHub remembers `tag_name was used by an immutable release` and rejects every subsequent Release create / promote against `v0.5.0`.
+
+**Final state:**
+
+- npm `@luis85/agentic-workflow@0.5.0` on GitHub Packages — live, unaffected.
+- Tag `v0.5.0` on `main` HEAD `96ff77a` — exists, cannot back a new GitHub Release.
+- Draft Release `316716256` (URL `untagged-67cb63246f7b3f3c11be`) — has tarball + notes, cannot be promoted.
+
+**What we learned:**
+
+- `gh release upload --clobber` is documented as idempotent in the operator guide §7. That documentation pre-dated GitHub's Immutable Releases feature. With Immutable Releases on, asset upload to a published Release is one-shot — the workflow's design assumed mutability.
+- Deleting an immutable Release does not unburn the tag. The single-step "retry" intuition is wrong here; the right move was to leave the assetless Release and treat it as the canonical artifact.
+- The repo's Immutable Releases setting was effectively a hidden trap for the v0.5 release flow. No readiness check probed for it because GitHub does not expose the setting via the standard `repos/{owner}/{repo}` API.
+
+**Carry-forward (R-V05-006, owned in [#233](https://github.com/Luis85/agentic-workflow/issues/233)):**
+
+- Operator: disable Immutable Releases in repo Settings → General before any future v0.5.x or v0.6.0 publish dispatch.
+- Workflow hardening: probe the immutable flag on the just-created Release before asset upload, and surface a `RELEASE_PUBLISH_IMMUTABLE_BLOCK` diagnostic instead of failing on `HTTP 422`.
+- Operator guide: §6 row 2 ("Artifact wrong, package not yet published") and §7.x (asset upload failure) both need an explicit warning that deleting an immutable Release burns the tag forever.
+- Future release: ship a v0.5.1 (or repurpose the planned v0.5.1 patch) carrying a forward note that v0.5.0's GitHub Release lives only as a draft.
+
+This incident does not invalidate any v0.5 PRD or NFR — REQ-V05-002 (manual authorisation), REQ-V05-005 (publish to GitHub Packages), NFR-V05-001 (least-privilege publish) and NFR-V05-002 (traceability via tag + commit + package version) all hold. Only the GitHub Release surface is degraded.
+
+---
+
 ## Quality gate
 
 - [x] Three buckets covered (worked / didn't / actions).
@@ -183,3 +218,4 @@ Until R-V05-001 (A-V05-001) is fixed, add a known-limitation note to the quality
 - [x] Spec adherence assessed.
 - [x] Improvements proposed back into the kit (templates / memory / quality-framework).
 - [x] Quality trend run; post-retro baseline saved.
+- [x] Incident addendum added if the publish dispatch surfaced unexpected behaviour.
