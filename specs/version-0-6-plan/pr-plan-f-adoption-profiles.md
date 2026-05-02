@@ -62,13 +62,14 @@ Map common users to the smallest useful Specorator surface. Profiles are short m
 - [ ] Each profile links to existing surfaces, no duplicated content
 - [ ] Folder README includes `entry_point: true` frontmatter
 - [ ] Root README links the index
+- [ ] Append entry to `specs/version-0-6-plan/implementation-log.md` per Stage 7 (file is pending — first task to land creates it)
 - [ ] `npm run verify` green
 - [ ] PR title matches `feat(v06): ...`
 
 ## Workflow refs
 
 - [`AGENTS.md`](../../AGENTS.md)
-- [`docs/specorator.md`](../../docs/specorator.md)
+- [`docs/specorator.md`](../../docs/specorator.md) — full lifecycle (Stage 7 = Implementation, current stage)
 - [`docs/discovery-track.md`](../../docs/discovery-track.md)
 - [`docs/sales-cycle.md`](../../docs/sales-cycle.md)
 - [`docs/project-track.md`](../../docs/project-track.md)
@@ -82,5 +83,5 @@ None required.
 
 ## Coordination
 
-- No file overlap with other Wave 1 PRs.
-- T-V06-012 (positioning) links these profiles from public surfaces after merge.
+- **`README.md` collision** — Wave 2 PR-H (positioning, T-V06-012) also edits root README. Land this PR first; PR-H links these profiles from public surfaces after merge.
+- No other file overlap with Wave 1 PRs.
