@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import {
@@ -18,6 +19,21 @@ import {
   stageTraceabilityCoverage,
   traceabilityExpectation,
 } from "../../scripts/lib/quality-metrics.js";
+
+test("quality metrics CLI honors npm_config_feature from npm bare --feature form", () => {
+  const output = execFileSync(process.execPath, ["--import", "tsx", "scripts/quality-metrics.ts", "--json"], {
+    cwd: process.cwd(),
+    encoding: "utf8",
+    env: {
+      ...process.env,
+      npm_config_feature: "quality-assurance-workflow",
+    },
+  });
+  const metrics = JSON.parse(output);
+
+  assert.equal(metrics.scope, "feature:quality-assurance-workflow");
+  assert.equal(metrics.summary.workflowCount, 1);
+});
 
 test("collectQualityMetrics reports repository workflow KPIs", () => {
   const metrics = collectQualityMetrics({ feature: "quality-assurance-workflow" });
