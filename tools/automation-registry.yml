@@ -426,6 +426,15 @@ entries:
     emits_json: false
     used_by: [ci]
     rerun_command: gh run list --workflow gitleaks.yml
+  - id: workflow:issue-breakdown-bot
+    kind: workflow
+    path: .github/workflows/issue-breakdown-bot.yml
+    purpose: Trigger contract for the issue-breakdown-bot — fires on the `breakdown-me` label and queues one decomposition per issue. Model invocation step is a placeholder for adopters to wire their preferred Claude Code action.
+    read_only: false
+    safe_to_run_locally: false
+    emits_json: false
+    used_by: [ci]
+    rerun_command: gh run list --workflow issue-breakdown-bot.yml
   - id: workflow:pages
     kind: workflow
     path: .github/workflows/pages.yml
@@ -795,6 +804,15 @@ entries:
     emits_json: false
     used_by: [agent, human]
     rerun_command: open agents/operational/docs-review-bot/PROMPT.md
+  - id: operational-agent:issue-breakdown-bot
+    kind: operational-agent
+    path: agents/operational/issue-breakdown-bot
+    purpose: Headless variant of /issue:breakdown. Triggered by the breakdown-me label; opens one draft PR per parallelisable batch in tasks.md.
+    read_only: false
+    safe_to_run_locally: false
+    emits_json: false
+    used_by: [agent, human]
+    rerun_command: open agents/operational/issue-breakdown-bot/PROMPT.md
   - id: operational-agent:plan-recon-bot
     kind: operational-agent
     path: agents/operational/plan-recon-bot
