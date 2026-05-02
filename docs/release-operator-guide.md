@@ -401,7 +401,7 @@ These are not readiness diagnostics but `gh` API errors a release operator may s
 | Error | Likely cause | Recovery |
 |---|---|---|
 | `tag_name was used by an immutable release` (HTTP 422) | Repo Setting → "Immutable releases" was on; a prior Release on this tag was created (and possibly deleted) under that setting and burned the tag. | §7.7. The tag cannot host a new Release; ship a recovery release on `vX.Y.(Z+1)`. |
-| `Cannot upload assets to an immutable release` (HTTP 422) | The current Release was auto-flagged immutable; asset upload via the API is refused. | §7.7. Try the UI drag-drop, accept an asset-less Release, or supersede. **Do not delete the Release.** |
+| `Cannot upload assets to an immutable release` (HTTP 422) | The current Release was auto-flagged immutable; asset upload via the API is refused. | §7.7. For a published immutable Release, accept an asset-less Release or supersede on `vX.Y.(Z+1)` — GitHub blocks asset modification post-publish, so neither API nor UI upload can recover. **Do not delete the Release.** |
 | `release already exists` (HTTP 422 from `gh release create`) | A Release for this tag exists from a prior dispatch (often a draft from the two-step CLAR-V05-003 path). | §7. Resume from the existing Release rather than rerunning the workflow as a recovery primitive — `gh release create` is not idempotent. |
 
 ## 11. References
