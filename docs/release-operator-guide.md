@@ -180,9 +180,18 @@ always-auth=true
 EOF
 
   # 2. Build the publication-canonical archive — same shape the workflow ships.
+  # `npm run build:release-archive` applies the build-time transform
+  # (T-V05-013): numbered ADRs are filtered, every shipping `docs/**/*.md`
+  # page is replaced with the stub form. `npm pack ./.release-staging`
+  # then packs the staged tree so the recovery tarball is byte-equivalent
+  # to the workflow's step 5 output. Bare `npm pack` from the repo root is
+  # blocked by `scripts/release-prepack-guard.mjs` because it would
+  # otherwise ship the codebase form (numbered ADRs included) — a
+  # fresh-surface contract violation per ADR-0021 / SPEC-V05-010.
   npm ci
   cp package-lock.json npm-shrinkwrap.json
-  TARBALL="$(npm pack --silent)"
+  npm run build:release-archive -- --out .release-staging
+  TARBALL="$(npm pack --silent ./.release-staging)"
 
   # 3. Idempotent publish — mirrors the workflow's exit-code + stderr branch,
   # so a transient registry / auth / DNS error fails closed instead of
@@ -195,7 +204,12 @@ EOF
   if [ "$view_exit" -eq 0 ] && echo "$view_output" | grep -q '"X.Y.Z"'; then
     echo "Already published — skipping npm publish"
   elif echo "$view_output" | grep -qE '"code": *"E404"|E404|code E404|404 Not Found'; then
-    npm publish
+    # Publish the byte-identical staged tarball produced in step 2 so the
+    # published archive equals the GitHub Release asset and reflects the
+    # build-time transform (T-V05-013). Bare `npm publish` from the repo
+    # root is blocked by the prepack guard for the same reason bare
+    # `npm pack` is — it would publish the codebase form.
+    npm publish "${TARBALL}"
   else
     echo "npm view failed with a non-404 error — refusing to publish" >&2
     echo "$view_output" >&2
@@ -297,15 +311,17 @@ RELEASE_VERSION=X.Y.Z RELEASE_CI_STATUS=green RELEASE_VALIDATION_STATUS=pass \
   npm run check:release-readiness -- --json
 
 # Pre-flight — Layer 2 fresh-surface, locally. The check walks an extracted
-# archive directory, not the codebase, so build + extract first; same shape the
-# workflow uses (`tar --strip-components=1` flattens the `package/` top-level
-# the npm tarball wraps around the contents).
-TARBALL="$(npm pack --silent)"
-mkdir -p release-staging
-tar -xzf "${TARBALL}" -C release-staging --strip-components=1
-RELEASE_PACKAGE_ARCHIVE=./release-staging \
+# archive directory, not the codebase, so build the staged tree, pack it,
+# extract, and run the assertions. `npm run build:release-archive` applies
+# the build-time transform (T-V05-013); bare `npm pack` from the repo root
+# is blocked by the prepack guard because it would ship the codebase form.
+npm run build:release-archive -- --out .release-staging
+TARBALL="$(npm pack --silent ./.release-staging)"
+mkdir -p release-extracted
+tar -xzf "${TARBALL}" -C release-extracted --strip-components=1
+RELEASE_PACKAGE_ARCHIVE=./release-extracted \
   npm run check:release-package-contents -- --json
-rm -rf release-staging "${TARBALL}"
+rm -rf release-extracted .release-staging "${TARBALL}"
 
 # Cut canonical tag on main (after release branch is merged). Use the merge
 # commit of the release PR explicitly — never let `git tag` default to HEAD

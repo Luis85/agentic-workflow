@@ -1,0 +1,34 @@
+# Exclusions for `npm pack` from paths NOT covered by `package.json#files`.
+#
+# `package.json#files` is the include allowlist. Per npm's documented
+# precedence, paths inside `files`-listed directories CANNOT be excluded by a
+# top-level `.npmignore`, so this file is not the right tool for filtering
+# specific files out of `docs/`, `scripts/`, etc.
+#
+# The canonical defenses are:
+# - `npm run build:release-archive` (T-V05-013) stages a transformed copy under
+#   `.release-staging/` with numbered ADRs filtered and shipping `docs/**/*.md`
+#   replaced by the stub form. The release workflow packs that staged tree.
+# - `scripts/release-prepack-guard.mjs` (wired as the `prepack` lifecycle
+#   script) refuses `npm pack` of `@luis85/agentic-workflow` from any cwd that
+#   lacks the `.release-staging-marker`, so a maintainer who bypasses the
+#   build script and runs bare `npm pack` from the repo root fails closed.
+#
+# The exclusions below cover paths that are NOT in `package.json#files` and
+# therefore would only appear in the tarball if the `files` field were widened
+# by accident — pure belt-and-braces.
+#
+# When changing this file, also update:
+# - `package.json#files` (the canonical include list).
+# - `scripts/lib/release-archive-builder.ts` (build-time filter).
+# - `scripts/release-prepack-guard.mjs` (prepack guard).
+# - `docs/release-package-contents.md` (the contract documentation).
+# - `tools/automation-registry.yml` (the automation inventory).
+
+# Local maintainer state — never relevant to consumers.
+.worktrees/
+
+# Build-time staging directory produced by `npm run build:release-archive`.
+# Excluded so that staging output cannot recursively land inside a packed
+# archive when the release pipeline is rerun against a dirty checkout.
+.release-staging/
