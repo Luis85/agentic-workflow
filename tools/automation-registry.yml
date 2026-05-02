@@ -561,6 +561,15 @@ entries:
     emits_json: false
     used_by: [agent]
     rerun_command: open .claude/skills/grill/SKILL.md
+  - id: skill:issue-breakdown
+    kind: skill
+    path: .claude/skills/issue-breakdown/SKILL.md
+    purpose: Agent-facing reusable workflow skill.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: false
+    used_by: [agent]
+    rerun_command: open .claude/skills/issue-breakdown/SKILL.md
   - id: skill:new-adr
     kind: skill
     path: .claude/skills/new-adr/SKILL.md
