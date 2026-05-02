@@ -137,6 +137,15 @@ A running record of *what* was implemented, *why* a deviation was taken, and *wh
 - **Deviation from spec:** none.
 - **Notes:** Additive only — every page kept its existing voice and brand surface. README "Status" pill and roadmap row left unchanged (out of T-V05-009 scope; v0.5 status flips to Done in PR #162 once T-V05-011 verifies the release). Product-page edits use existing `faq-item` and `step` components — no new visual treatment, no new tokens, no emoji — to stay within `brand-reviewer` rules. The product page now answers an evaluator's "is there a tagged release?" question without over-promising: it names the registry and scope, points at the operator guide, and leaves the install prerequisites in `package-contract.md` §7.
 
+### 2026-05-04 — Review fix — Codex round-8 P3 on PR #161 (chunk-doc input count)
+
+- **Files changed:** `specs/version-0-5-plan/chunks/pr6-release-docs.md` (Surface bullet — "five `workflow_dispatch` inputs" → "six").
+- **Spec reference:** SPEC-V05-006 (REQ-V05-008); NFR-V05-002 (traceability — chunk plan is the planning artifact later reviewers use to validate T-V05-008 scope).
+- **Owner:** orchestrator
+- **Outcome:** done
+- **Deviation from spec:** none.
+- **Notes:** Codex round-8 on commit `0d350d4` raised one P3 plus a stale P3 (id 3176489400) already fixed in 490173b on round-5. The new finding called out the chunk plan still saying "five `workflow_dispatch` inputs" while listing six (`version`, `dry_run`, `prerelease`, `draft`, `confirm`, `publish_package`) — same defect class as round-6 P3 #1 (operator guide) and round-7 P3 (workflow-state.md), missed in the chunk doc on the earlier sweeps. Single-word fix; chunk plan now matches the operator guide §2 + workflow-state hand-off note + `docs/specorator.md` §3.10 wording across all four planning surfaces.
+
 ### 2026-05-04 — Review fix — Codex round-7 P1 + P3 on PR #161 (explicit tag SHA + workflow-state alignment)
 
 - **Files changed:** `docs/release-operator-guide.md` (§7.2 Recovery + §9 quick-reference — `git tag vX.Y.Z` invocations now require an explicit `RELEASE_SHA` from `gh pr view --jq .mergeCommit.oid`, never default to HEAD); `specs/version-0-5-plan/workflow-state.md` (T-V05-008/009 hand-off note refreshed: "five inputs" → "six", "idempotent rerun semantics" → the actual recoverability matrix posture from the operator guide).

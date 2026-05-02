@@ -11,7 +11,7 @@ The runnable, version-by-version operator path consumed before every publish fro
 
 ### Surface
 
-- `docs/release-operator-guide.md` — new page. Eleven sections: audience + authorization boundary; pre-conditions; the five `workflow_dispatch` inputs (`version`, `dry_run`, `prerelease`, `draft`, `confirm`, `publish_package`) explained against the env-mapping discipline (no `${{ inputs.* }}` in `run:`); pre-flight Layer 1 readiness, locally; dry-run path; stable publish path; rollback rules; failed-publish recovery (six numbered scenarios); post-release cleanup; quick-reference command bundle; diagnostic-code reference covering both `RELEASE_READINESS_*` (Layer 1) and `RELEASE_PKG_*` (Layer 2); references back to ADR-0020, ADR-0021, branching, package-contract, and the lifecycle readiness guide.
+- `docs/release-operator-guide.md` — new page. Eleven sections: audience + authorization boundary; pre-conditions; the six `workflow_dispatch` inputs (`version`, `dry_run`, `prerelease`, `draft`, `confirm`, `publish_package`) explained against the env-mapping discipline (no `${{ inputs.* }}` in `run:`); pre-flight Layer 1 readiness, locally; dry-run path; stable publish path; rollback rules; failed-publish recovery (six numbered scenarios); post-release cleanup; quick-reference command bundle; diagnostic-code reference covering both `RELEASE_READINESS_*` (Layer 1) and `RELEASE_PKG_*` (Layer 2); references back to ADR-0020, ADR-0021, branching, package-contract, and the lifecycle readiness guide.
 - `docs/release-readiness-guide.md` — cross-link added pointing at the operator guide so the two release-stage docs reference each other.
 
 ### Content rules
