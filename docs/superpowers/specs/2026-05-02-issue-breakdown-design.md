@@ -160,11 +160,11 @@ The conductor parses these template-guaranteed anchors:
 |---|---|
 | Slice ordinal `<NN>` | `## Parallelisable batches` body, line prefix `- **Batch N:**`, zero-padded to 2 digits. |
 | Tasks in slice | Same line; comma-separated `T-<AREA>-NNN` tokens. |
-| Per-task heading | `### T-<AREA>-NNN <emoji> — <short title>` — regex `^### (T-[A-Z0-9]+-\d{3}) ([🧪🔨📐📚🚀🪓]) — (.+)$`. Goal = `<short title>`. |
+| Per-task heading | `### T-<AREA>-NNN <emoji-block> — <short title>` — `<emoji-block>` is one or more legend emojis (`🧪 🔨 📐 📚 🚀 🪓`) in any order, with or without separating spaces. `templates/tasks-template.md` requires `🪓` to be added *in addition to* the task-type emoji on may-slice tasks (e.g. `### T-AUTH-014 🔨🪓 — Password reset`), so the parser must accept multi-emoji headings. Use a regex along the lines of `^### (T-[A-Z0-9]+-\d{3})\s+([🧪🔨📐📚🚀🪓\s]+?)\s+— (.+)$` and post-process the captured group to detect each flag. Goal = `<short title>`. |
 | Per-task description | Bullet `- **Description:**` under the heading. |
 | Per-task DoD | Bullet `- **Definition of done:**` followed by checklist items. |
 | Per-task `Depends on` | Bullet `- **Depends on:**` (used to cross-check that the batch is actually independent — surface a warning if not). |
-| `🪓 may-slice` flag | `🪓` in the heading emoji set; followed by a `**Slice plan:**` bullet. |
+| `🪓 may-slice` flag | `🪓` appears anywhere in the captured `<emoji-block>` (alone or alongside a task-type emoji); the task is then expected to carry a `**Slice plan:**` bullet. |
 | Slice goal (PR title) | Concatenation of in-batch task short titles, separated by " + ", truncated to 60 chars. If the batch is a single `🪓` task, the slice goal is that task's short title. |
 | Slice DoD (PR body) | Aggregation of in-batch tasks' per-task DoD checklists, plus the spec's `## Quality gate` section as a final gate. |
 

@@ -63,9 +63,9 @@ Parse `specs/<slug>/tasks.md` per the spec's "Slicing input" section:
 
 - Required headings: `## Parallelisable batches`, `## Task list`.
 - Per-batch line: `- **Batch N:** T-<AREA>-NNN, T-<AREA>-NNN, …`. One slice per batch (zero-padded ordinal).
-- Per-task heading: `### T-<AREA>-NNN <emoji> — <short title>`.
+- Per-task heading: `### T-<AREA>-NNN <emoji-block> — <short title>`. The `<emoji-block>` is one or more of the legend emojis (`🧪 🔨 📐 📚 🚀 🪓`) — `templates/tasks-template.md` requires `🪓` to be added *in addition to* the task-type emoji on may-slice tasks (e.g. `### T-AUTH-014 🔨🪓 — Password reset`), so the parser must accept the full set in any order, with or without separating spaces. Use a regex along the lines of `^### (T-[A-Z0-9]+-\d{3})\s+([🧪🔨📐📚🚀🪓\s]+?)\s+— (.+)$` and post-process the captured `<emoji-block>` to detect the may-slice flag.
 - Per-task fields: `**Description:**`, `**Definition of done:**`, `**Depends on:**`.
-- `🪓 may-slice` tasks override the batch grouping — split into their own slice using the `**Slice plan:**` line.
+- `🪓 may-slice` flag is present when the captured `<emoji-block>` contains `🪓` (anywhere in the run); such tasks override the batch grouping and split into their own slice using the `**Slice plan:**` line. Tasks without `🪓` are batched per `## Parallelisable batches`.
 - Final gate: `## Quality gate` (copied verbatim into each PR's DoD block).
 
 Refuse if any required anchor is missing. Surface the offending heading.
