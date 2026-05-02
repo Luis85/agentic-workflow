@@ -1,7 +1,7 @@
 ---
 description: Decompose a GitHub issue into independent draft PRs from tasks.md. Runs the issue-breakdown conductor.
 argument-hint: <issue-number>
-allowed-tools: [Read, Edit, Write, Bash, Grep, Glob]
+allowed-tools: [Agent, Read, Edit, Write, Bash, Grep, Glob]
 model: sonnet
 ---
 
