@@ -1,12 +1,12 @@
 ---
-id: TEST-REPORT-V05-001
+id: TESTREPORT-V05-001
 title: Version 0.5 release and distribution plan — Stage 8 test report
 stage: testing
 feature: version-0-5-plan
 status: complete
 owner: qa
 inputs:
-  - TEST-PLAN-V05-001
+  - TESTPLAN-V05-001
   - SPECDOC-V05-001
   - PRD-V05-001
 created: 2026-05-04
@@ -20,7 +20,7 @@ updated: 2026-05-04
 | Field | Value |
 |---|---|
 | Date | 2026-05-04 |
-| Test plan reference | `specs/version-0-5-plan/test-plan.md` (TEST-PLAN-V05-001) |
+| Test plan reference | `specs/version-0-5-plan/test-plan.md` (TESTPLAN-V05-001) |
 | Executor | qa agent (PR #162, branch `feat/v05-dry-run-and-verification`) |
 | Node version | v24.12.0 |
 | npm version | 11.9.0 |

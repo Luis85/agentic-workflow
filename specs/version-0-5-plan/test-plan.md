@@ -1,5 +1,5 @@
 ---
-id: TEST-PLAN-V05-001
+id: TESTPLAN-V05-001
 title: Version 0.5 release and distribution plan — Stage 8 test plan
 stage: testing
 feature: version-0-5-plan
@@ -50,7 +50,7 @@ Every EARS clause that requires testing is mapped to one or more TEST-V05-* iden
 | Test ID | REQ-V05-* | SPEC-V05-* | EARS clause summary | Deterministic command(s) | Operator-authorised command | Result artifact |
 |---|---|---|---|---|---|---|
 | `TEST-V05-002` | REQ-V05-002 | SPEC-V05-002 | Publish workflows require manual dispatch, explicit authorization, least-privilege permissions. | `npm run check:release-readiness -- --version 0.5.0 --json` (checks `RELEASE_READINESS_WORKFLOW_PERMISSIONS`); review `.github/workflows/release.yml` triggers and permissions block. | Remote dispatch with `dry_run: true` — no publish occurs. | `test-report.md` §2 + §3 |
-| `TEST-V05-003` | REQ-V05-003 | SPEC-V05-003 | Workflow creates or updates a GitHub Release from accepted release tag and release notes. | `npm run check:release-readiness -- --version 0.5.0 --json` passes workflow-shape checks; dry-run dispatch logs `gh api .../releases/generate-notes` preview. | `gh workflow run release.yml --ref main -f version=0.5.0 -f dry_run=true -f prerelease=false -f draft=false -f confirm="" -f publish_package=false` | `test-report.md` §5 (operator-authorised follow-ups) |
+| `TEST-V05-003` | REQ-V05-003 | SPEC-V05-003 | Workflow creates or updates a GitHub Release from accepted release tag and release notes. | `npm run check:release-readiness -- --version 0.5.0 --json` passes workflow-shape checks; dry-run dispatch logs `gh api .../releases/generate-notes` preview. | `gh workflow run release.yml --ref main -f version=0.5.0 -f dry_run=true -f prerelease=false -f draft=false -f confirm="" -f publish_package=false` | `test-report.md` §7 (operator-authorised follow-ups) |
 | `TEST-V05-007` | REQ-V05-007 | SPEC-V05-005 | Readiness check validates version, tag, changelog, lifecycle notes, package metadata, workflow config, and permissions before publish. | `npm run check:release-readiness -- --version 0.5.0 --json`; `npm run test:scripts` (Scenarios 1–6 in `release-readiness.test.ts`). | (Covered by local deterministic path.) | `test-report.md` §2 |
 | `TEST-V05-008` | REQ-V05-008 | SPEC-V05-006 | Operator guide provides runnable path from dry run through publish, rollback, recovery, and cleanup. | Review `docs/release-operator-guide.md` sections §1–§11; verify each command is internally consistent per §7.1 (`gh release create` not-idempotent, manual recovery commands provided). | Remote dispatch dry run exercises §4 of the guide. | `test-report.md` §2 |
 | `TEST-V05-010` | REQ-V05-010 | SPEC-V05-008 | Quality signals (CI status, validation status, open blockers, open clarifications, maturity) must be green or explicitly waived. | `npm run check:release-readiness -- --version 0.5.0 --json` without env produces `RELEASE_READINESS_QUALITY` diagnostics; with `RELEASE_QUALITY_WAIVER` set, Quality codes are suppressed; unit tests `quality signals: missing signals fail closed with Quality code`, `quality signals: explicit operator waiver bypasses Quality assertions`. | (Covered by local deterministic path.) | `test-report.md` §2 |
@@ -147,7 +147,7 @@ npm run verify
 
 Expected: exit code 0; all gates (`typecheck:scripts`, `test:scripts`, `check:automation-registry`, `check:agents`, `check:links`, `check:adr-index`, `check:commands`, `check:script-docs`, `check:workflow-docs`, `check:product-page`, `check:sites-tokens-mirror`, `check:frontmatter`, `check:obsidian`, `check:obsidian-assets`, `check:specs`, `check:roadmaps`, `check:traceability`, `check:token-budget`) pass.
 
-### 4.8 TEST-V05-002 — Operator guide §7.1 internal consistency (REQ-V05-011 + NFR-V05-005)
+### 4.8 TEST-V05-005-NFR — Operator guide §7.1 internal consistency (REQ-V05-011 + NFR-V05-005)
 
 Manual review of `docs/release-operator-guide.md` §7.1:
 
