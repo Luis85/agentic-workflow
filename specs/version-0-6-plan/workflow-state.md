@@ -4,7 +4,7 @@ area: V06
 current_stage: implementation
 status: active
 last_updated: 2026-05-02
-last_agent: codex-dev
+last_agent: codex
 artifacts:
   idea.md: complete
   research.md: complete
@@ -52,9 +52,10 @@ artifacts:
 - 2026-05-01 (codex): Planned v0.6 through Stage 6 from the product research pass. Recommended implementation order is steering profile, live golden-path demo, cross-tool adapters, hook pack, agentic security workflow, proof-first public positioning, adoption profiles, ISO 9001:2026 watch item, then release readiness verification.
 - 2026-05-02 (codex, T-V06-001/T-V06-002): PR-A selected the additive steering split: downstream starter templates stay in `docs/steering/`, while Specorator's own product steering lives in `docs/specorator-product/`. No ADR required because existing template ownership was preserved. Implementation evidence lives in `implementation-log.md`.
 - 2026-05-02 (codex, CLAR-V06-002): ADR-0026 freezes the v1.0 track taxonomy and resolves agentic security as a QA/reviewer extension, not a new optional track. T-V06-010 should add an OWASP-aligned review path as an opt-in checklist/skill usable from Quality Assurance, Review, or Release readiness without creating a new state-bearing workflow.
+- 2026-05-02 (Decider): CLAR-V06-001 and CLAR-V06-003 resolved in the cross-plan clarification slate. v0.6 ships a thin first-class adapter set: Claude Code baseline, Codex, Copilot, and one editor-agent path through Cursor/Aider-style guidance; fuller native adapters or generation are deferred. Golden-path proof starts as maintainer-run evidence plus CI validation of artifacts/scripts; full CI execution of the interactive demo is deferred until the path is stable.
 
 ## Open clarifications
 
-- [ ] CLAR-V06-001 - Confirm whether v0.6 should implement the full cross-tool adapter set or start with Claude Code, Codex, and Copilot only.
+- [x] CLAR-V06-001 - v0.6 does not implement the full cross-tool adapter set. Ship a thin first-class set: Claude Code baseline, Codex, Copilot, and one editor-agent path through Cursor/Aider-style guidance. Defer fuller native adapters or generation.
 - [x] CLAR-V06-002 - Confirm whether the agentic security review is a new optional track, a QA checklist extension, or both. *(resolved 2026-05-02: QA/reviewer extension, not a new track; see ADR-0026.)*
-- [ ] CLAR-V06-003 - Confirm whether the golden-path demo should be fully automated in CI or documented as a maintainer-run release evidence check first.
+- [x] CLAR-V06-003 - Start with maintainer-run golden-path evidence plus CI validation of artifacts/scripts. Defer fully automated CI execution of the interactive demo until the path is stable.

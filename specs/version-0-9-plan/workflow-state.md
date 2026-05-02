@@ -3,8 +3,8 @@ feature: version-0-9-plan
 area: V09
 current_stage: implementation
 status: active
-last_updated: 2026-05-01
-last_agent: planner
+last_updated: 2026-05-02
+last_agent: codex
 artifacts:
   idea.md: complete
   research.md: complete
@@ -51,9 +51,10 @@ artifacts:
 
 - Tracker issue: https://github.com/Luis85/agentic-workflow/issues/125
 - 2026-05-01 (codex): Planned v0.9 through Stage 6 from the request for a stakeholder sparring partner before v1.0. Recommended implementation order is define the `stakeholder-sparring.md` artifact contract, add the roadmap sparring command or skill, extend evidence collection, add named-stakeholder guardrails, update roadmap docs/agents/skills/command inventories, add validation and examples, then run full verification.
+- 2026-05-02 (Decider): CLAR-V09-001, CLAR-V09-002, and CLAR-V09-003 resolved in the cross-plan clarification slate. v0.9 uses a single append-oriented `roadmaps/<slug>/stakeholder-sparring.md` artifact. The first implementation exposes both `/roadmap:spar` as the command surface and a reusable skill/manual flow for non-Claude tools. Default evidence sources are committed roadmap/spec/project artifacts, communication logs, decision logs, issue/PR comments, and human-approved summaries; raw transcripts or private past conversations are excluded unless explicitly supplied or approved for that session.
 
 ## Open clarifications
 
-- [ ] CLAR-V09-001 - Confirm whether the preparation artifact should be named `stakeholder-sparring.md` or split into per-stakeholder files.
-- [ ] CLAR-V09-002 - Confirm whether the first implementation should expose `/roadmap:spar`, a skill-only flow, or both.
-- [ ] CLAR-V09-003 - Confirm which past-conversation sources are acceptable by default beyond committed communication and decision logs.
+- [x] CLAR-V09-001 - Use a single append-oriented `roadmaps/<slug>/stakeholder-sparring.md` artifact for v0.9. Defer per-stakeholder files until volume proves the need.
+- [x] CLAR-V09-002 - Expose both `/roadmap:spar` as the command surface and a reusable skill/manual flow for non-Claude tools. The command is the happy path; the skill preserves portability.
+- [x] CLAR-V09-003 - Default allowed sources are committed roadmap/spec/project artifacts, communication logs, decision logs, issue/PR comments, and human-approved summaries. Raw transcripts or private past conversations are excluded unless explicitly supplied or approved for that session.
