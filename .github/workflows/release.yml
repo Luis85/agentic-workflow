@@ -245,19 +245,31 @@ jobs:
             echo "::error::package.json identity (${actual}) does not match expected (${expected}) — refusing to publish (T-V05-007)" >&2
             exit 1
           fi
-          # Idempotency check (NFR-V05-005, Codex round-3 P1 on PR #160). When
-          # a previous run published successfully but failed in step 11
+          # Idempotency check (NFR-V05-005, Codex P1 on PR #160 rounds 3-4).
+          # When a previous run published successfully but failed in step 11
           # (asset upload), rerunning the workflow with the same inputs would
           # otherwise die here with `EPUBLISHCONFLICT` — `npm publish` is not
-          # repeatable for the same `name@version`. Query the registry first;
-          # if the version is already on GitHub Packages, treat the publish as
-          # done and let the workflow continue to step 11 so the asset upload
-          # gets a chance to recover. Failures of `npm view` other than
-          # not-found bubble up — no silent fallthrough.
-          if npm view "@luis85/agentic-workflow@${INPUT_VERSION}" version --json 2>/dev/null | grep -q "\"${INPUT_VERSION}\""; then
+          # repeatable for the same `name@version`. Query the registry first
+          # and branch on the result:
+          #   - exit 0 + version present → already published, skip npm publish
+          #     so step 11 gets a chance to recover the asset upload.
+          #   - npm E404 → version genuinely not published, proceed.
+          #   - any other failure (transient registry / auth / DNS) → fail
+          #     closed; do NOT fall through to `npm publish`, otherwise we'd
+          #     still hit `EPUBLISHCONFLICT` on a real conflict that the view
+          #     could not confirm (Codex round-4 P1 on PR #160).
+          set +e
+          view_output="$(npm view "@luis85/agentic-workflow@${INPUT_VERSION}" version --json 2>&1)"
+          view_exit=$?
+          set -e
+          if [ "$view_exit" -eq 0 ] && echo "$view_output" | grep -q "\"${INPUT_VERSION}\""; then
             echo "::notice::version ${INPUT_VERSION} already published to GitHub Packages — skipping npm publish (idempotent rerun, NFR-V05-005)"
-          else
+          elif echo "$view_output" | grep -qE "\"code\": *\"E404\"|E404|code E404|404 Not Found"; then
             npm publish
+          else
+            echo "::error::npm view failed with a non-404 error — refusing to publish so EPUBLISHCONFLICT cannot mask a real failure" >&2
+            echo "$view_output" >&2
+            exit 1
           fi
 
       # Step 11 — attach the candidate tarball as a release asset. Runs after

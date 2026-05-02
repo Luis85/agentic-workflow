@@ -129,6 +129,15 @@ PR #156 (`feat/v05-branch-strategy-and-release-notes`) stages two tasks together
 |---|---|---|---|---|
 | — | — | none | — | — |
 
+### 2026-05-04 — Review fix — Codex round-4 P1 on PR #160 (npm view error handling)
+
+- **Files changed:** `.github/workflows/release.yml` (step 10 idempotency guard branches on `npm view` exit code + stderr).
+- **Spec reference:** NFR-V05-005 (recoverability); REQ-V05-006.
+- **Owner:** orchestrator
+- **Outcome:** done
+- **Deviation from spec:** none.
+- **Notes:** Codex round-4 P1 on commit `3d7f7d5` flagged that the previous idempotency check treated *any* `npm view` failure as "not published" because `if npm view ... | grep -q ...` swallows non-zero exits inside an `if` test (workflow shell defaults to `bash -e {0}`). Transient registry / auth / DNS errors would therefore fall through to `npm publish` and still hit `EPUBLISHCONFLICT`, defeating the rerun path. Step 10 now captures `npm view`'s exit code and stderr explicitly, then branches: (a) exit 0 + version present → already published, skip `npm publish`; (b) `E404` matched in stderr → version genuinely not published, proceed; (c) any other non-zero → fail closed with `::error::` and the captured output, refusing to publish on an unconfirmed-conflict path.
+
 ### 2026-05-04 — Review fix — Codex round-3 on PR #160 (idempotent publish + contract clarification)
 
 - **Files changed:** `.github/workflows/release.yml` (step 10 idempotent rerun via `npm view` pre-check); `specs/version-0-5-plan/package-contract.md` (§3 row + change-log entry — canonicalise on `npm-shrinkwrap.json`).
