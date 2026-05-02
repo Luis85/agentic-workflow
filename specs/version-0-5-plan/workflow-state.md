@@ -1,10 +1,10 @@
 ---
 feature: version-0-5-plan
 area: V05
-current_stage: implementation
+current_stage: release
 status: active
 last_updated: 2026-05-02
-last_agent: dev
+last_agent: reviewer
 artifacts:
   idea.md: complete
   research.md: complete
@@ -15,8 +15,8 @@ artifacts:
   implementation-log.md: in-progress
   test-plan.md: complete
   test-report.md: complete
-  review.md: pending
-  traceability.md: pending
+  review.md: complete
+  traceability.md: complete
   release-notes.md: pending
   retrospective.md: pending
 ---
@@ -35,7 +35,7 @@ artifacts:
 | 6. Tasks | `tasks.md` | complete |
 | 7. Implementation | `implementation-log.md` + code | in-progress |
 | 8. Testing | `test-plan.md`, `test-report.md` | complete |
-| 9. Review | `review.md`, `traceability.md` | pending |
+| 9. Review | `review.md`, `traceability.md` | complete |
 | 10. Release | `release-notes.md` | pending |
 | 11. Learning | `retrospective.md` | pending |
 
@@ -77,11 +77,16 @@ artifacts:
 
 - 2026-05-02 (qa): T-V05-010 + T-V05-011 complete locally. All 209 unit tests pass (26 release-readiness, 18 release-package-contract, 165 pre-existing). `npm run verify` green (18 gates, 14.6 s). Layer 1 readiness (`check:release-readiness`) correctly blocks on pre-release gaps (`RELEASE_READINESS_TAG_MISSING`, `RELEASE_READINESS_CHANGELOG_MISSING`) and quality signals — expected states on a feature branch; waiver suppresses Quality codes leaving only structural blockers. `npm pack` candidate: `luis85-agentic-workflow-0.5.0.tgz`, 864,582 bytes, SHA-256 `2b9a4d2c5a43acf05df7f3c8d2f7f12757d49bf081defaa302713e25d27e62a4`, 814 extracted files. Layer 2 (`check:release-package-contents`) correctly fails — **DEFECT-V05-001 raised (dev-owned)**: 22 numbered ADR files and multiple built-up docs pages ship in the candidate archive (SPEC-V05-010 assertions 1 and 3 violated; OQ-V05-003 automation gap). Operator guide §7.1 internal consistency confirmed. `test-plan.md` and `test-report.md` written. Artifacts complete for Stage 8. **Next step:** (1) `dev` resolves DEFECT-V05-001 (fresh-surface preparation — exclude ADR files from archive, convert docs to stubs); (2) orchestrator merges PR #162; (3) operator cuts `v0.5.0` tag on `main`, promotes CHANGELOG entry; (4) operator runs the exact remote dry-run command documented in `test-report.md` §7: `gh workflow run release.yml --ref main -f version=0.5.0 -f dry_run=true -f prerelease=false -f draft=false -f confirm="" -f publish_package=false`; (5) CLAR-V05-003 closed; (6) PR #162 ready-for-review.
 
+- 2026-05-02 (Decider): CLAR-V05-003 resolved — first publish is **draft + prerelease**, then promoted to stable in a second workflow run. Repo vars `RELEASE_CI_STATUS=green` and `RELEASE_VALIDATION_STATUS=green` set on `Luis85/agentic-workflow` so Layer 1 readiness can pass in non-quality-waiver mode (item 7 of the v0.5 closeout punch list).
+
+- 2026-05-02 (reviewer): Stage 9 complete. `review.md` (`REVIEW-V05-001`) and `traceability.md` (`RTM-V05-001`) written. **Verdict:** Approved with conditions — technical work is green; remaining blockers are Decider-owned. Quality metrics: `overallScore` 97.1, maturity level 3 (Traceable), `requirementCoverage` 100%, `earsCoverage` 100%, 0 blockers, 1 open clarification (CLAR-V05-003). All 12 functional REQs have a downstream Spec → Tasks → Code → Tests chain; all 5 NFRs have surface evidence. 94/94 release-surface tests pass on this branch (re-run by reviewer); `npm run verify` was reported green on `main` at 14.6 s across all 18 gates. Five findings raised, none blocking: R-V05-001 (medium, tooling — `quality-metrics` undercounts test coverage; post-v0.5 follow-up); R-V05-002 (low, accepted-as-is — TEST-V05-006 deferred to live publish); R-V05-003 (low, retro lesson — PR #202 ran 6 review-fix rounds; "when a flag is a code smell" learning); R-V05-004 (low, accepted-as-is — REQ-V05-012 EARS wording style nit); R-V05-005 (low, scheduled — `package-contract.md` `status: draft` should flip to `accepted` during release prep). DEFECT-V05-001 from Stage 8 confirmed resolved on the technical surface across PR #202 rounds 1–6. Round-1 → round-6 evolution consistent with `design.md` build-time-transform pattern; `--no-clean` removal in round-6 is a correct simplification because `package.json#files` whitelists whole directories. **Hand-off to Decider (Article IX):** (1) close CLAR-V05-003 — draft+prerelease vs stable for first publish; (2) authorise operator-led `gh workflow run release.yml --ref main -f version=0.5.0 -f dry_run=true …` after PR sequence merged + `v0.5.0` tag on `main` + `CHANGELOG.md [v0.5.0]` heading promoted + `RELEASE_CI_STATUS=green` / `RELEASE_VALIDATION_STATUS=green` repo vars set. **Hand-off to release-manager (Stage 10):** consume `review.md` §Recommendation as the release-prep checklist; have `pm` flip `package-contract.md` to `accepted` (R-V05-005) in the same PR that promotes the CHANGELOG heading; write `release-notes.md` and proceed once Decider items 1–2 are done. **Hand-off to retrospective agent (Stage 11):** R-V05-002 (backfill TEST-V05-006 from live publish) and R-V05-003 (PR #202 loop-length learning) are inputs to retro.
+
 ## Open clarifications
 
-- [ ] CLAR-V05-003 — Confirm whether the first publish should be draft/pre-release only before a stable GitHub Release and package are published.
+- *(none)*
 
 ## Resolved clarifications
 
 - [x] CLAR-V05-001 (resolved 2026-05-02 by architect, [ADR-0020](../../docs/adr/0020-v05-release-branch-strategy.md)) — v0.5 keeps Shape A with explicit `release/vX.Y.Z` branches; `main` remains the canonical release source and tag origin; `develop` is not introduced.
 - [x] CLAR-V05-002 (resolved 2026-05-02 by pm) — GitHub Packages npm registry; package name `@luis85/agentic-workflow`; visibility public (subject to OQ-V05-001 repo-visibility confirmation); contents per `package-contract.md` §3 (include) and §4 (exclude), encoding ADR-0021 fresh-surface rules.
+- [x] CLAR-V05-003 (resolved 2026-05-02 by Decider) — first publish ships as **draft + prerelease**, attached to `v0.5.0`. Operator follows the two-step path in `docs/release-operator-guide.md`: (1) `gh workflow run release.yml --ref main -f version=0.5.0 -f dry_run=false -f prerelease=true -f draft=true -f confirm=0.5.0 -f publish_package=false` to create the draft + prerelease GitHub Release with the candidate tarball attached, no npm publish; (2) after reviewer inspection on the draft, `gh workflow run release.yml --ref main -f version=0.5.0 -f dry_run=false -f prerelease=false -f draft=false -f confirm=0.5.0 -f publish_package=true` to flip to stable + publish to GitHub Packages. The `release.yml` already supports both modes (steps 9/10 gated on `! dry_run`, package publish additionally gated on `publish_package: true` per Codex P1 round-2 on PR #160).
