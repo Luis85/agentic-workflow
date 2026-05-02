@@ -51,6 +51,7 @@ Record a watch item or follow-up issue so QA-track requirements are reviewed whe
 - [ ] Tracking issue opened + linked
 - [ ] Review trigger explicit (date or event)
 - [ ] No premature requirement changes
+- [ ] Append entry to `specs/version-0-6-plan/implementation-log.md` per Stage 7 (file is pending — first task to land creates it)
 - [ ] `npm run verify` green
 - [ ] PR title matches `chore(v06): ...` Conventional Commit pattern
 
@@ -58,6 +59,7 @@ Record a watch item or follow-up issue so QA-track requirements are reviewed whe
 
 - [`docs/quality-framework.md`](../../docs/quality-framework.md)
 - [`docs/quality-assurance-track.md`](../../docs/quality-assurance-track.md)
+- [`docs/specorator.md`](../../docs/specorator.md) — full lifecycle (Stage 7 = Implementation, current stage)
 - [`AGENTS.md`](../../AGENTS.md)
 
 ## CLAR resolution
@@ -66,5 +68,5 @@ None required.
 
 ## Coordination
 
-- No file overlap with other Wave 1 PRs.
+- **`docs/quality-framework.md` + `docs/quality-assurance-track.md` collision** — also touched by PR-E (#179 agentic security review) which may add new sections. Per [`feedback_parallel_pr_conflicts.md`](../../.claude/memory/feedback_parallel_pr_conflicts.md): merge not rebase. Recommend a dedicated *Watch items* subsection so PR-E and PR-G edit non-overlapping ranges.
 - T-V06-014 (release readiness) confirms the watch item exists.
