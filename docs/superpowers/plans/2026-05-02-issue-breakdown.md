@@ -209,7 +209,7 @@ The conductor parses `tasks.md` directly using its template-guaranteed anchors (
 npm run check:adr-index
 ```
 
-Expected: passes (the index regenerator picks up `0022`). If it auto-updates `docs/adr/README.md`, stage that too in step 5.
+Expected: passes (the index regenerator picks up `0022`). If `check:adr-index` auto-updates `docs/adr/README.md`, stage that too in step 5.
 
 - [ ] **Step 5: Commit**
 
@@ -218,7 +218,7 @@ git add docs/adr/0022-add-issue-breakdown-track.md docs/adr/README.md
 git commit -m "docs(adr): file ADR-0022 — adopt issue-breakdown track"
 ```
 
-(Stage `docs/adr/README.md` only if `check:adr` regenerated it; otherwise omit.)
+(Stage `docs/adr/README.md` only if `check:adr-index` regenerated it; otherwise omit.)
 
 ### Task 1.4: Write methodology doc `docs/issue-breakdown-track.md`
 
@@ -916,13 +916,13 @@ Expected: **fails the first time**, but the failure output prints the exact rege
 
 - [ ] **Step 3: Apply the regenerated blocks**
 
-Most repos ship a `fix-command-docs.ts` companion script that auto-writes the regenerated content. Run it if present:
+The repo ships a `fix:commands` alias that auto-writes the regenerated content. Run it:
 
 ```bash
-ls scripts/fix-command-docs.ts && npx tsx scripts/fix-command-docs.ts
+npm run fix:commands
 ```
 
-If the fix script doesn't exist, paste the expected blocks from the failure output into:
+If `fix:commands` is not defined in `package.json`, paste the expected blocks from the `check:commands` failure output into:
 
 - `.claude/commands/README.md` (between `<!-- BEGIN GENERATED: command-inventory -->` and `<!-- END GENERATED: command-inventory -->`).
 - `README.md` (between `<!-- BEGIN GENERATED: slash-commands -->` and `<!-- END GENERATED: slash-commands -->`, around line 345).
@@ -1220,7 +1220,7 @@ Phase 2 (operational bot under `agents/operational/issue-breakdown-bot/`) is def
 ## Test plan
 
 - [x] `npm run verify` green locally.
-- [x] `check:agents`, `check:command-docs`, `check:frontmatter`, `check:adr`, `check:markdown-links` all pass.
+- [x] `check:agents`, `check:commands`, `check:frontmatter`, `check:adr-index`, `check:links` all pass.
 - [ ] Reviewer-driven dogfood: open a tracking issue, run the conductor against it, observe N draft PRs + an updated `## Work packages` section.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
