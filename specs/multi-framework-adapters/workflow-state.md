@@ -84,7 +84,7 @@ artifacts:              # canonical machine-readable map; the table below is its
 - [x] CLAR-013 — REQ-ADAPT-007: heading updated to "idempotent overwrite"; generated files are created or overwritten on every sync run.
 - [x] CLAR-014 — REQ-ADAPT-026 added: protection rule uses header-presence test, not a finite list; covers all unlabelled files under `.codex/`.
 - [x] CLAR-015 — REQ-ADAPT-008: "append" replaced with explicit create-or-overwrite behaviour.
-- [x] CLAR-016 (blocker) — REQ-ADAPT-008: script no longer modifies `AGENTS.md`. NG9 added. Manual one-time step documented in REQ-ADAPT-008 PM decision note.
+- [x] CLAR-016 (blocker) — REQ-ADAPT-008: script no longer modifies `AGENTS.md`. NG10 added. Manual one-time step documented in REQ-ADAPT-008 PM decision note.
 - [x] CLAR-017 — REQ-ADAPT-009: duplicate Pattern field removed.
 - [x] CLAR-018 — REQ-ADAPT-027 added: combined size above 32,768 bytes causes non-zero exit identifying contributing files.
 - [x] CLAR-019 — REQ-ADAPT-010: duplicate Pattern field removed.

@@ -22,7 +22,7 @@ Implementation-ready contracts. The spec is precise enough that two independent 
 
 This spec covers the two CLI commands (`npm run adapters:sync`, `npm run adapters:check`), the internal Node.js functions that compose them, the structured artifacts they produce (`.cursor/rules/.adapter-manifest.json`, `.cursor/rules/*.mdc`, `.codex/agents/*.md`, `.codex/skills/*.md`, `.codex/agents/INDEX.md`), and the precise validation, edge-case, and observability semantics required to reproduce DESIGN-ADAPT-001 deterministically.
 
-Out of scope (from PRD non-goals NG1–NG9, restated): adapters for frameworks other than Cursor and Codex; bi-directional sync; GUI tooling; modification of any canonical or hand-authored file; CI-provider-specific configuration; semantic validation of rule content; runtime orchestration. Test code (Stage 8) and task decomposition (Stage 6) are out of scope here.
+Out of scope (from PRD non-goals NG1–NG10, restated): adapters for frameworks other than Cursor and Codex; bi-directional sync; GUI tooling; modification of any canonical or hand-authored file; CI-provider-specific configuration; semantic validation of rule content; runtime orchestration. Test code (Stage 8) and task decomposition (Stage 6) are out of scope here.
 
 Authoritative cross-references used throughout:
 

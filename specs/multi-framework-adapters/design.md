@@ -144,7 +144,7 @@ flowchart TD
     M -- No --> O([Diagnose from stderr and re-run adapters:sync])
 ```
 
-**The manual one-time step (REQ-ADAPT-008, NG9):**
+**The manual one-time step (REQ-ADAPT-008, NG10):**
 
 The adapter script does not modify `AGENTS.md`. After first-time generation, the maintainer must manually add a "See also" reference to `.codex/agents/INDEX.md` in `AGENTS.md`. This is a one-time human action, not automated. The adapter README documents the exact text to add. The script's success message reminds the user of this step on first run (when no prior manifest exists).
 

@@ -42,7 +42,7 @@ Specorator is built and maintained through Claude Code; its agent definitions, s
 - NG7. Generating Specorator `templates/` artifacts for other frameworks; the adapters cover AI tool configuration files only.
 - NG8. Semantic validation of generated rule content (whether a rule will be effective in practice). Structural validation only.
 - NG9. CI-provider-specific configuration: this feature ships no CI-provider-specific files (e.g., `.github/workflows/`, `Jenkinsfile`, `.circleci/`). CI integration is achieved solely by invoking `npm run verify`, which any CI provider or release pipeline can call.
-- NG9. The adapter script shall not modify `AGENTS.md`; the `AGENTS.md` pointer to `.codex/agents/INDEX.md` is a manual one-time setup step documented in the adapter README, not automated.
+- NG10. The adapter script shall not modify `AGENTS.md`; the `AGENTS.md` pointer to `.codex/agents/INDEX.md` is a manual one-time setup step documented in the adapter README, not automated.
 
 ---
 
@@ -323,7 +323,7 @@ Specorator is built and maintained through Claude Code; its agent definitions, s
 - **Priority:** must
 - **Satisfies:** RESEARCH-ADAPT-001 (Q2 — Codex context model, "What still needs validating" — Codex discovery mechanism; technical consideration 4)
 
-> **PM decision — AGENTS.md pointer:** The adapter script does not add the `AGENTS.md` pointer to `INDEX.md` (per NG9). The adapter README documents a one-time manual step: the human maintainer adds a "See also" reference to `.codex/agents/INDEX.md` in `AGENTS.md` after first running `adapters:sync`. This keeps the script additive-only with respect to canonical files.
+> **PM decision — AGENTS.md pointer:** The adapter script does not add the `AGENTS.md` pointer to `INDEX.md` (per NG10). The adapter README documents a one-time manual step: the human maintainer adds a "See also" reference to `.codex/agents/INDEX.md` in `AGENTS.md` after first running `adapters:sync`. This keeps the script additive-only with respect to canonical files.
 
 ---
 
@@ -545,7 +545,7 @@ Identical to the preliminary out-of-scope list from `idea.md`, confirmed:
 - Changes to Specorator lifecycle stages or agent scopes.
 - Semantic (effectiveness) validation of generated rule content.
 - Aider `.cursor/rules/` consumption (Aider does not auto-load those files; out of scope pending ADR).
-- Automated modification of `AGENTS.md` to add the `INDEX.md` pointer (manual one-time setup step per NG9).
+- Automated modification of `AGENTS.md` to add the `INDEX.md` pointer (manual one-time setup step per NG10).
 
 ---
 
@@ -562,7 +562,7 @@ Identical to the preliminary out-of-scope list from `idea.md`, confirmed:
 - [x] Two-path generated-file header rule: frontmatter fields for `.mdc` files, HTML comment line 1 for `.md` files (REQ-ADAPT-006).
 - [x] Manifest JSON schema defined exactly (REQ-ADAPT-010); no "array or map" ambiguity.
 - [x] Manifest records both source paths+hashes and output paths (REQ-ADAPT-010, REQ-ADAPT-015 consistent).
-- [x] AGENTS.md contradiction resolved: script does not modify AGENTS.md; manual step documented in NG9 and REQ-ADAPT-008 PM decision note.
+- [x] AGENTS.md contradiction resolved: script does not modify AGENTS.md; manual step documented in NG10 and REQ-ADAPT-008 PM decision note.
 - [x] Codex 32 KiB hard limit added as REQ-ADAPT-027 (failure, not just warning).
 - [x] Slug collision detection added as REQ-ADAPT-025.
 - [x] Non-deterministic content prohibition explicit in REQ-ADAPT-017.

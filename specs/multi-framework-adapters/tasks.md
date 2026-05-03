@@ -519,7 +519,7 @@ Each task is ~½ day (estimate S or M), has a stable ID, references ≥ 1 requir
 
 ### T-ADAPT-030 📚 — Adapter README under `scripts/adapters/README.md`
 
-- **Description:** Write `scripts/adapters/README.md` covering: (1) the one-directional flow (canonical `.claude/` → adapter outputs, no reverse); (2) the regeneration command (`npm run adapters:sync`); (3) the drift check command (`npm run adapters:check`) and its verify-gate integration; (4) the manual one-time step for adding the `.codex/agents/INDEX.md` pointer to `AGENTS.md` (REQ-ADAPT-008, NG9) with the exact text to add; (5) generated file locations (`.cursor/rules/`, `.codex/agents/`, `.codex/skills/`); (6) the flat-layout constraint for `.cursor/rules/`; (7) the `cursor-doctor` devDependency and its rationale; (8) the Codex 32 KiB ceiling warning and what to do if it is reached; (9) the stale-output known limitation (RISK-ADAPT-007 — orphaned files on source deletion).
+- **Description:** Write `scripts/adapters/README.md` covering: (1) the one-directional flow (canonical `.claude/` → adapter outputs, no reverse); (2) the regeneration command (`npm run adapters:sync`); (3) the drift check command (`npm run adapters:check`) and its verify-gate integration; (4) the manual one-time step for adding the `.codex/agents/INDEX.md` pointer to `AGENTS.md` (REQ-ADAPT-008, NG10) with the exact text to add; (5) generated file locations (`.cursor/rules/`, `.codex/agents/`, `.codex/skills/`); (6) the flat-layout constraint for `.cursor/rules/`; (7) the `cursor-doctor` devDependency and its rationale; (8) the Codex 32 KiB ceiling warning and what to do if it is reached; (9) the stale-output known limitation (RISK-ADAPT-007 — orphaned files on source deletion).
 - **Satisfies:** REQ-ADAPT-008, REQ-ADAPT-013, SPEC-ADAPT-001, REQ-ADAPT-026, NFR-ADAPT-006
 - **Owner:** dev
 - **Depends on:** T-ADAPT-026
@@ -727,7 +727,7 @@ T-ADAPT-028 can proceed as soon as T-ADAPT-024 and T-ADAPT-003 are both complete
 - [x] Owner assigned per task (`dev`, `qa`, `sre`, `human` only).
 - [x] Every SPEC-ADAPT-001..010 has at least one test task and one implementation task.
 - [x] Every TEST-ADAPT-001..040 has at least one task in its `Satisfies` field.
-- [x] Every REQ-ADAPT-* (001a, 001b, 001c, 002, 003a, 003b, 003c, 004a, 004b, 004c, 004d, 004e, 005, 006, 007, 007b, 008, 009, 009b, 010, 011, 012, 013, 015, 016, 017) has at least one test task.
+- [x] Every REQ-ADAPT-* (001–027) has at least one test task.
 - [x] NFR-ADAPT-001..007 each addressed: NFR-001 (T-ADAPT-037 perf test TBD by qa at Stage 8; T-ADAPT-024 impl targets ≤5s), NFR-002 (T-ADAPT-026 sync impl), NFR-003 (T-ADAPT-029 cross-platform), NFR-004 (T-ADAPT-019/TEST-ADAPT-019), NFR-005 (T-ADAPT-010/T-ADAPT-012 header in all files), NFR-006 (T-ADAPT-001 devDep only), NFR-007 (T-ADAPT-025/TEST-ADAPT-024 cursor-doctor clean).
 - [x] Phase 7 pipeline tasks (T-ADAPT-025, T-ADAPT-026) marked 🪓 with Slice plan.
 - [x] Dependency graph rendered in Mermaid.

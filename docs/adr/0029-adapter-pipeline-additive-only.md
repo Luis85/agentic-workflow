@@ -27,8 +27,8 @@ Accepted
 The Multi-Framework Adapters feature (PRD-ADAPT-001) introduces a Node.js generation script that converts canonical Claude-baseline files into Cursor and Codex adapter outputs. Two boundary properties of this pipeline are architecturally load-bearing:
 
 1. The script must never modify any canonical source file (`.claude/`, `AGENTS.md`, `CLAUDE.md`, `memory/constitution.md`). Captured in PRD non-goal NG5.
-2. The script must never modify any hand-authored Codex file (`.codex/README.md`, `.codex/instructions.md`, `.codex/workflows/*.md`). Captured in PRD non-goal NG4 and REQ-ADAPT-007b.
-3. The script must never modify `AGENTS.md` to add the `INDEX.md` pointer; that step remains a manual one-time human action. Captured in PRD non-goal NG9 and REQ-ADAPT-008.
+2. The script must never modify any hand-authored Codex file (`.codex/README.md`, `.codex/instructions.md`, `.codex/workflows/*.md`). Captured in PRD non-goal NG4 and REQ-ADAPT-026.
+3. The script must never modify `AGENTS.md` to add the `INDEX.md` pointer; that step remains a manual one-time human action. Captured in PRD non-goal NG10 and REQ-ADAPT-008.
 
 These constraints were explicitly negotiated during requirements clarification (CLAR-016, blocker) and reflect a safety boundary: an additive-only pipeline cannot silently corrupt authored content even under a logic bug, and recovery from a bad sync is always a delete + regenerate, never a restore-from-backup.
 
@@ -58,7 +58,7 @@ We will keep the multi-framework adapter pipeline strictly additive-only with re
 ### Option B — Read-modify-write pipeline with sentinel guards
 
 - Pros: Could automate the `AGENTS.md` pointer setup; one-shot install with no manual follow-up.
-- Cons: Requires the script to edit `AGENTS.md`, violating NG5 and NG9; sentinel-based edits to canonical files are fragile (a maintainer reformatting `AGENTS.md` could break the sentinel match); silent overwrite of canonical content under bugs is high-impact and hard to diagnose; CLAR-016 explicitly rejected this path.
+- Cons: Requires the script to edit `AGENTS.md`, violating NG5 and NG10; sentinel-based edits to canonical files are fragile (a maintainer reformatting `AGENTS.md` could break the sentinel match); silent overwrite of canonical content under bugs is high-impact and hard to diagnose; CLAR-016 explicitly rejected this path.
 
 ## Consequences
 
@@ -87,8 +87,8 @@ We will keep the multi-framework adapter pipeline strictly additive-only with re
 
 ## References
 
-- PRD-ADAPT-001 non-goals NG4, NG5, NG9 (`specs/multi-framework-adapters/requirements.md`)
-- REQ-ADAPT-007b — Codex hand-authored file protection
+- PRD-ADAPT-001 non-goals NG4, NG5, NG9, NG10 (`specs/multi-framework-adapters/requirements.md`)
+- REQ-ADAPT-026 — Codex hand-authored file protection
 - REQ-ADAPT-008 — Codex agent file discovery index (PM decision note on `AGENTS.md`)
 - CLAR-016 (resolved blocker) in `specs/multi-framework-adapters/workflow-state.md`
 - DESIGN-ADAPT-001 — Part C (`specs/multi-framework-adapters/design.md`)
