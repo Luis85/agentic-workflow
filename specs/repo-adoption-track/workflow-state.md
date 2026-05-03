@@ -50,7 +50,13 @@ artifacts:
 
 ## Hand-off notes
 
-- 2026-05-03 (pm/clarify): `/spec:clarify` audit complete. 15 new clarifications surfaced (CLAR-ADOPT-012 through CLAR-ADOPT-026) beyond the original 8. Total open: 23. **One new Stage 4 blocker found: CLAR-ADOPT-018** (accept-template-version conflict entries have no Phase 3 write action — correctness gap). 13 additional Stage 5 blockers. Recommended path: resolve CLAR-ADOPT-018 (user/PM decision) before Stage 4; architect resolves design-decision items during Stage 4; remaining PM-owned items resolved in parallel. Next: present clarification summary to human maintainer for triage.
+- 2026-05-03 (pm/clarify): `/spec:clarify` audit complete. 15 new clarifications surfaced (CLAR-ADOPT-012 through CLAR-ADOPT-026) beyond the original 8. Total open: 23. **One new Stage 4 blocker found: CLAR-ADOPT-018** (accept-template-version conflict entries have no Phase 3 write action — correctness gap). 13 additional Stage 5 blockers. Recommended path: resolve CLAR-ADOPT-018 (user/PM decision) before Stage 4; architect resolves design-decision items during Stage 4; remaining PM-owned items resolved in parallel.
+
+  **AWAITING HUMAN DECISION — CLAR-ADOPT-018 (blocks Stage 4):**
+  When a parity conflict is resolved as `accept-template-version`, what does Phase 3 do?
+  - **Option A** — Phase 3 handles it: writes template version over the existing file (confirmed overwrite). Phase 3 covers both `status: missing` and `resolution: accept-template-version` entries.
+  - **Option B** — Phase 2 handles it: overwrite happens during the parity phase before Phase 3 runs. Phase 3 only handles `status: missing` entries.
+  Start next session by saying "CLAR-ADOPT-018: A" or "CLAR-ADOPT-018: B" to unblock Stage 4.
 
 - 2026-05-03 (pm): `requirements.md` complete (PRD-ADOPT-001, status: draft). Summary for architect (Stage 4):
 
