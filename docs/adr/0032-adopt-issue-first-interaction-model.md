@@ -41,7 +41,7 @@ We adopt the issue-first interaction model as the **recommended** (not mandatory
 
 ### 1. Ready signal
 
-The transition from `status:draft` → `status:ready-for-spec` on a GitHub issue is a **manual user action**. No automation applies or removes this label. It is the user's explicit "go" signal.
+The transition from `status:draft` → `status:ready-for-spec` on a GitHub issue is a **manual user action**. No ongoing automation applies or removes this label. The sole exception is `/spec:start`: when scaffold succeeds, it performs a one-time swap of `status:ready-for-spec` → `status:in-progress` to mark that the workflow has begun. After that swap, `status:ready-for-spec` is never re-applied or removed by any automation.
 
 ### 2. Trigger
 
@@ -102,7 +102,7 @@ Gate labels (`gate:clarify-after-requirements`, `gate:clarify-after-design`, `ga
 | `blocked` | `status:blocked` |
 | `done` | `status:done` |
 
-`status:draft` and `status:ready-for-spec` are managed manually by the user.
+`status:draft` is managed manually by the user. `status:ready-for-spec` is managed manually by the user **except** for the one-time `/spec:start` scaffold swap described in section 1. `scripts/sync-issue-mirror.sh` never touches either label.
 
 ### 10. Scope decoupling
 

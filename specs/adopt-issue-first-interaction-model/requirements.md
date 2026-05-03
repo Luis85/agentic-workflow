@@ -16,7 +16,7 @@ updated: 2026-05-03
 
 ## Summary
 
-Specorator currently starts every workflow from a slash command whose intent exists only in the chat transcript. This feature makes a GitHub issue the durable entry point: a user opens a structured issue (feature, bug, or spike), then calls `/spec:start <issue-number>` and the workflow scaffolds itself from the parsed issue body. The issue receives a lightweight read-only mirror of workflow state after each stage, accumulates GitHub status labels, and closes when the feature PR merges. The eleven workflow stages, all specialist agents, all quality gates, and all artifact schemas are unchanged. The issue layer is purely additive.
+Specorator currently starts every workflow from a slash command whose intent exists only in the chat transcript. This feature makes a GitHub issue the durable entry point: a user opens a structured issue (feature, bug, or spike), then calls `/spec:start <issue-number>` and the workflow scaffolds itself from the parsed issue body. The issue receives a lightweight read-only mirror of workflow state after each stage, accumulates GitHub status labels, and is linked to the placeholder PR via `Closes #<n>` so it closes when that PR merges through GitHub's native auto-close behavior. The eleven workflow stages, all specialist agents, all quality gates, and all artifact schemas are unchanged. The issue layer is purely additive.
 
 ---
 
@@ -438,7 +438,7 @@ Specorator currently starts every workflow from a slash command whose intent exi
 - **Pattern:** WHEN `scripts/sync-issue-mirror.sh` updates the sentinel block, the script shall replace only the content between the sentinel markers, leaving all content outside the markers unchanged.
 - **Acceptance:**
   - Given issue #274 has user-authored content above and below the sentinel block
-  - When `scripts/sync-issue-mirror.sh 274` runs successfully
+  - When `scripts/sync-issue-mirror.sh adopt-issue-first-interaction-model-274` runs successfully
   - Then the content above `<!-- specorator-state:begin -->` is byte-for-byte identical to before the run
   - And the content below `<!-- specorator-state:end -->` is byte-for-byte identical to before the run
 - **Priority:** must
@@ -451,7 +451,7 @@ Specorator currently starts every workflow from a slash command whose intent exi
 - **Pattern:** IF `scripts/sync-issue-mirror.sh` fetches the issue body and finds that the sentinel markers are absent or appear more than once, THEN the script shall emit a named error to stderr with instructions to restore the markers and exit without modifying the issue body.
 - **Acceptance:**
   - Given the user has accidentally deleted the `<!-- specorator-state:begin -->` marker from issue #274
-  - When `scripts/sync-issue-mirror.sh 274` runs
+  - When `scripts/sync-issue-mirror.sh adopt-issue-first-interaction-model-274` runs
   - Then the script prints an error identifying the missing marker and the corrective action
   - And the issue body is not modified
   - And the script exits with code 0 (non-fatal to the calling stage)
@@ -565,7 +565,7 @@ Specorator currently starts every workflow from a slash command whose intent exi
 - **Pattern:** WHEN `scripts/sync-issue-mirror.sh` is run for the first time on an issue with a null or empty body, the script shall write the sentinel block as the entire issue body without prepending or appending any additional content.
 - **Acceptance:**
   - Given issue #274 has an empty body
-  - When `scripts/sync-issue-mirror.sh 274` runs for the first time
+  - When `scripts/sync-issue-mirror.sh adopt-issue-first-interaction-model-274` runs for the first time
   - Then the issue body becomes exactly the sentinel block (markers + thin content)
   - And no extraneous text is added above or below the markers
 - **Priority:** must
