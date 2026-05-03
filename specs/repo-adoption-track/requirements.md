@@ -579,7 +579,7 @@ The Repo Adoption Track is an agent-orchestrated, four-phase opt-in conductor sk
 - [ ] All `should` requirements (REQ-ADOPT-010, REQ-ADOPT-025) are either accepted or explicitly deferred with a rationale recorded in the design document or ADR.
 - [ ] All NFRs are met or explicitly waived with a recorded rationale (ADR or design document).
 - [ ] ADR-0030 (or next available slot) is filed, reviewed, and merged in a predecessor PR before the implementation PR opens.
-- [ ] End-to-end manual test passed against a real GitHub repository the adopter owns with write access, following the test plan at §8.6 of the prior-art design spec: (1) adopt a small public repo; (2) verify PR file set; (3) merge PR; (4) run `npm install && npm run verify` in the adopted repo; (5) run `/spec:start example-feature` in the adopted repo; (6) re-run `/adopt:start <same-url>` and confirm idempotency blocks; (7) re-run with `--refresh` and confirm a new PR is opened.
+- [ ] End-to-end manual test passed against a real GitHub repository the adopter owns with write access, following the test plan at §8.6 of the prior-art design spec: (1) adopt a small public repo; (2) verify PR file set; (3) merge PR; (4) if Node/TypeScript preset: run `npm install && npm run verify` in the adopted repo; for generic/other presets: confirm the appropriate preset validation passes; (5) run `/spec:start example-feature` in the adopted repo; (6) re-run `/adopt:start <same-url>` and confirm idempotency blocks; (7) re-run with `--refresh` and confirm a new PR is opened.
 - [ ] `npm run verify` is green on the implementation PR(s).
 - [ ] `docs/repo-adoption-track.md` methodology document shipped in the same PR as the implementation.
 - [ ] `adoptions/README.md` folder entry-point shipped.

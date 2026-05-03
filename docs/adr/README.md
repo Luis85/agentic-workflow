@@ -38,7 +38,7 @@ Records of architecturally significant decisions. Format follows Michael Nygard'
 | [0023](0023-adopt-zod-as-first-runtime-dependency.md) | Adopt zod as the first runtime dependency for script-layer validation | Accepted |
 | [0024](0024-lock-specorator-agentic-workflow-naming-contract.md) | Lock the Specorator and agentic-workflow naming contract | Accepted |
 | [0025](0025-adopt-doc-as-contract-review-protocol.md) | Adopt a doc-as-contract review protocol | Proposed |
-| [0026](0026-freeze-v1-workflow-track-taxonomy.md) | Freeze the v1.0 workflow track taxonomy | Superseded |
+| [0026](0026-freeze-v1-workflow-track-taxonomy.md) | Freeze the v1.0 workflow track taxonomy | Accepted |
 | [0027](0027-adopt-shape-b-branching-model.md) | Adopt Shape B branching model (develop / main / demo) for the template | Proposed |
 | [0028](0028-claude-baseline-as-canonical-source-for-adapters.md) | Treat the Claude baseline as the canonical source for multi-framework adapters | Accepted |
 | [0029](0029-adapter-pipeline-additive-only.md) | Make the multi-framework adapter pipeline additive-only over canonical sources | Accepted |

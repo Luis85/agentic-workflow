@@ -103,7 +103,7 @@ The Repo Adoption Track ships in the v1.1 release window. The v1.0 release is un
 ## Compliance
 
 - **Pending implementation:** `AGENTS.md`, `CLAUDE.md`, `docs/specorator.md`, `.claude/skills/README.md`, `sites/index.html`, and `README.md` shall be updated in the implementation PR to reference Repo Adoption as the thirteenth track and link this ADR.
-- ADR-0026's frontmatter records `status: superseded` and `superseded-by: [ADR-0030]`; ADR-0026's body is not modified.
+- **Pending acceptance:** ADR-0026's frontmatter will be updated to `status: superseded` and `superseded-by: [ADR-0030]` in the acceptance commit; ADR-0026's body is not modified.
 - The implementation PR for the Repo Adoption Track references this ADR (REQ-ADOPT-031).
 - Reviewers treat any further state-bearing first-party workflow proposal in v1.1 or v1.2 as requiring its own superseding ADR; the precedent set here is supersession, not implicit growth.
 

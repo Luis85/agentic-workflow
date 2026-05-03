@@ -92,7 +92,7 @@ The track does not modify `specs/`, `discovery/`, `stock-taking/`, `scaffolding/
 
 ### 3.3 Track taxonomy amendment
 
-ADR-0026 froze the v1.0 track taxonomy. This track requires an amending ADR (proposed name `0027-add-repo-adoption-track.md`) that:
+ADR-0026 froze the v1.0 track taxonomy. This track requires an amending ADR (filed as `0030-add-repo-adoption-track.md`) that:
 - Lists Repo Adoption as a v1.1 opt-in companion track.
 - Documents intent and contrast with Stock-taking and Project Scaffolding.
 - Records the locked decisions above.
@@ -395,7 +395,7 @@ These are intentionally not decided now; they are the spec author's job:
 6. **PR body template.** Where stored, what fields. Likely `templates/adoption-pr-body.md`.
 7. **CI in adopted repo.** Does enrichment install `.github/workflows/verify.yml` ported from this repo? Lean toward yes (verify-only workflow) but confirm.
 8. **Telemetry.** None for v1. Track in retrospective whether adoption metrics are worth collecting.
-9. **ADR-0027 sequencing relative to implementation PR.** The amending ADR must land before code, but the spec phase must decide: separate predecessor PR (ADR merges first, implementation follows) or bundled PR (ADR + scaffolding + agent + scripts in one)? Predecessor PR is the conservative reading of ADR governance; bundling is faster but couples policy approval to implementation review.
+9. **ADR-0030 sequencing relative to implementation PR.** The amending ADR must land before code, but the spec phase must decide: separate predecessor PR (ADR merges first, implementation follows) or bundled PR (ADR + scaffolding + agent + scripts in one)? Predecessor PR is the conservative reading of ADR governance; bundling is faster but couples policy approval to implementation review.
 
 ## 11. Explicit non-goals
 
