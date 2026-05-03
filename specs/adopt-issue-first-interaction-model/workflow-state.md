@@ -88,7 +88,6 @@ _None._
 
 ### Important — resolve before Design or accept as spec-level
 
-- [ ] CLAR-IFI-004 [REQ-IFI-006] — "at least one status label per stage" is ambiguous: one per stage entry, one per exit, or both?
 - [ ] CLAR-IFI-010 [REQ-IFI-011] — slug normalization unspecified: consecutive non-alphanumeric collapse, leading/trailing hyphen handling, Unicode letters.
 - [ ] CLAR-IFI-014 [REQ-IFI-015] — "required fields" differs per form type; form-type detection before field validation not specified.
 - [ ] CLAR-IFI-016 [REQ-IFI-016] — "resume" undefined: print current stage + exit, or dispatch next pending stage command?

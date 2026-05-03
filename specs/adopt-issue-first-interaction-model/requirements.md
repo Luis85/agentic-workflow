@@ -152,7 +152,7 @@ Specorator currently starts every workflow from a slash command whose intent exi
   - When the label set is enumerated
   - Then the six `status:` labels listed above exist
   - And `depth:lean`, `depth:standard`, and `depth:spike` labels exist
-  - And a `track:` label exists for each supported workflow track (excluding `track:discovery`)
+  - And the labels `track:feature`, `track:bug`, `track:spike`, and `track:specorator-improvement` exist
 - **Priority:** must
 - **Satisfies:** IDEA-IFI-001, resolves CLAR-IFI-004, CLAR-IFI-006
 
@@ -653,6 +653,7 @@ Specorator currently starts every workflow from a slash command whose intent exi
   - Then a bullet referencing `feedback_issue_first.md` appears in the Workflow rules section
   - And `feedback_issue_first.md` states the rule that an issue should be opened before running `/spec:start` on Standard-depth tracks
 - **Priority:** must
+- **Delivery note:** Per repo operating rule (AGENTS.md §"Memory edits are docs-only"), this requirement must be fulfilled in a **separate docs-only PR** with no code changeset. It is a release dependency of this feature, not part of this feature's changeset.
 - **Satisfies:** IDEA-IFI-001
 
 ---
