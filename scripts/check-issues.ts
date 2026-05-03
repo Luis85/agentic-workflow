@@ -107,6 +107,14 @@ if (fs.existsSync(issuesRoot)) {
       }
     }
 
+    // Type validation for required scalar keys
+    for (const key of REQUIRED_FRONTMATTER_KEYS) {
+      const value = data[key];
+      if (!isMissingRequiredValue(value) && !isRequiredScalarValue(value)) {
+        errors.push(`${rel}: ${key} must be a string scalar, got ${JSON.stringify(value)}`);
+      }
+    }
+
     // Nullable key checks (must be present in the file, but null is allowed)
     for (const key of NULLABLE_FRONTMATTER_KEYS) {
       if (!(key in data)) {
@@ -204,4 +212,8 @@ function isMissingRequiredValue(value: unknown): boolean {
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isRequiredScalarValue(value: unknown): value is string {
+  return typeof value === "string" && !/^[\[{].*[\]}]$/.test(value.trim());
 }

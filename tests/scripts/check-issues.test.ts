@@ -49,3 +49,45 @@ test("check:issues rejects blank required frontmatter values", () => {
     fs.rmSync(tempIssue, { force: true });
   }
 });
+
+test("check:issues rejects malformed required frontmatter value types", () => {
+  fs.writeFileSync(
+    tempIssue,
+    [
+      "---",
+      "issue_number: null",
+      "title: []",
+      "feature_slug: {x: y}",
+      "type: feature",
+      "roadmap_status: planned",
+      "stage: idea",
+      "github_url: null",
+      "labels: []",
+      "milestone: null",
+      "assignees: []",
+      "created_at: []",
+      "updated_at: 2026-05-03",
+      "---",
+      "",
+      "# Malformed Required Test",
+      "",
+    ].join("\n"),
+    "utf8",
+  );
+
+  try {
+    const result = spawnSync(process.execPath, ["--import", "tsx", "scripts/check-issues.ts", "--json"], {
+      cwd: repoRoot,
+      encoding: "utf8",
+      windowsHide: true,
+    });
+
+    assert.notEqual(result.status, 0);
+    const output = JSON.parse(result.stdout) as { errors: string[] };
+    assert.ok(output.errors.some((error) => error.includes("title must be a string scalar")));
+    assert.ok(output.errors.some((error) => error.includes("feature_slug must be a string scalar")));
+    assert.ok(output.errors.some((error) => error.includes("created_at must be a string scalar")));
+  } finally {
+    fs.rmSync(tempIssue, { force: true });
+  }
+});
