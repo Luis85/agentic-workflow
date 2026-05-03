@@ -40,6 +40,7 @@ Records of architecturally significant decisions. Format follows Michael Nygard'
 | [0025](0025-adopt-doc-as-contract-review-protocol.md) | Adopt a doc-as-contract review protocol | Proposed |
 | [0026](0026-freeze-v1-workflow-track-taxonomy.md) | Freeze the v1.0 workflow track taxonomy | Accepted |
 | [0027](0027-adopt-shape-b-branching-model.md) | Adopt Shape B branching model (develop / main / demo) for the template | Proposed |
+| [0030](0030-adopt-issues-folder-for-canonical-issue-tracking.md) | Adopt issues/ folder as the canonical local mirror of feature issue tracking | Accepted |
 <!-- END GENERATED: adr-index -->
 
 ## Conventions

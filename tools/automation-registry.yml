@@ -289,6 +289,16 @@ entries:
     emits_json: true
     used_by: [human, agent, ci]
     rerun_command: npm run check:obsidian-assets
+  - id: check:issues
+    kind: check
+    command: npm run check:issues
+    path: scripts/check-issues.ts
+    purpose: Warn when specs/ directories have no linked issues/ file; hard-fail on malformed issue frontmatter. Warn-only for missing links (not in verify). Requires --json for machine output.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: true
+    used_by: [human, agent]
+    rerun_command: npm run check:issues
   - id: check:specs
     kind: check
     command: npm run check:specs
@@ -349,6 +359,16 @@ entries:
     emits_json: true
     used_by: [human, agent, ci]
     rerun_command: npm run check:release-readiness -- --version <X.Y.Z> [--archive <dir>]
+  - id: script:sync-issues
+    kind: script
+    command: npm run sync:issues
+    path: scripts/sync-issues.ts
+    purpose: Pull-only GitHub Issues sync — fetches current label, milestone, assignee, and state from GitHub and updates issues/*.md frontmatter. Requires gh CLI authenticated. Does not push changes to GitHub.
+    read_only: false
+    safe_to_run_locally: true
+    emits_json: true
+    used_by: [human, agent]
+    rerun_command: npm run sync:issues
   - id: build:release-archive
     kind: script
     command: npm run build:release-archive

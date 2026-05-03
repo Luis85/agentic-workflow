@@ -68,6 +68,7 @@ Each "work happens here" folder ships either absent or containing only its top-l
 | `scaffolding/` | Per-onboarding scaffolding sessions. | `scaffolding/README.md` only (or absent). No `scaffolding/<slug>/`. |
 | `stock-taking/` | Per-engagement legacy inventories. | `stock-taking/README.md` only (or absent). No `stock-taking/<slug>/`. |
 | `sales/` | Per-deal sales cycle state. | `sales/README.md` only (or absent). No `sales/<deal>/`. |
+| `issues/` | Canonical local mirror of feature issue tracking. | `issues/README.md` only (or absent). No `issues/<number>-<slug>.md`. Per [ADR-0030](adr/0030-adopt-issues-folder-for-canonical-issue-tracking.md). |
 
 `examples/` is **not** an intake folder. It is a demonstration zone whose purpose is to show consumers what a real project that adopted the template would produce. `examples/` ships as authored.
 
