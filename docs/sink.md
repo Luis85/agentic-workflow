@@ -75,6 +75,13 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │       ├── revisions/                       # proposal revision history (LAZY)
 │       │   └── proposal-v2.md
 │       └── order.md                         # phase 5 (proposal-writer) — acceptance record + Project Kickoff Brief
+├── designs/                                 # one folder per surface design (Design Track, opt-in)
+│   └── <design-slug>/
+│       ├── design-state.md                  # phase state machine, owned by /design:* commands
+│       ├── design-brief.md                  # phase 1 — Frame (design-lead)
+│       ├── sketch.md                        # phase 2 — Sketch (design-lead + ux-designer)
+│       ├── mock.html                        # phase 3 — Mock (optional; design-lead + ui-designer)
+│       └── design-handoff.md               # phase 4 — Handoff (gate artifact; input to /spec:design Part B)
 ├── discovery/                               # one folder per discovery sprint (pre-stage 1, opt-in)
 │   └── <sprint-slug>/
 │       ├── discovery-state.md               # sprint state machine, owned by /discovery:* commands
@@ -107,11 +114,16 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 ├── quality/                                 # one folder per QA review (ISO 9001-aligned, opt-in)
 │   └── <quality-review-slug>/
 │       ├── quality-state.md                 # QA review state machine, owned by /quality:* commands
+│       ├── project-review-state.md          # project-review state machine, owned by /project-review:* commands (LAZY)
 │       ├── quality-plan.md                  # plan, scope, ISO 9001 alignment, readiness criteria
 │       ├── checklists/
 │       │   └── project-execution.md         # evidence-backed checklist items
 │       ├── quality-review.md                # readiness verdict, findings, risks
-│       └── improvement-plan.md              # corrective actions and effectiveness checks
+│       ├── improvement-plan.md              # corrective actions and effectiveness checks
+│       ├── review-plan.md                   # project-review evidence plan (LAZY)
+│       ├── history-review.md                # project-review git/artifact/PR/CI evidence summary (LAZY)
+│       ├── findings.md                      # project-review learnings and findings (LAZY)
+│       └── improvement-proposals.md         # project-review proposals + first draft PR candidate (LAZY)
 ├── specs/                                   # one folder per feature
 │   └── <slug>/
 │       ├── workflow-state.md                # state machine, owned by /spec:* commands
@@ -150,6 +162,9 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │           └── NNNN-<slug>.md               # project-local sequence, e.g. ADR-CLI-0001
 ├── inputs/                                  # canonical ingestion folder for new work packages (per ADR-0017)
 │   └── README.md                            # purpose, retention rules, what does/does not belong here
+├── issues/                                  # canonical local mirror of feature issue tracking (per ADR-0031)
+│   ├── README.md                            # entry point: naming rules, schema, sync and drift-check commands
+│   └── <number>-<slug>.md                   # one file per issue; number = GitHub issue number (0 = placeholder)
 ├── sites/                                   # public product page (directly openable static entrypoint)
 │   ├── index.html
 │   ├── styles.css                           # optional
@@ -184,6 +199,7 @@ The root `README.md` is the public repository entry point and is exempt from thi
 | `memory/constitution.md` | Human (amended by ADR) | Append-only after amendments |
 | `docs/specorator.md`, `docs/quality-framework.md`, `docs/traceability.md`, `docs/ears-notation.md` | Human | Versioned (v0.1, v0.2…) |
 | `docs/sink.md` | Human | Versioned alongside specorator |
+| `docs/rbac.md` | Human (template maintainer) | Living — updated in the same PR as any change to `.claude/settings.json` allow/deny, `.claude/agents/*` `tools:` frontmatter, `.github/workflows/*` `permissions:` blocks, `package.json#publishConfig`, branch protection on `main` / `develop`, or operational-bot auth contract. See [`docs/rbac.md`](rbac.md) §Maintenance. |
 | `docs/steering/*` | Human | Updated as project evolves |
 | `docs/adr/NNNN-*.md` | Architect / any agent that flags | **Immutable from creation** per ADR-0001: only YAML `status` (proposed → accepted → deprecated → superseded) and `supersedes` / `superseded-by` pointers may change. Body (Context, Decision, Alternatives, Consequences) is frozen on creation. To revise rationale, supersede via new ADR. |
 | `docs/CONTEXT.md`, `docs/CONTEXT-MAP.md`, `docs/contexts/*.md` | `domain-context` skill | Additive, agent-updated |
@@ -229,6 +245,11 @@ The root `README.md` is the public repository entry point and is exempt from thi
 | `quality/<review>/checklists/*.md` | `quality-assurance` skill | Evidence-backed checklists; updated during Check, preserving gaps |
 | `quality/<review>/quality-review.md` | `quality-assurance` skill | Written in Review; states readiness, nonconformities, risks, and evidence gaps |
 | `quality/<review>/improvement-plan.md` | `quality-assurance` skill | Written in Improve; corrective actions remain open until effectiveness is verified |
+| `quality/<review>/project-review-state.md` | `/project-review:start`, then `/project-review:*` commands on transition | Project-review state machine; project-review skill-owned |
+| `quality/<review>/review-plan.md` | `project-review` skill | Written in Plan; names evidence sources, review questions, exclusions, and first PR criteria |
+| `quality/<review>/history-review.md` | `project-review` skill | Written in Inspect; summarizes git, artifact, PR, issue, CI, and retrospective signals |
+| `quality/<review>/findings.md` | `project-review` skill | Written in Synthesize; records strengths, friction, risks, and root-cause hypotheses |
+| `quality/<review>/improvement-proposals.md` | `project-review` skill | Written in Propose; ranks improvements and drafts issue/PR handoff |
 | `discovery/<sprint>/discovery-state.md` | `/discovery:start`, then `/discovery:*` commands on transition | Sprint state machine; facilitator-owned |
 | `discovery/<sprint>/<phase>.md` | The phase's owning facilitator + consulted specialists (per `docs/discovery-track.md` §3) | Each phase writes once; later phases never rewrite upstream phase artifacts |
 | `discovery/<sprint>/chosen-brief.md` | `facilitator` (Handoff) | One per surviving concept; mandatory input to `/spec:idea` |
@@ -353,6 +374,12 @@ When a team needs an ISO 9001-aligned readiness check, the Quality Assurance Tra
 
 The track supports internal readiness and audit preparation, but it does not grant certification or replace an accredited auditor. See [`docs/quality-assurance-track.md`](quality-assurance-track.md) for the methodology.
 
+## Project-review workflow sub-tree
+
+When a team wants to learn from project history and turn those learnings into concrete improvement work, the Project-review workflow creates project-review artifacts under `quality/<review-slug>/`. It reviews artifacts, git history, issues, PRs, CI, and retrospectives; then opens a tracking issue and first draft PR from a dedicated worktree.
+
+This workflow deliberately reuses `quality/` instead of adding a new top-level intake folder. Its artifacts are quality-and-learning evidence, and the first implementation proposal follows the normal topic-branch PR workflow. See [`docs/project-review-workflow.md`](project-review-workflow.md) for the methodology.
+
 ## Release readiness companion artifact
 
 When a completed increment needs an explicit production go/no-go decision, Stage 10 may create `specs/<feature>/release-readiness-guide.md` from `templates/release-readiness-guide-template.md`. The guide collects product value, user experience, stakeholder, engineering, security/privacy/compliance, operations, support, data, commercial, and communication readiness evidence.
@@ -367,9 +394,9 @@ A portfolio is bootstrapped with `/portfolio:start <slug>`. The three cycle comm
 
 ## Released package shape
 
-The 10 intake folders enumerated in this sink (`inputs/`, `specs/`, `discovery/`, `projects/`, `portfolio/`, `roadmaps/`, `quality/`, `scaffolding/`, `stock-taking/`, `sales/`) each ship **empty** in the released Specorator template package — only their top-level `README.md` ships, no per-feature / per-deal / per-engagement state. ADRs (`docs/adr/[0-9][0-9][0-9][0-9]-*.md`) do not ship. `docs/` pages ship as stubs. Source of truth: [ADR-0021](adr/0021-release-package-fresh-surface.md). Methodology: [`docs/release-package-contents.md`](release-package-contents.md).
+The 11 intake folders enumerated in this sink (`inputs/`, `specs/`, `discovery/`, `projects/`, `portfolio/`, `roadmaps/`, `quality/`, `scaffolding/`, `stock-taking/`, `sales/`, `issues/`) each ship **empty** in the released Specorator template package — only their top-level `README.md` ships, no per-feature / per-deal / per-engagement state. ADRs (`docs/adr/[0-9][0-9][0-9][0-9]-*.md`) do not ship. `docs/` pages ship as stubs. Source of truth: [ADR-0021](adr/0021-release-package-fresh-surface.md). Methodology: [`docs/release-package-contents.md`](release-package-contents.md).
 
-**Maintenance rule.** Any new intake folder added to the layout above must also be added to the enumeration in `docs/release-package-contents.md` and `ADR-0021`'s "Decision §3" in the same PR. The release readiness check uses the documented enumeration as its checklist; an un-enumerated folder will leak into the released archive.
+**Maintenance rule.** Any new intake folder added to the layout above must also be added to the enumeration in `docs/release-package-contents.md` and `scripts/lib/release-package-contract.ts` (the `INTAKE_FOLDERS` array) in the same PR. The release readiness check uses the documented enumeration as its checklist; an un-enumerated folder will leak into the released archive.
 
 ## Inputs sub-tree
 
@@ -384,6 +411,18 @@ The 10 intake folders enumerated in this sink (`inputs/`, `specs/`, `discovery/`
 |---|---|---|
 | `inputs/README.md` | Human (template maintainer) | Updated when convention or retention rules change |
 | `inputs/<file>` or `inputs/<folder>/` | Human (work-package contributor) | Append-on-drop, delete-on-consumption |
+| `issues/README.md` | Human (template maintainer) | Updated when schema or sync conventions change |
+| `issues/<number>-<slug>.md` | `/spec:start` (create); agents (stage/roadmap_status updates); `sync:issues` (GitHub pull) | Living — frontmatter updated as the feature progresses; body is append-oriented; files persist as historical record after shipping or cancellation |
+
+## Issues sub-tree
+
+`issues/` is the **canonical local mirror of feature issue tracking** — one Markdown file per issue, with structured frontmatter that maps to GitHub Issues and exposes roadmap status across the Specorator lifecycle. Adopted by [ADR-0031](adr/0031-adopt-issues-folder-for-canonical-issue-tracking.md).
+
+- **Created at `/spec:start`.** Every feature bootstrapped with `/spec:start` gets an `issues/0-<slug>.md` file. If `gh` is available, the command pushes the issue to GitHub and backfills the real issue number and URL.
+- **Living roadmap state.** `roadmap_status` (`planned | in-progress | in-review | shipped | cancelled`) and `stage` are updated as the feature progresses. Agents advancing `workflow-state.md` should mirror changes here.
+- **Pull-synced from GitHub.** `npm run sync:issues` fetches current label, milestone, assignee, and state from GitHub Issues and updates local frontmatter. Does not create new local files from GitHub-only issues.
+- **Drift check.** `npm run check:issues` warns for specs without a linked issue and hard-fails on malformed frontmatter. Not included in `npm run verify` (offline-safe by design, per ADR-0031 §6).
+- **Permanent record.** Issue files persist after shipping or cancellation. Set `roadmap_status: shipped` or `roadmap_status: cancelled` to archive.
 
 ## Examples sub-tree
 
@@ -419,6 +458,7 @@ These skills append to cross-workflow files:
 - `domain-context` → `docs/CONTEXT.md` (or `CONTEXT-MAP.md` + `contexts/<name>.md`).
 - `new-glossary-entry` → `docs/glossary/<slug>.md` (via `/glossary:new`). Per [ADR-0010](adr/0010-shard-glossary-into-one-file-per-term.md), supersedes the deprecated `ubiquitous-language` → `docs/UBIQUITOUS_LANGUAGE.md` flow.
 - `quality-assurance` → `quality/<review>/quality-state.md`, `quality-plan.md`, `checklists/*.md`, `quality-review.md`, and `improvement-plan.md`.
+- `project-review` → `quality/<review>/project-review-state.md`, `review-plan.md`, `history-review.md`, `findings.md`, `improvement-proposals.md`, plus GitHub issue/PR text during handoff.
 - `quality-metrics` → `quality/metrics/<scope>/<timestamp>.json` when invoked with `--save`.
 - `roadmap-management` → `roadmaps/<slug>/roadmap-state.md`, `roadmap-strategy.md`, `roadmap-board.md`, `delivery-plan.md`, `stakeholder-map.md`, `communication-log.md`, and `decision-log.md`.
 - `specorator-improvement` → the affected template surfaces: `scripts/`, `tests/scripts/`, `package.json`, `.github/workflows/`, `.claude/commands/`, `.claude/skills/`, `.claude/agents/`, `templates/`, `docs/`, and the owning `specs/<slug>/` artifacts.

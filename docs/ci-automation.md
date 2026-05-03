@@ -7,23 +7,31 @@ entry_point: false
 
 # CI automation
 
-Companion to [`verify-gate.md`](verify-gate.md) and [`security-ci.md`](security-ci.md). Documents the workflows that automate routine hygiene the [`verify`](verify-gate.md) gate is intentionally too narrow to enforce: convention checks against PR metadata, spell checks across docs, and dependency bump automation.
+Companion to [`verify-gate.md`](verify-gate.md) and [`security-ci.md`](security-ci.md). Documents the workflows that automate routine hygiene the [`verify`](verify-gate.md) gate is intentionally too narrow to enforce: convention checks against PR metadata, spell checks across docs, and dependency bump automation. The security companion owns the [automation posture map](security-ci.md#automation-posture-map) and the [repository settings checklist](security-ci.md#repository-settings-checklist) so adopters can configure GitHub settings and committed workflows from one place.
 
 | Workflow | File | Trigger | What it does |
 | --- | --- | --- | --- |
 | **pr-title** | [`.github/workflows/pr-title.yml`](../.github/workflows/pr-title.yml) | `pull_request` opened / edited / reopened / synchronize | Validates PR title against Conventional Commits (`feat`, `fix`, `chore`, `docs`, `refactor`, `perf`, `test`, `build`, `ci`, `revert`). Mirrors the [AGENTS.md](../AGENTS.md) commit convention. |
 | **typos** | [`.github/workflows/typos.yml`](../.github/workflows/typos.yml) | PR + push to `main` | Spell-check across the repo. Allowlist in [`_typos.toml`](../_typos.toml). |
 | **dependabot** | [`.github/dependabot.yml`](../.github/dependabot.yml) | Weekly (Monday 06:00 UTC) | Opens PRs for new versions of pinned GitHub Actions and npm dev-dependencies. Groups patches and minors to keep PR volume low. |
+| **dependency-review** | [`.github/workflows/dependency-review.yml`](../.github/workflows/dependency-review.yml) | PRs touching dependency or workflow files | Blocks PRs that introduce high/critical vulnerable npm packages or GitHub Actions dependencies. See [`security-ci.md`](security-ci.md#dependency-review-policy). |
 
-## Why these three
+## Why these automation gates
 
 - **pr-title** enforces the existing convention. Without it, the rule lives only in `AGENTS.md` and gets violated. The check is cheap and informs reviewers immediately.
 - **typos** targets a Markdown-heavy repo where prose drift accumulates faster than code drift. Fast (< 5s) and config-driven.
 - **dependabot** closes the loop on the [SHA-pin policy](security-ci.md#action-pinning) — without an automated bumper, pinning is a maintenance burden that ages out the codebase.
+- **dependency-review** adds PR-diff vulnerability feedback before a lockfile or workflow dependency change reaches `main`.
+
+The upstream `main` ruleset requires the always-running PR checks (`Verify`, PR title, typos, and gitleaks). Path-triggered checks remain merge-blocking when they run, but are not global required checks because GitHub does not create them for unrelated PRs.
+
+For the complete CI/security posture, use this page for hygiene automation and [`security-ci.md`](security-ci.md) for security gates, required-check policy, deferred candidates, and repository settings that live in the GitHub UI.
 
 ## Why **not** markdownlint (yet)
 
 `markdownlint-cli2` was scoped for this bundle but pulled out — the existing artefact templates produce ~2000 findings on first run, dominated by table-pipe-spacing (`MD060`), heading rules around H1 placeholders (`MD025`), and fenced-code language tags (`MD040`). Adding it without a dedicated cleanup PR would either spam CI or require disabling so many rules that the check becomes a no-op. Track it as a follow-up: a single sweep PR that auto-fixes table style and adds language tags to fenced blocks, then enable the workflow.
+
+See `docs/markdownlint-rollout.md` for the phased promotion plan.
 
 ## PR-title rules
 
@@ -67,6 +75,10 @@ If a real typo is rejected because of an allowlist entry, **delete the entry** r
 
 Both ecosystems run weekly Monday 06:00 / 06:30 UTC. The hour offset spreads PR creation so reviewers don't see a wall of bumps simultaneously.
 
+Dependabot version updates are not the same as Dependabot alerts. Repository maintainers should enable Dependabot alerts in GitHub security settings so already-merged dependencies are checked when new advisories are published. Dependency review covers PR diffs; alerts cover the resting dependency graph.
+
+Dependabot security updates stay disabled initially to avoid unplanned PR volume. Turn them on after the alert baseline is known and the team wants Dependabot to open remediation PRs automatically.
+
 ### Release cooldown
 
 Both blocks set `cooldown` so Dependabot waits before proposing newly published versions:
@@ -95,4 +107,7 @@ typos --config _typos.toml
 
 1. Replace the README badge URLs with your own repo coordinates (or remove the row).
 2. Update `dependabot.yml` `directory:` if `package.json` is not at repo root.
-3. Decide whether to lock a `locale` in `_typos.toml`. The template stays unlocked because it mixes en-us and en-gb spellings; a real product probably picks one.
+3. Enable Dependabot alerts in the repository security settings.
+4. Reproduce the required-check policy from [`branching.md`](branching.md#required-main-ruleset) and [`security-ci.md`](security-ci.md#repository-settings-checklist) on the integration branch.
+5. Decide whether to require `dependency review`, `actionlint`, and `zizmor static analysis` through path-scoped rulesets.
+6. Decide whether to lock a `locale` in `_typos.toml`. The template stays unlocked because it mixes en-us and en-gb spellings; a real product probably picks one.

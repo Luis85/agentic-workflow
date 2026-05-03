@@ -2,8 +2,8 @@
 feature: zod-script-validation
 area: ZSV
 current_stage: implementation
-status: active
-last_updated: 2026-05-02
+status: paused
+last_updated: 2026-05-03
 last_agent: planner
 artifacts:
   idea.md: complete
@@ -47,7 +47,11 @@ artifacts:
 
 ## Blocks
 
-- *(none yet)*
+- None.
+
+## Defer note
+
+**Explicit defer 2026-05-03** — Implementation (Stage 7) pending. Deferred to version issue #209 (v0.7.1 release scope). Spec, design, and tasks are complete and ready to resume. `self-check` blocker cleared by this explicit deferral; status set to `paused`.
 
 ## Hand-off notes
 

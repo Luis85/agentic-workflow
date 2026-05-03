@@ -145,7 +145,7 @@ export function collectQualityMetrics(options: QualityMetricOptions = {}): Quali
     (statePath) => !options.feature || path.basename(path.dirname(statePath)) === options.feature,
   );
   const unreadableWorkflowStates = scopedWorkflowStatePaths
-    .filter((statePath) => !extractFrontmatter(readText(statePath)))
+    .filter((statePath) => !safeExtractFrontmatter(statePath))
     .map(relativeToRoot);
   const workflows = workflowStatePaths
     .map(readWorkflowMetric)
@@ -616,7 +616,13 @@ function isWorkflowState(filePath: string): boolean {
 }
 
 function readWorkflowMetric(statePath: string): WorkflowMetric | null {
-  const text = readText(statePath);
+  let text: string;
+  try {
+    text = readText(statePath);
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return null;
+    throw err;
+  }
   const frontmatter = extractFrontmatter(text);
   if (!frontmatter) return null;
 
@@ -697,6 +703,15 @@ function readWorkflowMetric(statePath: string): WorkflowMetric | null {
       tests: registry.tests.size,
     },
   };
+}
+
+function safeExtractFrontmatter(filePath: string): ReturnType<typeof extractFrontmatter> {
+  try {
+    return extractFrontmatter(readText(filePath));
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return null;
+    throw err;
+  }
 }
 
 export type TraceabilityExpectation = {

@@ -21,6 +21,7 @@ export const INTAKE_FOLDERS: readonly string[] = [
   "scaffolding",
   "stock-taking",
   "sales",
+  "issues",
 ];
 
 /**

@@ -207,10 +207,12 @@ function realGit(): GitInterface {
 function realGitHub(): GitHubInterface {
   return {
     immutableReleasesSetting(): ImmutableSettingProbe {
-      // `gh api repos/{owner}/{repo}/immutable-releases` returns
-      // `{enabled: bool, enforced_by_owner: bool}`. The setting is on if
-      // either flag is true (org-level enforcement counts even when the
-      // repo's own toggle is off).
+      // Per the GitHub REST contract, `gh api
+      // repos/{owner}/{repo}/immutable-releases` returns HTTP 404 when the
+      // setting is disabled (the safe state). HTTP 200 returns
+      // `{enabled: bool, enforced_by_owner: bool}` for the enabled state; the
+      // org-level enforcement flag counts even when the repo's own toggle is
+      // off.
       //
       // Failure handling returns four distinct states (Codex P2 round 4
       // on PR #242 — round 3 coerced 401/403 -> true, which produced an
@@ -221,9 +223,8 @@ function realGitHub(): GitHubInterface {
       //     so checkRepoImmutableSetting emits ImmutableProbeDenied
       //     ("could not verify; check manually") instead of pretending
       //     the setting is confirmed on.
-      //   - Endpoint missing (404 — older GitHub instance) -> "unknown",
-      //     fail quiet. The warning was never going to be authoritative
-      //     on a host without the endpoint.
+      //   - 404 -> "disabled", because the REST endpoint uses Not Found as
+      //     the documented disabled-state response.
       //   - Anything else (network blip, parse error) -> "unknown",
       //     fail quiet. Transient errors should not pollute the warning.
       //
@@ -252,11 +253,13 @@ function realGitHub(): GitHubInterface {
         if (/HTTP 401|HTTP 403|Bad credentials|Resource not accessible/i.test(stderr)) {
           return "denied";
         }
+        if (/HTTP 404|Not Found/i.test(stderr)) {
+          return "disabled";
+        }
         return "unknown";
       }
       const trimmed = out.trim();
       if (trimmed === "true") return "enabled";
-      if (trimmed === "false") return "disabled";
       return "unknown";
     },
   };

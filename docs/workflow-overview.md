@@ -6,6 +6,7 @@ flowchart TD
     stock["Stock-taking Track<br/>Scope -> Audit -> Synthesize -> Handoff<br/>Owner: legacy-auditor<br/>Output: stock-taking-inventory.md"]
     discovery["Discovery Track<br/>Frame -> Diverge -> Converge -> Prototype -> Validate -> Handoff<br/>Owners: facilitator + discovery specialists<br/>Output: chosen-brief.md"]
     quality["Quality Assurance Track<br/>Start -> Plan -> Check -> Review -> Improve<br/>Owner: quality-assurance skill<br/>Output: quality review + improvement plan"]
+    project_review["Project-review Workflow<br/>Start -> Plan -> Inspect -> Synthesize -> Propose -> Handoff<br/>Owner: project-reviewer<br/>Output: findings + issue + draft PR"]
     roadmap["Roadmap Management Track<br/>Start -> Shape -> Align -> Communicate -> Review<br/>Owner: roadmap-manager<br/>Output: roadmap + delivery + comms artifacts"]
 
     idea["1. Idea<br/>analyst"]
@@ -36,6 +37,8 @@ flowchart TD
     release --> retro
     quality -.->|checks execution health and readiness| review
     quality -.->|corrective actions feed learning| retro
+    project_review -.->|git and PR learnings feed improvements| retro
+    project_review -.->|first proposal opens issue and draft PR| quality
     roadmap -.->|outcomes and stakeholder alignment inform priorities| requirements
     roadmap -.->|delivery confidence and dependencies inform planning| tasks
 ```
@@ -84,6 +87,8 @@ Optional gates `/spec:clarify` and `/spec:analyze` may be inserted between any t
 Use `/scaffold:start <slug> <source>` before the other tracks when a fresh template install should be seeded from existing folders or Markdown files.
 
 Use `/quality:start <slug> [scope]` when a project, portfolio, feature, release, supplier, or internal process needs an ISO 9001-aligned quality assurance review.
+
+Use `/project-review:start <slug> <scope>` when a maintainer wants an evidence-backed review of project artifacts, git history, PR/issue/CI signals, learnings, improvement proposals, and a first draft PR.
 
 Use [`release-readiness-guide.md`](release-readiness-guide.md) during `/spec:release` when production readiness depends on multiple product perspectives, stakeholder requirements, approvals, or conditions.
 
@@ -143,6 +148,10 @@ Plus body sections (Skips, Blocks, Hand-off notes, Open clarifications). Canonic
 /project:change    /project:close     /project:initiate
 /project:post      /project:report    /project:start
 /project:weekly
+
+# project-review:
+/project-review:handoff     /project-review:inspect     /project-review:plan
+/project-review:propose     /project-review:start       /project-review:synthesize
 
 # Quality Assurance Track:
 /quality:check    /quality:improve  /quality:plan
