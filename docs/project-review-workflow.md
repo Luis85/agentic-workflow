@@ -49,7 +49,7 @@ quality/<review-slug>/
 Delivery outputs:
 
 - A GitHub issue that summarizes the review scope, key learnings, proposed improvements, and the draft PR link when available.
-- A dedicated worktree under `.worktrees/<review-slug>/` for the first accepted proposal.
+- A dedicated worktree under `.worktrees/<proposal-slug>/` for the first accepted proposal.
 - A topic branch and first draft PR linked to the issue.
 
 ## Flow
