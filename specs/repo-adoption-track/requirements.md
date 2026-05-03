@@ -575,7 +575,7 @@ The Repo Adoption Track is an agent-orchestrated, four-phase opt-in conductor sk
 
 ## Release criteria
 
-- [ ] All `must` requirements (REQ-ADOPT-001 through REQ-ADOPT-029, REQ-ADOPT-030, REQ-ADOPT-031, REQ-ADOPT-032, excluding REQ-ADOPT-025 which is `should`) pass their acceptance tests.
+- [ ] All `must` requirements (REQ-ADOPT-001 through REQ-ADOPT-029, REQ-ADOPT-030, REQ-ADOPT-031, REQ-ADOPT-032, excluding REQ-ADOPT-010 and REQ-ADOPT-025 which are `should`) pass their acceptance tests.
 - [ ] All `should` requirements (REQ-ADOPT-010, REQ-ADOPT-025) are either accepted or explicitly deferred with a rationale recorded in the design document or ADR.
 - [ ] All NFRs are met or explicitly waived with a recorded rationale (ADR or design document).
 - [ ] ADR-0030 (or next available slot) is filed, reviewed, and merged in a predecessor PR before the implementation PR opens.

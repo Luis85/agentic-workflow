@@ -10,7 +10,7 @@ authors: [Luis85]
 
 # Repo Adoption Track — Design
 
-> Brainstormed and approved 2026-05-03. Implementation plan to follow via the writing-plans skill. Implementation gated by ADR-0027 (to be filed) which amends the v1.0 track taxonomy frozen in [ADR-0026](../../adr/0026-freeze-v1-workflow-track-taxonomy.md).
+> Brainstormed and approved 2026-05-03. Implementation plan to follow via the writing-plans skill. Implementation gated by ADR-0030 (to be filed) which amends the v1.0 track taxonomy frozen in [ADR-0026](../../adr/0026-freeze-v1-workflow-track-taxonomy.md).
 
 ## 1. Problem and intent
 
