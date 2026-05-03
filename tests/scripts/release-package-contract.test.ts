@@ -320,12 +320,16 @@ test("TEST-GRAPH-008: graph directory is excluded from package files", () => {
   const packageJson = JSON.parse(
     fs.readFileSync(path.join(repoRoot, "package.json"), "utf8"),
   ) as { files?: string[] };
+  const includesGraphDirectory = (entry: string) => {
+    const normalized = entry.replace(/\\/g, "/").replace(/\/+$/, "");
+    return normalized === "graph" || normalized.startsWith("graph/");
+  };
 
   assert.ok(Array.isArray(packageJson.files));
-  assert.equal(
-    packageJson.files.some((entry) => entry === "graph/" || entry.startsWith("graph/")),
-    false,
-  );
+  assert.equal(packageJson.files.some(includesGraphDirectory), false);
+  assert.equal(includesGraphDirectory("graph"), true);
+  assert.equal(includesGraphDirectory("graph/"), true);
+  assert.equal(includesGraphDirectory("graph/graph.json"), true);
 });
 
 test("parseReleasePackageArgs falls back to RELEASE_PACKAGE_ARCHIVE env", () => {

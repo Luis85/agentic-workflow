@@ -15,7 +15,7 @@ updated: 2026-05-03
 ## 2026-05-03 — Implementation
 
 - Created `graph/` with `.gitkeep`.
-- Added `.gitignore` rules for `graph/cache/` and `graph/.graphify_*`.
+- Added `.gitignore` rules for `graph/cache/`, `graph/.graphify_*`, and graphify's legacy `graphify-out/` manifest directory.
 - Added unit coverage for `scripts/graphify-run.ts`.
 - Implemented `scripts/graphify-run.ts`.
 - Added `npm run graph` and `npm run graph:update`.

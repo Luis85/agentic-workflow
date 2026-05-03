@@ -47,3 +47,4 @@ npm-shrinkwrap.json
 # and absolute-path metadata (REQ-GRAPH-005). See docs/how-to/use-graphify.md.
 graph/cache/
 graph/.graphify_*
+graphify-out/

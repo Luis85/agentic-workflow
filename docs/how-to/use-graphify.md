@@ -76,6 +76,8 @@ See also: docs/how-to/use-graphify.md
 
 On macOS or Linux, ensure `python -m site --user-base` plus `/bin` is in `PATH`. On Windows, ensure the Python `Scripts` directory under the user site is in `Path`, then restart PowerShell.
 
+If graphify prints `warning: skill is from graphify ... Run 'graphify install' to update.`, the graph rebuild still succeeded. That warning refers to the assistant skill installed in your home directory, not this repository. Run `graphify install` only if you want graphify to update that global assistant integration.
+
 Do not run two graphify rebuilds in the same checkout at the same time; graphify owns the cache under `graph/cache/` while it is running. If the repository came from `git archive` rather than `git clone`, `.gitignore` is not active until the folder becomes a git worktree, so avoid committing `graph/cache/` from that extracted copy.
 
 ## Contributing Back

@@ -39,4 +39,5 @@ PASS.
 - `graph/GRAPH_REPORT.md` exists.
 - `graph/cache/` is ignored.
 - `graph/.graphify_root` is ignored.
+- `graphify-out/manifest.json` is ignored when graphify writes legacy local state.
 - Combined `graph.html` + `graph.json` size: 1,030,154 bytes.
