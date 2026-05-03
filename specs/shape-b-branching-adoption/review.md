@@ -13,7 +13,7 @@ inputs:
   - ADR-0027
   - implementation-log.md
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-05-03
 ---
 
 # Stage 9 Review — shape-b-branching-adoption

@@ -107,7 +107,7 @@ This is advisory documentation only — no ADR required. Opens as a documentatio
 
 ### Amendment 2: `check-markdown-links` script — fenced-code-block skip
 
-**Proposed behaviour change:** the link checker should strip fenced code blocks (` ```...``` `) and inline code spans (`` `...` ``) from file content before scanning for `\[text\]\(path\)` patterns. This would eliminate the class of false-positive that flagged `test-report.md:154` and `spec.md:285` in this feature.
+**Proposed behaviour change:** the link checker should strip fenced code blocks and inline code spans from file content before scanning for Markdown link patterns. This would eliminate the class of false-positive that flagged `test-report.md:154` and `spec.md:285` in this feature.
 
 **Scope:** medium. Requires a change to the link-checker pre-processor in `scripts/check-markdown-links.js` (or equivalent). Needs a unit test covering "bare path inside a code fence is not flagged". Opens as a follow-up issue (A-BRANCH-001 above) before a PR.
 

@@ -8,7 +8,7 @@ inputs:
   - TASKS-BRANCH-001
   - ADR-0027
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-05-03
 ---
 
 # Implementation Log — shape-b-branching-adoption
@@ -355,5 +355,4 @@ and are intentionally out of scope for the dev agent:
 - **T-BRANCH-002** — `release/v0.5.0` cleanup (remote `git push --delete`).
 - **T-BRANCH-008** — `develop` and `demo` branch seeding from `${MAIN_HEAD_SHA}` (remote `git push`).
 - **T-BRANCH-024 / T-BRANCH-025** — Bot scheduler config edits. The spec's IF-09 says: locate `.github/workflows/<bot>.yml` for each of `review-bot`, `plan-recon-bot`, `dep-triage-bot`, `actions-bump-bot`. A worktree scan shows none of these four bot names have a `.github/workflows/<bot>.yml` scheduler file in this repo (only `pages.yml`, `dependabot.yml`, and feature workflows). The bots are invoked as on-demand Claude Code sessions per `agents/operational/<bot>/PROMPT.md`. Per spec IF-09 procedure: "If no such field exists today (the bot defaults to the repo default branch) and the GitHub default branch is being flipped to `develop` in Step 5, document that fact in the implementation log; no edit is required for that bot, and Step 5 alone satisfies REQ-BRANCH-009 for it." Recording that finding here. T-BRANCH-024 (the discovery spike) is satisfied; T-BRANCH-025 is **N/A** (no in-repo scheduler edits required); REQ-BRANCH-009 will be satisfied by T-BRANCH-010 (default-branch flip to `develop`) when the human completes that step.
-
 

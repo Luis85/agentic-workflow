@@ -9,7 +9,7 @@ owner: release-manager
 inputs:
   - REVIEW-BRANCH-001
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-05-03
 ---
 
 # Release notes — Shape B branching adoption

@@ -12,7 +12,7 @@ inputs:
   - TASKS-BRANCH-001
   - ADR-0027
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-05-03
 ---
 
 # Traceability — shape-b-branching-adoption
