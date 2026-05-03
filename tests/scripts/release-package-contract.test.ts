@@ -60,7 +60,7 @@ test("ADR_NUMBERED_PATTERN matches the canonical glob shape", () => {
   assert.doesNotMatch("0001-no-extension", ADR_NUMBERED_PATTERN);
 });
 
-test("INTAKE_FOLDERS enumerates the 10 intake folders from ADR-0021 §Decision.3", () => {
+test("INTAKE_FOLDERS enumerates the 11 intake folders from ADR-0021 §Decision.3 and ADR-0030", () => {
   assert.deepEqual(INTAKE_FOLDERS, [
     "inputs",
     "specs",
@@ -72,6 +72,7 @@ test("INTAKE_FOLDERS enumerates the 10 intake folders from ADR-0021 §Decision.3
     "scaffolding",
     "stock-taking",
     "sales",
+    "issues",
   ]);
 });
 

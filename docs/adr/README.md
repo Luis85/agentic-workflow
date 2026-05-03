@@ -43,6 +43,7 @@ Records of architecturally significant decisions. Format follows Michael Nygard'
 | [0028](0028-claude-baseline-as-canonical-source-for-adapters.md) | Treat the Claude baseline as the canonical source for multi-framework adapters | Accepted |
 | [0029](0029-adapter-pipeline-additive-only.md) | Make the multi-framework adapter pipeline additive-only over canonical sources | Accepted |
 | [0030](0030-add-repo-adoption-track.md) | Add Repo Adoption Track as v1.1 opt-in companion track | Proposed |
+| [0031](0031-adopt-issues-folder-for-canonical-issue-tracking.md) | Adopt issues/ folder as the canonical local mirror of feature issue tracking | Accepted |
 <!-- END GENERATED: adr-index -->
 
 ## Conventions

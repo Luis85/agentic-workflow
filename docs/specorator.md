@@ -126,6 +126,37 @@ Each stage **consumes inputs**, **produces a defined artifact**, **is owned by o
 
 Quality gates per stage are summarised below; the full Definition of Done lives in [`docs/quality-framework.md`](quality-framework.md).
 
+### 3.0 Stage-gate handoff (applies to every stage)
+
+Every stage command runs two standard phases around the specialist agent's work.
+
+#### Pre-stage gate (before spawning the specialist)
+
+1. Check whether an open PR already exists for the current branch (`gh pr list --head <branch> --state open`).
+2. If no PR exists **and** `gh` is available, ask: **"Create a draft PR now to isolate and document this stage's work? (y/n)"**
+   - Yes → `gh pr create --draft --title "feat(<slug>): [WIP] Stage N — <stage-name>" --body "Closes <github_url from issues/*.md>\n\nStage N: <stage-name>"`. Record the PR URL in `workflow-state.md` hand-off notes.
+   - No → proceed; the user may open the PR manually at any time.
+3. If a PR already exists, print its URL so the user has context.
+
+#### Post-stage gate (after the specialist agent returns and workflow-state.md is updated)
+
+1. **Update the issue file** (`issues/<number>-<slug>.md`):
+   - Set `stage` to the completed stage name.
+   - Update `roadmap_status` using the mapping below.
+   - Set `updated_at` to today.
+2. **Push the branch** (`git push`) so the PR reflects the latest work.
+3. **Mark PR ready for review** (`gh pr ready <PR>`) **only when completing the testing stage** — this is the point at which the feature is ready for human code review. For all earlier stages (idea through implementation), skip this step; the PR stays draft while work is in progress. If no PR exists (user declined at pre-stage), skip this step.
+
+#### `roadmap_status` by stage
+
+| Stage | `roadmap_status` |
+|---|---|
+| idea, research, requirements, design, specification, tasks | `planned` |
+| implementation (any task done, not all done) | `in-progress` |
+| testing, review | `in-review` |
+| release, learning | `shipped` |
+| (any, manually set) | `cancelled` — sync never overwrites this |
+
 ### 3.1 Idea
 - **Goal:** Capture and structure an initial concept.
 - **Quality gate:** Problem is understandable. Scope is bounded. Unknowns are listed.

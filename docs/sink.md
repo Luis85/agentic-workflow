@@ -155,6 +155,9 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │           └── NNNN-<slug>.md               # project-local sequence, e.g. ADR-CLI-0001
 ├── inputs/                                  # canonical ingestion folder for new work packages (per ADR-0017)
 │   └── README.md                            # purpose, retention rules, what does/does not belong here
+├── issues/                                  # canonical local mirror of feature issue tracking (per ADR-0031)
+│   ├── README.md                            # entry point: naming rules, schema, sync and drift-check commands
+│   └── <number>-<slug>.md                   # one file per issue; number = GitHub issue number (0 = placeholder)
 ├── sites/                                   # public product page (directly openable static entrypoint)
 │   ├── index.html
 │   ├── styles.css                           # optional
@@ -383,9 +386,9 @@ A portfolio is bootstrapped with `/portfolio:start <slug>`. The three cycle comm
 
 ## Released package shape
 
-The 10 intake folders enumerated in this sink (`inputs/`, `specs/`, `discovery/`, `projects/`, `portfolio/`, `roadmaps/`, `quality/`, `scaffolding/`, `stock-taking/`, `sales/`) each ship **empty** in the released Specorator template package — only their top-level `README.md` ships, no per-feature / per-deal / per-engagement state. ADRs (`docs/adr/[0-9][0-9][0-9][0-9]-*.md`) do not ship. `docs/` pages ship as stubs. Source of truth: [ADR-0021](adr/0021-release-package-fresh-surface.md). Methodology: [`docs/release-package-contents.md`](release-package-contents.md).
+The 11 intake folders enumerated in this sink (`inputs/`, `specs/`, `discovery/`, `projects/`, `portfolio/`, `roadmaps/`, `quality/`, `scaffolding/`, `stock-taking/`, `sales/`, `issues/`) each ship **empty** in the released Specorator template package — only their top-level `README.md` ships, no per-feature / per-deal / per-engagement state. ADRs (`docs/adr/[0-9][0-9][0-9][0-9]-*.md`) do not ship. `docs/` pages ship as stubs. Source of truth: [ADR-0021](adr/0021-release-package-fresh-surface.md). Methodology: [`docs/release-package-contents.md`](release-package-contents.md).
 
-**Maintenance rule.** Any new intake folder added to the layout above must also be added to the enumeration in `docs/release-package-contents.md` and `ADR-0021`'s "Decision §3" in the same PR. The release readiness check uses the documented enumeration as its checklist; an un-enumerated folder will leak into the released archive.
+**Maintenance rule.** Any new intake folder added to the layout above must also be added to the enumeration in `docs/release-package-contents.md` and `scripts/lib/release-package-contract.ts` (the `INTAKE_FOLDERS` array) in the same PR. The release readiness check uses the documented enumeration as its checklist; an un-enumerated folder will leak into the released archive.
 
 ## Inputs sub-tree
 
@@ -400,6 +403,18 @@ The 10 intake folders enumerated in this sink (`inputs/`, `specs/`, `discovery/`
 |---|---|---|
 | `inputs/README.md` | Human (template maintainer) | Updated when convention or retention rules change |
 | `inputs/<file>` or `inputs/<folder>/` | Human (work-package contributor) | Append-on-drop, delete-on-consumption |
+| `issues/README.md` | Human (template maintainer) | Updated when schema or sync conventions change |
+| `issues/<number>-<slug>.md` | `/spec:start` (create); agents (stage/roadmap_status updates); `sync:issues` (GitHub pull) | Living — frontmatter updated as the feature progresses; body is append-oriented; files persist as historical record after shipping or cancellation |
+
+## Issues sub-tree
+
+`issues/` is the **canonical local mirror of feature issue tracking** — one Markdown file per issue, with structured frontmatter that maps to GitHub Issues and exposes roadmap status across the Specorator lifecycle. Adopted by [ADR-0031](adr/0031-adopt-issues-folder-for-canonical-issue-tracking.md).
+
+- **Created at `/spec:start`.** Every feature bootstrapped with `/spec:start` gets an `issues/0-<slug>.md` file. If `gh` is available, the command pushes the issue to GitHub and backfills the real issue number and URL.
+- **Living roadmap state.** `roadmap_status` (`planned | in-progress | in-review | shipped | cancelled`) and `stage` are updated as the feature progresses. Agents advancing `workflow-state.md` should mirror changes here.
+- **Pull-synced from GitHub.** `npm run sync:issues` fetches current label, milestone, assignee, and state from GitHub Issues and updates local frontmatter. Does not create new local files from GitHub-only issues.
+- **Drift check.** `npm run check:issues` warns for specs without a linked issue and hard-fails on malformed frontmatter. Not included in `npm run verify` (offline-safe by design, per ADR-0031 §6).
+- **Permanent record.** Issue files persist after shipping or cancellation. Set `roadmap_status: shipped` or `roadmap_status: cancelled` to archive.
 
 ## Examples sub-tree
 
