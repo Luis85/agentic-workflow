@@ -453,7 +453,7 @@ Specorator currently starts every workflow from a slash command whose intent exi
 
 #### REQ-IFI-027 — Mirror sync fails loudly on missing or duplicate sentinel markers
 
-- **Pattern:** IF `scripts/sync-issue-mirror.sh` fetches the issue body and finds that the sentinel markers are absent or appear more than once, THEN the script shall emit a named error to stderr with instructions to restore the markers and exit without modifying the issue body.
+- **Pattern:** IF `scripts/sync-issue-mirror.sh` fetches a non-empty issue body and finds that the sentinel markers are absent or appear more than once, THEN the script shall emit a named error to stderr with instructions to restore the markers and exit without modifying the issue body. (An empty body is handled by REQ-IFI-039 and is not a missing-marker error.)
 - **Acceptance:**
   - Given the user has accidentally deleted the `<!-- specorator-state:begin -->` marker from issue #274
   - When `scripts/sync-issue-mirror.sh adopt-issue-first-interaction-model-274` runs
@@ -662,7 +662,7 @@ Specorator currently starts every workflow from a slash command whose intent exi
 | ID | Category | Requirement | Target |
 |---|---|---|---|
 | NFR-IFI-001 | reliability | `scripts/sync-issue-mirror.sh` must never propagate a non-zero exit code to the calling stage command | Exit code of the calling stage is unaffected by mirror sync failures in all tested failure scenarios |
-| NFR-IFI-002 | reliability | Issue form templates must function correctly on GitHub Enterprise Server 3.9 and later | All three templates render without errors on GHES 3.9+ using only the four universally-supported field types |
+| NFR-IFI-002 | reliability | Issue form templates must function correctly on GitHub Enterprise Server 3.9 and later | All three templates render without errors on GHES 3.9+ using only the five universally-supported field types (`textarea`, `input`, `dropdown`, `checkboxes`, `markdown`) |
 | NFR-IFI-003 | correctness | Parsed issue body fields must be validated before any scaffolding action is taken | Zero spec directories are created from a malformed issue body; validation error is emitted to **stderr** before exit |
 | NFR-IFI-004 | idempotency | `scripts/bootstrap-labels.sh` run N times against a repository produces the same label state as running it once | Running the script three consecutive times results in zero mutations on the second and third run |
 | NFR-IFI-005 | idempotency | `scripts/sync-issue-mirror.sh` run N times against an issue with no workflow stage change produces an identical issue body | Running the script twice in succession without a stage change results in no net change to the issue body |
