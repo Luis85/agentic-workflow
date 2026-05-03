@@ -234,6 +234,7 @@ In GitHub Actions, `verify` requests JSON diagnostics from supported check scrip
 | `npm run check:specs` | Validate lifecycle `workflow-state.md` files and their artifact maps. |
 | `npm run check:roadmaps` | Validate roadmap state frontmatter, dates, document maps, and required sections. |
 | `npm run check:traceability` | Validate lifecycle artifact IDs and local traceability references. |
+| `npm run check:index-bleed` | Warn when the git index contains staged-for-addition files on a feature branch (index-bleed guard). Not in verify. |
 | `npm run self-check` | Run a comprehensive local quality review using verify diagnostics, quality metrics, and learning evidence. |
 
 ## Script Documentation

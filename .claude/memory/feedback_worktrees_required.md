@@ -42,5 +42,6 @@ git worktree prune                   # if needed
 - Do **not** symlink `node_modules/` (or any other dependency tree) between worktrees. The whole point is isolation.
 - Do **not** commit anything from `.worktrees/`. The directory is gitignored on purpose.
 - Do **not** create a worktree on the integration branch itself. Worktrees are for the *topic* branch; the main checkout stays on the integration branch.
+- Do **not** use the main checkout to work on multiple feature branches sequentially. Staged-for-addition files carry across `git checkout` because git does not track them to a branch — the next commit silently picks them all up. Use one worktree per branch to get an isolated index. Run `npm run check:index-bleed` before committing if you are in the main checkout. See [docs/worktrees.md#common-pitfalls](../../docs/worktrees.md#common-pitfalls) and [Issue #261](https://github.com/Luis85/agentic-workflow/issues/261).
 
 See [`docs/worktrees.md`](../../docs/worktrees.md) for the full guide.

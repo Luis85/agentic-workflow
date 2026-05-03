@@ -37,7 +37,7 @@ jobs:
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
 
       - name: Run zizmor (SARIF for Security tab)
-        run: uvx zizmor --persona=auditor --format=sarif . > zizmor.sarif
+        run: uvx zizmor==1.24.1 --persona=auditor --format=sarif . > zizmor.sarif
         continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -49,6 +49,6 @@ jobs:
           category: zizmor
 
       - name: Run zizmor (gate the build)
-        run: uvx zizmor .
+        run: uvx zizmor==1.24.1 .
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

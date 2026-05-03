@@ -118,14 +118,14 @@ export const RELEASE_READINESS_WARNING_CODES = {
  * endpoint — operators saw "ENABLED" every dispatch even when the setting
  * was off.
  *
- * - `enabled` — endpoint returned `enabled=true` (or org-level enforcement).
- * - `disabled` — endpoint returned `enabled=false`.
+ * - `enabled` — endpoint returned HTTP 200 with `enabled=true` (or org-level
+ *   enforcement).
+ * - `disabled` — endpoint returned HTTP 404, the documented disabled state.
  * - `denied` — endpoint returned 401 / 403 / "Bad credentials" /
  *   "Resource not accessible". The probe could not verify the setting;
  *   surface a distinct warning so the operator checks manually.
- * - `unknown` — endpoint missing (404, older GitHub instance), network
- *   blip, parse error. Fail quiet — a transient signal must not block
- *   dispatch.
+ * - `unknown` — network blip, parse error, or another unrecognized response.
+ *   Fail quiet — a transient signal must not block dispatch.
  */
 export type ImmutableSettingProbe = "enabled" | "disabled" | "denied" | "unknown";
 

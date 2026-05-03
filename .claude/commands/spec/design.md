@@ -10,15 +10,25 @@ model: sonnet
 Run **stage 4 — Design**. This stage has three contributors; sequence them deliberately.
 
 1. Resolve slug; verify `requirements.md` is `complete`. The three design agents read REQ IDs and EARS clauses from `requirements.md` as canonical input — a `skipped` requirements artifact is a hard escalation.
-2. Initialise `specs/<slug>/design.md` from `templates/design-template.md` if it doesn't exist.
-3. **Check for prior `design-twice` synthesis.** If `specs/<slug>/design-comparison.md` exists, read it and pass its recommendation + rejected-alternatives sections to each of the three design subagents below as additional context. The synthesis is the starting point; do not discard it.
-4. **Check for an Arc42 baseline.** If `specs/<slug>/arc42-questionnaire.md` exists with frontmatter `status: answered`, read it and pass the **whole questionnaire** to the `architect` subagent as canonical input for Part C — every section (§1 introduction and goals, §2 constraints, §3 context and scope, §4 solution strategy, §5 building blocks, §6 runtime, §7 deployment, §8 crosscutting, §9 architecture decisions, §10 quality requirements, §11 risks and technical debt, §12 glossary, plus the Part II 12-Factor assessment) is inherited, not re-derived. The architect writes only the feature-specific deltas in `design.md` and links back to the questionnaire instead of duplicating any section. If the questionnaire is missing or `draft` and the feature is architecture-significant (new service boundaries, external integrations, non-trivial non-functional requirements), recommend the user run the `arc42-baseline` skill first before proceeding to Part C.
-5. **Spawn `ux-designer`** to fill **Part A — UX**: flows, IA, empty/loading/error states, accessibility. **Wait for the agent to return** before continuing.
-6. Once Part A is drafted, **spawn `ui-designer`** to fill **Part B — UI**: screen inventory, components, tokens, microcopy. **Wait for the agent to return** before continuing.
-7. Once Parts A and B are drafted, **spawn `architect`** to fill **Part C — Architecture**: components, data flow, decisions, risks, alternatives. The architect drafts any required ADRs directly using `templates/adr-template.md` (it has `Edit`/`Write`); after this command exits, the user may run `/adr:new` to formalise additional ones if needed. (Slash commands are not invoked from inside subagents.)
-8. The architect also fills the cross-cutting **Requirements coverage** table — every PRD requirement maps to at least one design section.
-9. Run the design quality gate.
-10. Update `workflow-state.md`. Recommend `/spec:specify` next.
+2. **Pre-stage gate** — see `docs/specorator.md §3.0`: if no open PR exists for the current branch and `gh` is available, ask the user whether to create a draft PR before stage work begins.
+3. Initialise `specs/<slug>/design.md` from `templates/design-template.md` if it doesn't exist.
+4. **Check for prior `design-twice` synthesis.** If `specs/<slug>/design-comparison.md` exists, read it and pass its recommendation + rejected-alternatives sections to each of the three design subagents below as additional context. The synthesis is the starting point; do not discard it.
+5. **Check for an Arc42 baseline.** If `specs/<slug>/arc42-questionnaire.md` exists with frontmatter `status: answered`, read it and pass the **whole questionnaire** to the `architect` subagent as canonical input for Part C — every section (§1 introduction and goals, §2 constraints, §3 context and scope, §4 solution strategy, §5 building blocks, §6 runtime, §7 deployment, §8 crosscutting, §9 architecture decisions, §10 quality requirements, §11 risks and technical debt, §12 glossary, plus the Part II 12-Factor assessment) is inherited, not re-derived. The architect writes only the feature-specific deltas in `design.md` and links back to the questionnaire instead of duplicating any section. If the questionnaire is missing or `draft` and the feature is architecture-significant (new service boundaries, external integrations, non-trivial non-functional requirements), recommend the user run the `arc42-baseline` skill first before proceeding to Part C.
+5.5. **Check for a Design Track handoff.** Scan `designs/*/design-handoff.md` for any file whose `downstream` frontmatter field matches the current feature slug. If a match is found:
+   - Read `design-handoff.md` in full.
+   - If its `status` is `draft` (not yet human-approved), surface a warning: *"Design handoff for `<design-slug>` is still draft — consider completing the Design Track before Stage 4. Proceeding anyway."* Do not block.
+   - If two or more handoffs declare the same `downstream` slug, read all of them and note the duplication.
+   - Pass the handoff(s) to `ui-designer` at step 7 as **Part B canonical input**: component assignments, named token references, and final microcopy are treated as decided. `ui-designer` writes only **feature-level deltas** — elements the Design Track did not cover. Record the handoff path(s) in `design.md` under a `## Design Track handoff` section.
+   - If no matching handoff is found, continue to step 6 as normal — `ui-designer` does the full Part B.
+   - Rationale: [ADR-0032](../../../docs/adr/0032-design-handoff-to-spec-design-bridge.md).
+6. **Spawn `ux-designer`** to fill **Part A — UX**: flows, IA, empty/loading/error states, accessibility. **Wait for the agent to return** before continuing.
+7. Once Part A is drafted, **spawn `ui-designer`** to fill **Part B — UI**: screen inventory, components, tokens, microcopy — inheriting any Design Track handoff from step 5.5 where applicable. **Wait for the agent to return** before continuing.
+8. Once Parts A and B are drafted, **spawn `architect`** to fill **Part C — Architecture**: components, data flow, decisions, risks, alternatives. The architect drafts any required ADRs directly using `templates/adr-template.md` (it has `Edit`/`Write`); after this command exits, the user may run `/adr:new` to formalise additional ones if needed. (Slash commands are not invoked from inside subagents.)
+9. The architect also fills the cross-cutting **Requirements coverage** table — every PRD requirement maps to at least one design section.
+10. Run the design quality gate.
+11. Update `workflow-state.md`.
+12. **Post-stage gate** — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage`, `roadmap_status`, `updated_at`), push the branch. Do not mark PR ready yet — PR stays draft through planning stages.
+13. Recommend `/spec:specify` next.
 
 ## Note
 
