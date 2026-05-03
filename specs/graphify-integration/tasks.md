@@ -44,12 +44,12 @@ Each task ≤ ~½ day, has a stable ID, references ≥ 1 requirement, and has a 
 
 ### T-GRAPH-002 📐 — Add `.gitignore` rule for `graph/cache/`
 
-- **Description:** Append the `graph/cache/` exclusion rule (with comment referencing REQ-GRAPH-005 and the how-to doc) to the repo's `.gitignore`. Idempotent: skip if the rule already exists.
+- **Description:** Append the `graph/cache/` and `graph/.graphify_*` exclusion rules (with comment referencing REQ-GRAPH-005 and the how-to doc) to the repo's `.gitignore`. Idempotent: skip if the rules already exist.
 - **Satisfies:** REQ-GRAPH-005, SPEC-GRAPH-004
 - **Owner:** dev
 - **Estimate:** S
 - **Definition of done:**
-  - [ ] `.gitignore` contains the comment block + `graph/cache/` line exactly once.
+  - [ ] `.gitignore` contains the comment block + `graph/cache/` and `graph/.graphify_*` lines exactly once.
   - [ ] Manual smoke: create dummy `graph/cache/foo.json`; `git status` does not list it.
 
 ---
@@ -70,7 +70,7 @@ Each task ≤ ~½ day, has a stable ID, references ≥ 1 requirement, and has a 
 
 ### T-GRAPH-004 🔨 — Implement `scripts/graphify-run.ts`
 
-- **Description:** Implement the wrapper per SPEC-GRAPH-001. Parse argv (only `[]` or `["--update"]` accepted; anything else → exit 3 with usage message). Run `graphify --version` synchronously with `stdio: 'ignore'`; on ENOENT or non-zero, print the SPEC-GRAPH-005 missing-binary message to stderr and `process.exit(1)`. Build graphify argv per spec step 3, with the documented exclude list. Spawn graphify synchronously with `stdio: 'inherit'`; forward exit code (0 → 0; non-zero → 2). On win32, set `shell: true` to resolve `.cmd` shims (EC-GRAPH-003). During implementation, run `graphify --help` to confirm the actual `--output-dir` and `--exclude` flag names; document the resolved form in `implementation-log.md` (resolves OQ-GRAPH-001).
+- **Description:** Implement the wrapper per SPEC-GRAPH-001. Parse argv (only `[]` or `["--update"]` accepted; anything else → exit 3 with usage message). Run `graphify --help` synchronously with `stdio: 'ignore'`; on ENOENT or non-zero, print the SPEC-GRAPH-005 missing-binary message to stderr and `process.exit(1)`. Build graphify argv per spec step 3 and set `GRAPHIFY_OUT=graph`. Spawn graphify synchronously with `stdio: 'inherit'`; forward exit code (0 → 0; non-zero → 2). On win32, set `shell: true` to resolve `.cmd` shims (EC-GRAPH-003). During implementation, run `graphify --help` to confirm the actual supported CLI form; document the resolved form in `implementation-log.md` (resolves OQ-GRAPH-001).
 - **Satisfies:** REQ-GRAPH-001, REQ-GRAPH-002, REQ-GRAPH-003, REQ-GRAPH-008, NFR-GRAPH-002, NFR-GRAPH-003, NFR-GRAPH-004, SPEC-GRAPH-001, SPEC-GRAPH-005
 - **Owner:** dev
 - **Depends on:** T-GRAPH-003

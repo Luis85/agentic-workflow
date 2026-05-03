@@ -100,6 +100,26 @@ entries:
     emits_json: false
     used_by: [human, agent]
     rerun_command: npm run project:setup:github -- --dry-run
+  - id: script:graph
+    kind: script
+    command: npm run graph
+    path: scripts/graphify-run.ts
+    purpose: Regenerate the committed graphify knowledge graph artifacts under graph/.
+    read_only: false
+    safe_to_run_locally: true
+    emits_json: false
+    used_by: [human, agent]
+    rerun_command: npm run graph
+  - id: script:graph-update
+    kind: script
+    command: npm run graph:update
+    path: scripts/graphify-run.ts
+    purpose: Incrementally update the committed graphify knowledge graph artifacts under graph/.
+    read_only: false
+    safe_to_run_locally: true
+    emits_json: false
+    used_by: [human, agent]
+    rerun_command: npm run graph:update
   - id: script:typecheck-scripts
     kind: check
     command: npm run typecheck:scripts
@@ -289,6 +309,26 @@ entries:
     emits_json: true
     used_by: [human, agent, ci]
     rerun_command: npm run check:obsidian-assets
+  - id: check:issues
+    kind: check
+    command: npm run check:issues
+    path: scripts/check-issues.ts
+    purpose: Warn when specs/ directories have no linked issues/ file; hard-fail on malformed issue frontmatter. Warn-only for missing links (not in verify). Requires --json for machine output.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: true
+    used_by: [human, agent]
+    rerun_command: npm run check:issues
+  - id: check:index-bleed
+    kind: check
+    command: npm run check:index-bleed
+    path: scripts/check-index-bleed.ts
+    purpose: Warn when the git index contains staged-for-addition files on a feature branch. These files bleed across git checkout calls and can corrupt commits. Not in verify — run before committing or switching branches.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: true
+    used_by: [human, agent]
+    rerun_command: npm run check:index-bleed
   - id: check:specs
     kind: check
     command: npm run check:specs
@@ -349,6 +389,16 @@ entries:
     emits_json: true
     used_by: [human, agent, ci]
     rerun_command: npm run check:release-readiness -- --version <X.Y.Z> [--archive <dir>]
+  - id: script:sync-issues
+    kind: script
+    command: npm run sync:issues
+    path: scripts/sync-issues.ts
+    purpose: Pull-only GitHub Issues sync — fetches current label, milestone, assignee, and state from GitHub and updates issues/*.md frontmatter. Requires gh CLI authenticated. Does not push changes to GitHub.
+    read_only: false
+    safe_to_run_locally: true
+    emits_json: true
+    used_by: [human, agent]
+    rerun_command: npm run sync:issues
   - id: build:release-archive
     kind: script
     command: npm run build:release-archive
@@ -456,10 +506,19 @@ entries:
     emits_json: false
     used_by: [ci]
     rerun_command: gh run list --workflow gitleaks.yml
+  - id: workflow:dependency-review
+    kind: workflow
+    path: .github/workflows/dependency-review.yml
+    purpose: Review dependency diffs on pull requests and fail when high or critical vulnerabilities are introduced.
+    read_only: true
+    safe_to_run_locally: false
+    emits_json: false
+    used_by: [ci]
+    rerun_command: gh run list --workflow dependency-review.yml
   - id: workflow:issue-breakdown-bot
     kind: workflow
     path: .github/workflows/issue-breakdown-bot.yml
-    purpose: Trigger contract for the issue-breakdown-bot — fires on the `breakdown-me` label and queues one decomposition per issue. Model invocation step is a placeholder for adopters to wire their preferred Claude Code action.
+    purpose: Trigger contract for the issue-breakdown-bot — fires on the `breakdown-me` label, defaults to an issues-only placeholder comment, and gates the write-capable decomposition job behind `ISSUE_BREAKDOWN_BOT_ENABLED=true`.
     read_only: false
     safe_to_run_locally: false
     emits_json: false
@@ -510,6 +569,25 @@ entries:
     emits_json: false
     used_by: [ci]
     rerun_command: gh run list --workflow verify.yml
+  - id: workflow:scorecard
+    kind: workflow
+    path: .github/workflows/scorecard.yml
+    purpose: Weekly supply-chain posture report via OSSF Scorecard. Uploads SARIF as an artifact and publishes to GitHub code scanning on public repos. Findings are advisory; see docs/security-ci.md for triage guidance.
+    read_only: false
+    safe_to_run_locally: false
+    emits_json: false
+    triggers: [schedule, push]
+    used_by: [ci]
+    rerun_command: gh run list --workflow scorecard.yml
+  - id: workflow:markdownlint
+    kind: workflow
+    path: .github/workflows/markdownlint.yml
+    purpose: Run markdownlint-cli2 on changed Markdown files — advisory only, never blocks merge. Findings visible in CI log; see docs/markdownlint-rollout.md for promotion plan.
+    read_only: true
+    safe_to_run_locally: false
+    emits_json: false
+    used_by: [ci]
+    rerun_command: gh run list --workflow markdownlint.yml
   - id: workflow:zizmor
     kind: workflow
     path: .github/workflows/zizmor.yml
@@ -519,6 +597,15 @@ entries:
     emits_json: false
     used_by: [ci]
     rerun_command: gh run list --workflow zizmor.yml
+  - id: workflow:codeql
+    kind: workflow
+    path: .github/workflows/codeql.yml
+    purpose: CodeQL static analysis for javascript-typescript and actions languages; uploads SARIF to GitHub code scanning.
+    read_only: true
+    safe_to_run_locally: false
+    emits_json: false
+    used_by: [ci]
+    rerun_command: gh run list --workflow codeql.yml
   - id: skill:arc42-baseline
     kind: skill
     path: .claude/skills/arc42-baseline/SKILL.md
@@ -699,6 +786,15 @@ entries:
     emits_json: false
     used_by: [agent]
     rerun_command: open .claude/skills/quality-metrics/SKILL.md
+  - id: skill:project-review
+    kind: skill
+    path: .claude/skills/project-review/SKILL.md
+    purpose: Agent-facing reusable workflow skill for evidence-backed project reviews, improvement proposals, and first draft PR handoff.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: false
+    used_by: [agent]
+    rerun_command: open .claude/skills/project-review/SKILL.md
   - id: skill:record-decision
     kind: skill
     path: .claude/skills/record-decision/SKILL.md
