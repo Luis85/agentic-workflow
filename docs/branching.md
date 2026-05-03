@@ -58,9 +58,6 @@ The ruleset must:
 - block non-fast-forward updates;
 - require pull requests before merge;
 - require the branch to be up to date before merge;
-- require at least one approving review;
-- dismiss stale approvals when new commits are pushed;
-- require approval of the most recent reviewable push;
 - require all review threads to be resolved before merge;
 - require these always-running status checks:
   - `Verify`
@@ -69,6 +66,8 @@ The ruleset must:
   - `scan for committed secrets`
 
 Workflow-path security checks (`actionlint`, `zizmor static analysis`, and `dependency review`) stay path-triggered so ordinary docs and script PRs are not blocked by jobs that never run. When a PR changes `.github/workflows/**`, `.github/actions/**`, or dependency manifests, the relevant path-triggered checks must be green before merge; require them in a path-scoped ruleset if the repository configuration supports that shape.
+
+Approving reviews are intentionally not required in the upstream ruleset yet. Solo-maintainer and agent-heavy iteration currently gets more value from required CI, PR-only integration, and resolved review threads than from mandatory approval ceremony. Revisit this when there is a regular second reviewer or code-owner model.
 
 ## Rules
 

@@ -39,7 +39,7 @@ The upstream `main` ruleset requires the always-running checks that every PR sho
 - `spell check`
 - `scan for committed secrets`
 
-The ruleset also requires an up-to-date branch, one approving review, latest-push approval, stale-review dismissal, and resolved review threads. This makes the remote policy match the local rule that `npm run verify` must be green before merge.
+The ruleset also requires an up-to-date branch and resolved review threads. It does not require approving reviews yet; for the current solo-maintainer workflow, required checks provide the stronger signal without adding approval ceremony. This makes the remote policy match the local rule that `npm run verify` must be green before merge.
 
 Path-triggered security workflows are intentionally not global required checks:
 
