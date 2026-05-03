@@ -456,6 +456,15 @@ entries:
     emits_json: false
     used_by: [ci]
     rerun_command: gh run list --workflow gitleaks.yml
+  - id: workflow:dependency-review
+    kind: workflow
+    path: .github/workflows/dependency-review.yml
+    purpose: Review dependency diffs on pull requests and fail when high or critical vulnerabilities are introduced.
+    read_only: true
+    safe_to_run_locally: false
+    emits_json: false
+    used_by: [ci]
+    rerun_command: gh run list --workflow dependency-review.yml
   - id: workflow:issue-breakdown-bot
     kind: workflow
     path: .github/workflows/issue-breakdown-bot.yml

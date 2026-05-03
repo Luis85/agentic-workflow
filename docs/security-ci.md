@@ -16,18 +16,32 @@ Each gate is a separate workflow file under `.github/workflows/` so it can be en
 | **actionlint** | [`.github/workflows/actionlint.yml`](../.github/workflows/actionlint.yml) | PR + push to `main`, paths `.github/workflows/**`, `.github/actions/**` | Workflow YAML schema errors, deprecated action calls, shellcheck inside `run:` blocks. |
 | **zizmor** | [`.github/workflows/zizmor.yml`](../.github/workflows/zizmor.yml) | PR + push to `main` (workflow paths) + weekly schedule | Workflow security smells: template injection, unpinned actions, excessive permissions, dangerous triggers. SARIF results land in the GitHub Security tab. |
 | **gitleaks** | [`.github/workflows/gitleaks.yml`](../.github/workflows/gitleaks.yml) | PR + push to `main` + weekly schedule | Committed secrets — API keys, tokens, private keys — detected against the full git history. |
+| **dependency-review** | [`.github/workflows/dependency-review.yml`](../.github/workflows/dependency-review.yml) | PRs touching `package.json`, `npm-shrinkwrap.json`, or workflow/action files | New vulnerable npm or GitHub Actions dependencies introduced by the PR diff. Fails on `high` and `critical` severities; license policy is deferred. |
 
-## Why three separate workflows
+## Why separate workflows
 
 - **Independent failure surfaces.** A flaky workflow lint should not block a security scan and vice versa.
 - **Targeted triggers.** `actionlint` and `zizmor` only run on workflow file changes; `gitleaks` runs on every PR.
 - **Replaceable.** Adopters of this template can swap any of the three for an internal equivalent without rewiring the others.
 
-## Why these three first
+## Why these gates first
 
-`actionlint` and `zizmor` defend the CI pipeline itself — every other gate lives downstream of GitHub Actions, so that surface gets hardened first. `gitleaks` defends the repo against the most common single-event leak (a secret pasted into a commit). Together they close the highest-leverage gaps for a workflow-template repo.
+`actionlint` and `zizmor` defend the CI pipeline itself — every other gate lives downstream of GitHub Actions, so that surface gets hardened first. `gitleaks` defends the repo against the most common single-event leak (a secret pasted into a commit). `dependency-review` catches vulnerable packages and actions before dependency diffs merge. Together they close the highest-leverage gaps for a workflow-template repo.
 
-Higher-friction or domain-specific gates (CodeQL, dependency-review, OSSF Scorecard, typos, markdownlint, conventional-commits PR titles) are deferred until a concrete signal demands them. Adding them later is a one-file change.
+Higher-friction or domain-specific gates (CodeQL, OSSF Scorecard, markdownlint) are deferred until a concrete signal demands them. `typos`, conventional-commits PR titles, and dependency review are now implemented.
+
+## Dependency review policy
+
+The dependency-review workflow uses GitHub's dependency graph diff for pull requests. It runs only when a PR changes the npm manifest/lock or GitHub Actions workflow/action files.
+
+Policy:
+
+- Fail on vulnerabilities with severity `high` or `critical`.
+- Report lower-severity findings in the job output without blocking the PR.
+- Keep `license-check: false` for now; license allow/deny policy needs a separate decision.
+- Do not post PR comments from the action. Reviewers read the job summary and logs, and branch protection can require the `dependency review` check once the repo ruleset is updated.
+
+The workflow complements, but does not replace, repository-level Dependabot alerts. Dependabot alerts must be enabled in the GitHub repository security settings so newly disclosed vulnerabilities in already-merged dependencies surface outside PR review.
 
 ## Local equivalents
 
@@ -43,6 +57,11 @@ uvx zizmor .
 
 # gitleaks (requires the gitleaks binary: https://github.com/gitleaks/gitleaks)
 gitleaks detect --source . --redact
+
+# dependency-review has no direct local equivalent; it depends on GitHub's
+# pull-request dependency graph comparison API. Use npm audit locally for
+# a coarse npm-only check.
+npm audit --audit-level=high
 ```
 
 These are not bundled into `npm run verify` on purpose — see the verify gate doc for the rationale.
