@@ -32,13 +32,14 @@ Records of architecturally significant decisions. Format follows Michael Nygard'
 | [0017](0017-adopt-inputs-folder-as-canonical-ingestion-zone.md) | Adopt `inputs/` as the canonical ingestion folder for new work packages | Accepted |
 | [0018](0018-sites-consumes-tokens.md) | Flip sites/styles.css to consume design-system tokens | Accepted |
 | [0019](0019-add-design-track.md) | Add a Design Track as an opt-in first-party workflow | Accepted |
-| [0020](0020-v05-release-branch-strategy.md) | Adopt Shape A with release/vX.Y.Z branches for v0.5 releases | Accepted |
+| [0020](0020-v05-release-branch-strategy.md) | Adopt Shape A with release/vX.Y.Z branches for v0.5 releases | Superseded by [ADR-0027](0027-adopt-shape-b-branching-model.md) |
 | [0021](0021-release-package-fresh-surface.md) | Ship the released template package as a fresh-surface starter | Accepted |
 | [0022](0022-add-issue-breakdown-track.md) | Adopt issue-breakdown track for parallelising post-tasks issue work | Proposed |
 | [0023](0023-adopt-zod-as-first-runtime-dependency.md) | Adopt zod as the first runtime dependency for script-layer validation | Accepted |
 | [0024](0024-lock-specorator-agentic-workflow-naming-contract.md) | Lock the Specorator and agentic-workflow naming contract | Accepted |
 | [0025](0025-adopt-doc-as-contract-review-protocol.md) | Adopt a doc-as-contract review protocol | Proposed |
 | [0026](0026-freeze-v1-workflow-track-taxonomy.md) | Freeze the v1.0 workflow track taxonomy | Accepted |
+| [0027](0027-adopt-shape-b-branching-model.md) | Adopt Shape B branching model (develop / main / demo) for the template | Proposed |
 <!-- END GENERATED: adr-index -->
 
 ## Conventions
