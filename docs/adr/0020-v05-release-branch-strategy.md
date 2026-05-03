@@ -1,7 +1,7 @@
 ---
 id: ADR-0020
 title: Adopt Shape A with release/vX.Y.Z branches for v0.5 releases
-status: accepted
+status: Superseded
 date: 2026-05-02
 deciders:
   - architect
@@ -13,7 +13,7 @@ informed:
   - qa
   - sre
 supersedes: []
-superseded-by: []
+superseded-by: [ADR-0027]
 tags: [release, branching, governance]
 ---
 
