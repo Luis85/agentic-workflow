@@ -75,6 +75,7 @@
     "check:traceability": "tsx scripts/check-traceability.ts",
     "check:token-budget": "tsx scripts/check-token-budget.ts",
     "check:issues": "tsx scripts/check-issues.ts",
+    "check:index-bleed": "tsx scripts/check-index-bleed.ts",
     "check:release-package-contents": "tsx scripts/check-release-package-contents.ts",
     "check:release-readiness": "tsx scripts/check-release-readiness.ts",
     "sync:issues": "tsx scripts/sync-issues.ts",

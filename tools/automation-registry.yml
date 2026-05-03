@@ -299,6 +299,16 @@ entries:
     emits_json: true
     used_by: [human, agent]
     rerun_command: npm run check:issues
+  - id: check:index-bleed
+    kind: check
+    command: npm run check:index-bleed
+    path: scripts/check-index-bleed.ts
+    purpose: Warn when the git index contains staged-for-addition files on a feature branch. These files bleed across git checkout calls and can corrupt commits. Not in verify — run before committing or switching branches.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: true
+    used_by: [human, agent]
+    rerun_command: npm run check:index-bleed
   - id: check:specs
     kind: check
     command: npm run check:specs
