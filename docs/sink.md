@@ -75,6 +75,13 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │       ├── revisions/                       # proposal revision history (LAZY)
 │       │   └── proposal-v2.md
 │       └── order.md                         # phase 5 (proposal-writer) — acceptance record + Project Kickoff Brief
+├── designs/                                 # one folder per surface design (Design Track, opt-in)
+│   └── <design-slug>/
+│       ├── design-state.md                  # phase state machine, owned by /design:* commands
+│       ├── design-brief.md                  # phase 1 — Frame (design-lead)
+│       ├── sketch.md                        # phase 2 — Sketch (design-lead + ux-designer)
+│       ├── mock.html                        # phase 3 — Mock (optional; design-lead + ui-designer)
+│       └── design-handoff.md               # phase 4 — Handoff (gate artifact; input to /spec:design Part B)
 ├── discovery/                               # one folder per discovery sprint (pre-stage 1, opt-in)
 │   └── <sprint-slug>/
 │       ├── discovery-state.md               # sprint state machine, owned by /discovery:* commands
