@@ -40,4 +40,5 @@ PASS.
 - `graph/cache/` is ignored.
 - `graph/.graphify_root` is ignored.
 - `graphify-out/manifest.json` is ignored when graphify writes legacy local state.
+- `.graphifyignore` excludes generated graph output, local worktrees, dependencies, and staging directories from graph extraction.
 - Combined `graph.html` + `graph.json` size: 1,030,154 bytes.

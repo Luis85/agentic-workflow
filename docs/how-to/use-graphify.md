@@ -55,6 +55,8 @@ npm run graph:update
 
 The wrapper sets `GRAPHIFY_OUT=graph` and then calls `graphify update .`. The full rebuild adds `--force`; the incremental command leaves graphify's normal update behavior intact.
 
+The repository includes [`.graphifyignore`](../../.graphifyignore), which keeps generated graph artifacts, worktrees, dependency folders, and local staging directories out of the graph. This prevents the graph from ingesting itself and keeps repeated rebuilds stable.
+
 ## Browse The Graph
 
 Open [`graph/graph.html`](../../graph/graph.html) in a browser. The committed artifacts are:

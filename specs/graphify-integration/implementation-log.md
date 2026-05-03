@@ -16,6 +16,7 @@ updated: 2026-05-03
 
 - Created `graph/` with `.gitkeep`.
 - Added `.gitignore` rules for `graph/cache/`, `graph/.graphify_*`, and graphify's legacy `graphify-out/` manifest directory.
+- Added `.graphifyignore` so graphify excludes generated graph outputs, worktrees, dependency folders, release staging, and local scratch directories from graph extraction.
 - Added unit coverage for `scripts/graphify-run.ts`.
 - Implemented `scripts/graphify-run.ts`.
 - Added `npm run graph` and `npm run graph:update`.
@@ -34,16 +35,16 @@ The supported terminal integration is:
 GRAPHIFY_OUT=graph graphify update .
 ```
 
-For `npm run graph`, the wrapper adds `--force`:
+For `npm run graph`, the wrapper adds `--force` and suppresses graphify marketing tips with `GRAPHIFY_NO_TIPS=1`:
 
 ```bash
-GRAPHIFY_OUT=graph graphify update . --force
+GRAPHIFY_OUT=graph GRAPHIFY_NO_TIPS=1 graphify update . --force
 ```
 
-For `npm run graph:update`, the wrapper omits `--force`:
+For `npm run graph:update`, the wrapper omits `--force` and also sets `GRAPHIFY_NO_TIPS=1`:
 
 ```bash
-GRAPHIFY_OUT=graph graphify update .
+GRAPHIFY_OUT=graph GRAPHIFY_NO_TIPS=1 graphify update .
 ```
 
 Availability is checked with `graphify --help`, which is the supported CLI probe in graphifyy 0.7.0.

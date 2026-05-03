@@ -73,6 +73,7 @@ test("TEST-GRAPH-002: full graph run dispatches graphify update with force into 
   assert.deepEqual(calls[1].args, ["update", ".", "--force"]);
   assert.equal(calls[1].options.stdio, "inherit");
   assert.equal((calls[1].options.env as NodeJS.ProcessEnv).GRAPHIFY_OUT, "graph");
+  assert.equal((calls[1].options.env as NodeJS.ProcessEnv).GRAPHIFY_NO_TIPS, "1");
 });
 
 test("TEST-GRAPH-003: incremental graph run dispatches graphify update without force", () => {

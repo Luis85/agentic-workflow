@@ -1,16 +1,16 @@
 # Graph Report - graphify-integration  (2026-05-03)
 
 ## Corpus Check
-- 92 files · ~463,700 words
+- 92 files · ~423,581 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 491 nodes · 1176 edges · 19 communities detected
+- 492 nodes · 1177 edges · 20 communities detected
 - Extraction: 92% EXTRACTED · 8% INFERRED · 0% AMBIGUOUS · INFERRED: 96 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `312f5a66`
+- Built from commit: `18f9438c`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -34,6 +34,7 @@
 - [[_COMMUNITY_Community 16|Community 16]]
 - [[_COMMUNITY_Community 17|Community 17]]
 - [[_COMMUNITY_Community 18|Community 18]]
+- [[_COMMUNITY_Community 19|Community 19]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `readText()` - 43 edges
@@ -59,23 +60,23 @@
 - `workflowStateFiles()` --calls--> `walkFiles()`  [INFERRED]
   scripts/check-traceability.ts → scripts/lib/repo.ts
 
-## Communities (21 total, 0 thin omitted)
+## Communities (22 total, 0 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.09
-Nodes (50): addLinks(), assessMaturity(), average(), collectEarsCoverage(), collectQualityMetrics(), collectRequirementIds(), collectRtmLinks(), collectTestIds() (+42 more)
+Cohesion: 0.11
+Nodes (41): addLinks(), assessMaturity(), average(), collectEarsCoverage(), collectRequirementIds(), collectRtmLinks(), collectTestIds(), collectTraceability() (+33 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.09
-Nodes (27): buildReleaseArchive(), classifyFileForArchive(), checkDocsAreStubs(), checkIntakeFoldersEmpty(), checkNoNumberedAdrs(), checkReleasePackageContents(), parseReleasePackageArgs(), walkDirectory() (+19 more)
-
-### Community 2 - "Community 2"
 Cohesion: 0.11
 Nodes (26): add(), changedCheckPlan(), changedFiles(), isAdrSurface(), isAgentSurface(), isAutomationRegistrySurface(), isContentSurface(), isGeneratedOrCommandSurface() (+18 more)
 
+### Community 2 - "Community 2"
+Cohesion: 0.12
+Nodes (30): hasPlaceholderSegment(), isConcretePathReference(), isDocumentedExampleReference(), isOptionalLegacyReference(), lineContextAt(), lineNumberAt(), listFiles(), normalizeInlinePathCandidate() (+22 more)
+
 ### Community 3 - "Community 3"
-Cohesion: 0.1
-Nodes (20): getAdrs(), normalizeStatus(), renderAdrIndex(), getCommands(), renderCommandInventory(), wrapCommands(), markdownBasenames(), publicSurfaceDiagnostics() (+12 more)
+Cohesion: 0.11
+Nodes (25): gitTrackedFiles(), obsidianAssetDiagnostic(), obsidianAssetDiagnostics(), obsidianBaseDiagnosticsForFile(), obsidianCanvasDiagnosticsForFile(), obsidianTrackedStateDiagnostics(), repositoryRelativePath(), collectQualityMetrics() (+17 more)
 
 ### Community 4 - "Community 4"
 Cohesion: 0.12
@@ -83,23 +84,23 @@ Nodes (30): collectRoadmapDigest(), collectRoadmapEvidence(), compactSections(),
 
 ### Community 5 - "Community 5"
 Cohesion: 0.12
-Nodes (24): checkResult(), escapeAnnotationData(), escapeAnnotationProperty(), formatDiagnostic(), formatGitHubAnnotation(), normalizeDiagnostic(), wantsJson(), collectAnchors() (+16 more)
+Nodes (19): getAdrs(), normalizeStatus(), renderAdrIndex(), getCommands(), renderCommandInventory(), wrapCommands(), checkResult(), escapeAnnotationData() (+11 more)
 
 ### Community 6 - "Community 6"
+Cohesion: 0.11
+Nodes (19): checkDocsAreStubs(), checkIntakeFoldersEmpty(), checkNoNumberedAdrs(), checkReleasePackageContents(), parseReleasePackageArgs(), walkDirectory(), checkChangelog(), checkPackageMetadata() (+11 more)
+
+### Community 7 - "Community 7"
 Cohesion: 0.08
 Nodes (7): branchReadinessCheck(), dependencyReadinessCheck(), workflowReadinessChecks(), worktreeHygieneCheck(), commandInvocation(), mergedLocalBranches(), run()
 
-### Community 7 - "Community 7"
-Cohesion: 0.15
-Nodes (21): extractFrontmatter(), addDefinition(), collectDocumentDefinition(), collectHeadingDefinitions(), collectTableDefinitions(), definitionTableKinds(), escapeRegExp(), idsIn() (+13 more)
-
 ### Community 8 - "Community 8"
-Cohesion: 0.17
-Nodes (22): hasPlaceholderSegment(), isConcretePathReference(), isDocumentedExampleReference(), isOptionalLegacyReference(), lineContextAt(), lineNumberAt(), listFiles(), normalizeInlinePathCandidate() (+14 more)
+Cohesion: 0.15
+Nodes (22): extractFrontmatter(), parseSimpleYaml(), addDefinition(), collectDocumentDefinition(), collectHeadingDefinitions(), collectTableDefinitions(), definitionTableKinds(), escapeRegExp() (+14 more)
 
 ### Community 9 - "Community 9"
-Cohesion: 0.16
-Nodes (13): checkChangelog(), checkPackageMetadata(), checkQualitySignals(), checkReleaseNotesConfig(), checkReleaseReadiness(), checkRepoImmutableSetting(), checkTagOnMainHistory(), checkVersionAlignment() (+5 more)
+Cohesion: 0.13
+Nodes (15): buildReleaseArchive(), classifyFileForArchive(), assertSafeOutDir(), hasStagingMarker(), writeStagingMarker(), collectSectionHeadings(), computeDescription(), computeEntryPoint() (+7 more)
 
 ### Community 10 - "Community 10"
 Cohesion: 0.2
@@ -122,29 +123,33 @@ Cohesion: 0.3
 Nodes (10): frontmatterDiagnostic(), futureDateDiagnostics(), requiredKeyDiagnostics(), utcDateKey(), requireFrontmatter(), validateAdr(), validateDailyReview(), validateReadme() (+2 more)
 
 ### Community 15 - "Community 15"
-Cohesion: 0.42
-Nodes (7): gitTrackedFiles(), obsidianAssetDiagnostic(), obsidianAssetDiagnostics(), obsidianBaseDiagnosticsForFile(), obsidianCanvasDiagnosticsForFile(), obsidianTrackedStateDiagnostics(), repositoryRelativePath()
+Cohesion: 0.33
+Nodes (6): markdownBasenames(), publicSurfaceDiagnostics(), publicSurfaceInventory(), readIfExists(), requireIncludes(), skillNames()
 
 ### Community 16 - "Community 16"
+Cohesion: 0.49
+Nodes (7): collectAnchors(), githubSlug(), linkDiagnostic(), linkDiagnosticMessage(), safeDecode(), shouldIgnoreTarget(), slugVariants()
+
+### Community 17 - "Community 17"
 Cohesion: 0.33
 Nodes (4): graphifyArgs(), runGraphifyWrapper(), failed(), withError()
 
-### Community 17 - "Community 17"
+### Community 18 - "Community 18"
 Cohesion: 0.32
 Nodes (3): checkLocalReferences(), getAttributeValues(), requireIndexMarkup()
 
-### Community 18 - "Community 18"
+### Community 19 - "Community 19"
 Cohesion: 0.43
 Nodes (6): addReadmeFrontmatter(), descriptionForGeneratedReadme(), stripFrontmatter(), titleFromMarkdown(), toPosix(), walkMarkdownFiles()
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `readText()` connect `Community 3` to `Community 0`, `Community 1`, `Community 4`, `Community 5`, `Community 7`, `Community 8`, `Community 11`, `Community 13`, `Community 14`, `Community 15`, `Community 17`?**
-  _High betweenness centrality (0.087) - this node is a cross-community bridge._
-- **Why does `extractFrontmatter()` connect `Community 7` to `Community 0`, `Community 1`, `Community 3`, `Community 4`, `Community 8`, `Community 12`, `Community 13`, `Community 14`?**
+- **Why does `readText()` connect `Community 2` to `Community 0`, `Community 3`, `Community 4`, `Community 5`, `Community 8`, `Community 11`, `Community 13`, `Community 14`, `Community 15`, `Community 16`, `Community 18`?**
+  _High betweenness centrality (0.086) - this node is a cross-community bridge._
+- **Why does `extractFrontmatter()` connect `Community 8` to `Community 0`, `Community 2`, `Community 4`, `Community 5`, `Community 6`, `Community 9`, `Community 12`, `Community 13`, `Community 14`?**
   _High betweenness centrality (0.054) - this node is a cross-community bridge._
-- **Why does `parseSimpleYaml()` connect `Community 1` to `Community 0`, `Community 3`, `Community 4`, `Community 7`, `Community 8`, `Community 12`, `Community 14`?**
+- **Why does `parseSimpleYaml()` connect `Community 8` to `Community 0`, `Community 2`, `Community 4`, `Community 5`, `Community 6`, `Community 9`, `Community 12`, `Community 14`?**
   _High betweenness centrality (0.044) - this node is a cross-community bridge._
 - **Are the 22 inferred relationships involving `readText()` (e.g. with `compareGeneratedDocs()` and `addReadmeFrontmatter()`) actually correct?**
   _`readText()` has 22 INFERRED edges - model-reasoned connections that need verification._

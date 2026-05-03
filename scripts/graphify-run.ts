@@ -55,6 +55,7 @@ export function runGraphifyWrapper(
     env: {
       ...env,
       GRAPHIFY_OUT: "graph",
+      GRAPHIFY_NO_TIPS: "1",
     },
   });
 
