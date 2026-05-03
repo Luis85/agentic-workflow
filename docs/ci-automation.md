@@ -14,12 +14,14 @@ Companion to [`verify-gate.md`](verify-gate.md) and [`security-ci.md`](security-
 | **pr-title** | [`.github/workflows/pr-title.yml`](../.github/workflows/pr-title.yml) | `pull_request` opened / edited / reopened / synchronize | Validates PR title against Conventional Commits (`feat`, `fix`, `chore`, `docs`, `refactor`, `perf`, `test`, `build`, `ci`, `revert`). Mirrors the [AGENTS.md](../AGENTS.md) commit convention. |
 | **typos** | [`.github/workflows/typos.yml`](../.github/workflows/typos.yml) | PR + push to `main` | Spell-check across the repo. Allowlist in [`_typos.toml`](../_typos.toml). |
 | **dependabot** | [`.github/dependabot.yml`](../.github/dependabot.yml) | Weekly (Monday 06:00 UTC) | Opens PRs for new versions of pinned GitHub Actions and npm dev-dependencies. Groups patches and minors to keep PR volume low. |
+| **dependency-review** | [`.github/workflows/dependency-review.yml`](../.github/workflows/dependency-review.yml) | PRs touching dependency or workflow files | Blocks PRs that introduce high/critical vulnerable npm packages or GitHub Actions dependencies. See [`security-ci.md`](security-ci.md#dependency-review-policy). |
 
-## Why these three
+## Why these automation gates
 
 - **pr-title** enforces the existing convention. Without it, the rule lives only in `AGENTS.md` and gets violated. The check is cheap and informs reviewers immediately.
 - **typos** targets a Markdown-heavy repo where prose drift accumulates faster than code drift. Fast (< 5s) and config-driven.
 - **dependabot** closes the loop on the [SHA-pin policy](security-ci.md#action-pinning) — without an automated bumper, pinning is a maintenance burden that ages out the codebase.
+- **dependency-review** adds PR-diff vulnerability feedback before a lockfile or workflow dependency change reaches `main`.
 
 ## Why **not** markdownlint (yet)
 
@@ -67,6 +69,8 @@ If a real typo is rejected because of an allowlist entry, **delete the entry** r
 
 Both ecosystems run weekly Monday 06:00 / 06:30 UTC. The hour offset spreads PR creation so reviewers don't see a wall of bumps simultaneously.
 
+Dependabot version updates are not the same as Dependabot alerts. Repository maintainers should enable Dependabot alerts in GitHub security settings so already-merged dependencies are checked when new advisories are published. Dependency review covers PR diffs; alerts cover the resting dependency graph.
+
 ### Release cooldown
 
 Both blocks set `cooldown` so Dependabot waits before proposing newly published versions:
@@ -95,4 +99,6 @@ typos --config _typos.toml
 
 1. Replace the README badge URLs with your own repo coordinates (or remove the row).
 2. Update `dependabot.yml` `directory:` if `package.json` is not at repo root.
-3. Decide whether to lock a `locale` in `_typos.toml`. The template stays unlocked because it mixes en-us and en-gb spellings; a real product probably picks one.
+3. Enable Dependabot alerts in the repository security settings.
+4. Decide whether to require the `dependency review` check in branch protection or rulesets.
+5. Decide whether to lock a `locale` in `_typos.toml`. The template stays unlocked because it mixes en-us and en-gb spellings; a real product probably picks one.
