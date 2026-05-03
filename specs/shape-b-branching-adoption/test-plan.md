@@ -426,7 +426,7 @@ node -e "const fs=require('fs'); const c=fs.readFileSync('CLAUDE.md','utf8'); if
 
 ## NFR verification
 
-### NFR-BRANCH-001 — `develop` creation is non-destructive (MANUAL)
+### NFR test — NFR-BRANCH-001 — `develop` creation is non-destructive (MANUAL)
 
 ```bash
 # Same as TEST-BRANCH-006: SHA equality
@@ -434,7 +434,7 @@ test "$(git rev-parse origin/develop)" = "${MAIN_HEAD_SHA}"
 git log --oneline origin/main..origin/develop   # empty
 ```
 
-### NFR-BRANCH-002 — `demo` creation is non-destructive (MANUAL)
+### NFR test — NFR-BRANCH-002 — `demo` creation is non-destructive (MANUAL)
 
 ```bash
 # Same as TEST-BRANCH-014: SHA equality
@@ -442,7 +442,7 @@ test "$(git rev-parse origin/demo)" = "${MAIN_HEAD_SHA}"
 git log --oneline origin/main..origin/demo   # empty
 ```
 
-### NFR-BRANCH-003 — All affected files consistent with Shape B (FILE)
+### NFR test — NFR-BRANCH-003 — All affected files consistent with Shape B (FILE)
 
 ```bash
 # No file describes main as integration branch or PR target for topic work
@@ -461,11 +461,11 @@ if(!fail) console.log('PASS');
 "
 ```
 
-### NFR-BRANCH-004 — ADR supersession recorded in both directions (FILE)
+### NFR test — NFR-BRANCH-004 — ADR supersession recorded in both directions (FILE)
 
 Covered by TEST-BRANCH-010 (five sub-checks).
 
-### NFR-BRANCH-005 — Deny list does not shrink (FILE)
+### NFR test — NFR-BRANCH-005 — Deny list does not shrink (FILE)
 
 ```bash
 node -e "
@@ -477,7 +477,7 @@ console.log('PASS count='+count);
 "
 ```
 
-### NFR-BRANCH-006 — Pages availability not interrupted (MANUAL)
+### NFR test — NFR-BRANCH-006 — Pages availability not interrupted (MANUAL)
 
 ```bash
 # Before Step 7 merge: both main and demo in github-pages allow-list

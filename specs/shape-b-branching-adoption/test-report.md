@@ -57,7 +57,7 @@ worktree: .worktrees/shape-b-stage5
 
 ## Detailed results — FILE tests
 
-### TEST-BRANCH-001 — REQ-BRANCH-001 — PASS
+### Result: TEST-BRANCH-001 — REQ-BRANCH-001 — PASS
 
 ```
 node command 1: develop PR target present: PASS
@@ -68,7 +68,7 @@ node command 2: main not named as topic PR target: PASS
 
 ---
 
-### TEST-BRANCH-002 — REQ-BRANCH-002 — PASS
+### Result: TEST-BRANCH-002 — REQ-BRANCH-002 — PASS
 
 ```
 node: PASS
@@ -78,7 +78,7 @@ node: PASS
 
 ---
 
-### TEST-BRANCH-003 — REQ-BRANCH-003 — PASS
+### Result: TEST-BRANCH-003 — REQ-BRANCH-003 — PASS
 
 ```
 node: PASS
@@ -88,7 +88,7 @@ node: PASS
 
 ---
 
-### TEST-BRANCH-004 — REQ-BRANCH-004 — PASS
+### Result: TEST-BRANCH-004 — REQ-BRANCH-004 — PASS
 
 ```
 demo present: PASS
@@ -99,7 +99,7 @@ main absent from trigger: PASS
 
 ---
 
-### TEST-BRANCH-005 — REQ-BRANCH-005 — PASS
+### Result: TEST-BRANCH-005 — REQ-BRANCH-005 — PASS
 
 ```
 develop-to-main release path present: PASS
@@ -110,7 +110,7 @@ release/vX.Y.Z not prescribed as required: PASS
 
 ---
 
-### TEST-BRANCH-007 — REQ-BRANCH-007 — PASS
+### Result: TEST-BRANCH-007 — REQ-BRANCH-007 — PASS
 
 ```
 PASS count=9
@@ -120,7 +120,7 @@ PASS count=9
 
 ---
 
-### TEST-BRANCH-008 — REQ-BRANCH-008 — PASS
+### Result: TEST-BRANCH-008 — REQ-BRANCH-008 — PASS
 
 ```
 old phrase absent: PASS
@@ -131,7 +131,7 @@ new phrase present: PASS
 
 ---
 
-### TEST-BRANCH-009b — REQ-BRANCH-009 (Dependabot) — PASS
+### Result: TEST-BRANCH-009b — REQ-BRANCH-009 (Dependabot) — PASS
 
 ```
 PASS count=2
@@ -141,7 +141,7 @@ PASS count=2
 
 ---
 
-### TEST-BRANCH-010 — REQ-BRANCH-010 — PASS (5 sub-checks)
+### Result: TEST-BRANCH-010 — REQ-BRANCH-010 — PASS (5 sub-checks)
 
 ```
 ADR-0027 status Accepted: PASS
@@ -155,7 +155,7 @@ ADR-0027 frontmatter (lines 3, 16): `status: Accepted`, `supersedes: [ADR-0020]`
 
 ---
 
-### TEST-BRANCH-011 — REQ-BRANCH-011 — PASS
+### Result: TEST-BRANCH-011 — REQ-BRANCH-011 — PASS
 
 ```
 PASS: no release/* in allow list
@@ -165,7 +165,7 @@ PASS: no release/* in allow list
 
 ---
 
-### TEST-BRANCH-012 — REQ-BRANCH-012 — PASS
+### Result: TEST-BRANCH-012 — REQ-BRANCH-012 — PASS
 
 ```
 develop as cut-from: PASS
@@ -176,7 +176,7 @@ no worktree add from main: PASS
 
 ---
 
-### TEST-BRANCH-015 — REQ-BRANCH-015 — PASS
+### Result: TEST-BRANCH-015 — REQ-BRANCH-015 — PASS
 
 ```
 AGENTS.md: PASS
@@ -190,7 +190,7 @@ CLAUDE.md demo/Pages: PASS
 
 ## MANUAL tests — deferred
 
-### TEST-BRANCH-006 — REQ-BRANCH-006 — DEFERRED
+### Result: TEST-BRANCH-006 — REQ-BRANCH-006 — DEFERRED
 
 Cannot run until spec Step 5 creates `origin/develop` on the remote.
 
@@ -205,7 +205,7 @@ git log --oneline origin/main..origin/develop   # expect empty
 
 ---
 
-### TEST-BRANCH-009 (scheduler flip) — REQ-BRANCH-009 — DEFERRED
+### Result: TEST-BRANCH-009 (scheduler flip) — REQ-BRANCH-009 — DEFERRED
 
 No in-repo scheduler configs exist for the four named bots (`review-bot`, `plan-recon-bot`, `dep-triage-bot`, `actions-bump-bot`). REQ-BRANCH-009 is satisfied by the default-branch flip to `develop` (spec Step 5b) plus the `dependabot.yml` `target-branch: develop` (TEST-BRANCH-009b, PASS). Confirm at Step 5b:
 
@@ -215,7 +215,7 @@ gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name'   # expect "d
 
 ---
 
-### TEST-BRANCH-014 — REQ-BRANCH-014 — DEFERRED
+### Result: TEST-BRANCH-014 — REQ-BRANCH-014 — DEFERRED
 
 Cannot run until spec Step 5 creates `origin/demo` on the remote.
 
@@ -232,7 +232,7 @@ git log --oneline origin/main..origin/demo   # expect empty
 
 ## N/A dispositions
 
-### TEST-BRANCH-013 — REQ-BRANCH-013 — N/A
+### Result: TEST-BRANCH-013 — REQ-BRANCH-013 — N/A
 
 REQ-BRANCH-013 is an "unwanted behaviour" EARS pattern: IF `release/v0.5.0` exists THEN delete it. The branch was confirmed absent during spec Step 1 pre-condition checks (recorded in `workflow-state.md` and `spec.md` Step 1). The IF condition was false; the conditional requirement has no false arm to verify. Disposition: satisfied by confirmed absence.
 
@@ -240,11 +240,11 @@ REQ-BRANCH-013 is an "unwanted behaviour" EARS pattern: IF `release/v0.5.0` exis
 
 ## NFR verification results
 
-### NFR-BRANCH-001 — DEFERRED (same as TEST-BRANCH-006)
+### NFR result: NFR-BRANCH-001 — DEFERRED (same as TEST-BRANCH-006)
 
-### NFR-BRANCH-002 — DEFERRED (same as TEST-BRANCH-014)
+### NFR result: NFR-BRANCH-002 — DEFERRED (same as TEST-BRANCH-014)
 
-### NFR-BRANCH-003 — PASS with caveat
+### NFR result: NFR-BRANCH-003 — PASS with caveat
 
 The consistency grep across all five affected files (`docs/branching.md`, `docs/worktrees.md`, `AGENTS.md`, `CLAUDE.md`, `agents/operational/docs-review-bot/PROMPT.md`) flagged one line in `AGENTS.md`:
 
@@ -252,11 +252,11 @@ The consistency grep across all five affected files (`docs/branching.md`, `docs/
 
 This is correct Shape B prose. The heuristic matched because the line contains both `main` and an integration-context word, but the sentence correctly describes `main` as release-only (not as the integration branch). This is a **false positive** in the grep heuristic. Manual reviewer pass confirms the content is correct. NFR-BRANCH-003 is PASS; the false positive is disclosed.
 
-### NFR-BRANCH-004 — PASS
+### NFR result: NFR-BRANCH-004 — PASS
 
 Covered by TEST-BRANCH-010 five sub-checks, all PASS.
 
-### NFR-BRANCH-005 — PASS
+### NFR result: NFR-BRANCH-005 — PASS
 
 ```
 PASS count=21
@@ -268,7 +268,7 @@ Pre-change baseline (per spec IF-01): 12 entries.
 Post-change count: 21 entries.
 NFR-BRANCH-005 ("deny list does not shrink") is satisfied; coverage expanded.
 
-### NFR-BRANCH-006 — DEFERRED (MANUAL)
+### NFR result: NFR-BRANCH-006 — DEFERRED (MANUAL)
 
 ```bash
 # Before Step 7: github-pages env allow-list includes demo

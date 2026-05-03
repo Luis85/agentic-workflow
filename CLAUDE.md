@@ -31,7 +31,7 @@ The v1.0 track taxonomy is frozen in [ADR-0026](docs/adr/0026-freeze-v1-workflow
 - Subagents are project-scoped (`.claude/agents/`) with intentionally narrow tool lists. Missing tool = feature, not bug. Agent-class table lives in [`AGENTS.md`](AGENTS.md).
 - Skills live in `.claude/skills/` — see [`.claude/skills/README.md`](.claude/skills/README.md). Auto-trigger from natural language; explicit invoke via `/<skill-name>`.
 - Operational bots live under `agents/operational/`. Each = `PROMPT.md` + `README.md`; the prompt is the source of truth the scheduled run loads.
-- Permission rules live in `.claude/settings.json`. Pushes to `main` / `develop` / `demo` are denied; `--no-verify` is denied. Topic PRs target `develop`; `demo` is the Pages source. See [`docs/branching.md`](docs/branching.md).
+- Permission rules live in `.claude/settings.json`. Pushes to `main` / `develop` / `demo` are denied; `--no-verify` is denied. See [`docs/branching.md`](docs/branching.md).
 - Topic branches live in worktrees under `.worktrees/<slug>/`. See [`docs/worktrees.md`](docs/worktrees.md).
 - Run the verify gate before opening a PR. See [`docs/verify-gate.md`](docs/verify-gate.md).
 - For irreversible architectural decisions, use [`record-decision`](.claude/skills/record-decision/SKILL.md) (wraps `/adr:new`).

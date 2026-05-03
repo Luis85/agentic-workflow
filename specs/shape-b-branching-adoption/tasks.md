@@ -35,7 +35,6 @@ Each task is ≤ ~½ day, has a stable ID, references ≥ 1 requirement, and car
 - **Description:** Run the four read-only commands from spec Step 1 to verify `develop` and `demo` are absent on the remote, capture the presence/absence of `release/v0.5.0`, and record `$MAIN_HEAD_SHA`. Write results to `specs/shape-b-branching-adoption/implementation-log.md` (create the file with a "Step 1" section). This is the mandatory gate before any branch or file operation.
 - **Satisfies:** REQ-BRANCH-006 (spec Step 1), REQ-BRANCH-013 (Step 1 pre-check), REQ-BRANCH-014 (Step 1 SHA capture), NFR-BRANCH-001, NFR-BRANCH-002
 - **Owner:** human
-- **Depends on:** —
 - **Estimate:** S
 - **Definition of done:**
   - [ ] `git fetch origin` completed with no errors.
@@ -451,7 +450,7 @@ Each task is ≤ ~½ day, has a stable ID, references ≥ 1 requirement, and car
 ### T-BRANCH-029 🚀 — Update `workflow-state.md`: Stage 7 complete
 
 - **Description:** After all implementation tasks merge and the NFR checklist returns green, update `specs/shape-b-branching-adoption/workflow-state.md`: change `current_stage` to `testing` (or `complete` if the 30-day window is satisfied) and append a hand-off note to `qa` naming T-BRANCH-028 as the open monitoring task.
-- **Satisfies:** workflow state governance (Article III, Article V)
+- **Satisfies:** REQ-BRANCH-001, REQ-BRANCH-004, REQ-BRANCH-005, REQ-BRANCH-007, REQ-BRANCH-010
 - **Owner:** dev
 - **Depends on:** T-BRANCH-028
 - **Estimate:** S

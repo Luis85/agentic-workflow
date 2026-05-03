@@ -30,7 +30,7 @@ Repo = **template for spec-driven, agentic software development**. Defines workf
 - **Escalate ambiguity.** No guessing. Ask the human or open a `clarifications` block.
 - **Template-self changes use `/specorator:update` first.** Keywords: new track, skill, workflow, update template.
 - **No direct commits on `main` / `develop`.** Every change lands via topic branch + merged PR. Push deny is the backstop, not the gate. See [`.claude/memory/feedback_no_main_commits.md`](.claude/memory/feedback_no_main_commits.md).
-- **Branch per concern; verify before push.** One concern per PR; `verify` green locally; never `--no-verify`. Topic PRs target `develop` (Shape B per [ADR-0027](docs/adr/0027-adopt-shape-b-branching-model.md)); `main` carries only promoted, tagged commits. See [`docs/branching.md`](docs/branching.md), [`docs/worktrees.md`](docs/worktrees.md), [`docs/verify-gate.md`](docs/verify-gate.md).
+- **Branch per concern; verify before push.** One concern per PR; `verify` green locally; never `--no-verify`. See [`docs/branching.md`](docs/branching.md), [`docs/worktrees.md`](docs/worktrees.md), [`docs/verify-gate.md`](docs/verify-gate.md).
 - **Codex opens its PR.** Non-trivial changes via Codex own worktree → commit → push → open PR → report URL. See [`.codex/README.md`](.codex/README.md).
 - **Memory edits are docs-only.** Updates to `.claude/memory/` ride own PR with no changeset. See [`.claude/memory/feedback_memory_edits.md`](.claude/memory/feedback_memory_edits.md).
 

@@ -1033,7 +1033,7 @@ The `new-ruleset-payload.json` uses the same shape as IF-11's PATCH body, with `
 
 Each NFR maps to a deterministic check, runnable post-rollout. The QA agent will translate these into automated tests (TEST-BRANCH-NNN) where possible; manual checks are explicitly marked.
 
-### NFR-BRANCH-001 — `develop` creation is non-destructive
+### NFR check — NFR-BRANCH-001 — `develop` creation is non-destructive
 
 **Check:** the SHA at `origin/develop` after Step 5 equals the SHA captured as `$MAIN_HEAD_SHA` in Step 1.
 
@@ -1047,7 +1047,7 @@ test "$(git rev-parse origin/develop)" = "${MAIN_HEAD_SHA}"
 
 ---
 
-### NFR-BRANCH-002 — `demo` creation is non-destructive
+### NFR check — NFR-BRANCH-002 — `demo` creation is non-destructive
 
 **Check:** the SHA at `origin/demo` after Step 5 equals `$MAIN_HEAD_SHA`.
 
@@ -1059,7 +1059,7 @@ test "$(git rev-parse origin/demo)" = "${MAIN_HEAD_SHA}"
 
 ---
 
-### NFR-BRANCH-003 — All affected files are internally consistent on merge
+### NFR check — NFR-BRANCH-003 — All affected files are internally consistent on merge
 
 **Check:** post-Step 8 merge, the following grep-style scans return zero results in any non-Shape-A subsection:
 
@@ -1075,7 +1075,7 @@ grep -rnE "main.*integration branch|topic.*PR.*target.*main" \
 
 ---
 
-### NFR-BRANCH-004 — ADR supersession recorded in both directions
+### NFR check — NFR-BRANCH-004 — ADR supersession recorded in both directions
 
 **Check:**
 
@@ -1098,7 +1098,7 @@ git diff origin/main..HEAD docs/adr/0020-v05-release-branch-strategy.md \
 
 ---
 
-### NFR-BRANCH-005 — Deny list does not shrink
+### NFR check — NFR-BRANCH-005 — Deny list does not shrink
 
 **Check:** post-Step 3 merge, the count of `.claude/settings.json` deny entries naming any of `{main, develop, demo}` is `>= 19`.
 
@@ -1120,7 +1120,7 @@ console.log("OK count="+count)
 
 ---
 
-### NFR-BRANCH-006 — Pages availability not interrupted
+### NFR check — NFR-BRANCH-006 — Pages availability not interrupted
 
 **Check (sequencing precondition, automated):** before Step 7 merge, `gh api /repos/$OWNER/$REPO/environments/github-pages/deployment-branch-policies --jq '[.branch_policies[].name]'` returns an array containing both `main` and `demo`.
 
