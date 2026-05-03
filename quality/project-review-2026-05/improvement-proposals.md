@@ -13,7 +13,7 @@ inputs:
 
 - Recommended first draft PR: this PR, adding the repository-wide review artifacts and creating a tracking issue.
 - Tracking issue: [#293 — Project review 2026-05: repository health, risks, and improvement backlog](https://github.com/Luis85/agentic-workflow/issues/293)
-- Deferred proposals: verify flake investigation, WIP/clarification burn-down, settings audit automation, release provenance, Shape B release-flow clarification, ADR status sweep, parser boundary hardening, adopter-docs graduation, agentic control-plane threat modeling, operational bot drift tests, issue-mirror review checks, SBOM posture.
+- Deferred proposals: verify flake investigation, WIP/clarification burn-down, settings audit automation, release provenance, Shape B release-flow clarification, ADR status sweep, parser boundary hardening, adopter-docs graduation, agentic control-plane threat modeling, operational bot drift tests, issue-mirror review checks, SBOM posture, product positioning architecture, promotion proof assets, runtime/plugin packaging boundaries.
 
 ## Proposals
 
@@ -212,6 +212,51 @@ inputs:
 - Proposed PR title: `docs(release): record SBOM posture`.
 - Verification: `npm run check:links`; release dry-run if implementation follows.
 
+### PRV-PROP-012 — Define the Specorator product ladder
+
+- Problem: public copy should make the adoption model obvious: the workflow is the product, harness support is the channel, and runtime/plugin extensions enhance the experience.
+- Evidence: `docs/specorator-product/product.md` says "the workflow is the product"; README and product page mention tool-agnostic support; Claude Code docs distinguish project-local `.claude/` configuration from shareable plugins; Codex and Cursor both support repository-level instruction surfaces.
+- Expected benefit: avoids users waiting for `specorator-runtime` or a plugin before adopting the method, while still creating a clear reason to install purpose-built extensions later.
+- Affected surfaces: README, `sites/index.html`, `docs/product-brief.md`, `docs/specorator-product/product.md`, future `docs/specorator-runtime.md`, plugin marketplace copy.
+- Effort: small to medium.
+- Risk: medium; positioning changes should avoid overclaiming support for integrations that are not shipped yet.
+- Owner: product maintainer / release manager.
+- Success signal: first-time readers can explain the four-layer model: Markdown workflow core, harness adapters, `specorator-runtime`, and plugin/marketplace extensions.
+- First draft PR candidate: no.
+- Proposed branch: `docs/product-positioning-ladder`.
+- Proposed PR title: `docs(product): define Specorator product ladder`.
+- Verification: `npm run check:links`; product-page content check.
+
+### PRV-PROP-013 — Build proof-shaped promotion assets
+
+- Problem: marketing the workflow as a product needs evidence that the method changes outcomes, not only a long list of stages and tracks.
+- Evidence: `examples/cli-todo/` provides a traceable worked example; product page already has a workflow visual and FAQ; GitHub README guidance emphasizes what the project does, why useful, how to start, where to get help, and who maintains it.
+- Expected benefit: gives developers, PMs, and enterprise evaluators a concrete reason to try Specorator and a shareable demo loop.
+- Affected surfaces: `sites/index.html`, `README.md`, `docs/product-brief.md`, `examples/`, optional short screencast script.
+- Effort: medium.
+- Risk: low to medium; proof assets must be kept in sync with the actual workflow.
+- Owner: product maintainer / docs maintainer.
+- Success signal: a visitor can see one feature move from idea to requirements to tasks to tests to PR, including the verify gate, in under ten minutes.
+- First draft PR candidate: no.
+- Proposed branch: `docs/product-proof-assets`.
+- Proposed PR title: `docs(product): add Specorator proof assets`.
+- Verification: `npm run check:product-page`; `npm run check:links`; manual proof walkthrough.
+
+### PRV-PROP-014 — Record runtime and plugin packaging boundaries
+
+- Problem: `specorator-runtime` and the Claude plugin can become strategically important, but their promises should be bounded before promotion copy hardens.
+- Evidence: current distribution is repository, GitHub Release, and GitHub Package; Claude plugin docs position plugins as reusable, versioned, shareable extensions with marketplace distribution; existing cross-tool guides already make the Markdown workflow usable without a runtime.
+- Expected benefit: clarifies what belongs in the open-core workflow, what `specorator-runtime` automates, what the Claude plugin packages, and what future Cursor/Codex adapters should do.
+- Affected surfaces: new runtime/plugin roadmap doc, README roadmap, `docs/specorator-product/product.md`, optional ADR if distribution boundaries become load-bearing.
+- Effort: medium.
+- Risk: medium; premature packaging decisions can constrain the product before user feedback.
+- Owner: product maintainer / tooling maintainer.
+- Success signal: runtime and plugin are described as optional accelerators with explicit jobs-to-be-done, install paths, versioning expectations, and non-goals.
+- First draft PR candidate: no.
+- Proposed branch: `docs/runtime-plugin-boundaries`.
+- Proposed PR title: `docs(product): define runtime and plugin boundaries`.
+- Verification: `npm run check:links`; ADR/index checks if an ADR is added.
+
 ## Issue body draft
 
 ```markdown
@@ -237,6 +282,9 @@ Improvement proposals:
 - Add operational bot dry-run and drift checks.
 - Add issue-mirror sync/drift evidence to project reviews.
 - Record an SBOM posture decision.
+- Define the Specorator product ladder: workflow core, harness adapters, runtime, and plugins.
+- Build proof-shaped promotion assets around one traceable feature and cross-harness handoff.
+- Record runtime and plugin packaging boundaries before marketing them as ecosystem extensions.
 
 First draft PR: https://github.com/Luis85/agentic-workflow/pull/294
 

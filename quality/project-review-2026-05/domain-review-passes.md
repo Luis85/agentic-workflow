@@ -78,6 +78,25 @@ These passes deepen the initial review by domain. Each pass separates observed e
 | Release consumer evidence | Release provenance and SBOM are separate artifacts; current review found no release attestation and no SBOM posture decision | SLSA separates provenance generation, authenticity, and verification; npm and CycloneDX provide SBOM options | The release trust roadmap should avoid bundling everything into one generic "supply chain" task. Provenance answers "how was it built"; SBOM answers "what is inside it." | Record separate decisions for artifact attestation and SBOM posture. |
 | First-reader routing | `docs/sink.md` is comprehensive and accurate; the adopter path lives across README, tutorials, how-to guides, and product page | Diataxis supports splitting docs by user need | The current doc set is powerful for maintainers but dense for first-time adopters. This is an information architecture risk, not a content absence. | Add a first-reader route that names what to read first and what to ignore until needed. |
 
+## Pass 8 — Product Positioning, Marketing, and Ecosystem Growth
+
+| Topic | Evidence | Benchmark | Deepened finding | Follow-up |
+|---|---|---|---|---|
+| Core product category | `docs/specorator-product/product.md` says the workflow is the product; README and product page describe a spec-driven workflow template | GitHub README guidance says visitors need to know what the project does, why useful, how to start, where to get help, and who maintains it | The marketable category should be "agentic workflow product" or "repository-native operating system for agentic delivery," not "Claude commands repo." | Define a consistent product ladder and apply it to README, product page, and product brief. |
+| Harness-neutral adoption | `docs/cross-tool/` covers Codex, Cursor, Aider, Copilot, and Gemini; `AGENTS.md` is the cross-tool root context | Cursor supports project rules and `AGENTS.md`; Codex docs describe repository `AGENTS.md`, reliable tests, and clear documentation as guidance surfaces | Harness neutrality is a real differentiator. Market it as "bring the workflow to your harness" while naming Claude Code as the richest current path. | Add a harness matrix: core support, adapter docs, native commands, runtime/plugin enhancement. |
+| Runtime and plugin narrative | Current repo ships `.claude/`, `.codex/`, cross-tool docs, GitHub Release, and GitHub Package; no runtime/plugin boundary doc exists yet | Claude plugin docs recommend standalone config for one project and plugins for sharing, versioning, reuse, and marketplace distribution | `specorator-runtime` and the plugin should be framed as optional accelerators: runtime executes and validates the workflow contract; plugin provides a polished Claude experience; neither replaces the Markdown method. | Record runtime/plugin boundaries before building promotion copy around them. |
+| Proof and demo assets | Product page includes a workflow visual, role cards, FAQ, and cli-todo artifacts; README gives a 5-minute Claude quickstart | Developer-tool marketing works better when the repo itself proves the claim quickly | The next promotion pass should lead with one end-to-end proof: idea -> requirement -> task -> test -> PR, plus "same artifacts in Claude/Cursor/Codex." | Build a demo script and short product-page section around the existing worked example. |
+| Audience segmentation | Product steering names solo builders, teams, agencies, enterprise evaluators, and brownfield maintainers | Product-led adoption needs different first jobs for different visitors | The current copy lists personas well but could tie each to a conversion action: fork, run tutorial, read enterprise controls, try cross-tool handoff, or follow runtime/plugin roadmap. | Add persona-specific CTAs and a "not required yet" note for runtime/plugin extensions. |
+
+## Market Positioning Draft
+
+| Layer | Public promise | Distribution today | Future extension |
+|---|---|---|---|
+| Workflow core | Specs first, role-scoped agents, quality gates, traceable artifacts in plain Markdown | GitHub repo, GitHub Release, GitHub Package | Stable open-core contract and release evidence |
+| Harness adapters | Use the same method in Claude Code, Codex, Cursor, Aider, Copilot, Gemini, or another agent harness | `.claude/`, `.codex/`, `docs/cross-tool/`, `AGENTS.md` | More adapter guides and harness-specific checks |
+| `specorator-runtime` | Execute, inspect, validate, and report on the workflow contract with less manual glue | Not yet captured as a review artifact | CLI/runtime API for state transitions, checks, reports, and integration hooks |
+| Plugin ecosystem | Install the best harness-specific experience when available | Future Claude plugin / marketplace path | Claude plugin first; future Cursor/Codex integrations as demand proves out |
+
 ## Domain pass backlog
 
 | Priority | Backlog item | Reason |
@@ -93,3 +112,6 @@ These passes deepen the initial review by domain. Each pass separates observed e
 | P3 | ADR proposed-status sweep | Improves governance hygiene without blocking current work. |
 | P3 | First-time adopter walkthrough | Validates product documentation from the outside-in. |
 | P3 | SBOM posture decision | Complements provenance without rushing release workflow changes. |
+| P2 | Product positioning ladder | Prevents runtime/plugin plans from obscuring the workflow product. |
+| P2 | Runtime/plugin boundary doc | Makes ecosystem extensions easier to build and market honestly. |
+| P3 | Proof-shaped promotion assets | Turns the existing example and product page into a sharper adoption loop. |

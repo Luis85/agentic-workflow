@@ -33,6 +33,13 @@ This review used external sources as benchmarks, not as automatic requirements.
 | SLSA v1.0 producing artifacts | https://slsa.dev/spec/v1.0/requirements | Benchmarked producer, build-platform, provenance, authenticity, and isolation expectations. |
 | npm SBOM command | https://docs.npmjs.com/cli/v10/commands/npm-sbom/ | Benchmarked lightweight SBOM generation options available through npm. |
 | CycloneDX npm SBOM generator | https://github.com/CycloneDX/cyclonedx-node-npm | Benchmarked richer CycloneDX SBOM generation for npm projects. |
+| Claude Code plugin creation | https://code.claude.com/docs/en/plugins | Benchmarked when project-local `.claude/` configuration should graduate into a reusable plugin. |
+| Claude Code plugin marketplaces | https://code.claude.com/docs/en/plugin-marketplaces | Benchmarked distribution mechanics for purpose-built Specorator ecosystem extensions. |
+| Claude Code plugin discovery | https://code.claude.com/docs/en/discover-plugins | Benchmarked marketplace discovery and install behavior. |
+| Cursor rules | https://docs.cursor.com/context/rules | Benchmarked Cursor's project-rule and `AGENTS.md` support as a harness-adapter surface. |
+| GitHub README guidance | https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes | Benchmarked first-contact repository positioning: what it does, why useful, how to start, where to get help, and who maintains it. |
+| OpenAI Codex introduction | https://openai.com/index/introducing-codex/ | Benchmarked Codex use of repository instructions, configured environments, tests, and verifiable evidence. |
+| OpenAI harness engineering | https://openai.com/index/harness-engineering/ | Benchmarked repository knowledge as a system of record and `AGENTS.md` as a map rather than an encyclopedia. |
 
 ## Benchmark notes
 
@@ -49,3 +56,7 @@ This review used external sources as benchmarks, not as automatic requirements.
 - OWASP's LLM and agentic AI material supports treating local agent permissions, tool access, operational bots, and workflow state mutation as a control plane. Prompt instructions help, but the durable controls are least privilege, fail-closed behavior, idempotency, reviewable logs, and regression tests for bypass cases.
 - SLSA's artifact guidance separates producing provenance from consumers being able to verify it. For this repository, a release-provenance decision should include both the tarball attestation path and how downstream users would check it.
 - SBOM generation is available through the npm CLI and richer CycloneDX tooling. SBOM work should be a release-roadmap decision rather than an immediate gate, because the repository first needs to decide which release artifacts are consumer-facing.
+- Claude Code plugin guidance supports a product ladder: keep the workflow readable as repository-native Markdown first, then package reusable commands, agents, hooks, and skills as a plugin once the contract is stable enough to share across projects.
+- Claude marketplace guidance supports treating a Specorator plugin as a distribution and update channel, not as the whole product. The product remains the method and artifact contract; the plugin reduces friction for Claude Code users.
+- Cursor and Codex guidance both strengthen the harness-neutral story: `AGENTS.md`, repository-local docs, reliable checks, and clear artifacts are the portable substrate. Tool-specific adapters should translate the workflow, not fork the product narrative.
+- GitHub README guidance supports making the repository landing path sharper: say what Specorator does, why it is useful, how to get started, where help lives, and who maintains the project before introducing the full track taxonomy.

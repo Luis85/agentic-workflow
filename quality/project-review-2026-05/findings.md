@@ -36,6 +36,9 @@ inputs:
 | PRV-FRC-011 | Standalone operational prompts create intentional duplication that needs drift checks. | `agents/operational/issue-breakdown-bot/PROMPT.md` states it does not import the interactive skill or agent and is synced by shared design spec/ADR only | S3 | Standalone prompts are pragmatic for headless CI routines, but they should get dry-run fixtures or cross-surface smoke tests as the bot surface grows. |
 | PRV-FRC-012 | The local issue mirror is useful but advisory unless reviews explicitly run its checks. | `scripts/check-issues.ts` says it is not included in `npm run verify`; `scripts/sync-issues.ts` is pull-only and does not create GitHub-only local files | S4 | This is an intentional offline-safe design from ADR-0031. Project reviews should still record whether issue sync and drift checks were run. |
 | PRV-FRC-013 | Documentation routing is comprehensive but dense for first-time readers. | `docs/sink.md` maps many top-level tracks, artifact owners, and lazy companion workflows; adopter guides exist separately | S4 | The architecture is strong, but a newcomer needs a short "start here, ignore for now" route so maintainer-only tracks do not look mandatory. |
+| PRV-FRC-014 | The product story should separate core workflow, harness adapters, runtime, and plugin layers more explicitly. | README and product page say the workflow is tool-agnostic and "the repo is the product"; `docs/cross-tool/` supports non-Claude tools; current public copy still leads heavily with Claude Code and repo contents | S3 | The strongest market position is "workflow product first." Claude, Cursor, Codex, and other harnesses are channels; `specorator-runtime` and plugin work should be framed as experience accelerators, not prerequisites. |
+| PRV-FRC-015 | Promotion assets need more proof-shaped material, not more feature lists. | `docs/product-brief.md`, README, and `sites/index.html` describe stages, roles, and tracks; examples exist under `examples/cli-todo/` | S3 | Developer audiences need a short demo loop: before/after, one traceable feature, artifacts, verify output, PR handoff, and what changes when runtime/plugin extensions are installed. |
+| PRV-FRC-016 | The future runtime/plugin ecosystem needs packaging boundaries before marketing promises harden. | Current distribution is repo, GitHub Release, and GitHub Package; Claude plugin docs distinguish standalone `.claude/` config from shareable plugins; no `specorator-runtime` contract is captured in this review package yet | S3 | A runtime/plugin roadmap should name which jobs belong to the core Markdown workflow, runtime automation, Claude plugin, and future adapters so adopters do not wait for extensions to use the method. |
 
 ## Root-cause hypotheses
 
@@ -46,6 +49,7 @@ inputs:
 | PRV-RC-003 | The repo is crossing from "template under construction" into "product for adopters," but some docs still speak to maintainers first. | How-to/tutorial work exists; internal plans remain extensive; release archive stubs internal docs | medium | Confirm through a first-time adopter walkthrough. |
 | PRV-RC-004 | Settings and ADR drift are becoming review problems because the repo has more policy surfaces than committed checks can currently prove. | `docs/rbac.md` lists future `check-rbac.ts`; rulesets are API-backed; ADR status sweep is manual | medium | Confirm if future reviews repeatedly find stale settings or proposed ADR ambiguity; falsify if upcoming PRs add automated checks. |
 | PRV-RC-005 | The project is now complex enough that prompt-level controls need the same regression evidence as scripts and workflows. | `.claude/settings.json`, operational bot prompts, RBAC docs, and workflow policies encode critical behavior, but most review evidence is document inspection | medium | Confirm with dry-run fixtures and permission-bypass tests; falsify if existing hidden CI already exercises those paths. |
+| PRV-RC-006 | Product language has grown from implementation history rather than a deliberate category design. | README, product page, product brief, and cross-tool docs are all accurate, but they do not yet share one explicit adoption ladder from method to adapters to runtime/plugin | medium | Confirm with interviews or landing-page analytics; falsify if first-time adopters can already explain the product ladder after one read. |
 
 ## External benchmark alignment
 
@@ -58,6 +62,8 @@ inputs:
 - OWASP SAMM supports using this review as an iterative maturity pass: record current state, choose a few next improvements, and measure again.
 - OWASP LLM and Agentic AI guidance supports a specific follow-up for this repository: treat agent permissions, command execution, PR/issue mutation, memory/state files, and operational bot prompts as one agentic control plane.
 - SLSA and SBOM guidance support a consumer-trust roadmap that includes provenance verification and an SBOM decision, not just more CI checks.
+- Claude Code plugin docs support positioning a future plugin as the shareable, versioned extension layer for Claude users. The workflow should remain usable without it.
+- Cursor, Codex, and GitHub guidance all support the portable core: concise repository instructions, structured docs, reliable checks, and a README that gets visitors to the first useful action quickly.
 
 ## Open questions
 
@@ -70,6 +76,9 @@ inputs:
 - [ ] PRV-Q-007 — Should the next security pass create an agentic control-plane threat model covering local tool permissions, operational bots, and GitHub mutation paths?
 - [ ] PRV-Q-008 — Should operational bot prompts get dry-run fixture tests before more bot routines are added?
 - [ ] PRV-Q-009 — Should project reviews always run `npm run sync:issues -- --dry-run --json` and `npm run check:issues`, even though those checks intentionally stay outside `verify`?
+- [ ] PRV-Q-010 — What is the public product architecture: workflow core, harness adapters, `specorator-runtime`, Claude plugin, and future adapter/plugin surfaces?
+- [ ] PRV-Q-011 — Which proof asset should lead promotion: a traceable feature demo, a live "wrong-code avoided" case study, or a cross-harness handoff video?
+- [ ] PRV-Q-012 — Should the plugin be marketed as the premium Claude experience while the Markdown workflow remains the canonical open core?
 
 ## Quality gate
 
