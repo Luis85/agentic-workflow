@@ -16,7 +16,7 @@ Each gate is a separate workflow file under `.github/workflows/` so it can be en
 | **actionlint** | [`.github/workflows/actionlint.yml`](../.github/workflows/actionlint.yml) | PR + push to `main`, paths `.github/workflows/**`, `.github/actions/**` | Workflow YAML schema errors, deprecated action calls, shellcheck inside `run:` blocks. |
 | **zizmor** | [`.github/workflows/zizmor.yml`](../.github/workflows/zizmor.yml) | PR + push to `main` (workflow paths) + weekly schedule | Workflow security smells: template injection, unpinned actions, excessive permissions, dangerous triggers. SARIF results land in the GitHub Security tab. |
 | **gitleaks** | [`.github/workflows/gitleaks.yml`](../.github/workflows/gitleaks.yml) | PR + push to `main` + weekly schedule | Committed secrets — API keys, tokens, private keys — detected against the full git history. |
-| **dependency-review** | [`.github/workflows/dependency-review.yml`](../.github/workflows/dependency-review.yml) | PRs touching `package.json`, `npm-shrinkwrap.json`, or workflow/action files | New vulnerable npm or GitHub Actions dependencies introduced by the PR diff. Fails on `high` and `critical` severities; license policy is deferred. |
+| **dependency-review** | [`.github/workflows/dependency-review.yml`](../.github/workflows/dependency-review.yml) | PRs touching `package.json`, `package-lock.json`, `npm-shrinkwrap.json`, or workflow/action files | New vulnerable npm or GitHub Actions dependencies introduced by the PR diff. Fails on `high` and `critical` severities; license policy is deferred. |
 
 ## Why separate workflows
 

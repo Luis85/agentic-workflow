@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'package.json'
+      - 'package-lock.json'
       - 'npm-shrinkwrap.json'
       - '.github/workflows/**'
       - '.github/actions/**'
