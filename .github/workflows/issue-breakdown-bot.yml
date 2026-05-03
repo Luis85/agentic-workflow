@@ -4,9 +4,10 @@ name: Issue breakdown bot
 # automation) applies the `breakdown-me` label to an issue. The trigger contract,
 # concurrency, and permissions are pinned by this workflow; the actual model
 # invocation that runs `agents/operational/issue-breakdown-bot/PROMPT.md`
-# against the issue payload is intentionally a placeholder — adopters wire
-# their preferred Claude Code action (e.g. `anthropics/claude-code-action`)
-# in a fork. See `agents/operational/issue-breakdown-bot/README.md`.
+# against the issue payload is intentionally disabled by default — adopters
+# wire their preferred Claude Code action (e.g. `anthropics/claude-code-action`)
+# and set `ISSUE_BREAKDOWN_BOT_ENABLED=true` in repository variables. See
+# `agents/operational/issue-breakdown-bot/README.md`.
 
 on:
   issues:
@@ -23,14 +24,55 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  placeholder:
+    name: Notify operator that runner is disabled
+    if: github.event.label.name == 'breakdown-me' && vars.ISSUE_BREAKDOWN_BOT_ENABLED != 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Notify operator that the runner is disabled
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          body=$(cat <<'EOF'
+          The `breakdown-me` label was received and the issue-breakdown-bot workflow ran, but the branch/PR runner is disabled. The default path only has `issues: write` permission and cannot push branches or open pull requests.
+
+          To enable the bot end-to-end:
+
+          1. Replace the guarded `Refuse until a model runner is wired` step in `.github/workflows/issue-breakdown-bot.yml` with your team's preferred Claude Code action (e.g. `anthropics/claude-code-action`), pointing it at `agents/operational/issue-breakdown-bot/PROMPT.md` and the issue payload from `${GITHUB_EVENT_PATH}`.
+          2. Add the `ANTHROPIC_API_KEY` (or equivalent) secret to the repository.
+          3. Set repository variable `ISSUE_BREAKDOWN_BOT_ENABLED=true`.
+          4. Re-apply the `breakdown-me` label to re-trigger.
+
+          In the meantime, the interactive conductor still works locally:
+
+          ```
+          /issue:breakdown <issue-number>
+          ```
+
+          See `agents/operational/issue-breakdown-bot/README.md` for the full setup checklist and `docs/issue-breakdown-track.md` for the track methodology.
+          EOF
+          )
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPO}" --body "${body}
+
+          ---
+          Workflow run: ${RUN_URL}"
+
   decompose:
     name: Decompose issue into draft PRs
-    if: github.event.label.name == 'breakdown-me'
+    if: github.event.label.name == 'breakdown-me' && vars.ISSUE_BREAKDOWN_BOT_ENABLED == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write          # branch push for feat/* + chore/* (never main / develop)
       issues: write             # comment + edit body + remove label
       pull-requests: write      # gh pr create
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -49,7 +91,9 @@ jobs:
           test -f templates/issue-breakdown-issue-section.md
 
       # ---------------------------------------------------------------------
-      # PLACEHOLDER — adopters replace this step with a Claude Code runner.
+      # GUARDED RUNNER SLOT — adopters replace this step with a Claude Code
+      # runner only after setting `ISSUE_BREAKDOWN_BOT_ENABLED=true` and
+      # provisioning the runner secret.
       #
       # The runner must:
       #   1. Load the prompt at `agents/operational/issue-breakdown-bot/PROMPT.md`.
@@ -59,38 +103,13 @@ jobs:
       #   4. Exit non-zero on refusal so the closing comment step below
       #      (which only runs on success) is skipped and the `breakdown-me`
       #      label stays on the issue.
-      #
-      # Until wired, the workflow falls back to posting a one-time comment
-      # explaining how to enable the bot, so issues labelled `breakdown-me`
-      # do not silently sit forever.
       # ---------------------------------------------------------------------
-      - name: Notify operator (placeholder — replace with Claude Code runner)
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-          REPO: ${{ github.repository }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      - name: Refuse until a model runner is wired
         run: |
           set -euo pipefail
-          body=$(cat <<'EOF'
-          The `breakdown-me` label was received and the issue-breakdown-bot workflow ran, but no Claude Code runner is wired into `.github/workflows/issue-breakdown-bot.yml` yet — the model-invocation step is a placeholder.
-
-          To enable the bot end-to-end:
-
-          1. Replace the `Notify operator (placeholder ...)` step in `.github/workflows/issue-breakdown-bot.yml` with your team's preferred Claude Code action (e.g. `anthropics/claude-code-action`), pointing it at `agents/operational/issue-breakdown-bot/PROMPT.md` and the issue payload from `${GITHUB_EVENT_PATH}`.
-          2. Add the `ANTHROPIC_API_KEY` (or equivalent) secret to the repository.
-          3. Re-apply the `breakdown-me` label to re-trigger.
-
-          In the meantime, the interactive conductor still works locally:
-
-          ```
-          /issue:breakdown <issue-number>
-          ```
-
-          See `agents/operational/issue-breakdown-bot/README.md` for the full setup checklist and `docs/issue-breakdown-track.md` for the track methodology.
-          EOF
-          )
-          gh issue comment "${ISSUE_NUMBER}" --repo "${REPO}" --body "${body}
-
-          ---
-          Workflow run: ${RUN_URL}"
+          if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
+            echo "::error::ISSUE_BREAKDOWN_BOT_ENABLED=true but ANTHROPIC_API_KEY is not available."
+          else
+            echo "::error::ISSUE_BREAKDOWN_BOT_ENABLED=true but the model runner step is still the template refusal."
+          fi
+          exit 1

@@ -459,7 +459,7 @@ entries:
   - id: workflow:issue-breakdown-bot
     kind: workflow
     path: .github/workflows/issue-breakdown-bot.yml
-    purpose: Trigger contract for the issue-breakdown-bot — fires on the `breakdown-me` label and queues one decomposition per issue. Model invocation step is a placeholder for adopters to wire their preferred Claude Code action.
+    purpose: Trigger contract for the issue-breakdown-bot — fires on the `breakdown-me` label, defaults to an issues-only placeholder comment, and gates the write-capable decomposition job behind `ISSUE_BREAKDOWN_BOT_ENABLED=true`.
     read_only: false
     safe_to_run_locally: false
     emits_json: false
