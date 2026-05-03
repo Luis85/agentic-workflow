@@ -1,6 +1,6 @@
 # Design Track — Brand-Compliant Surface Creation
 
-**Version:** 0.1 · **Status:** Draft · **Stability:** Opt-in · **ADR:** [ADR-0019](adr/0019-add-design-track.md)
+**Version:** 1.0 · **Status:** Stable · **Stability:** Opt-in · **ADR:** [ADR-0019](adr/0019-add-design-track.md) · [ADR-0032](adr/0032-design-handoff-to-spec-design-bridge.md)
 
 An opt-in track for producing new user-visible surfaces — marketing pages, docs sites, onboarding flows, dashboards — under the Specorator brand system. Produces a spec-quality handoff artifact that feeds directly into `/spec:design` or the engineer.
 

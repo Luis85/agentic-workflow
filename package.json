@@ -74,8 +74,11 @@
     "check:roadmaps": "tsx scripts/check-roadmaps.ts",
     "check:traceability": "tsx scripts/check-traceability.ts",
     "check:token-budget": "tsx scripts/check-token-budget.ts",
+    "check:issues": "tsx scripts/check-issues.ts",
+    "check:index-bleed": "tsx scripts/check-index-bleed.ts",
     "check:release-package-contents": "tsx scripts/check-release-package-contents.ts",
     "check:release-readiness": "tsx scripts/check-release-readiness.ts",
+    "sync:issues": "tsx scripts/sync-issues.ts",
     "build:release-archive": "tsx scripts/build-release-archive.ts",
     "prepack": "node scripts/release-prepack-guard.mjs",
     "docs:scripts": "typedoc --options typedoc.json",
@@ -84,7 +87,9 @@
     "fix:adr-index": "tsx scripts/fix-adr-index.ts",
     "fix:commands": "tsx scripts/fix-command-docs.ts",
     "fix:script-docs": "tsx scripts/fix-script-docs.ts",
-    "fix:sites-tokens": "tsx scripts/fix-sites-tokens.ts"
+    "fix:sites-tokens": "tsx scripts/fix-sites-tokens.ts",
+    "graph": "tsx scripts/graphify-run.ts",
+    "graph:update": "tsx scripts/graphify-run.ts --update"
   },
   "engines": {
     "node": ">=20"

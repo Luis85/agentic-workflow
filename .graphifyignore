@@ -1,0 +1,21 @@
+# Keep generated and local-only content out of the repository knowledge graph.
+# Syntax follows gitignore-style matching as implemented by graphifyy.
+
+.git/
+.worktrees/
+node_modules/
+
+# Generated graph artifacts and graphify local state.
+graph/
+graphify-out/
+
+# Repository-local generated or transient staging.
+.release-staging/
+.issue-breakdown-staging/
+.claude/cache/
+
+# Local editor and vault state.
+.vscode/
+.idea/
+.obsidian/
+.trash/
