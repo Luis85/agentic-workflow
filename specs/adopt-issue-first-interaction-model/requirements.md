@@ -259,16 +259,21 @@ Specorator currently starts every workflow from a slash command whose intent exi
 
 ---
 
-#### REQ-IFI-014 — Missing depth label defaults to standard
+#### REQ-IFI-014 — Depth derived from label, then track type, then standard default
 
-- **Pattern:** IF the issue body does not contain a `depth:` label, THEN the `/spec:start` command shall set the workflow depth to `standard` without prompting the user.
+- **Pattern:** IF the issue has no `depth:` label, THEN the `/spec:start` command shall derive depth from the track label before falling back to `standard`: `track:spike` → `spike`; all other tracks without an explicit `depth:` label → `standard`. No prompt is shown in any case.
+- **Rationale:** `spec-spike.yml` contains no `### Depth` field, so spike issues never carry a `depth:` label. Without this rule every spike would scaffold as Standard-depth.
 - **Acceptance:**
-  - Given issue #274 has no `depth:` label applied
-  - When `/spec:start 274` is run
+  - Given a spike issue has `track:spike` and no `depth:` label
+  - When `/spec:start <n>` is run
+  - Then the workflow depth is set to `spike`
+  - And no prompt is shown
+  - Given a feature issue has `track:feature` and no `depth:` label
+  - When `/spec:start <n>` is run
   - Then the workflow depth is set to `standard`
-  - And no prompt is shown asking the user to select a depth
+  - And no prompt is shown
 - **Priority:** must
-- **Satisfies:** RESEARCH-IFI-001 (R4 locked)
+- **Satisfies:** RESEARCH-IFI-001 (R4 locked), resolves P1 Codex finding (third pass)
 
 ---
 
@@ -672,7 +677,7 @@ Specorator currently starts every workflow from a slash command whose intent exi
 ## Success metrics
 
 - **North star:** The percentage of new Specorator workflow runs (on Standard-depth tracks) that are started from a linked GitHub issue reaches 80% within 90 days of the feature shipping, measured by the ratio of `workflow-state.md` files containing `issue: <n>` to total new workflow-state files created.
-- **Supporting — label coverage:** All eleven stage status labels, three depth labels, and all track labels are present in the repository label set within 24 hours of an adopter running `bootstrap-labels.sh`.
+- **Supporting — label coverage:** All six status labels (`status:draft`, `status:ready-for-spec`, `status:in-progress`, `status:paused`, `status:blocked`, `status:done`), three depth labels, and all track labels are present in the repository label set within 24 hours of an adopter running `bootstrap-labels.sh`.
 - **Supporting — mirror freshness:** The sentinel block in a linked issue reflects the correct current stage within the same session as each stage completion in all manual test runs.
 - **Supporting — zero stage blockage:** No stage in any test or production run fails to complete due to a `sync-issue-mirror.sh` error (the non-fatal exit requirement holds).
 - **Counter-metric:** The number of GitHub issues whose sentinel delimiters are corrupted or missing within the first 30 days of the feature shipping should remain at zero. An increase indicates the sentinel guard logic (REQ-IFI-027) is insufficient or the documentation (REQ-IFI-034) is unclear.
