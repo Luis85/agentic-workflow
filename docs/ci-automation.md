@@ -7,7 +7,7 @@ entry_point: false
 
 # CI automation
 
-Companion to [`verify-gate.md`](verify-gate.md) and [`security-ci.md`](security-ci.md). Documents the workflows that automate routine hygiene the [`verify`](verify-gate.md) gate is intentionally too narrow to enforce: convention checks against PR metadata, spell checks across docs, and dependency bump automation.
+Companion to [`verify-gate.md`](verify-gate.md) and [`security-ci.md`](security-ci.md). Documents the workflows that automate routine hygiene the [`verify`](verify-gate.md) gate is intentionally too narrow to enforce: convention checks against PR metadata, spell checks across docs, and dependency bump automation. The security companion owns the [automation posture map](security-ci.md#automation-posture-map) and the [repository settings checklist](security-ci.md#repository-settings-checklist) so adopters can configure GitHub settings and committed workflows from one place.
 
 | Workflow | File | Trigger | What it does |
 | --- | --- | --- | --- |
@@ -24,6 +24,8 @@ Companion to [`verify-gate.md`](verify-gate.md) and [`security-ci.md`](security-
 - **dependency-review** adds PR-diff vulnerability feedback before a lockfile or workflow dependency change reaches `main`.
 
 The upstream `main` ruleset requires the always-running PR checks (`Verify`, PR title, typos, and gitleaks). Path-triggered checks remain merge-blocking when they run, but are not global required checks because GitHub does not create them for unrelated PRs.
+
+For the complete CI/security posture, use this page for hygiene automation and [`security-ci.md`](security-ci.md) for security gates, required-check policy, deferred candidates, and repository settings that live in the GitHub UI.
 
 ## Why **not** markdownlint (yet)
 
@@ -104,6 +106,6 @@ typos --config _typos.toml
 1. Replace the README badge URLs with your own repo coordinates (or remove the row).
 2. Update `dependabot.yml` `directory:` if `package.json` is not at repo root.
 3. Enable Dependabot alerts in the repository security settings.
-4. Decide whether to require the `dependency review` check in branch protection or rulesets.
-5. Reproduce the required-check policy from [`branching.md`](branching.md#required-main-ruleset) on the integration branch.
+4. Reproduce the required-check policy from [`branching.md`](branching.md#required-main-ruleset) and [`security-ci.md`](security-ci.md#repository-settings-checklist) on the integration branch.
+5. Decide whether to require `dependency review`, `actionlint`, and `zizmor static analysis` through path-scoped rulesets.
 6. Decide whether to lock a `locale` in `_typos.toml`. The template stays unlocked because it mixes en-us and en-gb spellings; a real product probably picks one.
