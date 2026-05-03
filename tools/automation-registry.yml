@@ -578,6 +578,15 @@ entries:
     emits_json: false
     used_by: [ci]
     rerun_command: gh run list --workflow zizmor.yml
+  - id: workflow:codeql
+    kind: workflow
+    path: .github/workflows/codeql.yml
+    purpose: CodeQL static analysis for javascript-typescript and actions languages; uploads SARIF to GitHub code scanning.
+    read_only: true
+    safe_to_run_locally: false
+    emits_json: false
+    used_by: [ci]
+    rerun_command: gh run list --workflow codeql.yml
   - id: skill:arc42-baseline
     kind: skill
     path: .claude/skills/arc42-baseline/SKILL.md
