@@ -1,0 +1,87 @@
+---
+id: PRV-PRJ-FIND-001
+title: Agentic workflow — project review findings
+status: complete
+created: 2026-05-04
+inputs:
+  - quality/project-review-2026-05/history-review.md
+---
+
+# Project review findings — agentic-workflow
+
+## Strengths to preserve
+
+| ID | Finding | Evidence | Why it matters |
+|---|---|---|---|
+| PRV-STR-001 | The repo has a clear agent operating constitution and cross-tool contract. | `AGENTS.md`, `memory/constitution.md`, `.codex/instructions.md` | Reduces ambiguous agent behavior and makes reviewable autonomy possible. |
+| PRV-STR-002 | The CI/security posture is stronger than typical early template repos. | SHA-pinned workflow actions, scoped `permissions`, actionlint, zizmor, CodeQL, gitleaks, dependency-review, Scorecard | Aligns with GitHub Actions hardening, OpenSSF Scorecard, and NIST SSDF Protect/Produce expectations. |
+| PRV-STR-003 | Quality is increasingly measurable. | `npm run self-check` reported quality metrics, learning evidence, blockers, clarifications, and maturity level | Gives maintainers a concrete way to prioritize instead of relying on intuition. |
+| PRV-STR-004 | The release package has a deliberate fresh-surface contract. | `scripts/build-release-archive.ts`, `scripts/release-prepack-guard.mjs`, release package tests | Reduces the risk of shipping internal/template-development noise to adopters. |
+| PRV-STR-005 | Documentation architecture is moving toward adopter needs. | `docs/how-to/`, `docs/tutorials/`, `docs/cross-tool/`, Diataxis-inspired plans | Makes the workflow product easier to adopt beyond the original maintainer. |
+
+## Friction and risks
+
+| ID | Finding | Evidence | Severity | Notes |
+|---|---|---|---|---|
+| PRV-FRC-001 | Active workflow WIP is too high for the current quality gate capacity. | `npm run self-check` scanned 20 workflow states, reported 3 blockers, open clarifications in 3 active features, and an 82.6% workflow score | S2 | Issue #292 already recognizes this as quality debt. This is the top process risk. |
+| PRV-FRC-002 | The verify gate showed a pass-after-fail pattern during review. | First `npm run verify:json` failed at `test:scripts`; later `npm run test:scripts` and `npm run verify:json` passed without code changes; open PR #291 had failing `Verify` | S2 | Not enough evidence to name a root cause, but this undermines "verify before push" confidence. |
+| PRV-FRC-003 | Shape B is partly adopted, while some docs still preserve Shape A/v0.5 release language. | `docs/branching.md` covers both shapes; ruleset applies to `main`, `develop`, `demo`; issue #255 remains open | S3 | The coexistence is intentional, but downstream readers may confuse integration and release branch expectations. |
+| PRV-FRC-004 | GitHub settings are documented but not fully machine-audited. | `docs/security-ci.md` and `docs/rbac.md` list settings; `gh api .../rulesets` confirms current ruleset; future `check-rbac.ts` is deferred | S3 | Repository rulesets, Pages, Code Security, 2FA, and alerts are partially outside committed YAML. |
+| PRV-FRC-005 | Release provenance/attestation is not yet a visible release artifact. | SLSA comparison: release workflow builds packages and guards staging, but no consumer-facing provenance/attestation was found in docs or workflow output | S3 | SLSA L1 provenance would complement the existing release-readiness model. |
+| PRV-FRC-006 | The script layer still contains a hand-rolled YAML subset parser. | `scripts/lib/repo.ts#parseSimpleYaml`; issue #209 tracks Zod runtime validation; specs explicitly defer broader parser replacement | S3 | Current tests cover many cases, but YAML behavior is a known boundary and should not accrete more responsibility. |
+| PRV-FRC-007 | Internal plans and superpower specs risk crowding adopter-facing documentation. | Large `docs/superpowers/plans/` and many TODO/deferred planning references | S4 | Not broken, but release/archive docs should keep shielding adopters from internal backlog volume. |
+| PRV-FRC-008 | Proposed ADRs in core workflow areas need regular status review. | `rg` found proposed ADRs including ADR-0013, ADR-0014, ADR-0022, ADR-0025, ADR-0027, and ADR-0030; ADR-0020 is superseded by ADR-0027 | S3 | Proposed ADRs are fine while a track is in motion; they become confusing if downstream docs treat them as settled policy. |
+| PRV-FRC-009 | Release provenance has two different paths that should not be conflated. | `release.yml` targets GitHub Packages with `GITHUB_TOKEN`; npm trusted publishing/provenance guidance applies to eligible npmjs.com public packages; GitHub artifact attestations can cover build assets | S3 | The next decision should distinguish GitHub artifact attestation from npmjs.com trusted publishing. |
+| PRV-FRC-010 | The agentic control-plane threat model is implicit rather than first-class. | `.claude/settings.json` defines allow/deny prefixes and a commit hook; `docs/rbac.md` defines role boundaries; operational bots define fail-closed rules | S3 | OWASP LLM and Agentic AI guidance support modeling prompt, tool, permission, memory, and automation paths together. The repo has many controls, but no single threat model maps them to risks and tests. |
+| PRV-FRC-011 | Standalone operational prompts create intentional duplication that needs drift checks. | `agents/operational/issue-breakdown-bot/PROMPT.md` states it does not import the interactive skill or agent and is synced by shared design spec/ADR only | S3 | Standalone prompts are pragmatic for headless CI routines, but they should get dry-run fixtures or cross-surface smoke tests as the bot surface grows. |
+| PRV-FRC-012 | The local issue mirror is useful but advisory unless reviews explicitly run its checks. | `scripts/check-issues.ts` says it is not included in `npm run verify`; `scripts/sync-issues.ts` is pull-only and does not create GitHub-only local files | S4 | This is an intentional offline-safe design from ADR-0031. Project reviews should still record whether issue sync and drift checks were run. |
+| PRV-FRC-013 | Documentation routing is comprehensive but dense for first-time readers. | `docs/sink.md` maps many top-level tracks, artifact owners, and lazy companion workflows; adopter guides exist separately | S4 | The architecture is strong, but a newcomer needs a short "start here, ignore for now" route so maintainer-only tracks do not look mandatory. |
+| PRV-FRC-014 | The product story should separate core workflow, harness adapters, runtime, and plugin layers more explicitly. | README and product page say the workflow is tool-agnostic and "the repo is the product"; `docs/cross-tool/` supports non-Claude tools; current public copy still leads heavily with Claude Code and repo contents | S3 | The strongest market position is "workflow product first." Claude, Cursor, Codex, and other harnesses are channels; `specorator-runtime` and plugin work should be framed as experience accelerators, not prerequisites. |
+| PRV-FRC-015 | Promotion assets need more proof-shaped material, not more feature lists. | `docs/product-brief.md`, README, and `sites/index.html` describe stages, roles, and tracks; examples exist under `examples/cli-todo/` | S3 | Developer audiences need a short demo loop: before/after, one traceable feature, artifacts, verify output, PR handoff, and what changes when runtime/plugin extensions are installed. |
+| PRV-FRC-016 | The future runtime/plugin ecosystem needs packaging boundaries before marketing promises harden. | Current distribution is repo, GitHub Release, and GitHub Package; Claude plugin docs distinguish standalone `.claude/` config from shareable plugins; no `specorator-runtime` contract is captured in this review package yet | S3 | A runtime/plugin roadmap should name which jobs belong to the core Markdown workflow, runtime automation, Claude plugin, and future adapters so adopters do not wait for extensions to use the method. |
+
+## Root-cause hypotheses
+
+| ID | Hypothesis | Evidence | Confidence | What would confirm or falsify it |
+|---|---|---|---|---|
+| PRV-RC-001 | Recent hardening work improved safety but created a temporary queue of active branches and compatibility fixes. | PRs #267-#290 show dense same-day CI/security/workflow activity and multiple follow-up fixes | medium | Confirm by reviewing merged PR comments and CI failure logs; falsify if failures cluster in unrelated features. |
+| PRV-RC-002 | The quality gate may contain order-sensitive or environment-sensitive tests. | `verify:json` failed once in `test:scripts`; direct reruns passed | low | Confirm with repeated local/CI runs and log collection; falsify if the first failure was due to a stale dependency/process artifact. |
+| PRV-RC-003 | The repo is crossing from "template under construction" into "product for adopters," but some docs still speak to maintainers first. | How-to/tutorial work exists; internal plans remain extensive; release archive stubs internal docs | medium | Confirm through a first-time adopter walkthrough. |
+| PRV-RC-004 | Settings and ADR drift are becoming review problems because the repo has more policy surfaces than committed checks can currently prove. | `docs/rbac.md` lists future `check-rbac.ts`; rulesets are API-backed; ADR status sweep is manual | medium | Confirm if future reviews repeatedly find stale settings or proposed ADR ambiguity; falsify if upcoming PRs add automated checks. |
+| PRV-RC-005 | The project is now complex enough that prompt-level controls need the same regression evidence as scripts and workflows. | `.claude/settings.json`, operational bot prompts, RBAC docs, and workflow policies encode critical behavior, but most review evidence is document inspection | medium | Confirm with dry-run fixtures and permission-bypass tests; falsify if existing hidden CI already exercises those paths. |
+| PRV-RC-006 | Product language has grown from implementation history rather than a deliberate category design. | README, product page, product brief, and cross-tool docs are all accurate, but they do not yet share one explicit adoption ladder from method to adapters to runtime/plugin | medium | Confirm with interviews or landing-page analytics; falsify if first-time adopters can already explain the product ladder after one read. |
+
+## External benchmark alignment
+
+- GitHub Actions secure use recommends least privilege and full-length SHA pinning for third-party actions. The repo mostly aligns through pinned `uses:` references and scoped token permissions.
+- NIST SSDF emphasizes risk-based continuous improvement rather than checklist theater. The repo aligns through quality metrics and self-check, but should explicitly connect quality debt issues to corrective action closure.
+- OpenSSF Scorecard is now present; maintainer account/organization controls such as 2FA still need periodic manual evidence because they are not encoded in the repo.
+- SLSA provenance is a logical next step for the release package because the repo already treats release composition as a controlled build artifact.
+- Diataxis supports the direction of separating tutorials, how-to guides, reference, and explanation; the repo should keep promoting proven internal plans into adopter-facing docs only when they answer a user need.
+- GitHub artifact attestations and npm provenance both support stronger release trust, but they answer different deployment shapes. Artifact attestations fit the current tarball-release asset; npm trusted publishing fits a future npmjs.com publication path.
+- OWASP SAMM supports using this review as an iterative maturity pass: record current state, choose a few next improvements, and measure again.
+- OWASP LLM and Agentic AI guidance supports a specific follow-up for this repository: treat agent permissions, command execution, PR/issue mutation, memory/state files, and operational bot prompts as one agentic control plane.
+- SLSA and SBOM guidance support a consumer-trust roadmap that includes provenance verification and an SBOM decision, not just more CI checks.
+- Claude Code plugin docs support positioning a future plugin as the shareable, versioned extension layer for Claude users. The workflow should remain usable without it.
+- Cursor, Codex, and GitHub guidance all support the portable core: concise repository instructions, structured docs, reliable checks, and a README that gets visitors to the first useful action quickly.
+
+## Open questions
+
+- [ ] PRV-Q-001 — Should release provenance/attestation be a v0.6/v0.7 requirement or deferred until the package publication flow is stable?
+- [ ] PRV-Q-002 — Should Shape B documentation become the default now that the ruleset covers `develop`, or should docs continue presenting Shape A as the v0-v1 recommendation?
+- [ ] PRV-Q-003 — What WIP limit should apply to active specs during quality debt periods?
+- [ ] PRV-Q-004 — Should `check-rbac.ts` become part of v0.7 once the current settings baseline settles?
+- [ ] PRV-Q-005 — Which proposed ADRs should be accepted, superseded, or explicitly kept proposed before the next release?
+- [ ] PRV-Q-006 — Should release provenance start with GitHub artifact attestation for the tarball, or with a registry strategy decision for npm trusted publishing?
+- [ ] PRV-Q-007 — Should the next security pass create an agentic control-plane threat model covering local tool permissions, operational bots, and GitHub mutation paths?
+- [ ] PRV-Q-008 — Should operational bot prompts get dry-run fixture tests before more bot routines are added?
+- [ ] PRV-Q-009 — Should project reviews always run `npm run sync:issues -- --dry-run --json` and `npm run check:issues`, even though those checks intentionally stay outside `verify`?
+- [ ] PRV-Q-010 — What is the public product architecture: workflow core, harness adapters, `specorator-runtime`, Claude plugin, and future adapter/plugin surfaces?
+- [ ] PRV-Q-011 — Which proof asset should lead promotion: a traceable feature demo, a live "wrong-code avoided" case study, or a cross-harness handoff video?
+- [ ] PRV-Q-012 — Should the plugin be marketed as the premium Claude experience while the Markdown workflow remains the canonical open core?
+
+## Quality gate
+
+- [x] Findings distinguish evidence from inference.
+- [x] Each S1/S2 item has an owner or escalation path.
+- [x] Findings do not prescribe solutions before proposals are ranked.
