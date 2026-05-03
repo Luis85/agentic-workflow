@@ -1,18 +1,17 @@
 # CODEOWNERS — declare default reviewers for paths in this repo.
 #
 # GitHub auto-assigns the matching owner as a reviewer whenever a PR touches
-# a path covered by a rule below. Replace the @placeholder owners with real
-# GitHub handles or team handles when you fork this template.
+# a path covered by a rule below. Replace the owners with real GitHub handles
+# or team handles when you fork this template.
 #
 # Syntax: <path glob> <space-separated owners>
 # Patterns are evaluated bottom-to-top; the last match wins.
 # Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-customizations/about-code-owners
 
-# ── Adopter note ──────────────────────────────────────────────────────────────
+# Adopter note
 # When you fork this template, replace all @Luis85 handles below with your own
 # GitHub user or team handles. Rules without a valid owner are silently ignored
 # by GitHub, so invalid handles = no automatic reviewer assignment.
-# ─────────────────────────────────────────────────────────────────────────────
 
 # Default — every PR gets at least one reviewer.
 *                                     @Luis85
