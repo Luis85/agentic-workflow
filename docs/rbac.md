@@ -64,6 +64,9 @@ Adopters host the work on GitHub. The minimum repository permissions for the aut
 | `contents: write` | Push topic branches, tag releases, generate Pages artifact | `dev`, `release-manager`, `pages.yml`, `release.yml`, `issue-breakdown-bot` decompose job |
 | `pull-requests: write` | Open / edit / comment on PRs from CLI and bots | `gh pr create` (any agent with `Bash`), `issue-breakdown-bot`, `project-reviewer` |
 | `issues: write` | Open / edit / comment / label issues | `issue-breakdown-bot`, `project-reviewer`, `review-bot`, `docs-review-bot` |
+| `packages: write` | Publish the released npm package to GitHub Packages (`@luis85/agentic-workflow`) | `release.yml` (publish step). See [§ GitHub Packages](#github-packages-npm-registry). |
+| `pages: write`, `id-token: write` | Build + deploy the public product page via GitHub Pages OIDC | `pages.yml` deploy job. See [§ GitHub Pages](#github-pages). |
+| `security-events: write` | Upload zizmor SARIF results to code scanning | `zizmor.yml` |
 | `metadata: read` | Inherent for any token | All workflows |
 
 Stage 9 review and Stage 11 retrospective do **not** need write to remote — they read the diff and write spec artifacts in-repo. Their PRs go through the same `feat/*` / `chore/*` push allowlist as code changes.
@@ -197,7 +200,7 @@ Track / class taxonomy frozen by [ADR-0026](adr/0026-freeze-v1-workflow-track-ta
 
 | Class | Reads (under repo root) | Writes | External calls | Agents |
 |---|---|---|---|---|
-| **Lifecycle** (Stage 1–11) | `specs/<slug>/`, `docs/`, `memory/`, `templates/` | `specs/<slug>/` per stage | `dev` / `qa` / `release-manager` may run Bash; `release-manager` may invoke `gh` | `analyst`, `pm`, `ux-designer`, `ui-designer`, `architect`, `planner`, `dev`, `qa`, `reviewer`, `release-manager`, `sre`, `retrospective`, `orchestrator` |
+| **Lifecycle** (Stage 1–11) | `specs/<slug>/`, `docs/`, `memory/`, `templates/` | `specs/<slug>/` per stage | `dev`, `qa`, `reviewer`, `sre`, `retrospective`, `release-manager` may run Bash; `release-manager` may invoke `gh`. `analyst` may use `WebSearch` / `WebFetch`. | `analyst`, `pm`, `ux-designer`, `ui-designer`, `architect`, `planner`, `dev`, `qa`, `reviewer`, `release-manager`, `sre`, `retrospective`, `orchestrator` |
 | **Discovery** *(opt-in)* | `discovery/<sprint>/`, `docs/`, `inputs/`, `stock-taking/` | `discovery/<sprint>/` per phase | `WebSearch`, `WebFetch` for product-strategist, user-researcher | `facilitator`, `product-strategist`, `user-researcher`, `game-designer`, `divergent-thinker`, `critic`, `prototyper` |
 | **Stock-taking** *(opt-in)* | `stock-taking/<slug>/`, existing-system docs in `inputs/` | `stock-taking/<slug>/` per phase | `WebSearch`, `WebFetch` | `legacy-auditor` |
 | **Sales** *(opt-in)* | `sales/<deal>/`, `inputs/`, `templates/` | `sales/<deal>/` per phase | `WebSearch` for `sales-qualifier` | `sales-qualifier`, `scoping-facilitator`, `estimator`, `proposal-writer` |
