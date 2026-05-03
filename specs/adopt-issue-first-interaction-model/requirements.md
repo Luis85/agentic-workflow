@@ -247,7 +247,7 @@ Specorator currently starts every workflow from a slash command whose intent exi
 #### REQ-IFI-013 — Area code selected explicitly; commit-type from Track value
 
 - **Pattern:** WHEN `/spec:start` is invoked with a GitHub issue number, the `/spec:start` command shall propose the feature area code from the first word of the slug (first 3 characters, uppercase) and require the user to accept or override that area code via `AskUserQuestion`; the command shall derive the branch commit-type from the parsed issue-body `### Track` field first, falling back to a `track:` label only when the body field is unavailable, using the canonical mapping in `docs/issue-first-interaction.md` without prompting.
-- **Canonical track-to-commit-type mapping:** `feature` / `track:feature` → `feat`; `bug` / `track:bug` → `fix`; `spike` / `track:spike` → `spike`; `specorator-improvement` / `track:specorator-improvement` → `feat`; no Track field and no track label → `feat`.
+- **Canonical track-to-commit-type mapping:** `feature` / `track:feature` → `feat`; `bug` / `track:bug` → `fix`; `spike` / `track:spike` → `chore`; `specorator-improvement` / `track:specorator-improvement` → `feat`; no Track field and no track label → `feat`. All mapped branch prefixes shall remain within the topic-prefix allowlist in `docs/branching.md`.
 - **Acceptance:**
   - Given issue #100 has `### Track` set to `specorator-improvement`, no `track:` label, and title `"adopt oauth login"` → slug `adopt-oauth-login-100`
   - When `/spec:start 100` is run
@@ -257,6 +257,9 @@ Specorator currently starts every workflow from a slash command whose intent exi
   - Given issue #101 has no parseable `### Track` field and has `track:bug`
   - When `/spec:start 101` is run
   - Then the branch prefix is `fix` (mapped from fallback label `track:bug`)
+  - Given issue #102 has `### Track` set to `spike`
+  - When `/spec:start 102` is run
+  - Then the branch prefix is `chore` (mapped from parsed Track value `spike`)
   - And the user is not prompted for commit-type
 - **Priority:** must
 - **Satisfies:** IDEA-IFI-001, RESEARCH-IFI-001 (R4, R20), resolves CLAR-IFI-012, CLAR-IFI-020

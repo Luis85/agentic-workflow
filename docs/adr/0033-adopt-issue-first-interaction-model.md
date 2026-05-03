@@ -57,11 +57,11 @@ Default slug = `<title-slug>-<issue-number>` (e.g., `adopt-issue-first-interacti
 |---|---|
 | `track:feature` | `feat` |
 | `track:bug` | `fix` |
-| `track:spike` | `spike` |
+| `track:spike` | `chore` |
 | `track:specorator-improvement` | `feat` |
 | *(no track label)* | `feat` |
 
-This table is the canonical reference. It lives in `docs/issue-first-interaction.md` and is referenced by the `/spec:start` implementation.
+This table is the canonical reference. It lives in `docs/issue-first-interaction.md` and is referenced by the `/spec:start` implementation. Branch prefixes stay within the topic-prefix allowlist in `docs/branching.md`; spike work maps to `chore` rather than introducing a new `spike/` branch family.
 
 ### 5. Sentinel-block mechanism
 
