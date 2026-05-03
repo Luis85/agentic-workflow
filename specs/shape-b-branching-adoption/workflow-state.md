@@ -39,11 +39,11 @@ artifacts:
 | 10. Release | `release-notes.md` | pending |
 | 11. Learning | `retrospective.md` | pending |
 
-> **Statuses:** `pending` | `in-progress` | `complete` | `skipped` | `blocked`. Section semantics + status enums: see [`_shared/state-file-sections.md`](./_shared/state-file-sections.md).
+> **Statuses:** `pending` | `in-progress` | `complete` | `skipped` | `blocked`.
 
 ## Notes on meta-features
 
-Plan-level meta-features may skip Stage 7-9 canonical artifacts when each sub-task ships as its own PR with implementation evidence, tests, review, and trace links. Record the rationale under `## Skips` and point to the per-PR evidence. See [`_shared/state-file-sections.md`](./_shared/state-file-sections.md) for the full rule.
+Plan-level meta-features may skip Stage 7-9 canonical artifacts when each sub-task ships as its own PR with implementation evidence, tests, review, and trace links. Record the rationale under `## Skips` and point to the per-PR evidence.
 
 ## Skips
 
