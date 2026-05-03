@@ -73,8 +73,8 @@ Stage 9 review and Stage 11 retrospective do **not** need write to remote — th
 | Branch | Rule | Reason |
 |---|---|---|
 | `main`, `develop` | No direct push (server-side denial) | Backstop for [`.claude/settings.json`](../.claude/settings.json); enforces topic-branch + PR flow per [`docs/branching.md`](branching.md). |
-| `main`, `develop` | Required status check: `verify` | Pre-merge gate; see [`docs/verify-gate.md`](verify-gate.md). |
-| `main`, `develop` | Required status check: `actionlint`, `typos`, `pr-title`, `gitleaks`, `dependency-review`, `zizmor` | CI safety net; see [`docs/security-ci.md`](security-ci.md), [`docs/ci-automation.md`](ci-automation.md). |
+| `main`, `develop` | Required status check: `verify`, `gitleaks`, `typos`, `pr-title` | Unconditional checks — run on every PR, safe to mark required. See [`docs/verify-gate.md`](verify-gate.md), [`docs/security-ci.md`](security-ci.md), [`docs/ci-automation.md`](ci-automation.md). |
+| `main`, `develop` | Optional / conditional checks: `actionlint`, `zizmor`, `dependency-review` | Path-filtered (only run on PRs touching `.github/workflows/**`, `.github/actions/**`, or `package*.json` / `npm-shrinkwrap.json`). **Do not mark required** — a doc-only PR will wait forever on a check that was never scheduled. Rely on the workflow's own pass/fail surface when it does run. |
 | `main` | Required PR review (≥ 1 human or trusted reviewer) | Human gate on releases / template changes. |
 | `main`, `develop` | Disallow force-pushes, disallow deletions | Matches [`.claude/settings.json`](../.claude/settings.json) deny rules. |
 
