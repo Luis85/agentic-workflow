@@ -1,6 +1,6 @@
 ---
 name: specorator-improvement
-description: Improve the Specorator template itself by guiding script, tooling, workflow, agent, skill, template, documentation, and operational automation changes through the repo's established spec-driven contributor loop.
+description: "Improve the Specorator template itself — scripts, tooling, workflow, agents, skills, templates, docs, and operational automation — through the spec-driven contributor loop. TRIGGER when: new track, new agent, new skill, new workflow, template self-change, modifying docs/ .claude/ scripts/ templates/ AGENTS.md CLAUDE.md, or any change to Specorator itself. SKIP when: building a downstream product with the template (use orchestrate instead)."
 argument-hint: "<mode> <improvement idea>"
 ---
 
@@ -9,6 +9,16 @@ argument-hint: "<mode> <improvement idea>"
 Use this skill when a user is actively working with Specorator and wants to improve the template itself, such as adding a quality drift review script, a CI tool, a new workflow, or updates to the Specorator method.
 
 This skill is for **the template repository**. If the request is about a product being built with the template, route to `orchestrate`, `discovery-sprint`, `project-scaffolding`, or the active feature workflow instead.
+
+## When to invoke (trigger keywords)
+
+Invoke this skill — ahead of any generic brainstorming or planning skill — when the work involves:
+
+- Adding or changing a **track**, **stage**, **agent**, **skill**, **slash command**, or **workflow rule**
+- Modifying `docs/`, `.claude/`, `scripts/`, `templates/`, `memory/`, `AGENTS.md`, or `CLAUDE.md`
+- Any phrase like "new track", "new agent", "new skill", "new workflow", "update template", "change workflow", "add script", "add CI", "fix specorator", "improve the template"
+
+**Skip** this skill when building a downstream product *with* the template. Use `orchestrate`, `discovery-sprint`, `project-scaffolding`, or the active feature workflow instead.
 
 ## Modes
 
