@@ -2,7 +2,7 @@
 description: Project Scaffolding Track — Bootstrap. Scaffold a source-led onboarding folder under scaffolding/<slug>/ with scaffolding-state.md initialised.
 argument-hint: <project-slug> <source-pointer>
 allowed-tools: [Read, Edit, Write, Bash]
-model: sonnet
+model: haiku
 ---
 
 # /scaffold:start

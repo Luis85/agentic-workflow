@@ -95,17 +95,142 @@ export const EXPECTED_PACKAGE_FILES: readonly string[] = [
 export const MIN_QUALITY_MATURITY_LEVEL = 3;
 
 /**
+ * Diagnostic codes emitted as **warnings** (informational, do not fail
+ * closed). Kept separate from {@link RELEASE_READINESS_DIAGNOSTIC_CODES}
+ * because the existing JSON output contract guarantees that any entry in
+ * `diagnostics` is a hard failure — operators (and the dispatch workflow)
+ * rely on that for the "fail closed" gate. Warnings surface through the
+ * CLI as `::notice::` annotations and do not block dispatch.
+ */
+export const RELEASE_READINESS_WARNING_CODES = {
+  ImmutableRepo: "RELEASE_READINESS_IMMUTABLE_REPO",
+  ImmutableProbeDenied: "RELEASE_READINESS_IMMUTABLE_PROBE_DENIED",
+} as const;
+
+/**
+ * Result of probing the "Immutable releases" repo setting.
+ *
+ * Discriminated four-state instead of `boolean | null` so the warning
+ * surface can distinguish "setting confirmed on" from "probe could not
+ * verify" (Codex P2 round 4 on PR #242). Round 3 coerced 401/403 -> true
+ * to surface a warning, but that produced an indistinguishable false
+ * positive against repos where the workflow token simply cannot read the
+ * endpoint — operators saw "ENABLED" every dispatch even when the setting
+ * was off.
+ *
+ * - `enabled` — endpoint returned `enabled=true` (or org-level enforcement).
+ * - `disabled` — endpoint returned `enabled=false`.
+ * - `denied` — endpoint returned 401 / 403 / "Bad credentials" /
+ *   "Resource not accessible". The probe could not verify the setting;
+ *   surface a distinct warning so the operator checks manually.
+ * - `unknown` — endpoint missing (404, older GitHub instance), network
+ *   blip, parse error. Fail quiet — a transient signal must not block
+ *   dispatch.
+ */
+export type ImmutableSettingProbe = "enabled" | "disabled" | "denied" | "unknown";
+
+/**
+ * Minimal GitHub API facade for repository-state probes that the git CLI
+ * cannot answer. {@link checkRepoImmutableSetting} uses this to read the
+ * "Immutable releases" repo setting directly via
+ * `GET /repos/{owner}/{repo}/immutable-releases` (Codex round 2 on
+ * PR #242 — the dedicated REST endpoint is documented and live, so the
+ * earlier most-recent-Release heuristic is unnecessary).
+ */
+export interface GitHubInterface {
+  immutableReleasesSetting(): ImmutableSettingProbe;
+}
+
+/**
+ * A non-blocking informational signal about release readiness.
+ * Distinct from {@link Diagnostic} to preserve the existing contract that
+ * any entry in `report.diagnostics` is a hard failure.
+ */
+export interface ReadinessWarning {
+  code: string;
+  message: string;
+}
+
+/**
+ * Probe the "Immutable releases" repo setting (#233 prevention E).
+ *
+ * Reads the setting directly via
+ * `GET /repos/{owner}/{repo}/immutable-releases`. When the endpoint
+ * returns `enabled: true` (or the org enforces the setting) every new
+ * Release on the repo is auto-flagged immutable; a failed asset upload
+ * or operator deletion then permanently burns the tag — exactly the
+ * v0.5.0 incident pattern.
+ *
+ * Emits at most one warning, distinguishing the verified-on case from
+ * the probe-denied case (Codex P2 round 4 on PR #242):
+ *
+ * - `enabled` -> `ImmutableRepo` ("setting is ON").
+ * - `denied`  -> `ImmutableProbeDenied` ("probe could not verify;
+ *   check manually"). Distinct code so operators do not misread an
+ *   auth failure as a confirmed-on setting.
+ * - `disabled` / `unknown` -> no warning.
+ *
+ * Never returns a hard `Diagnostic` — the v0.5.0 retrospective showed
+ * the setting is not always operator-controlled (org-level defaults
+ * can propagate), so failing closed here could block legitimate
+ * dispatches against repos the operator does not own.
+ */
+export function checkRepoImmutableSetting(github: GitHubInterface): ReadinessWarning[] {
+  const state = github.immutableReleasesSetting();
+  if (state === "enabled") {
+    return [
+      {
+        code: RELEASE_READINESS_WARNING_CODES.ImmutableRepo,
+        message:
+          "Repo Setting \"Immutable releases\" is ENABLED on this repository " +
+          "(GET /repos/{owner}/{repo}/immutable-releases returned enabled=true). " +
+          "Every new Release will be auto-flagged immutable; a failed asset " +
+          "upload or operator deletion permanently burns the tag (#233). " +
+          "Verify the setting in Repo Settings -> General -> Releases, " +
+          "disable it before dispatching, or accept the failure mode knowingly.",
+      },
+    ];
+  }
+  if (state === "denied") {
+    return [
+      {
+        code: RELEASE_READINESS_WARNING_CODES.ImmutableProbeDenied,
+        message:
+          "Could not verify Repo Setting \"Immutable releases\" — " +
+          "GET /repos/{owner}/{repo}/immutable-releases returned 401/403 " +
+          "(workflow token lacks the scope, or repo access is restricted). " +
+          "The setting may or may not be on; this is NOT a confirmation. " +
+          "Verify manually in Repo Settings -> General -> Releases before " +
+          "dispatching, or grant the workflow token sufficient scope so the " +
+          "probe can run cleanly on the next dispatch.",
+      },
+    ];
+  }
+  return [];
+}
+
+/**
  * Minimal git facade for tag-readiness assertions.
  *
- * Implementations must return a **commit SHA** for the supplied ref,
+ * `resolveRef` must return a **commit SHA** for the supplied ref,
  * dereferencing (peeling) annotated tags so an annotated `vX.Y.Z` and
  * `refs/heads/main` are comparable. Real callers wire this with
  * `git rev-parse <ref>^{commit}` so annotated and lightweight tags resolve
  * the same way (Codex round-3 P1 on PR #158). Tests inject a stub mapping
  * directly to commit SHAs.
+ *
+ * `firstParentChain` returns `main`'s first-parent ancestry as a list of
+ * commit SHAs starting at `main` HEAD and walking back through merge-commit
+ * left parents. Tag readiness uses this to assert the release tag sits on
+ * `main`'s first-parent history (ADR-0020 §Compliance), not strictly at
+ * `main` HEAD. The strict-HEAD reading made the v0.5.0 / v0.5.1 publish
+ * dispatches trip whenever an unrelated PR merged into `main` between the
+ * tag cut and the dispatch (#233 prevention F). Returns `null` when the
+ * chain cannot be resolved (ref missing, git error).
  */
 export interface GitInterface {
   resolveRef(ref: string): string | null;
+  firstParentChain(ref: string): readonly string[] | null;
 }
 
 /**
@@ -230,7 +355,10 @@ export function parseReleaseReadinessArgs(
  * Runs Layer 1 (release metadata correctness) in fixed order:
  *
  * 1. Version alignment — `package.json#version` matches the release version.
- * 2. Tag readiness — release tag points at `main` HEAD per ADR-0020.
+ * 2. Tag readiness — release tag is on `main`'s first-parent history per
+ *    ADR-0020 §Compliance ("the tag commit is reachable from `main`"). The
+ *    earlier strict reading (tag SHA == `main` HEAD SHA) was relaxed in
+ *    #233 prevention F.
  * 3. CHANGELOG entry — `CHANGELOG.md` has a `## [vX.Y.Z]` heading.
  * 4. Lifecycle release notes — `.github/release.yml` shape per T-V05-003.
  * 5. Package metadata — name, registry, repository, files per package contract.
@@ -258,7 +386,7 @@ export function checkReleaseReadiness(opts: ReleaseReadinessOptions): ReleaseRea
   const pkg = readPackageJson(opts.repoRoot, packageJsonPath);
 
   diagnostics.push(...checkVersionAlignment(pkg, opts.version, packageJsonPath));
-  if (opts.git) diagnostics.push(...checkTagAtMain(opts.git, opts.version));
+  if (opts.git) diagnostics.push(...checkTagOnMainHistory(opts.git, opts.version));
   diagnostics.push(...checkChangelog(opts.repoRoot, changelogPath, opts.version));
   diagnostics.push(...checkReleaseNotesConfig(opts.repoRoot, releaseNotesPath));
   diagnostics.push(
@@ -333,7 +461,7 @@ function checkVersionAlignment(
   return [];
 }
 
-function checkTagAtMain(git: GitInterface, version: string): Diagnostic[] {
+function checkTagOnMainHistory(git: GitInterface, version: string): Diagnostic[] {
   const tagRef = `v${version}`;
   const tagSha = git.resolveRef(tagRef);
   if (!tagSha) {
@@ -353,11 +481,27 @@ function checkTagAtMain(git: GitInterface, version: string): Diagnostic[] {
       },
     ];
   }
-  if (tagSha !== mainSha) {
+  // Walk `main`'s first-parent chain. The tag may legitimately sit at any
+  // first-parent ancestor of HEAD — the strict-HEAD reading tripped twice
+  // during the v0.5.1 recovery dispatch when unrelated PRs merged between
+  // the tag cut and the dispatch (#233 prevention F). First-parent (not
+  // full reachability) keeps the rule "tag is on main proper" — a tag on
+  // a feature-branch tip merged via a PR is reachable but lives on the
+  // second-parent edge, which we still reject.
+  const chain = git.firstParentChain("refs/heads/main") ?? git.firstParentChain("main");
+  if (!chain) {
     return [
       {
         code: RELEASE_READINESS_DIAGNOSTIC_CODES.TagNotAtMain,
-        message: `tag \`${tagRef}\` (${tagSha.slice(0, 7)}) is not at \`main\` HEAD (${mainSha.slice(0, 7)}) — ADR-0020 requires tags cut from \`main\``,
+        message: "could not resolve `main` first-parent chain; tag readiness cannot be verified",
+      },
+    ];
+  }
+  if (!chain.includes(tagSha)) {
+    return [
+      {
+        code: RELEASE_READINESS_DIAGNOSTIC_CODES.TagNotAtMain,
+        message: `tag \`${tagRef}\` (${tagSha.slice(0, 7)}) is not on \`main\` first-parent history (HEAD ${mainSha.slice(0, 7)}) — ADR-0020 requires tags cut from \`main\``,
       },
     ];
   }

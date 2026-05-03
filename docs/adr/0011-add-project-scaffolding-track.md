@@ -1,7 +1,7 @@
 ---
 id: ADR-0011
 title: Add a Project Scaffolding Track for source-led template adoption
-status: proposed
+status: accepted
 date: 2026-04-28
 deciders:
   - human
@@ -20,7 +20,7 @@ tags: [workflow, onboarding, scaffolding, documentation]
 
 ## Status
 
-Proposed
+Accepted
 
 ## Context
 

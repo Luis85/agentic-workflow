@@ -100,7 +100,8 @@ updated: 2026-05-01
 
 - **Description:** Update README and product page language for live proof, cross-tool adapters, hook guardrails, agentic security, and comparison against lighter spec-driven or prompt-library alternatives.
 - **Satisfies:** REQ-V06-010, NFR-V06-005, SPEC-V06-007
-- **Depends on:** T-V06-004, T-V06-006, T-V06-009, T-V06-010, T-V06-011
+- **Depends on:** T-V06-004, T-V06-006, T-V06-010, T-V06-011
+- **Scope note:** Hook guardrail positioning is deferred until T-V06-009 lands in v0.7; v0.6 public positioning should omit hook-pack claims.
 - **Owner:** release-manager
 - **Estimate:** M
 

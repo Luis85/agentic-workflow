@@ -1,6 +1,6 @@
 import path from "node:path";
 import type { Diagnostic } from "./lib/diagnostics.js";
-import { frontmatterDiagnostic, requiredKeyDiagnostics } from "./lib/frontmatter.js";
+import { frontmatterDiagnostic, futureDateDiagnostics, requiredKeyDiagnostics } from "./lib/frontmatter.js";
 import {
   FrontmatterBlock,
   extractFrontmatter,
@@ -21,6 +21,8 @@ for (const filePath of markdownFiles()) {
   const frontmatter = extractFrontmatter(text);
   const basename = path.basename(rel);
   const dirname = path.dirname(rel) === "." ? "." : path.dirname(rel);
+
+  if (frontmatter) errors.push(...futureDateDiagnostics(rel, frontmatter.raw));
 
   if (basename.toLowerCase() === "readme.md") {
     const siblings = readmeDirs.get(dirname) || [];

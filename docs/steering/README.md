@@ -8,6 +8,10 @@ entry_point: true
 
 Persistent, scoped context loaded by agents on demand. Inspired by Kiro's `.kiro/steering/` pattern.
 
+These files are **downstream project templates**. They describe the context an adopter should fill in after using Specorator as a starter. They do not describe Specorator itself.
+
+Specorator's own product steering lives in [`docs/specorator-product/`](../specorator-product/README.md). Use that folder when improving this repository, the workflow method, the product page, package distribution, adapters, hooks, or other template-owned surfaces.
+
 | File | Loaded by | When |
 |---|---|---|
 | `product.md` | PM, UX, UI, Reviewer, Release Manager | Product-shaped work |
@@ -23,6 +27,16 @@ Persistent, scoped context loaded by agents on demand. Inspired by Kiro's `.kiro
 - **Always-loaded:** none, by default. Steering files are scoped on purpose.
 - **Conditionally loaded:** agents declare in their frontmatter which steering files they need.
 - **Manually loaded:** humans can `@docs/steering/<file>.md` in a prompt to inject context.
+
+## Which steering source to load
+
+| Work type | Steering source |
+|---|---|
+| Improving Specorator itself | `docs/specorator-product/` |
+| Starting a new downstream product from the template | `docs/steering/` |
+| Editing these blank starter templates | `docs/steering/` plus `docs/specorator-product/quality.md` |
+| Writing public positioning for Specorator | `docs/specorator-product/product.md` and `docs/specorator-product/ux.md` |
+| Changing verification, release, or package behavior | `docs/specorator-product/tech.md`, `quality.md`, and `operations.md` |
 
 ## Style
 

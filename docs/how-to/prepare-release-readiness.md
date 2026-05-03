@@ -27,7 +27,8 @@ entry_point: false
 7. Record the go/no-go decision in `## Go / no-go record`.
 8. Copy user-facing impact, limitations, verification, rollback, observability, and communication decisions into `release-notes.md`.
 9. If evidence gaps need a formal execution-health review, run `/quality:start <slug> specs/<feature>` and continue through `/quality:review`.
-10. Ask the human for explicit authorization before any irreversible production action.
+10. If readiness is green but the tag, GitHub Release, package publish, or stable promotion still needs authorization, keep `workflow-state.md` at `current_stage: release`, `status: active`, and `release-notes.md: in-progress`; add a `release-tag hold` hand-off note naming the pending irreversible action and required authorization.
+11. Ask the human for explicit authorization before any irreversible production action.
 
 ## Verify
 
