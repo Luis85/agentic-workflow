@@ -1,10 +1,13 @@
 /**
  * Index-bleed guard.
  *
- * Warns when the git index contains files staged for addition while the current
- * branch is a feature branch. Staged new files carry across `git checkout` calls
- * when they are not tracked on either branch — the failure mode documented in
- * docs/worktrees.md#common-pitfalls.
+ * Warns when the git index contains files staged for addition on any branch.
+ * Staged new files carry across `git checkout` calls when they are not tracked
+ * on either branch — the failure mode documented in docs/worktrees.md#common-pitfalls.
+ *
+ * This includes integration branches (main, develop): staged files on main bleed
+ * onto a feature branch when you checkout into it, which is exactly the documented
+ * pre-switch scenario.
  *
  * This check is intentionally NOT in `npm run verify`. It is a pre-switch or
  * pre-commit advisory. Run it explicitly: `npm run check:index-bleed`
@@ -17,7 +20,6 @@ import { spawnSync } from "node:child_process";
 import { repoRoot } from "./lib/repo.js";
 
 const wantsJson = process.argv.includes("--json");
-const INTEGRATION_BRANCHES = new Set(["main", "develop"]);
 
 const warnings: string[] = [];
 
@@ -27,15 +29,14 @@ function run(command: string, args: string[]): { ok: boolean; stdout: string } {
 }
 
 const branch = run("git", ["branch", "--show-current"]);
+const branchName = branch.ok ? (branch.stdout || "(detached HEAD)") : "(unknown)";
 
-if (branch.ok && branch.stdout && !INTEGRATION_BRANCHES.has(branch.stdout)) {
-  const staged = run("git", ["diff", "--name-only", "--cached", "--diff-filter=A"]);
-  if (staged.ok && staged.stdout) {
-    for (const file of staged.stdout.split(/\r?\n/).filter(Boolean)) {
-      warnings.push(
-        `${file}: staged for addition on "${branch.stdout}" — if this file belongs to another branch, it will bleed into the next commit (see docs/worktrees.md#common-pitfalls)`,
-      );
-    }
+const staged = run("git", ["diff", "--name-only", "--cached", "--diff-filter=A"]);
+if (staged.ok && staged.stdout) {
+  for (const file of staged.stdout.split(/\r?\n/).filter(Boolean)) {
+    warnings.push(
+      `${file}: staged for addition on "${branchName}" — these files carry across git checkout and will bleed into the next commit on any branch (see docs/worktrees.md#common-pitfalls)`,
+    );
   }
 }
 
