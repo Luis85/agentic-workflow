@@ -17,7 +17,12 @@ export function serializeIssueFrontmatterValue(value: unknown): string {
 }
 
 export function isMissingGitHubIssueError(stderr: string): boolean {
-  return /\b(no issues match|not found)\b/i.test(stderr);
+  return (
+    /could not resolve to an issue or pull request with the number of \d+/i.test(stderr) ||
+    /\bno issues match\b/i.test(stderr) ||
+    /\bissue\b.*\bnot found\b/i.test(stderr) ||
+    /\bnot found\b.*\bissue\b/i.test(stderr)
+  );
 }
 
 function needsYamlQuoting(s: string): boolean {

@@ -9,6 +9,7 @@ title: "Example"
 count: 3
 empty: []
 owner: null
+labels: ["priority,high", "plain"]
 artifacts:
   idea.md: complete
   spec.md: in-progress # inline comment
@@ -18,6 +19,7 @@ artifacts:
       count: 3,
       empty: [],
       owner: null,
+      labels: ["priority,high", "plain"],
       artifacts: {
         "idea.md": "complete",
         "spec.md": "in-progress",

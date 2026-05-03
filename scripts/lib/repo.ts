@@ -220,9 +220,31 @@ function parseYamlScalar(value: string): unknown {
   if (/^\[.*\]$/.test(value)) {
     const inner = value.slice(1, -1).trim();
     if (!inner) return [];
-    return inner.split(",").map((item) => parseYamlScalar(item.trim()));
+    return splitYamlFlowArray(inner).map((item) => parseYamlScalar(item.trim()));
   }
   return value.replace(/^["']|["']$/g, "");
+}
+
+function splitYamlFlowArray(inner: string): string[] {
+  const items: string[] = [];
+  let quote: string | null = null;
+  let start = 0;
+
+  for (let index = 0; index < inner.length; index += 1) {
+    const char = inner[index];
+    const previous = inner[index - 1];
+    if ((char === '"' || char === "'") && previous !== "\\") {
+      quote = quote === char ? null : quote || char;
+      continue;
+    }
+    if (char === "," && !quote) {
+      items.push(inner.slice(start, index));
+      start = index + 1;
+    }
+  }
+
+  items.push(inner.slice(start));
+  return items;
 }
 
 /**
