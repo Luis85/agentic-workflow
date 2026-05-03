@@ -44,7 +44,8 @@ Records of architecturally significant decisions. Format follows Michael Nygard'
 | [0029](0029-adapter-pipeline-additive-only.md) | Make the multi-framework adapter pipeline additive-only over canonical sources | Accepted |
 | [0030](0030-add-repo-adoption-track.md) | Add Repo Adoption Track as v1.1 opt-in companion track | Proposed |
 | [0031](0031-adopt-issues-folder-for-canonical-issue-tracking.md) | Adopt issues/ folder as the canonical local mirror of feature issue tracking | Accepted |
-| [0032](0032-adopt-issue-first-interaction-model.md) | Adopt issue-first interaction model as recommended entry point for Standard-depth workflows | Accepted |
+| [0032](0032-design-handoff-to-spec-design-bridge.md) | Bridge Design Track handoff into /spec:design Stage 4 | Accepted |
+| [0033](0033-adopt-issue-first-interaction-model.md) | Adopt issue-first interaction model as recommended entry point for Standard-depth workflows | Accepted |
 <!-- END GENERATED: adr-index -->
 
 ## Conventions

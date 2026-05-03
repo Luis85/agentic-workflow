@@ -1,5 +1,5 @@
 ---
-id: ADR-0032
+id: ADR-0033
 title: Adopt issue-first interaction model as recommended entry point for Standard-depth workflows
 status: accepted
 date: 2026-05-03
@@ -15,7 +15,7 @@ superseded-by: []
 tags: [workflow, entry-point, github-issues, interaction-model]
 ---
 
-# ADR-0032 — Adopt issue-first interaction model as recommended entry point for Standard-depth workflows
+# ADR-0033 — Adopt issue-first interaction model as recommended entry point for Standard-depth workflows
 
 ## Status
 
