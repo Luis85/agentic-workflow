@@ -40,6 +40,7 @@
 - [fix-script-docs](fix-script-docs/README.md)
 - [fix-sites-tokens](fix-sites-tokens/README.md)
 - [github-project-setup](github-project-setup/README.md)
+- [graphify-run](graphify-run/README.md)
 - [lib/adr](lib/adr/README.md)
 - [lib/agent-artifacts](lib/agent-artifacts/README.md)
 - [lib/automation-registry](lib/automation-registry/README.md)

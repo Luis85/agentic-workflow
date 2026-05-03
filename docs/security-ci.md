@@ -7,7 +7,7 @@ entry_point: false
 
 # Security CI gates
 
-The [`verify` gate](verify-gate.md) is intentionally fast and deterministic. It is **not** a security audit. This document records the security-oriented GitHub Actions workflows that run alongside it.
+The [`verify` gate](verify-gate.md) is intentionally fast and deterministic. It is **not** a security audit. This document records the security-oriented GitHub Actions workflows that run alongside it. Read it with [`ci-automation.md`](ci-automation.md): that companion page covers PR-title linting, spell check, Dependabot version updates, and the non-security automation that completes the repository posture.
 
 Each gate is a separate workflow file under `.github/workflows/` so it can be enabled, disabled, or replaced without touching the verify gate.
 
@@ -30,7 +30,38 @@ The least-privilege `permissions:` block on each workflow is documented in [`doc
 
 `actionlint` and `zizmor` defend the CI pipeline itself — every other gate lives downstream of GitHub Actions, so that surface gets hardened first. `gitleaks` defends the repo against the most common single-event leak (a secret pasted into a commit). `dependency-review` catches vulnerable packages and actions before dependency diffs merge. Together they close the highest-leverage gaps for a workflow-template repo.
 
-Higher-friction or domain-specific gates (CodeQL, OSSF Scorecard, markdownlint) are deferred until a concrete signal demands them. `typos`, conventional-commits PR titles, and dependency review are now implemented.
+## Automation posture map
+
+This map keeps deferred candidates separate from checks that already exist so adopters do not reverse-engineer the intended state from workflow files.
+
+### Implemented
+
+| Control | Where it lives | Notes |
+| --- | --- | --- |
+| Local deterministic verify gate | [`verify-gate.md`](verify-gate.md), [`.github/workflows/verify.yml`](../.github/workflows/verify.yml) | Required on every PR. |
+| Workflow lint | [`.github/workflows/actionlint.yml`](../.github/workflows/actionlint.yml) | Path-triggered for workflow/action changes. |
+| Workflow security scan | [`.github/workflows/zizmor.yml`](../.github/workflows/zizmor.yml) | Uploads SARIF to code scanning and gates default-persona findings. |
+| Secret scan | [`.github/workflows/gitleaks.yml`](../.github/workflows/gitleaks.yml) | Required on every PR. |
+| Dependency review | [`.github/workflows/dependency-review.yml`](../.github/workflows/dependency-review.yml) | Path-triggered for dependency, workflow, and local-action changes. |
+| PR-title lint | [`ci-automation.md`](ci-automation.md#pr-title-rules), [`.github/workflows/pr-title.yml`](../.github/workflows/pr-title.yml) | Required on every PR. |
+| Spell check | [`ci-automation.md`](ci-automation.md#typos-config), [`.github/workflows/typos.yml`](../.github/workflows/typos.yml) | Required on every PR. |
+| Dependabot version updates | [`ci-automation.md`](ci-automation.md#dependabot-policy), [`.github/dependabot.yml`](../.github/dependabot.yml) | Bumps pinned GitHub Actions and npm dev dependencies. |
+
+### Deferred
+
+| Candidate | Current decision |
+| --- | --- |
+| CodeQL default setup or explicit CodeQL workflow | Candidate for TypeScript/scripts and GitHub Actions code scanning once the repository settings path is chosen. |
+| OSSF Scorecard | Candidate periodic supply-chain posture report after the current P1/P2 hardening work is stable. |
+| Markdown lint | Deferred until the existing Markdown baseline is cleaned or a non-blocking changed-files rollout is designed. See [`ci-automation.md`](ci-automation.md#why-not-markdownlint-yet). |
+
+### Rejected for now
+
+| Candidate | Why not now |
+| --- | --- |
+| License blocking in dependency review | Needs an explicit license allow/deny policy before it can be a fair merge gate. |
+| Dependabot security update PRs by default | Disabled until the alert baseline is known and the maintainer wants automatic remediation PR volume. Dependabot alerts should still be enabled. |
+| Global required checks for path-triggered workflows | GitHub does not create those checks for unrelated PRs, so a global requirement can deadlock ordinary documentation or script changes. Use path-scoped rulesets where available. |
 
 ## Required status checks
 
@@ -50,6 +81,22 @@ Path-triggered security workflows are intentionally not global required checks:
 - `dependency review` runs only for dependency manifest, lockfile, workflow, and local-action changes.
 
 If GitHub rulesets in the target repository support path-scoped required checks, require those checks for the matching paths. Otherwise, reviewers must treat the path-triggered job result as merge-blocking whenever GitHub runs it.
+
+## Repository settings checklist
+
+Use this checklist after creating a downstream repository or auditing this upstream one. It covers settings that cannot be fully represented by committed workflow files.
+
+| Setting | Required posture | Source |
+| --- | --- | --- |
+| Integration-branch ruleset | Protect `main` for Shape A, or `develop` for Shape B; block deletion and non-fast-forward updates; require PRs; require up-to-date branches; require resolved review threads. | [`branching.md#required-main-ruleset`](branching.md#required-main-ruleset) |
+| Always-running required checks | Require `Verify`, `Conventional Commits PR title`, `spell check`, and `scan for committed secrets`. | This document and [`ci-automation.md`](ci-automation.md#why-these-automation-gates) |
+| Path-triggered checks | Require `actionlint`, `zizmor static analysis`, and `dependency review` only with path-scoped rulesets when supported; otherwise treat them as merge-blocking whenever they run. | [Required status checks](#required-status-checks) |
+| Dependabot alerts | Enable repository-level Dependabot alerts so new advisories against already-merged dependencies surface outside PR review. | [`ci-automation.md#dependabot-policy`](ci-automation.md#dependabot-policy) |
+| Dependabot security updates | Leave disabled until the team accepts automatic remediation PR volume, then enable deliberately. | [`ci-automation.md#dependabot-policy`](ci-automation.md#dependabot-policy) |
+| Code scanning | Enable code scanning visibility. `zizmor` publishes SARIF now; add CodeQL later if adopted. | [Automation posture map](#automation-posture-map) |
+| Secret scanning | Enable GitHub secret scanning when the account plan supports it; keep `gitleaks` as the committed CI safety net. | [Workflow table](#security-ci-gates) |
+| GitHub Pages | Enable Pages for the product page workflow if the project publishes `sites/index.html`. | [`rbac.md#github-pages`](rbac.md#github-pages) |
+| CODEOWNERS | Replace placeholder owners in [`.github/CODEOWNERS`](../.github/CODEOWNERS) with real users or teams for a live repository, or document that the file is template-only. | [`branching.md`](branching.md#required-main-ruleset) |
 
 ## Dependency review policy
 
