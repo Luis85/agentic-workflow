@@ -22,7 +22,7 @@ Specorator's current entry point is a slash command (`/spec:start <slug>` or `/o
 
 ## Desired outcome
 
-After this feature ships, a user who opens a GitHub issue describing a problem can move from that issue directly into the Specorator workflow with a single command. The issue becomes the persistent record of intent and progress: it receives a lightweight mirror of workflow state after each stage, and it closes automatically when the feature PR merges. The 11-stage workflow itself, all agent scopes, and all quality gates remain unchanged — the issue layer is purely additive.
+After this feature ships, a user who opens a GitHub issue describing a problem can move from that issue directly into the Specorator workflow with a single command. The issue becomes the persistent record of intent and progress: it receives a lightweight mirror of workflow state after each stage, while issue closing remains a human-controlled lifecycle action. The 11-stage workflow itself, all agent scopes, and all quality gates remain unchanged — the issue layer is purely additive.
 
 ## Constraints
 
