@@ -47,13 +47,18 @@ interface GitHubIssue {
   url: string;
 }
 
-function ghAvailable(): boolean {
+function ghAvailable(): { ok: true } | { ok: false; reason: string } {
   try {
     execSync("gh --version", { stdio: "ignore" });
-    return true;
   } catch {
-    return false;
+    return { ok: false, reason: "`gh` CLI not found" };
   }
+  try {
+    execSync("gh auth status", { stdio: "ignore" });
+  } catch {
+    return { ok: false, reason: "`gh` is not authenticated — run `gh auth login`" };
+  }
+  return { ok: true };
 }
 
 function fetchGitHubIssue(number: number): GitHubIssue | null {
@@ -127,8 +132,9 @@ function rebuildDocument(fm: string, body: string): string {
 
 const results: { file: string; changes: string[]; skipped?: string }[] = [];
 
-if (!ghAvailable()) {
-  console.error("sync:issues: `gh` CLI not found or not authenticated. Aborting.");
+const ghCheck = ghAvailable();
+if (!ghCheck.ok) {
+  console.error(`sync:issues: ${ghCheck.reason}. Aborting.`);
   process.exit(1);
 }
 
