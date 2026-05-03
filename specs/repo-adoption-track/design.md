@@ -55,7 +55,7 @@ flowchart TD
     PREFLIGHT["Pre-flight checks\n· gh auth status (REQ-ADOPT-023)\n· inputs/ consultation (REQ-ADOPT-029)\n· branch assertion (RISK-006)\n· idempotency check — .specorator-version absent (REQ-ADOPT-014)\n· slug derivation (REQ-ADOPT-002)\n· slug collision check (REQ-ADOPT-024)"]
     SIZECHECK{"Repo size\n> 500 MB or\n> 10,000 files?\n(REQ-ADOPT-025)"}
     SIZEWARN["Warn: size detected\nAskUserQuestion: confirm clone or abort"]
-    CLONE["Clone into adoptions/&lt;slug&gt;/repo/\n(REQ-ADOPT-003)\nWrite adoption-state.md: phase=review, status=in_progress\n(REQ-ADOPT-004)"]
+    CLONE["Clone into adoptions/&lt;slug&gt;/repo/\n(REQ-ADOPT-003)\nWrite adoption-state.md: current_phase=review, phase_status=in_progress\n(REQ-ADOPT-004)"]
     PHASE1["Phase 1 — Review\nProduce review.md:\n· language census, build tools, CI presence\n· docs inventory, license identifier\n· agentic-workflow markers, file count\n· .specorator-version collision note\n· license warning if non-MIT/Apache/BSD\n(REQ-ADOPT-005, REQ-ADOPT-006)"]
     GATE1["Phase 1 gate\nAskUserQuestion:\n  [A] Approve — proceed to Parity\n  [R] Request revision\n  [X] Abort\n(REQ-ADOPT-001)"]
     PHASE2["Phase 2 — Parity\nProduce parity.md:\n· Every preset file: present / missing / conflict\n· Each conflict: resolution = TBD\n(REQ-ADOPT-007)"]
@@ -71,7 +71,7 @@ flowchart TD
     GITHUBCHECK{"Remote host ==\ngithub.com?\n(REQ-ADOPT-018)"}
     PUSH["git push &lt;foreign-remote&gt; adopt/specorator\ngh pr create\nWrite push-record.md with branch, SHA, PR URL, timestamp\nWrite .specorator-version marker in commit (REQ-ADOPT-013)\n(REQ-ADOPT-015)"]
     COMMIT["Commit artifacts to template repo:\nreview.md, parity.md, enrich-preview.md,\npush-record.md, adoption-state.md\n(REQ-ADOPT-020)"]
-    DONE(["PR open on foreign remote\nURL printed to terminal\nadoption-state.md: phase=push, status=complete"])
+    DONE(["PR open on foreign remote\nURL printed to terminal\nadoption-state.md: current_phase=push, phase_status=complete"])
 
     START --> PREFLIGHT
     PREFLIGHT --> SIZECHECK
