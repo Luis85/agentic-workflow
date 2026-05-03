@@ -91,3 +91,43 @@ test("check:issues rejects malformed required frontmatter value types", () => {
     fs.rmSync(tempIssue, { force: true });
   }
 });
+
+test("check:issues accepts documented spec stage alias", () => {
+  fs.writeFileSync(
+    tempIssue,
+    [
+      "---",
+      "issue_number: null",
+      "title: Spec Alias Test",
+      "feature_slug: spec-alias-test",
+      "type: feature",
+      "roadmap_status: planned",
+      "stage: spec",
+      "github_url: null",
+      "labels: []",
+      "milestone: null",
+      "assignees: []",
+      "created_at: 2026-05-03",
+      "updated_at: 2026-05-03",
+      "---",
+      "",
+      "# Spec Alias Test",
+      "",
+    ].join("\n"),
+    "utf8",
+  );
+
+  try {
+    const result = spawnSync(process.execPath, ["--import", "tsx", "scripts/check-issues.ts", "--json"], {
+      cwd: repoRoot,
+      encoding: "utf8",
+      windowsHide: true,
+    });
+
+    assert.equal(result.status, 0);
+    const output = JSON.parse(result.stdout) as { errors: string[] };
+    assert.deepEqual(output.errors, []);
+  } finally {
+    fs.rmSync(tempIssue, { force: true });
+  }
+});

@@ -33,6 +33,7 @@ import {
   walkFiles,
   writeText,
 } from "./lib/repo.js";
+import { serializeIssueFrontmatterValue } from "./lib/issue-frontmatter.js";
 
 const isDryRun = process.argv.includes("--dry-run");
 const wantsJson = process.argv.includes("--json");
@@ -106,18 +107,7 @@ function today(): string {
 function patchFrontmatter(raw: string, patches: Record<string, unknown>): string {
   let result = raw;
   for (const [key, value] of Object.entries(patches)) {
-    const serialized =
-      value === null
-        ? "null"
-        : Array.isArray(value)
-          ? value.length === 0
-            ? "[]"
-            : `[${(value as string[]).map((v) => `"${v}"`).join(", ")}]`
-          : typeof value === "string"
-            ? needsYamlQuoting(value)
-              ? `"${value.replace(/"/g, '\\"')}"`
-              : value
-            : String(value);
+    const serialized = serializeIssueFrontmatterValue(value);
 
     const linePattern = new RegExp(`^(${escapeRe(key)}:\\s*).*$`, "m");
     if (linePattern.test(result)) {
@@ -125,10 +115,6 @@ function patchFrontmatter(raw: string, patches: Record<string, unknown>): string
     }
   }
   return result;
-}
-
-function needsYamlQuoting(s: string): boolean {
-  return /[\s:#[\]{}"]/.test(s);
 }
 
 function escapeRe(s: string): string {

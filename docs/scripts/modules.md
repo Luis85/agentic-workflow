@@ -48,6 +48,7 @@
 - [lib/doctor](lib/doctor/README.md)
 - [lib/frontmatter](lib/frontmatter/README.md)
 - [lib/github-project-setup](lib/github-project-setup/README.md)
+- [lib/issue-frontmatter](lib/issue-frontmatter/README.md)
 - [lib/markdown-links](lib/markdown-links/README.md)
 - [lib/obsidian](lib/obsidian/README.md)
 - [lib/obsidian-assets](lib/obsidian-assets/README.md)
