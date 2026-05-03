@@ -54,7 +54,7 @@ updated_at: YYYY-MM-DD
 
 | Status | When |
 |---|---|
-| `planned` | stages: idea → research → requirements → design → spec → tasks |
+| `planned` | stages: idea → research → requirements → design → specification → tasks |
 | `in-progress` | stage: implementation |
 | `in-review` | stages: testing → review |
 | `shipped` | stages: release → learning → done |

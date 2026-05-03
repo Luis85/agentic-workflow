@@ -114,6 +114,28 @@ if (fs.existsSync(issuesRoot)) {
       }
     }
 
+    // Type validation for nullable keys
+    const issueNum = data["issue_number"];
+    if (issueNum !== null && issueNum !== undefined && typeof issueNum !== "number") {
+      errors.push(`${rel}: issue_number must be an integer or null, got ${JSON.stringify(issueNum)}`);
+    }
+    const labels = data["labels"];
+    if (labels !== null && labels !== undefined && !Array.isArray(labels)) {
+      errors.push(`${rel}: labels must be an array or null, got ${JSON.stringify(labels)}`);
+    }
+    const assignees = data["assignees"];
+    if (assignees !== null && assignees !== undefined && !Array.isArray(assignees)) {
+      errors.push(`${rel}: assignees must be an array or null, got ${JSON.stringify(assignees)}`);
+    }
+    const milestone = data["milestone"];
+    if (milestone !== null && milestone !== undefined && typeof milestone !== "string") {
+      errors.push(`${rel}: milestone must be a string or null, got ${JSON.stringify(milestone)}`);
+    }
+    const githubUrl = data["github_url"];
+    if (githubUrl !== null && githubUrl !== undefined && typeof githubUrl !== "string") {
+      errors.push(`${rel}: github_url must be a string or null, got ${JSON.stringify(githubUrl)}`);
+    }
+
     // Enum validation
     const rs = data["roadmap_status"];
     if (rs !== undefined && rs !== null && !VALID_ROADMAP_STATUSES.has(rs as string)) {
