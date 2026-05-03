@@ -32,9 +32,8 @@ Each task ≤ ~½ day, has a stable ID, references ≥ 1 requirement, and has a 
 ### T-GRAPH-001 📐 — Create `graph/` directory with `.gitkeep`
 
 - **Description:** Create the top-level `graph/` directory and add an empty `graph/.gitkeep` file so the directory exists in git before the first graphify run. Acts as the home for `graph.html`, `graph.json`, `GRAPH_REPORT.md` (committed) and `cache/` (gitignored).
-- **Satisfies:** REQ-GRAPH-004, SPEC-GRAPH §Scope
+- **Satisfies:** REQ-GRAPH-004, SPEC-GRAPH-001
 - **Owner:** dev
-- **Depends on:** —
 - **Estimate:** S
 - **Definition of done:**
   - [ ] `graph/` directory exists.
@@ -46,9 +45,8 @@ Each task ≤ ~½ day, has a stable ID, references ≥ 1 requirement, and has a 
 ### T-GRAPH-002 📐 — Add `.gitignore` rule for `graph/cache/`
 
 - **Description:** Append the `graph/cache/` exclusion rule (with comment referencing REQ-GRAPH-005 and the how-to doc) to the repo's `.gitignore`. Idempotent: skip if the rule already exists.
-- **Satisfies:** REQ-GRAPH-005, SPEC-GRAPH-004, EC-GRAPH-010
+- **Satisfies:** REQ-GRAPH-005, SPEC-GRAPH-004
 - **Owner:** dev
-- **Depends on:** —
 - **Estimate:** S
 - **Definition of done:**
   - [ ] `.gitignore` contains the comment block + `graph/cache/` line exactly once.
@@ -62,7 +60,6 @@ Each task ≤ ~½ day, has a stable ID, references ≥ 1 requirement, and has a 
 - **Tests covered:** TEST-GRAPH-001 (--help reject, exit 3), TEST-GRAPH-002 (deep-mode argv), TEST-GRAPH-003 (--update argv), TEST-GRAPH-004 (missing graphify, exit 1, exact stderr message from SPEC-GRAPH-005), TEST-GRAPH-005 (--bad-arg, exit 3), TEST-GRAPH-006 (graphify --version exits 1 → wrapper exits 1), TEST-GRAPH-012 (graphify exits non-zero mid-run → wrapper exits 2).
 - **Satisfies:** REQ-GRAPH-002, REQ-GRAPH-003, REQ-GRAPH-008, SPEC-GRAPH-001, SPEC-GRAPH-005
 - **Owner:** qa
-- **Depends on:** —
 - **Estimate:** M
 - **Definition of done:**
   - [ ] All 7 test cases exist and reference TEST-GRAPH-* IDs in their name or metadata.
@@ -104,7 +101,6 @@ Each task ≤ ~½ day, has a stable ID, references ≥ 1 requirement, and has a 
 - **Description:** Author the how-to per SPEC-GRAPH-006 with all required sections: frontmatter (`title`, `folder: docs/how-to`, `description`, `entry_point: false`), Why graphify, Install (commands + minimum version), Verify install, Run (`npm run graph` + `:update`), Browse the graph (open `graph/graph.html`), Troubleshooting (missing-binary message; PATH instructions per OS; concurrent-runs note from EC-GRAPH-009; `git archive` limitation from EC-GRAPH-007), Contributing back (rerun + commit convention).
 - **Satisfies:** REQ-GRAPH-007, SPEC-GRAPH-006
 - **Owner:** dev
-- **Depends on:** —
 - **Estimate:** M
 - **Definition of done:**
   - [ ] File exists at `docs/how-to/use-graphify.md` with all required sections.
@@ -175,7 +171,7 @@ Each task ≤ ~½ day, has a stable ID, references ≥ 1 requirement, and has a 
 ### T-GRAPH-011 🧪 — Full `npm run verify` gate
 
 - **Description:** Run the repo's full verify gate to ensure no regressions introduced by the integration. Per `feedback_verify_gate.md`: never `--no-verify`; gate green locally before push.
-- **Satisfies:** Cross-cutting (verify gate)
+- **Satisfies:** REQ-GRAPH-001, REQ-GRAPH-002, REQ-GRAPH-003, NFR-GRAPH-002
 - **Owner:** qa
 - **Depends on:** T-GRAPH-010
 - **Estimate:** S

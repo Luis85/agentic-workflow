@@ -56,7 +56,7 @@ Integrate [graphify](https://github.com/safishamsi/graphify) into the agentic-wo
   - When a developer inspects `package.json`
   - Then `graph` and `graph:update` scripts are present and their flags fully specify the graphify invocation scope and mode
 - **Priority:** must
-- **Satisfies:** idea.md G1, G2
+- **Satisfies:** IDEA-GRAPH-001
 
 ---
 
@@ -69,7 +69,7 @@ Integrate [graphify](https://github.com/safishamsi/graphify) into the agentic-wo
   - When the developer runs `npm run graph` from the repo root
   - Then graphify runs in deep mode, completes without error, and the three output artifacts appear in the graph output directory
 - **Priority:** must
-- **Satisfies:** idea.md G2
+- **Satisfies:** IDEA-GRAPH-001
 
 ---
 
@@ -82,7 +82,7 @@ Integrate [graphify](https://github.com/safishamsi/graphify) into the agentic-wo
   - When the developer runs `npm run graph:update`
   - Then graphify runs in update mode, only reprocesses changed files, and overwrites the output artifacts with the refreshed graph
 - **Priority:** should
-- **Satisfies:** idea.md G2
+- **Satisfies:** IDEA-GRAPH-001
 
 ---
 
@@ -95,7 +95,7 @@ Integrate [graphify](https://github.com/safishamsi/graphify) into the agentic-wo
   - When a contributor opens `graph.html` in a browser
   - Then the interactive knowledge graph loads and is navigable without any local graphify installation
 - **Priority:** must
-- **Satisfies:** idea.md G1
+- **Satisfies:** IDEA-GRAPH-001
 
 ---
 
@@ -108,7 +108,7 @@ Integrate [graphify](https://github.com/safishamsi/graphify) into the agentic-wo
   - When they run `git status`
   - Then `graph/cache/` does not appear as untracked or modified
 - **Priority:** must
-- **Satisfies:** idea.md G3
+- **Satisfies:** IDEA-GRAPH-001
 
 ---
 
@@ -121,7 +121,7 @@ Integrate [graphify](https://github.com/safishamsi/graphify) into the agentic-wo
   - When the output file list is inspected
   - Then no file under `graph/` appears in the list
 - **Priority:** must
-- **Satisfies:** idea.md G3
+- **Satisfies:** IDEA-GRAPH-001
 
 ---
 
@@ -134,7 +134,7 @@ Integrate [graphify](https://github.com/safishamsi/graphify) into the agentic-wo
   - When they follow the graphify installation step
   - Then `graphify --version` succeeds in their shell
 - **Priority:** must
-- **Satisfies:** idea.md G4
+- **Satisfies:** IDEA-GRAPH-001
 
 ---
 
@@ -147,7 +147,7 @@ Integrate [graphify](https://github.com/safishamsi/graphify) into the agentic-wo
   - When the developer runs `npm run graph`
   - Then the script exits non-zero and the terminal output contains a human-readable message with the documentation location
 - **Priority:** should
-- **Satisfies:** idea.md G4
+- **Satisfies:** IDEA-GRAPH-001
 
 ---
 

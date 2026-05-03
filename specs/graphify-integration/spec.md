@@ -272,20 +272,20 @@ stateDiagram-v2
 
 ## Test scenarios
 
-| Test ID | Scenario | Type |
-|---|---|---|
-| TEST-GRAPH-001 | `tsx scripts/graphify-run.ts --help` is rejected (exit 3 with usage message) | unit |
-| TEST-GRAPH-002 | `tsx scripts/graphify-run.ts` with stubbed `graphify` (passes `--version`) → spawns graphify with deep flags | unit (mock spawn) |
-| TEST-GRAPH-003 | `tsx scripts/graphify-run.ts --update` with stubbed graphify → spawns graphify with `--update` flag | unit (mock spawn) |
-| TEST-GRAPH-004 | `tsx scripts/graphify-run.ts` with absent graphify (mocked ENOENT) → exit 1, exact stderr message | unit (mock spawn) |
-| TEST-GRAPH-005 | `tsx scripts/graphify-run.ts --bad-arg` → exit 3 with usage | unit |
-| TEST-GRAPH-006 | `tsx scripts/graphify-run.ts` when `graphify --version` is mocked to exit 1 → wrapper exits 1 (treats as unavailable) | unit |
-| TEST-GRAPH-007 | After integration, `git status` shows nothing under `graph/cache/` | integration |
-| TEST-GRAPH-008 | `npm pack --dry-run` output contains zero `graph/` entries | integration |
-| TEST-GRAPH-009 | `npm run check:links` passes including `docs/how-to/use-graphify.md` | integration |
-| TEST-GRAPH-010 | `npm run check:frontmatter` passes including `docs/how-to/use-graphify.md` | integration |
-| TEST-GRAPH-011 | Combined `graph/graph.html` + `graph/graph.json` size ≤ 10 MB at commit | integration (size assertion) |
-| TEST-GRAPH-012 | `tsx scripts/graphify-run.ts` exits 2 when stubbed graphify exits non-zero mid-run | unit (mock spawn) |
+| Test ID | Scenario | Type | Requirements |
+|---|---|---|---|
+| TEST-GRAPH-001 | `tsx scripts/graphify-run.ts --help` is rejected (exit 3 with usage message) | unit | REQ-GRAPH-002, REQ-GRAPH-008 |
+| TEST-GRAPH-002 | `tsx scripts/graphify-run.ts` with stubbed `graphify` (passes `--version`) → spawns graphify with deep flags | unit (mock spawn) | REQ-GRAPH-002 |
+| TEST-GRAPH-003 | `tsx scripts/graphify-run.ts --update` with stubbed graphify → spawns graphify with `--update` flag | unit (mock spawn) | REQ-GRAPH-003 |
+| TEST-GRAPH-004 | `tsx scripts/graphify-run.ts` with absent graphify (mocked ENOENT) → exit 1, exact stderr message | unit (mock spawn) | REQ-GRAPH-008 |
+| TEST-GRAPH-005 | `tsx scripts/graphify-run.ts --bad-arg` → exit 3 with usage | unit | REQ-GRAPH-002 |
+| TEST-GRAPH-006 | `tsx scripts/graphify-run.ts` when `graphify --version` is mocked to exit 1 → wrapper exits 1 (treats as unavailable) | unit | REQ-GRAPH-008 |
+| TEST-GRAPH-007 | After integration, `git status` shows nothing under `graph/cache/` | integration | REQ-GRAPH-005 |
+| TEST-GRAPH-008 | `npm pack --dry-run` output contains zero `graph/` entries | integration | REQ-GRAPH-006 |
+| TEST-GRAPH-009 | `npm run check:links` passes including `docs/how-to/use-graphify.md` | integration | REQ-GRAPH-007 |
+| TEST-GRAPH-010 | `npm run check:frontmatter` passes including `docs/how-to/use-graphify.md` | integration | REQ-GRAPH-007 |
+| TEST-GRAPH-011 | Combined `graph/graph.html` + `graph/graph.json` size ≤ 10 MB at commit | integration (size assertion) | NFR-GRAPH-005 |
+| TEST-GRAPH-012 | `tsx scripts/graphify-run.ts` exits 2 when stubbed graphify exits non-zero mid-run | unit (mock spawn) | REQ-GRAPH-002 |
 
 ---
 
