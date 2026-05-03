@@ -22,7 +22,7 @@ Pick **one** of the two shapes below for your project. Both are supported by thi
 | `demo` (optional) | Deployable preview / GitHub Pages. | **No** — promoted from `main` or `develop`. |
 | `feat/*`, `fix/*`, `refactor/*`, `chore/*`, `docs/*` | Topic branches. Cut from `develop`. | Yes (topic branch only). |
 
-The default `.claude/settings.json` shipped with this template denies pushes to both `main` and `develop` so either shape is safe out of the box. Loosen the denylist deliberately, never silently.
+The default `.claude/settings.json` shipped with this template denies pushes to both `main` and `develop` so either shape is safe out of the box. Loosen the denylist deliberately, never silently. The full set of rights the workflow needs across local git, GitHub, Pages, Packages, and the Claude Code harness is collected in [`docs/rbac.md`](rbac.md).
 
 ## Topic branch prefixes
 
