@@ -13,15 +13,22 @@ This repo treats Codex as an autonomous topic-branch contributor. When a human a
    git worktree add .worktrees/<slug> -b <prefix>/<slug> origin/<integration-branch>
    ```
 
-4. Work only inside that worktree.
-5. Keep the change to one concern and update the corresponding docs, state files, or issue records in the same branch.
-6. Run the relevant verification gate before pushing. In this template, use `npm run verify` as the final gate. During iteration, `npm run check:fast`, `npm run check:content`, `npm run check:workflow`, and `npm run verify:changed` are available for narrower feedback; use `npm run verify:json` when structured diagnostics are needed. If a downstream project has no single `verify` command for the change type, run targeted checks and say exactly what passed.
-7. Commit with an imperative message that references relevant IDs or issue paths.
-8. Push the topic branch to `origin`.
-9. Open a pull request against the integration branch with a Conventional Commits title that matches the CI allowlist. Allowed title types are `feat`, `fix`, `chore`, `docs`, `refactor`, `perf`, `test`, `build`, `ci`, and `revert`; scopes are optional. Do not invent descriptive types such as `plan:` or `release:`. For planning artifacts and documentation-only specs, use `docs: ...`.
-10. After opening the PR, re-check PR mergeability and CI status. If the PR-title check fails, update the PR title immediately instead of pushing a code-only retry.
-11. Final response must include the PR URL, branch, commit, verification result, and any remaining risk.
-12. Ask the human what they want next: review, merge, follow-up changes, or cleanup after merge.
+4. Install the project inside the new worktree before running verification:
+
+   ```bash
+   npm ci
+   ```
+
+   Fresh worktrees do not share `node_modules` with the main checkout. Skipping this step can make first-run verify actions fail before they reach the actual project checks.
+5. Work only inside that worktree.
+6. Keep the change to one concern and update the corresponding docs, state files, or issue records in the same branch.
+7. Run the relevant verification gate before pushing. In this template, use `npm run verify` as the final gate. During iteration, `npm run check:fast`, `npm run check:content`, `npm run check:workflow`, and `npm run verify:changed` are available for narrower feedback; use `npm run verify:json` when structured diagnostics are needed. If a downstream project has no single `verify` command for the change type, run targeted checks and say exactly what passed.
+8. Commit with an imperative message that references relevant IDs or issue paths.
+9. Push the topic branch to `origin`.
+10. Open a pull request against the integration branch with a Conventional Commits title that matches the CI allowlist. Allowed title types are `feat`, `fix`, `chore`, `docs`, `refactor`, `perf`, `test`, `build`, `ci`, and `revert`; scopes are optional. Do not invent descriptive types such as `plan:` or `release:`. For planning artifacts and documentation-only specs, use `docs: ...`.
+11. After opening the PR, re-check PR mergeability and CI status. If the PR-title check fails, update the PR title immediately instead of pushing a code-only retry.
+12. Final response must include the PR URL, branch, commit, verification result, and any remaining risk.
+13. Ask the human what they want next: review, merge, follow-up changes, or cleanup after merge.
 
 ## When Codex should pause
 

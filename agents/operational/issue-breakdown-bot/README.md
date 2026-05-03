@@ -29,10 +29,12 @@ The interactive `/issue:breakdown` conductor gates with `AskUserQuestion` and is
 Per‑project, before the first run:
 
 1. **Create the `breakdown-me` label** on the repo.
-2. **Wire a Claude Code runner.** This template ships the trigger contract at [`.github/workflows/issue-breakdown-bot.yml`](../../../.github/workflows/issue-breakdown-bot.yml) but does **not** invoke a model — that step is project‑specific. Replace the "Run the bot prompt" placeholder step with your team's preferred Claude Code action (e.g. `anthropics/claude-code-action`), pointing it at [`PROMPT.md`](./PROMPT.md) and the issue payload from `${GITHUB_EVENT_PATH}`. Keep the workflow's trigger / `if:` / `concurrency` / `permissions` blocks unchanged.
-3. **Provision secrets.** The Claude Code action you wire will need an `ANTHROPIC_API_KEY` (or equivalent) repo secret. The shipped workflow uses only `${{ secrets.GITHUB_TOKEN }}` for `gh` calls.
-4. **Run with `DRY_RUN=1` once** (set `env: DRY_RUN: "1"` on the runner step) before enabling for real. Read the stdout dump in the Actions log.
-5. **(Optional) Adopt the same trusted‑bot pattern as `dep-triage-bot`** if your repo restricts who may apply the `breakdown-me` label. The bot itself does not validate the labeller's identity — branch protection / label permissions are the trust boundary.
+2. **Keep the write-capable runner disabled by default.** The shipped workflow's default `placeholder` job only has `issues: write` permission and comments when the label is applied. It cannot push branches or open PRs.
+3. **Wire a Claude Code runner.** Replace the guarded `Refuse until a model runner is wired` step in [`.github/workflows/issue-breakdown-bot.yml`](../../../.github/workflows/issue-breakdown-bot.yml) with your team's preferred Claude Code action (e.g. `anthropics/claude-code-action`), pointing it at [`PROMPT.md`](./PROMPT.md) and the issue payload from `${GITHUB_EVENT_PATH}`. Keep the workflow's trigger / `if:` / `concurrency` blocks unchanged. Keep the broader `contents: write` / `pull-requests: write` job permissions only on the gated runner job.
+4. **Provision environment secrets.** Create the `issue-breakdown-bot` GitHub environment and store `ANTHROPIC_API_KEY` (or equivalent) there. Add reviewers or wait timers if your repo wants human approval before the write-capable runner receives the model secret. The runner uses `${{ secrets.GITHUB_TOKEN }}` for `gh` calls.
+5. **Enable the write-capable runner intentionally.** Set repository variable `ISSUE_BREAKDOWN_BOT_ENABLED=true` only after the model runner step, environment, and secret are in place. Until that variable is set, applying `breakdown-me` cannot mint a write-capable token.
+6. **Run with `DRY_RUN=1` once** (set `env: DRY_RUN: "1"` on the runner step) before enabling for real. Read the stdout dump in the Actions log.
+7. **(Optional) Adopt the same trusted‑bot pattern as `dep-triage-bot`** if your repo restricts who may apply the `breakdown-me` label. The bot itself does not validate the labeller's identity — branch protection / label permissions are the trust boundary.
 
 ## How findings get closed
 
@@ -49,6 +51,7 @@ GitHub's native task‑list‑link feature auto‑strikes the matching `- [ ] #<
 
 - **Trigger.** Default is `issues: types: [labeled]` filtered to `breakdown-me`. Some teams add `issue_comment` triggers for slash‑command‑on‑comment ergonomics — keep the `concurrency.group` keyed per issue if you do.
 - **Concurrency.** `cancel-in-progress: false`. Two runs against the same issue queue rather than race the parent‑issue body edit. Do **not** flip this to `true` — `gh issue edit --body` is last‑write‑wins and not safe to interrupt mid‑write.
+- **Permissions.** Default label-triggered runs stay on the low-permission placeholder path (`issues: write` only). The write-capable `decompose` job is gated by repository variable `ISSUE_BREAKDOWN_BOT_ENABLED=true`, uses the `issue-breakdown-bot` environment for model secrets, and should stay disabled until a real model runner and environment secret are configured.
 - **Branch prefix.** Slice branches are `feat/*`; the housekeeping branch is `chore/*`. Both must be permitted by branch protection. The integration branch (`main` or `develop`, auto‑detected) is push‑denied per `.claude/settings.json` for local Claude — the workflow runs under `${{ secrets.GITHUB_TOKEN }}` and inherits branch protection from the GitHub side.
 - **Fallback parser.** The bot uses the same liberal parser as the interactive conductor — accepts both the canonical `templates/tasks-template.md` shape *and* the legacy pre‑template shape (no emojis, hyphen separator, missing optional anchors). Drift in the template does not break the bot.
 

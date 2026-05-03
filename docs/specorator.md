@@ -19,9 +19,10 @@ A solution-agnostic, **spec-driven** workflow for building software with humans 
 9. [Usage guidelines](#9-usage-guidelines)
 10. [Future extensions](#10-future-extensions)
 11. [Quality Assurance Track](#11-quality-assurance-track)
-12. [Roadmap Management Track](#12-roadmap-management-track)
-13. [Design Track](#13-design-track)
-14. [Improving Specorator itself](#14-improving-specorator-itself)
+12. [Project-review Workflow](#12-project-review-workflow)
+13. [Roadmap Management Track](#13-roadmap-management-track)
+14. [Design Track](#14-design-track)
+15. [Improving Specorator itself](#15-improving-specorator-itself)
 
 ---
 
@@ -94,9 +95,10 @@ flowchart LR
 - **Project Scaffolding Track** — a source-led onboarding workflow for teams adopting the template with existing folders or Markdown files. Produces `starter-pack.md` and `handoff.md`, then routes to Discovery, Stage 1, Project Manager Track, or Stock-taking. Defined in [`docs/project-scaffolding-track.md`](project-scaffolding-track.md); rationale in [ADR-0011](adr/0011-add-project-scaffolding-track.md). **Use when source material exists but no canonical artifacts exist yet.**
 - **Discovery Track** — a 5-phase ideation + design-sprint mini-workflow (Frame → Diverge → Converge → Prototype → Validate → Handoff) for teams arriving with a blank page rather than a brief. Produces `chosen-brief.md` which seeds Stage 1. Defined in [`docs/discovery-track.md`](discovery-track.md); rationale in [ADR-0005](adr/0005-add-discovery-track-before-stage-1.md). **Skip when a brief already exists.**
 
-**Optional companion track** (run alongside projects, portfolios, releases, or features when quality-system readiness matters):
+**Optional companion workflows** (run alongside projects, portfolios, releases, or features when quality, learning, or delivery governance matters):
 
 - **Quality Assurance Track** — an ISO 9001-aligned evidence workflow for checking project execution health and delivery readiness. Produces `quality-plan.md`, checklists, `quality-review.md`, and `improvement-plan.md`. Defined in [`docs/quality-assurance-track.md`](quality-assurance-track.md). **Use for internal readiness, quality drift review, release readiness, supplier assurance, or audit preparation.**
+- **Project-review workflow** — an evidence-backed review of project artifacts, git history, PR/issue/CI signals, and retrospectives. Produces project-review artifacts under `quality/<slug>/`, opens a tracking issue, and creates the first draft PR for the selected improvement from its own worktree. Defined in [`docs/project-review-workflow.md`](project-review-workflow.md). **Use when a maintainer wants cross-project learnings and concrete improvement proposals instead of a retrospective that stops at notes.**
 - **Roadmap Management Track** — an outcome-led product/project planning workflow for roadmaps, delivery confidence, stakeholder alignment, and team communication. Produces `roadmap-board.md`, `delivery-plan.md`, `stakeholder-map.md`, `communication-log.md`, and `decision-log.md` under `roadmaps/<slug>/`. Defined in [`docs/roadmap-management-track.md`](roadmap-management-track.md). **Use when product direction, project delivery constraints, stakeholder expectations, and team communication need one maintained source of truth.**
 - **Design Track** — a four-phase, brand-aware surface-creation workflow (Frame → Sketch → Mock → Handoff) for producing new user-visible surfaces under the Specorator brand system. Produces `design-brief.md`, `sketch.md`, an optional `mock.html`, and `design-handoff.md` under `designs/<slug>/`. Defined in [`docs/design-track.md`](design-track.md); rationale in [ADR-0019](adr/0019-add-design-track.md). **Use when creating a new surface (docs site, marketing page, onboarding flow, dashboard) or significantly redesigning an existing one. Do not use for feature-level UI work — use `/spec:design` (Stage 4) instead.**
 
@@ -124,6 +126,37 @@ Each stage **consumes inputs**, **produces a defined artifact**, **is owned by o
 
 Quality gates per stage are summarised below; the full Definition of Done lives in [`docs/quality-framework.md`](quality-framework.md).
 
+### 3.0 Stage-gate handoff (applies to every stage)
+
+Every stage command runs two standard phases around the specialist agent's work.
+
+#### Pre-stage gate (before spawning the specialist)
+
+1. Check whether an open PR already exists for the current branch (`gh pr list --head <branch> --state open`).
+2. If no PR exists **and** `gh` is available, ask: **"Create a draft PR now to isolate and document this stage's work? (y/n)"**
+   - Yes → `gh pr create --draft --title "feat(<slug>): [WIP] Stage N — <stage-name>" --body "Closes <github_url from issues/*.md>\n\nStage N: <stage-name>"`. Record the PR URL in `workflow-state.md` hand-off notes.
+   - No → proceed; the user may open the PR manually at any time.
+3. If a PR already exists, print its URL so the user has context.
+
+#### Post-stage gate (after the specialist agent returns and workflow-state.md is updated)
+
+1. **Update the issue file** (`issues/<number>-<slug>.md`):
+   - Set `stage` to the completed stage name.
+   - Update `roadmap_status` using the mapping below.
+   - Set `updated_at` to today.
+2. **Push the branch** (`git push`) so the PR reflects the latest work.
+3. **Mark PR ready for review** (`gh pr ready <PR>`) **only when completing the testing stage** — this is the point at which the feature is ready for human code review. For all earlier stages (idea through implementation), skip this step; the PR stays draft while work is in progress. If no PR exists (user declined at pre-stage), skip this step.
+
+#### `roadmap_status` by stage
+
+| Stage | `roadmap_status` |
+|---|---|
+| idea, research, requirements, design, specification, tasks | `planned` |
+| implementation (any task done, not all done) | `in-progress` |
+| testing, review | `in-review` |
+| release, learning | `shipped` |
+| (any, manually set) | `cancelled` — sync never overwrites this |
+
 ### 3.1 Idea
 - **Goal:** Capture and structure an initial concept.
 - **Quality gate:** Problem is understandable. Scope is bounded. Unknowns are listed.
@@ -143,7 +176,7 @@ Quality gates per stage are summarised below; the full Definition of Done lives 
   - **`design-twice`** — explore divergent module shapes when the design has a genuine fork. Produces `design-comparison.md`.
   - **`arc42-baseline`** — for any architecture-significant feature (SaaS, on-premises, embedded, internal tool, library), drive the Arc42 + 12-Factor questionnaire to lock cross-cutting non-functional and operability decisions before Part C. Produces `arc42-questionnaire.md`, files ADRs for accepted key decisions, and feeds `/spec:design` as canonical input. Sections not applicable to the project type are marked `N/A`.
   - **`specorator-design`** — canonical brand source (tokens, voice, iconography rules, UI kit, deck system). Invoke before generating user-visible HTML / CSS / mocks. Lift values from `colors_and_type.css` by token name; never invent colors, weights, radii, or shadows. See [ADR-0016](adr/0016-design-system-as-skill.md).
-  - **Design Track** — when the feature introduces a *new surface* (not just a UI component within an existing surface), run `/design:start <slug>` first. The `design-handoff.md` it produces is the canonical input to Stage 4 Part B: `ui-designer` consumes it (component assignments, token references, microcopy, accessibility checklist) rather than redoing the work. A future ADR will codify a design-handoff-aware branch in `/spec:design`; until then, treat the handoff as authoritative and use Part B to surface only feature-level deltas.
+  - **Design Track** — when the feature introduces a *new surface* (not just a UI component within an existing surface), run `/design:start <slug>` first. The `design-handoff.md` it produces is the canonical input to Stage 4 Part B: `/spec:design` automatically scans `designs/*/design-handoff.md` for a `downstream` match and passes it to `ui-designer`, which writes only feature-level deltas. See [ADR-0032](adr/0032-design-handoff-to-spec-design-bridge.md).
 - **Quality gate:** Boundaries clear. Decisions justified. Irreversible architecture choices have ADRs.
 
 ### 3.5 Specification
@@ -204,6 +237,7 @@ Each stage is owned by a dedicated agent defined in [`.claude/agents/`](../.clau
 | Cross-cutting role (post-release ops, incident response, day-2) | `sre` | `.claude/agents/sre.md` |
 | Cross-cutting role (stage routing & hand-off) | `orchestrator` | `.claude/agents/orchestrator.md` |
 | Pre-workflow — source-led template adoption | `project-scaffolder` | `.claude/agents/project-scaffolder.md` |
+| Project review workflow | `project-reviewer` | `.claude/agents/project-reviewer.md` |
 
 ### Agent rules
 
@@ -283,6 +317,12 @@ The `orchestrator` agent (or a human) reads `workflow-state.md` and:
 | `/quality:review <slug>` | Summarize readiness, nonconformities, and risks |
 | `/quality:improve <slug>` | Convert findings into corrective actions and improvement follow-up |
 | `/quality:status [--feature <slug>] [--compare] [--save]` | Report deterministic quality KPIs, maturity, attention signals, and trend deltas |
+| `/project-review:start <slug> <scope>` | Start a project history and learning review |
+| `/project-review:plan <slug>` | Define evidence sources, questions, exclusions, and first PR criteria |
+| `/project-review:inspect <slug>` | Inspect artifacts, git history, issues, PRs, CI, and retrospectives |
+| `/project-review:synthesize <slug>` | Summarize learnings, strengths, friction, risks, and hypotheses |
+| `/project-review:propose <slug>` | Rank improvement proposals and select the first draft PR candidate |
+| `/project-review:handoff <slug>` | Open the tracking issue and first draft PR from a dedicated worktree |
 | `/roadmap:start <slug>` | Start a product/project roadmap workspace |
 | `/roadmap:shape <slug>` | Build or refresh the outcome roadmap and delivery plan |
 | `/roadmap:align <slug>` | Map stakeholders and prepare team communication |
@@ -379,7 +419,26 @@ For release-specific go/no-go preparation, use the Stage 10 [`release-readiness-
 
 ---
 
-## 12. Roadmap Management Track
+## 12. Project-review Workflow
+
+The Project-review workflow reviews a project as a delivery system. It inspects project artifacts, git history, merged PRs, issues, CI signals, retrospectives, and review feedback; captures learnings; summarizes findings; proposes improvements; opens a tracking issue; and creates the first draft PR for the selected proposal from a dedicated worktree.
+
+It uses the existing `quality/<slug>/` sink because it is a quality-and-learning companion workflow rather than a new lifecycle stage or top-level intake tree.
+
+| Phase | Command | Artifact |
+|---|---|---|
+| Start | `/project-review:start <slug> <scope>` | `project-review-state.md` |
+| Plan | `/project-review:plan <slug>` | `review-plan.md` |
+| Inspect | `/project-review:inspect <slug>` | `history-review.md` |
+| Synthesize | `/project-review:synthesize <slug>` | `findings.md` |
+| Propose | `/project-review:propose <slug>` | `improvement-proposals.md` |
+| Handoff | `/project-review:handoff <slug>` | GitHub issue + first draft PR |
+
+Use it after a meaningful delivery period, before a release train planning reset, after repeated PR/CI friction, or when a maintainer wants repo-history-backed improvement work. The full method lives in [`docs/project-review-workflow.md`](project-review-workflow.md).
+
+---
+
+## 13. Roadmap Management Track
 
 The Roadmap Management Track creates an outcome-led product/project roadmap that is useful for both product management and project management. It connects desired customer/business outcomes to delivery confidence, dependencies, risks, stakeholder alignment, and team communication.
 
@@ -395,7 +454,7 @@ Use it when a team needs a maintained roadmap that explains what is Now / Next /
 
 ---
 
-## 13. Design Track
+## 14. Design Track
 
 The Design Track is a four-phase, brand-aware workflow for producing new user-visible surfaces — marketing pages, docs sites, onboarding flows, dashboards — under the Specorator brand system. It is distinct from Stage 4 (`/spec:design`), which handles feature-level UI design within an existing surface.
 
@@ -415,7 +474,7 @@ The full methodology lives in [`docs/design-track.md`](design-track.md). Rationa
 
 ---
 
-## 14. Improving Specorator itself
+## 15. Improving Specorator itself
 
 Specorator can be used to improve the template while a human is actively using it. Treat those requests as template improvements, not downstream product work. Examples include adding a quality drift review check, introducing a new operational routine, adding slash commands, or updating the workflow method.
 

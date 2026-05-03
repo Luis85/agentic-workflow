@@ -1,8 +1,8 @@
 ---
 feature: graphify-integration
 area: GRAPH            # short uppercase code; used in IDs (REQ-<AREA>-NNN)
-current_stage: implementation     # idea | research | requirements | design | specification | tasks | implementation | testing | review | release | learning
-status: paused          # active | blocked | paused | done
+current_stage: learning     # idea | research | requirements | design | specification | tasks | implementation | testing | review | release | learning
+status: done          # active | blocked | paused | done
 last_updated: 2026-05-03
 last_agent: planner
 artifacts:              # canonical machine-readable map; the table below is its human view
@@ -12,13 +12,13 @@ artifacts:              # canonical machine-readable map; the table below is its
   design.md: complete
   spec.md: complete
   tasks.md: complete
-  implementation-log.md: pending
-  test-plan.md: pending
-  test-report.md: pending
-  review.md: pending
-  traceability.md: pending
-  release-notes.md: pending
-  retrospective.md: pending
+  implementation-log.md: complete
+  test-plan.md: complete
+  test-report.md: complete
+  review.md: complete
+  traceability.md: complete
+  release-notes.md: complete
+  retrospective.md: complete
 ---
 
 # Workflow state — graphify-integration
@@ -33,11 +33,11 @@ artifacts:              # canonical machine-readable map; the table below is its
 | 4. Design | `design.md` | complete |
 | 5. Specification | `spec.md` | complete |
 | 6. Tasks | `tasks.md` | complete |
-| 7. Implementation | `implementation-log.md` + code | pending |
-| 8. Testing | `test-plan.md`, `test-report.md` | pending |
-| 9. Review | `review.md`, `traceability.md` | pending |
-| 10. Release | `release-notes.md` | pending |
-| 11. Learning | `retrospective.md` | pending |
+| 7. Implementation | `implementation-log.md` + code | complete |
+| 8. Testing | `test-plan.md`, `test-report.md` | complete |
+| 9. Review | `review.md`, `traceability.md` | complete |
+| 10. Release | `release-notes.md` | complete |
+| 11. Learning | `retrospective.md` | complete |
 
 > **Statuses:** `pending` | `in-progress` | `complete` | `skipped` | `blocked`. Section semantics + status enums: see [`_shared/state-file-sections.md`](../../templates/_shared/state-file-sections.md).
 
@@ -89,6 +89,13 @@ artifacts:              # canonical machine-readable map; the table below is its
                            .worktrees/graphify-integration/ via /orchestrate; first
                            task = T-GRAPH-001 (create graph/ + .gitkeep). Batch 1
                            parallelisable: T-001, T-002, T-003, T-006.
+2026-05-03 (dev):          Implemented issue #263 through T-GRAPH-011. OQ-GRAPH-001
+                           resolved against graphifyy 0.7.0: wrapper uses
+                           GRAPHIFY_OUT=graph with `graphify update .` rather than
+                           unavailable --output-dir/--exclude/--version flags.
+                           Generated graph artifacts and ran local verification.
+2026-05-03 (qa/review):    Testing, review, release notes, traceability, and
+                           retrospective filed. `npm run verify` passed locally.
 ```
 
 ## Open clarifications
