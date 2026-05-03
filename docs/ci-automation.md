@@ -71,6 +71,8 @@ Both ecosystems run weekly Monday 06:00 / 06:30 UTC. The hour offset spreads PR 
 
 Dependabot version updates are not the same as Dependabot alerts. Repository maintainers should enable Dependabot alerts in GitHub security settings so already-merged dependencies are checked when new advisories are published. Dependency review covers PR diffs; alerts cover the resting dependency graph.
 
+Dependabot security updates stay disabled initially to avoid unplanned PR volume. Turn them on after the alert baseline is known and the team wants Dependabot to open remediation PRs automatically.
+
 ### Release cooldown
 
 Both blocks set `cooldown` so Dependabot waits before proposing newly published versions:
