@@ -1,10 +1,10 @@
 ---
 feature: shape-b-branching-adoption
 area: BRANCH
-current_stage: implementation
-status: active
-last_updated: 2026-05-03
-last_agent: architect
+current_stage: complete
+status: complete
+last_updated: 2026-05-04
+last_agent: reviewer
 artifacts:
   idea.md: complete
   research.md: complete
@@ -12,13 +12,13 @@ artifacts:
   design.md: complete
   spec.md: complete
   tasks.md: complete
-  implementation-log.md: pending
-  test-plan.md: pending
-  test-report.md: pending
-  review.md: pending
-  traceability.md: pending
-  release-notes.md: pending
-  retrospective.md: pending
+  implementation-log.md: in-progress
+  test-plan.md: complete
+  test-report.md: complete
+  review.md: complete
+  traceability.md: complete
+  release-notes.md: complete
+  retrospective.md: complete
 ---
 
 # Workflow state — shape-b-branching-adoption
@@ -33,11 +33,11 @@ artifacts:
 | 4. Design | `design.md` | complete |
 | 5. Specification | `spec.md` | complete |
 | 6. Tasks | `tasks.md` | complete |
-| 7. Implementation | `implementation-log.md` + code | pending |
-| 8. Testing | `test-plan.md`, `test-report.md` | pending |
-| 9. Review | `review.md`, `traceability.md` | pending |
-| 10. Release | `release-notes.md` | pending |
-| 11. Learning | `retrospective.md` | pending |
+| 7. Implementation | `implementation-log.md` + code | in-progress |
+| 8. Testing | `test-plan.md`, `test-report.md` | complete |
+| 9. Review | `review.md`, `traceability.md` | complete |
+| 10. Release | `release-notes.md` | complete |
+| 11. Learning | `retrospective.md` | complete |
 
 > **Statuses:** `pending` | `in-progress` | `complete` | `skipped` | `blocked`.
 
@@ -127,6 +127,19 @@ Plan-level meta-features may skip Stage 7-9 canonical artifacts when each sub-ta
                  if the user opts in again.
                  Next: /spec:tasks (or stop here per agreed scope).
 
+2026-05-03 (qa): test-plan.md and test-report.md complete. 16 tests written
+                 (TEST-BRANCH-001 through TEST-BRANCH-015 + TEST-BRANCH-009b).
+                 FILE tests: 12 of 12 PASS. MANUAL tests: 3 deferred to deployment
+                 phase. N/A: 1 (REQ-BRANCH-013, release/v0.5.0 absent from remote).
+                 Zero failures. NFR-BRANCH-005 deny count=21 (threshold 19, PASS).
+                 One NFR-003 heuristic false positive disclosed and confirmed not
+                 a defect (correct Shape B prose in AGENTS.md). All must/should
+                 requirements have test coverage. MANUAL-deferred tests require
+                 spec Steps 5, 5b, 7, 12 on the live remote before closure.
+                 Recommendation: ready for /spec:review. MANUAL tests are
+                 deployment-phase gate items, not Stage 9 blockers.
+                 Next: /spec:review.
+
 2026-05-03 (planner): tasks.md complete. 29 tasks written (T-BRANCH-001 through
                  T-BRANCH-029) in TDD order, covering all 15 REQ-BRANCH-NNN and
                  6 NFR-BRANCH-NNN. Breakdown by type: 10 test/verification tasks
@@ -178,6 +191,52 @@ Plan-level meta-features may skip Stage 7-9 canonical artifacts when each sub-ta
                  (Stages 5-11 gated on parent issue triage and #233). Spec
                  stage may proceed if user opts in.
                  Next: /spec:specify (or stop here per agreed scope).
+
+2026-05-04 (release-manager): release-notes.md complete. Verdict from review:
+                 APPROVED_WITH_FINDINGS (no blockers). release-notes.md written
+                 covering: summary, 12 files changed, post-merge checklist (8
+                 human-owned remote-ops in critical-path order), rollback plan
+                 (trigger, mechanism, data implications, communication),
+                 9 file-level + 4 remote-ops verification steps, 6 known
+                 limitations disclosed (none buried), observability signals
+                 (CI gate, Pages deploy, PR discipline metric, counter-metric).
+                 Product-page check: no user-visible product capability or
+                 public CTA changes — sites/index.html not affected.
+                 Quality KPI: npm run quality:metrics not run (no saved baseline
+                 for this feature; this is a documentation/config-only change
+                 with no script artefacts that the metrics runner would score).
+                 AUTHORISATION GATE: release-notes.md is complete and ready.
+                 Human must authorise before any tag, push, or remote operation.
+                 Next: /spec:retro (retrospective already complete per state above).
+                 Pending human actions: post-merge checklist in release-notes.md
+                 §Post-merge checklist; close issue #255 when complete.
+
+2026-05-04 (reviewer): review.md and traceability.md complete. Verdict:
+                 APPROVED_WITH_FINDINGS. All 11 file-level REQs (REQ-BRANCH-001,
+                 -002, -003, -004, -005, -007, -008, -010, -011, -012, -015) PASS
+                 against spec verification commands. NFR-BRANCH-003, -004, -005
+                 PASS (deny count = 21). Four REQs (REQ-BRANCH-006, -009 partial,
+                 -013, -014) and three NFRs (-001, -002, -006) intentionally
+                 PENDING — they depend on human-owned remote ops (T-BRANCH-001,
+                 -002, -006, -008, -010, -012) that are out of scope for this
+                 file-change PR per implementation log §"Tasks NOT executed".
+                 Six findings logged: F-001 (low, workflow-state status drift),
+                 F-002 (medium, five remote/human tasks must be sequenced post-
+                 merge), F-003 (medium, pages.yml staged-but-inert until remote
+                 ops complete), F-004 (low, this PR targets main by necessity),
+                 F-005 (low, resolved spec-line link), F-006 (low, pre-existing
+                 typedoc env artefact). No blocking findings. Brand review:
+                 not-applicable (no UI surfaces touched). Verify gate green
+                 (less the pre-existing check:script-docs typedoc artefact).
+                 ADR-0020 body immutability respected; git diff against
+                 origin/main returns empty for that file.
+                 Hand-off to: release-manager. Sequence and execute the five
+                 pending human-owned remote tasks (T-BRANCH-006, -008, -010,
+                 -012, plus the gh workflow run pages.yml --ref demo
+                 verification) per spec §State Transitions order. Capture
+                 NFR-BRANCH-001/002/006 evidence in implementation-log.md.
+                 Then update workflow-state to current_stage: release.
+                 Next: /spec:release.
 ```
 
 ## Open clarifications
