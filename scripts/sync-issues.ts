@@ -56,13 +56,25 @@ function ghAvailable(): boolean {
   }
 }
 
-function fetchGitHubIssues(): Map<number, GitHubIssue> {
-  const raw = execSync(
-    "gh issue list --json number,title,state,labels,milestone,assignees,url --limit 200 --state all",
-    { encoding: "utf8" },
-  );
-  const issues: GitHubIssue[] = JSON.parse(raw);
-  return new Map(issues.map((i) => [i.number, i]));
+function fetchGitHubIssue(number: number): GitHubIssue | null {
+  try {
+    const raw = execSync(
+      `gh issue view ${number} --json number,title,state,labels,milestone,assignees,url`,
+      { encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] },
+    );
+    return JSON.parse(raw) as GitHubIssue;
+  } catch {
+    return null;
+  }
+}
+
+function fetchGitHubIssues(numbers: number[]): Map<number, GitHubIssue> {
+  const map = new Map<number, GitHubIssue>();
+  for (const n of numbers) {
+    const issue = fetchGitHubIssue(n);
+    if (issue) map.set(n, issue);
+  }
+  return map;
 }
 
 function deriveRoadmapStatus(ghState: string, labels: string[]): string {
@@ -120,32 +132,34 @@ if (!ghAvailable()) {
   process.exit(1);
 }
 
-let ghIssues: Map<number, GitHubIssue>;
-try {
-  ghIssues = fetchGitHubIssues();
-} catch (err) {
-  console.error(`sync:issues: failed to fetch GitHub issues — ${err instanceof Error ? err.message : err}`);
-  process.exit(1);
-}
-
 const issueFiles = walkFiles("issues", (f) => {
   const base = path.basename(f);
   return base.endsWith(".md") && base !== "README.md";
 });
 
+// First pass: collect issue numbers referenced by local files.
+type FileMeta = { filePath: string; rel: string; parsed: NonNullable<ReturnType<typeof extractFrontmatter>>; data: ReturnType<typeof parseSimpleYaml>; issueNumber: number | null };
+const fileMetas: FileMeta[] = [];
+const issueNumbers: number[] = [];
+
 for (const filePath of issueFiles) {
   const rel = relativeToRoot(filePath);
   const text = readText(filePath);
   const parsed = extractFrontmatter(text);
-
   if (!parsed) {
     results.push({ file: rel, changes: [], skipped: "no frontmatter" });
     continue;
   }
-
   const data = parseSimpleYaml(parsed.raw);
   const issueNumber = typeof data["issue_number"] === "number" ? data["issue_number"] : null;
+  fileMetas.push({ filePath, rel, parsed, data, issueNumber });
+  if (issueNumber) issueNumbers.push(issueNumber);
+}
 
+// Second pass: fetch exactly the issues referenced locally (no pagination limit).
+const ghIssues = fetchGitHubIssues(issueNumbers);
+
+for (const { filePath, rel, parsed, data, issueNumber } of fileMetas) {
   if (!issueNumber) {
     results.push({ file: rel, changes: [], skipped: "issue_number is null (not yet pushed to GitHub)" });
     continue;

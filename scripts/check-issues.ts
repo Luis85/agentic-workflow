@@ -55,6 +55,15 @@ const REQUIRED_FRONTMATTER_KEYS = [
   "updated_at",
 ];
 
+// Keys that must be present in the file but are allowed to be null (e.g. before GitHub push).
+const NULLABLE_FRONTMATTER_KEYS = [
+  "issue_number",
+  "github_url",
+  "labels",
+  "milestone",
+  "assignees",
+];
+
 const wantsJson = process.argv.includes("--json");
 
 const warnings: string[] = [];
@@ -91,10 +100,17 @@ if (fs.existsSync(issuesRoot)) {
 
     const data = parseSimpleYaml(fm.raw);
 
-    // Required key checks
+    // Required key checks (must exist and have a non-null, non-empty value)
     for (const key of REQUIRED_FRONTMATTER_KEYS) {
       if (data[key] === undefined || data[key] === null || data[key] === "") {
         errors.push(`${rel}: missing required frontmatter key "${key}"`);
+      }
+    }
+
+    // Nullable key checks (must be present in the file, but null is allowed)
+    for (const key of NULLABLE_FRONTMATTER_KEYS) {
+      if (!(key in data)) {
+        errors.push(`${rel}: missing frontmatter key "${key}" (may be null)`);
       }
     }
 
