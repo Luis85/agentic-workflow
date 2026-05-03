@@ -340,13 +340,16 @@ Specorator currently starts every workflow from a slash command whose intent exi
 
 ---
 
-#### REQ-IFI-019 — Branch name derived from track label
+#### REQ-IFI-019 — Branch name derived from Track precedence
 
-- **Pattern:** WHEN `/spec:start <issue-number>` creates the feature branch, the `/spec:start` command shall derive the branch prefix from the track label using the canonical track-to-commit-type mapping.
+- **Pattern:** WHEN `/spec:start <issue-number>` creates the feature branch, the `/spec:start` command shall derive the branch prefix using the same Track precedence defined by REQ-IFI-013: parsed issue-body `### Track` first, then `track:` label fallback, then the default `feat` mapping.
 - **Acceptance:**
-  - Given the issue carries `track:specorator-improvement`
+  - Given the issue has `### Track` set to `bug` and also carries stale label `track:feature`
   - When the branch is created
-  - Then the branch name matches the pattern `<commit-type>/<slug>` where `<commit-type>` is the value mapped from `track:specorator-improvement`
+  - Then the branch name matches the pattern `fix/<slug>` because parsed Track value takes precedence
+  - Given the issue has no parseable `### Track` field and carries `track:specorator-improvement`
+  - When the branch is created
+  - Then the branch name matches the pattern `feat/<slug>` from the fallback label mapping
 - **Priority:** must
 - **Satisfies:** RESEARCH-IFI-001 (R20)
 
