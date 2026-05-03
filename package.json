@@ -87,7 +87,9 @@
     "fix:adr-index": "tsx scripts/fix-adr-index.ts",
     "fix:commands": "tsx scripts/fix-command-docs.ts",
     "fix:script-docs": "tsx scripts/fix-script-docs.ts",
-    "fix:sites-tokens": "tsx scripts/fix-sites-tokens.ts"
+    "fix:sites-tokens": "tsx scripts/fix-sites-tokens.ts",
+    "graph": "tsx scripts/graphify-run.ts",
+    "graph:update": "tsx scripts/graphify-run.ts --update"
   },
   "engines": {
     "node": ">=20"
