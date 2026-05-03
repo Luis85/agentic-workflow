@@ -169,6 +169,15 @@ if (fs.existsSync(issuesRoot)) {
 
     const slug = data["feature_slug"];
     if (slug && typeof slug === "string") {
+      // Cross-validate: slug in frontmatter must match the slug in the filename (<number>-<slug>.md).
+      const basename = path.basename(filePath, ".md");
+      const dashIndex = basename.indexOf("-");
+      const fileSlug = dashIndex >= 0 ? basename.slice(dashIndex + 1) : basename;
+      if (slug !== fileSlug) {
+        errors.push(
+          `${rel}: feature_slug "${slug}" does not match filename slug "${fileSlug}"`,
+        );
+      }
       issuesBySrcSlug.set(slug, rel);
     }
   }

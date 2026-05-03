@@ -99,7 +99,7 @@ test("check:issues accepts canonical specification stage value", () => {
       "---",
       "issue_number: null",
       'title: "[RFC] Spec Stage Test"',
-      "feature_slug: spec-stage-test",
+      "feature_slug: blank-required-test",
       "type: feature",
       "roadmap_status: planned",
       "stage: specification",
@@ -129,5 +129,46 @@ test("check:issues accepts canonical specification stage value", () => {
     assert.deepEqual(output.errors, []);
   } finally {
     fs.rmSync(tempIssue, { force: true });
+  }
+});
+
+test("check:issues rejects feature_slug that does not match filename slug", () => {
+  const mismatchFile = path.join(repoRoot, "issues", "0-slug-mismatch-test.md");
+  fs.writeFileSync(
+    mismatchFile,
+    [
+      "---",
+      "issue_number: null",
+      'title: "Slug Mismatch Test"',
+      "feature_slug: wrong-slug",
+      "type: feature",
+      "roadmap_status: planned",
+      "stage: idea",
+      "github_url: null",
+      "labels: []",
+      "milestone: null",
+      "assignees: []",
+      "created_at: 2026-05-03",
+      "updated_at: 2026-05-03",
+      "---",
+      "",
+      "# Slug Mismatch Test",
+      "",
+    ].join("\n"),
+    "utf8",
+  );
+
+  try {
+    const result = spawnSync(process.execPath, ["--import", "tsx", "scripts/check-issues.ts", "--json"], {
+      cwd: repoRoot,
+      encoding: "utf8",
+      windowsHide: true,
+    });
+
+    assert.notEqual(result.status, 0);
+    const output = JSON.parse(result.stdout) as { errors: string[] };
+    assert.ok(output.errors.some((e) => e.includes('feature_slug "wrong-slug" does not match filename slug "slug-mismatch-test"')));
+  } finally {
+    fs.rmSync(mismatchFile, { force: true });
   }
 });

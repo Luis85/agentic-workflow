@@ -219,9 +219,13 @@ for (const { filePath, rel, parsed, data, issueNumber } of fileMetas) {
     changes.push(`assignees updated`);
   }
 
-  if (!data["github_url"] || data["github_url"] === "null") {
+  const currentGithubUrl =
+    !data["github_url"] || data["github_url"] === "null"
+      ? null
+      : (data["github_url"] as string);
+  if (currentGithubUrl !== gh.url) {
     patches["github_url"] = gh.url;
-    changes.push(`github_url set`);
+    changes.push(`github_url: ${currentGithubUrl ?? "null"} → ${gh.url}`);
   }
 
   if (changes.length > 0) {
