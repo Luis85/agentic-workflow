@@ -177,6 +177,9 @@ if (fs.existsSync(issuesRoot)) {
         errors.push(
           `${rel}: feature_slug "${slug}" does not match filename slug "${fileSlug}"`,
         );
+        // Register the file slug too so the spec whose name matches the filename
+        // doesn't also get a spurious "no linked issue" warning.
+        issuesBySrcSlug.set(fileSlug, rel);
       }
       issuesBySrcSlug.set(slug, rel);
     }

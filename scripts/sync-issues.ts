@@ -113,11 +113,11 @@ function patchFrontmatter(raw: string, patches: Record<string, unknown>): string
   let result = raw;
   for (const [key, value] of Object.entries(patches)) {
     const serialized = serializeIssueFrontmatterValue(value);
-
     const linePattern = new RegExp(`^(${escapeRe(key)}:\\s*).*$`, "m");
-    if (linePattern.test(result)) {
-      result = result.replace(linePattern, `$1${serialized}`);
+    if (!linePattern.test(result)) {
+      throw new Error(`cannot patch key "${key}" — not found in frontmatter`);
     }
+    result = result.replace(linePattern, `$1${serialized}`);
   }
   return result;
 }
@@ -230,7 +230,14 @@ for (const { filePath, rel, parsed, data, issueNumber } of fileMetas) {
 
   if (changes.length > 0) {
     patches["updated_at"] = today();
-    const newFm = patchFrontmatter(parsed.raw, patches);
+    let newFm: string;
+    try {
+      newFm = patchFrontmatter(parsed.raw, patches);
+    } catch (patchErr) {
+      const reason = patchErr instanceof Error ? patchErr.message : String(patchErr);
+      results.push({ file: rel, changes: [], skipped: reason });
+      continue;
+    }
     const newText = rebuildDocument(newFm, parsed.body);
     if (!isDryRun) {
       writeText(filePath, newText);

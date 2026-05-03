@@ -134,6 +134,7 @@ test("check:issues accepts canonical specification stage value", () => {
 
 test("check:issues rejects feature_slug that does not match filename slug", () => {
   const mismatchFile = path.join(repoRoot, "issues", "0-slug-mismatch-test.md");
+  const specDir = path.join(repoRoot, "specs", "slug-mismatch-test");
   fs.writeFileSync(
     mismatchFile,
     [
@@ -157,6 +158,7 @@ test("check:issues rejects feature_slug that does not match filename slug", () =
     ].join("\n"),
     "utf8",
   );
+  fs.mkdirSync(specDir, { recursive: true });
 
   try {
     const result = spawnSync(process.execPath, ["--import", "tsx", "scripts/check-issues.ts", "--json"], {
@@ -166,9 +168,12 @@ test("check:issues rejects feature_slug that does not match filename slug", () =
     });
 
     assert.notEqual(result.status, 0);
-    const output = JSON.parse(result.stdout) as { errors: string[] };
+    const output = JSON.parse(result.stdout) as { errors: string[]; warnings: string[] };
     assert.ok(output.errors.some((e) => e.includes('feature_slug "wrong-slug" does not match filename slug "slug-mismatch-test"')));
+    // The spec whose name matches the filename should NOT also produce a "no linked issue" warning.
+    assert.ok(!output.warnings.some((w) => w.includes("specs/slug-mismatch-test/")));
   } finally {
     fs.rmSync(mismatchFile, { force: true });
+    fs.rmSync(specDir, { recursive: true, force: true });
   }
 });
