@@ -62,15 +62,24 @@ function ghAvailable(): { ok: true } | { ok: false; reason: string } {
 }
 
 function fetchGitHubIssue(number: number): GitHubIssue | null {
+  let stderr = "";
   try {
     const raw = execSync(
       `gh issue view ${number} --json number,title,state,labels,milestone,assignees,url`,
       { encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] },
     );
     return JSON.parse(raw) as GitHubIssue;
-  } catch {
+  } catch (err) {
+    const buf = (err as { stderr?: Buffer | string }).stderr;
+    stderr = typeof buf === "string" ? buf : (buf?.toString() ?? "");
+  }
+  // gh exits non-zero for both "issue not found" and API/network failures.
+  // Only treat genuine 404s as null; re-throw everything else so the caller
+  // can abort rather than silently leaving metadata stale.
+  if (/could not resolve|no issues match|not found/i.test(stderr)) {
     return null;
   }
+  throw new Error(`gh issue view ${number} failed: ${stderr.trim() || "unknown error"}`);
 }
 
 function fetchGitHubIssues(numbers: number[]): Map<number, GitHubIssue> {
@@ -163,7 +172,13 @@ for (const filePath of issueFiles) {
 }
 
 // Second pass: fetch exactly the issues referenced locally (no pagination limit).
-const ghIssues = fetchGitHubIssues(issueNumbers);
+let ghIssues: Map<number, GitHubIssue>;
+try {
+  ghIssues = fetchGitHubIssues(issueNumbers);
+} catch (err) {
+  console.error(`sync:issues: ${err instanceof Error ? err.message : err}`);
+  process.exit(1);
+}
 
 for (const { filePath, rel, parsed, data, issueNumber } of fileMetas) {
   if (!issueNumber) {

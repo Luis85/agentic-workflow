@@ -35,7 +35,7 @@ const VALID_STAGES = new Set([
   "research",
   "requirements",
   "design",
-  "spec",
+  "specification",
   "tasks",
   "implementation",
   "testing",
