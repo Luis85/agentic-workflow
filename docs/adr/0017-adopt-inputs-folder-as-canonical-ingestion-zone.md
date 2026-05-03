@@ -1,7 +1,7 @@
 ---
 id: ADR-0017
 title: Adopt `inputs/` as the canonical ingestion folder for new work packages
-status: proposed
+status: accepted
 date: 2026-05-01
 deciders:
   - human
@@ -28,7 +28,7 @@ tags: [workflow, intake, ingestion, conventions, methodology]
 
 ## Status
 
-Proposed
+Accepted
 
 ## Context
 

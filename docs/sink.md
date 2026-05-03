@@ -17,6 +17,8 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │   ├── quality-framework.md                 # quality dimensions, gates, DoD
 │   ├── quality-metrics.md                   # deterministic KPI interpretation guide
 │   ├── release-readiness-guide.md           # Stage 10 go/no-go guide across product perspectives and stakeholders
+│   ├── release-operator-guide.md            # operator path for publishing a tagged GitHub Release + GitHub Package
+│   ├── release-package-contents.md          # fresh-surface contract for the released package
 │   ├── traceability.md                      # ID scheme REQ → SPEC → T → code → TEST
 │   ├── ears-notation.md                     # EARS reference
 │   ├── sink.md                              # this file
@@ -233,6 +235,7 @@ The root `README.md` is the public repository entry point and is exempt from thi
 | `specs/<slug>/workflow-state.md` | `/spec:start`, then `/spec:*` commands on transition | State machine; orchestrator amends final fields |
 | `specs/<slug>/<artifact>.md` | The stage's owning agent (per `docs/specorator.md` §3) | Each stage writes once; later stages **never rewrite** upstream artifacts |
 | `specs/<slug>/release-readiness-guide.md` | `release-manager` (Stage 10, optional) | Lazy go/no-go packet; feeds `release-notes.md`, release authorization, quality review, and retrospective follow-up |
+| `specs/<slug>/issue-breakdown-log.md` | `issue-breakdown` agent | Append-only — dated entries, never rewritten |
 | `portfolio/<slug>/portfolio-state.md` | `/portfolio:start`, then `/portfolio:*` commands on each cycle | Cycle state machine; portfolio-manager-owned |
 | `portfolio/<slug>/portfolio-definition.md` | `/portfolio:start` (created), Z cycle Z2 (status updates) | Ongoing; X and Y cycles read but do not rewrite |
 | `portfolio/<slug>/portfolio-roadmap.md` | X cycle (X2, X3) | Updated in place each X run; previous exec summaries appended |
@@ -267,7 +270,7 @@ Files marked `LAZY` above are not pre-scaffolded. They appear when a skill or ag
 
 ### Append-only
 
-`docs/CONTEXT.md`, `docs/glossary/*.md` (and the legacy `docs/UBIQUITOUS_LANGUAGE.md` for forks on earlier template versions), `specs/<slug>/implementation-log.md`, and the `## Hand-off notes` free-form section of `workflow-state.md` are append-only in spirit. Agents may reorder or refine, but the historical narrative survives. (The workflow-state YAML frontmatter has no `notes:` field — append-only content lives in markdown sections.)
+`docs/CONTEXT.md`, `docs/glossary/*.md` (and the legacy `docs/UBIQUITOUS_LANGUAGE.md` for forks on earlier template versions), `specs/<slug>/implementation-log.md`, `specs/<slug>/issue-breakdown-log.md`, and the `## Hand-off notes` free-form section of `workflow-state.md` are append-only in spirit. Agents may reorder or refine, but the historical narrative survives. (The workflow-state YAML frontmatter has no `notes:` field — append-only content lives in markdown sections.)
 
 ### Immutable
 

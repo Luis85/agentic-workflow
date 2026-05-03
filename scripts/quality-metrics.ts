@@ -8,6 +8,8 @@ import {
   saveQualityMetricsSnapshot,
 } from "./lib/quality-metrics.js";
 
+// npm converts `npm run quality:metrics --feature=<slug>` into npm_config_feature.
+// Accept that form so a missing `--` separator cannot silently widen scope.
 const args = process.argv.slice(2);
 const json = args.includes("--json");
 const compare = args.includes("--compare");
@@ -37,6 +39,7 @@ function valueAfter(flag: string): string | undefined {
   const inline = args.find((arg) => arg.startsWith(`${flag}=`));
   if (inline) return inline.slice(flag.length + 1);
   const index = args.indexOf(flag);
-  if (index === -1) return undefined;
-  return args[index + 1];
+  if (index !== -1) return args[index + 1];
+  if (flag === "--feature") return process.env.npm_config_feature || undefined;
+  return undefined;
 }

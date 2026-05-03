@@ -41,6 +41,12 @@ The full mermaid diagrams for each track live in [`workflow-overview.md`](./work
 - **Project Scaffolding Track** *(optional, source-led onboarding)* — Intake → Extract → Assemble → Handoff.
 - **Discovery Track** *(optional, blank-page ideation)* — Frame → Diverge → Converge → Prototype → Validate → Handoff.
 - **Lifecycle Track** *(11 stages, the core workflow)* — Idea → Research → Requirements → Design → Specification → Tasks → Implementation → Testing → Review → Release → Retrospective.
+- **Design Track** *(optional, surface creation)* — Frame → Sketch → Mock → Handoff.
+- **Quality Assurance Track** *(optional, readiness)* — Start → Plan → Check → Review → Improve.
+- **Roadmap Management Track** *(optional, planning)* — Start → Shape → Align → Communicate → Review.
+- **Issue Breakdown Track** *(optional, post-tasks)* — Issue → slices → draft PRs → handoff.
+
+The canonical v1.0 track taxonomy and count live in [ADR-0026](./adr/0026-freeze-v1-workflow-track-taxonomy.md).
 
 Each lifecycle stage has **one owner** (a specialist AI agent), **one output** (a Markdown file in `specs/<feature>/`), and **one quality gate** before the next stage can begin. No stage is skipped; quality gates are non-negotiable.
 
@@ -51,9 +57,14 @@ Each lifecycle stage has **one owner** (a specialist AI agent), **one output** (
 | [`docs/specorator.md`](./specorator.md) | Full workflow definition — read this before any non-trivial work |
 | [`docs/project-scaffolding-track.md`](./project-scaffolding-track.md) | Source-led onboarding detail for turning collected docs into starter artifacts |
 | [`docs/discovery-track.md`](./discovery-track.md) | Discovery Track detail and phase-by-phase guide |
+| [`docs/design-track.md`](./design-track.md) | Brand-aware surface creation workflow |
+| [`docs/issue-breakdown-track.md`](./issue-breakdown-track.md) | Post-tasks issue decomposition into independent draft PRs |
 | [`docs/roadmap-management-track.md`](./roadmap-management-track.md) | Product/project roadmap management, stakeholder alignment, and team communication workflow |
 | [`docs/quality-assurance-track.md`](./quality-assurance-track.md) | ISO 9001-aligned quality assurance review workflow |
 | [`docs/release-readiness-guide.md`](./release-readiness-guide.md) | Stage 10 go/no-go guide for product perspectives and stakeholder requirements |
+| [`docs/release-operator-guide.md`](./release-operator-guide.md) | Operator path for publishing a tagged GitHub Release and (when enabled) a GitHub Package |
+| [`docs/release-package-contents.md`](./release-package-contents.md) | Fresh-surface contract for what ships in the released template package |
+| [`docs/cross-version-handoff.md`](./cross-version-handoff.md) | Location, naming, and link rules for handoff contracts consumed by a later release cycle |
 | [`docs/workflow-overview.md`](./workflow-overview.md) | One-page visual + cheat sheet + slash command list |
 | [`docs/quality-framework.md`](./quality-framework.md) | Quality dimensions, gates, and Definition of Done per stage |
 | [`docs/ears-notation.md`](./ears-notation.md) | How to write requirements in EARS format |

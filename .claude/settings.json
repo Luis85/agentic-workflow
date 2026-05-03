@@ -1,7 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "_comment": "Baseline permissions for projects using this workflow. Tighten by adding repo-specific allow/deny rules; do not loosen any deny rule without an ADR. See docs/branching.md for the branching model these rules assume. Permission rules are prefix matches against the literal command string — keep deny rules at the top of any new entries you add and verify that whitespace / short-flag aliases (-n for --no-verify, -f for --force) are also covered.",
-
   "permissions": {
     "allow": [
       "Bash(git status:*)",
@@ -81,7 +79,6 @@
       "Bash(rm -rf agents:*)"
     ]
   },
-
   "hooks": {
     "SessionStart": [
       {
@@ -94,5 +91,9 @@
         ]
       }
     ]
+  },
+  "_comment": "Baseline permissions for projects using this workflow. Tighten by adding repo-specific allow/deny rules; do not loosen any deny rule without an ADR. See docs/branching.md for the branching model these rules assume. Permission rules are prefix matches against the literal command string — keep deny rules at the top of any new entries you add and verify that whitespace / short-flag aliases (-n for --no-verify, -f for --force) are also covered.",
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true
   }
 }
