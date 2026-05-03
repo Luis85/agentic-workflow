@@ -569,6 +569,15 @@ entries:
     emits_json: false
     used_by: [ci]
     rerun_command: gh run list --workflow verify.yml
+  - id: workflow:markdownlint
+    kind: workflow
+    path: .github/workflows/markdownlint.yml
+    purpose: Run markdownlint-cli2 on changed Markdown files — advisory only, never blocks merge. Findings visible in CI log; see docs/markdownlint-rollout.md for promotion plan.
+    read_only: true
+    safe_to_run_locally: false
+    emits_json: false
+    used_by: [ci]
+    rerun_command: gh run list --workflow markdownlint.yml
   - id: workflow:zizmor
     kind: workflow
     path: .github/workflows/zizmor.yml

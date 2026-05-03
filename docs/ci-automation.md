@@ -31,6 +31,8 @@ For the complete CI/security posture, use this page for hygiene automation and [
 
 `markdownlint-cli2` was scoped for this bundle but pulled out — the existing artefact templates produce ~2000 findings on first run, dominated by table-pipe-spacing (`MD060`), heading rules around H1 placeholders (`MD025`), and fenced-code language tags (`MD040`). Adding it without a dedicated cleanup PR would either spam CI or require disabling so many rules that the check becomes a no-op. Track it as a follow-up: a single sweep PR that auto-fixes table style and adds language tags to fenced blocks, then enable the workflow.
 
+See `docs/markdownlint-rollout.md` for the phased promotion plan.
+
 ## PR-title rules
 
 The PR-title check runs as `pull_request`, not `pull_request_target`. The action reads PR metadata through the GitHub API and never checks out PR content, so it does not need an elevated token.
