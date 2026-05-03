@@ -244,32 +244,39 @@ Specorator currently starts every workflow from a slash command whose intent exi
 
 ---
 
-#### REQ-IFI-013 — Area code selected explicitly; commit-type from track label
+#### REQ-IFI-013 — Area code selected explicitly; commit-type from Track value
 
-- **Pattern:** WHEN `/spec:start` is invoked with a GitHub issue number, the `/spec:start` command shall propose the feature area code from the first word of the slug (first 3 characters, uppercase) and require the user to accept or override that area code via `AskUserQuestion`; the command shall derive the branch commit-type from the `track:` label using the canonical mapping in `docs/issue-first-interaction.md` without prompting.
-- **Canonical track-to-commit-type mapping:** `track:feature` → `feat`; `track:bug` → `fix`; `track:spike` → `spike`; `track:specorator-improvement` → `feat`; no track label → `feat`.
+- **Pattern:** WHEN `/spec:start` is invoked with a GitHub issue number, the `/spec:start` command shall propose the feature area code from the first word of the slug (first 3 characters, uppercase) and require the user to accept or override that area code via `AskUserQuestion`; the command shall derive the branch commit-type from the parsed issue-body `### Track` field first, falling back to a `track:` label only when the body field is unavailable, using the canonical mapping in `docs/issue-first-interaction.md` without prompting.
+- **Canonical track-to-commit-type mapping:** `feature` / `track:feature` → `feat`; `bug` / `track:bug` → `fix`; `spike` / `track:spike` → `spike`; `specorator-improvement` / `track:specorator-improvement` → `feat`; no Track field and no track label → `feat`.
 - **Acceptance:**
-  - Given issue #100 has `track:specorator-improvement` and title `"adopt oauth login"` → slug `adopt-oauth-login-100`
+  - Given issue #100 has `### Track` set to `specorator-improvement`, no `track:` label, and title `"adopt oauth login"` → slug `adopt-oauth-login-100`
   - When `/spec:start 100` is run
   - Then the default area-code prompt value is `ADO` (first 3 chars of `adopt`)
   - And the user can accept `ADO` or override it before scaffolding
-  - And the branch prefix is `feat` (mapped from `track:specorator-improvement`)
+  - And the branch prefix is `feat` (mapped from parsed Track value `specorator-improvement`)
+  - Given issue #101 has no parseable `### Track` field and has `track:bug`
+  - When `/spec:start 101` is run
+  - Then the branch prefix is `fix` (mapped from fallback label `track:bug`)
   - And the user is not prompted for commit-type
 - **Priority:** must
 - **Satisfies:** IDEA-IFI-001, RESEARCH-IFI-001 (R4, R20), resolves CLAR-IFI-012, CLAR-IFI-020
 
 ---
 
-#### REQ-IFI-014 — Depth derived from label, then track type, then standard default
+#### REQ-IFI-014 — Depth derived from Depth field, then label, then Track type
 
-- **Pattern:** IF the issue has no `depth:` label, THEN the `/spec:start` command shall derive depth from the track label before falling back to `standard`: `track:spike` → `spike`; all other tracks without an explicit `depth:` label → `standard`. No prompt is shown in any case.
-- **Rationale:** `spec-spike.yml` contains no `### Depth` field, so spike issues never carry a `depth:` label. Without this rule every spike would scaffold as Standard-depth.
+- **Pattern:** WHEN `/spec:start` is invoked with a GitHub issue number, the `/spec:start` command shall derive workflow depth from the parsed issue-body `### Depth` field first, then from a `depth:` label, then from the parsed `### Track` field or fallback `track:` label, before falling back to `standard`: `spike` / `track:spike` → `spike`; all other tracks without an explicit depth value → `standard`. No prompt is shown in any case.
+- **Rationale:** Feature issues capture `### Depth` in the form body, while `spec-spike.yml` contains no `### Depth` field and must infer depth from `### Track: spike`. Without this precedence, form submissions can scaffold the wrong workflow depth when labels are absent or stale.
 - **Acceptance:**
-  - Given a spike issue has `track:spike` and no `depth:` label
+  - Given a feature issue has `### Depth` set to `lean` and no `depth:` label
+  - When `/spec:start <n>` is run
+  - Then the workflow depth is set to `lean`
+  - And no prompt is shown
+  - Given a spike issue has `### Track` set to `spike`, no `### Depth` field, and no `depth:` label
   - When `/spec:start <n>` is run
   - Then the workflow depth is set to `spike`
   - And no prompt is shown
-  - Given a feature issue has `track:feature` and no `depth:` label
+  - Given an issue has no parseable `### Depth` field and has `depth:standard`
   - When `/spec:start <n>` is run
   - Then the workflow depth is set to `standard`
   - And no prompt is shown
