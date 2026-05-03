@@ -41,6 +41,10 @@ artifacts:              # canonical machine-readable map; the table below is its
 
 > **Statuses:** `pending` | `in-progress` | `complete` | `skipped` | `blocked`. Section semantics + status enums: see [`_shared/state-file-sections.md`](./_shared/state-file-sections.md).
 
+## Notes on meta-features
+
+Plan-level meta-features may skip Stage 7-9 canonical artifacts when each sub-task ships as its own PR with implementation evidence, tests, review, and trace links. Record the rationale under `## Skips` and point to the per-PR evidence. See [`_shared/state-file-sections.md`](./_shared/state-file-sections.md) for the full rule.
+
 ## Skips
 
 - e.g., `idea.md` — trivial copy fix

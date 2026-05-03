@@ -4,7 +4,7 @@ import { failIfErrors, readText, repoRoot } from "./lib/repo.js";
 
 const docs = [
   [".claude/commands/README.md", "command-inventory", renderCommandInventory()],
-  ["README.md", "slash-commands", renderCommandInventory({ fenced: true })],
+  ["docs/slash-commands.md", "slash-commands", renderCommandInventory({ fenced: true })],
   ["docs/workflow-overview.md", "slash-commands", renderCommandInventory({ fenced: true })],
 ];
 

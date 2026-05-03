@@ -4,6 +4,54 @@ All notable changes to Specorator are documented here. Format follows [Keep a Ch
 
 ---
 
+## [v0.5.1] — 2026-05-02
+
+### Notes
+- Recovery release for v0.5: republishes a stable GitHub Release page after the `v0.5.0` publish dispatch hit GitHub's Immutable Releases tag-burn ([#233](https://github.com/Luis85/agentic-workflow/issues/233)). The `v0.5.0` tag remains permanently flagged "used by an immutable release" and cannot host a new Release.
+- No behavioural or runtime changes versus `v0.5.0`. The tarball differs in version metadata (`package.json`, `package-lock.json`) and in the documentation surfaces that mirror the version (`README.md`, `CHANGELOG.md`, `docs/specorator.md`, `sites/index.html`, `specs/version-0-5-plan/release-notes.md`).
+- Repository setting "Immutable releases" is now disabled to prevent recurrence. Prevention work tracked under [#233](https://github.com/Luis85/agentic-workflow/issues/233).
+
+---
+
+## [v0.5.0] — 2026-05-02
+
+### Added
+- Release workflow infrastructure for manually authorized GitHub Releases and GitHub Packages publishing.
+- Release operator guide, readiness checks, package contract, and fresh-surface package-content validation.
+- Fresh-surface release package contract: released starter archives exclude numbered ADRs, reset intake folders, and ship docs in stub form.
+
+### Changed
+- Public distribution docs now describe the v0.5 release path and the `@luis85/agentic-workflow` package identity.
+- Repository automation registry tracks the release workflow and release-readiness checks.
+
+### Notes
+- npm `@luis85/agentic-workflow@0.5.0` shipped on 2026-05-02 to GitHub Packages.
+- The corresponding GitHub Release page exists only as a draft because the publish dispatch hit GitHub's Immutable Releases repo setting and the `v0.5.0` tag is now permanently flagged "used by an immutable release". Incident tracked in [#233](https://github.com/Luis85/agentic-workflow/issues/233); detail in `specs/version-0-5-plan/retrospective.md` §Incident. Package availability is unaffected. Recovery release: see `[v0.5.1]` above for the stable Release page.
+
+---
+
+## [v0.4.0] — 2026-05-01
+
+### Added
+- CI quality gates, quality metrics, maturity model, and release validation evidence for the workflow template.
+- v0.5 handoff contract so release-readiness checks can consume quality, doctor, and verify signals.
+
+### Changed
+- Release notes and retrospectives became first-class lifecycle artifacts for versioned template work.
+
+---
+
+## [v0.3.0] — 2026-04-30
+
+### Added
+- Worked end-to-end examples and artifact validation for the lifecycle.
+- Deterministic checks for representative workflow artifacts and traceability drift.
+
+### Changed
+- Example artifacts moved toward reusable evidence for downstream adopters and future release-readiness checks.
+
+---
+
 ## [v0.2] — 2026-04-27
 
 ### Added

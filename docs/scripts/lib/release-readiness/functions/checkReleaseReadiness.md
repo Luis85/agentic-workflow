@@ -13,7 +13,10 @@ Validate a release candidate against the v0.5 readiness contract.
 Runs Layer 1 (release metadata correctness) in fixed order:
 
 1. Version alignment — `package.json#version` matches the release version.
-2. Tag readiness — release tag points at `main` HEAD per ADR-0020.
+2. Tag readiness — release tag is on `main`'s first-parent history per
+   ADR-0020 §Compliance ("the tag commit is reachable from `main`"). The
+   earlier strict reading (tag SHA == `main` HEAD SHA) was relaxed in
+   #233 prevention F.
 3. CHANGELOG entry — `CHANGELOG.md` has a `## [vX.Y.Z]` heading.
 4. Lifecycle release notes — `.github/release.yml` shape per T-V05-003.
 5. Package metadata — name, registry, repository, files per package contract.

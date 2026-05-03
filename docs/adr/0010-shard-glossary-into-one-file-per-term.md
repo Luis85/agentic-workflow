@@ -1,7 +1,7 @@
 ---
 id: ADR-0010
 title: Shard the glossary into one file per term under docs/glossary/
-status: proposed
+status: accepted
 date: 2026-04-28
 deciders:
   - human
@@ -20,7 +20,7 @@ tags: [docs, glossary, terminology, ubiquitous-language]
 
 ## Status
 
-Proposed
+Accepted
 
 ## Context
 
