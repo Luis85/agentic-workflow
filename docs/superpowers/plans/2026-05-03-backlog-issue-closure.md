@@ -249,7 +249,7 @@
 
   Add after the existing deferred rationale:
   ```
-  See [`docs/markdownlint-rollout.md`](markdownlint-rollout.md) for the phased promotion plan.
+  See `docs/markdownlint-rollout.md` for the phased promotion plan.
   ```
 
 - [ ] **Step 5: Update `docs/security-ci.md`** — move markdownlint from Deferred → a new "Staged rollout" status or update the row.
@@ -257,7 +257,7 @@
   Find: `| Markdown lint | Deferred until...`
   Replace with:
   ```
-  | Markdown lint | Non-blocking changed-files workflow active. See [`docs/markdownlint-rollout.md`](markdownlint-rollout.md) for promotion plan. |
+  | Markdown lint | Non-blocking changed-files workflow active. See `docs/markdownlint-rollout.md` for promotion plan. |
   ```
 
 - [ ] **Step 6: Run verify gate**
@@ -621,7 +621,7 @@
 
   In the "Implemented" table, add:
   ```
-  | Supply-chain posture (Scorecard) | [`.github/workflows/scorecard.yml`](../.github/workflows/scorecard.yml) | Weekly + push to main. Publishes SARIF to code scanning. |
+  | Supply-chain posture (Scorecard) | `.github/workflows/scorecard.yml` | Weekly + push to main. Publishes SARIF to code scanning. |
   ```
 
   In the "Deferred" table, remove the Scorecard row.
