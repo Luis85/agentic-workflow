@@ -149,7 +149,7 @@ Every stage command runs two standard phases around the specialist agent's work.
 
 | Stage | `roadmap_status` |
 |---|---|
-| idea, research, requirements, design, spec, tasks | `planned` |
+| idea, research, requirements, design, specification, tasks | `planned` |
 | implementation (any task done, not all done) | `in-progress` |
 | testing, review | `in-review` |
 | release, learning | `shipped` |

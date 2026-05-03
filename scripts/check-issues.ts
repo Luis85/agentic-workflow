@@ -102,7 +102,7 @@ if (fs.existsSync(issuesRoot)) {
 
     // Required key checks (must exist and have a non-null, non-empty value)
     for (const key of REQUIRED_FRONTMATTER_KEYS) {
-      if (data[key] === undefined || data[key] === null || data[key] === "") {
+      if (isMissingRequiredValue(data[key])) {
         errors.push(`${rel}: missing required frontmatter key "${key}"`);
       }
     }
@@ -191,4 +191,17 @@ if (wantsJson) {
 // Malformed frontmatter = hard fail; missing issues = warn only (exit 0)
 if (errors.length > 0) {
   process.exit(1);
+}
+
+function isMissingRequiredValue(value: unknown): boolean {
+  return (
+    value === undefined ||
+    value === null ||
+    value === "" ||
+    (isPlainObject(value) && Object.keys(value).length === 0)
+  );
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
