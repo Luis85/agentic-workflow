@@ -409,9 +409,10 @@ Specorator currently starts every workflow from a slash command whose intent exi
 
 - **Pattern:** WHEN any `/spec:*` stage command completes successfully, the stage command shall invoke the mirror sync script as its final step.
 - **Acceptance:**
-  - Given a feature with `issue: 274` in `workflow-state.md`
+  - Given a feature with slug `adopt-issue-first-interaction-model-274` and `issue: 274` in `workflow-state.md`
   - When `/spec:requirements` completes
-  - Then `scripts/sync-issue-mirror.sh 274` is called as the last operation
+  - Then `scripts/sync-issue-mirror.sh adopt-issue-first-interaction-model-274` is called as the last operation
+  - And the script reads `specs/adopt-issue-first-interaction-model-274/workflow-state.md` to obtain the issue number and current stage
   - And the sentinel block in issue #274 reflects the updated stage
 - **Priority:** must
 - **Satisfies:** IDEA-IFI-001, RESEARCH-IFI-001 (R7)
@@ -423,7 +424,7 @@ Specorator currently starts every workflow from a slash command whose intent exi
 - **Pattern:** IF `scripts/sync-issue-mirror.sh` cannot reach the GitHub API because the `gh` CLI is absent, not authenticated, or returns a non-zero exit code, THEN the script shall emit a named warning to stderr and exit with code 0.
 - **Acceptance:**
   - Given `gh` is not installed on the machine
-  - When `scripts/sync-issue-mirror.sh 274` is run
+  - When `scripts/sync-issue-mirror.sh adopt-issue-first-interaction-model-274` is run
   - Then the script prints a warning to stderr identifying the failure reason
   - And the script exits with code 0
   - And the calling stage's exit code is not affected
@@ -481,27 +482,31 @@ Specorator currently starts every workflow from a slash command whose intent exi
 
 #### REQ-IFI-029 — Status labels synced from `workflow-state.status`
 
-- **Pattern:** WHEN `scripts/sync-issue-mirror.sh` runs and the issue is reachable, the script shall apply the status label corresponding to the current value of `workflow-state.status` to the issue and remove any previously applied status label that no longer matches.
+- **Pattern:** WHEN `scripts/sync-issue-mirror.sh` runs and the issue is reachable, the script shall apply the status label corresponding to the current value of `workflow-state.status` to the issue and remove any previously applied label from the **managed set** `{status:in-progress, status:paused, status:blocked, status:done}` that no longer matches. The labels `status:draft` and `status:ready-for-spec` are **never** touched by this script.
 - **Acceptance:**
   - Given `workflow-state.md` has `status: active` and `current_stage: requirements`
-  - When `scripts/sync-issue-mirror.sh 274` runs successfully
-  - Then the `status:in-progress` label (or equivalent stage label) is applied to issue #274
-  - And any prior stage status label that no longer applies is removed
+  - When `scripts/sync-issue-mirror.sh adopt-issue-first-interaction-model-274` runs successfully
+  - Then the `status:in-progress` label is applied to issue #274
+  - And any prior label from `{status:paused, status:blocked, status:done}` is removed
+  - And `status:ready-for-spec` (if still present) is left unchanged
 - **Priority:** must
-- **Satisfies:** RESEARCH-IFI-001 (R17)
+- **Satisfies:** RESEARCH-IFI-001 (R17), resolves P2 Codex finding
 
 ---
 
-#### REQ-IFI-030 — Manual transition from draft to ready-for-spec
+#### REQ-IFI-030 — `/spec:start` swaps ready-for-spec → in-progress on scaffold
 
-- **Pattern:** WHEN a user manually applies the `status:ready-for-spec` label to an issue, no automated process shall apply or remove that label.
+- **Pattern:** WHEN `/spec:start <issue-number>` successfully scaffolds a new feature, the `/spec:start` command shall replace the `status:ready-for-spec` label on the linked issue with `status:in-progress` as a one-time scaffold action.
+- **Note:** This is the **only** automation that touches `status:ready-for-spec`. `scripts/sync-issue-mirror.sh` never applies or removes it (REQ-IFI-029).
 - **Acceptance:**
-  - Given issue #274 has the `status:ready-for-spec` label applied by a human
-  - When `scripts/sync-issue-mirror.sh 274` runs before `/spec:start` has been called
-  - Then the `status:ready-for-spec` label remains unchanged
-  - And the script does not apply any other status label
+  - Given issue #274 has `status:ready-for-spec` applied
+  - When `/spec:start 274` completes scaffold successfully
+  - Then `status:ready-for-spec` is removed from issue #274
+  - And `status:in-progress` is applied to issue #274
+  - Given `scripts/sync-issue-mirror.sh adopt-issue-first-interaction-model-274` runs on any subsequent stage
+  - Then `status:ready-for-spec` is not re-applied or removed by the script
 - **Priority:** must
-- **Satisfies:** RESEARCH-IFI-001 (R17)
+- **Satisfies:** RESEARCH-IFI-001 (R17), resolves P2 Codex finding
 
 ---
 

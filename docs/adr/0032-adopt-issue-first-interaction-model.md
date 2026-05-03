@@ -74,7 +74,7 @@ The issue body receives a thin mirror block delimited by HTML comment markers:
 ```
 
 The block is:
-- Written by `scripts/sync-issue-mirror.sh <slug>` as the **last step** of every `/spec:*` stage command.
+- Written by `scripts/sync-issue-mirror.sh <slug>` as the **last step** of every `/spec:*` stage command. The script receives the **slug** (not the issue number); it reads `specs/<slug>/workflow-state.md` to obtain the `issue:` field and the current stage. This is the canonical interface — requirements referencing the script use the slug form.
 - Thin: current stage + last gate + link to `workflow-state.md` only. Spec files are the source of truth.
 - Located at the **end** of the issue body, appended once on first scaffold.
 - Replaced idempotently on subsequent syncs (fetch body → splice between markers → write).
