@@ -13,6 +13,9 @@
 ## Checklist
 
 - [ ] `npm run verify` gate is green locally
+- [ ] Required GitHub checks are green on the latest commit (`Verify`, PR title, typos, gitleaks)
+- [ ] Path-triggered checks are green when applicable (`actionlint`, `zizmor`, dependency review)
+- [ ] Review threads are resolved before merge
 - [ ] Docs and steering files updated in this PR — no "I'll do it after"
 - [ ] Product page updated or explicitly marked unaffected (`sites/index.html`)
 - [ ] ADR filed if this is an irreversible architectural decision (`/adr:new "<title>"`)

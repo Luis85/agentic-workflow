@@ -48,6 +48,28 @@ Scopes are optional. The expected shape is `<type>: <subject>` or `<type>(<scope
 
 Use `docs:` for planning artifacts, specs, workflow notes, README changes, and other documentation-only work. Do not use descriptive-but-unsupported types such as `plan:`, `release:`, or `workflow:` unless the CI allowlist is updated in the same concern.
 
+## Required main ruleset
+
+This upstream repository protects the default branch with a GitHub ruleset named `main`. Downstream projects should reproduce the same contract on their integration branch, whether that branch is `main` in Shape A or `develop` in Shape B.
+
+The ruleset must:
+
+- block branch deletion;
+- block non-fast-forward updates;
+- require pull requests before merge;
+- require the branch to be up to date before merge;
+- require at least one approving review;
+- dismiss stale approvals when new commits are pushed;
+- require approval of the most recent reviewable push;
+- require all review threads to be resolved before merge;
+- require these always-running status checks:
+  - `Verify`
+  - `Conventional Commits PR title`
+  - `spell check`
+  - `scan for committed secrets`
+
+Workflow-path security checks (`actionlint`, `zizmor static analysis`, and `dependency review`) stay path-triggered so ordinary docs and script PRs are not blocked by jobs that never run. When a PR changes `.github/workflows/**`, `.github/actions/**`, or dependency manifests, the relevant path-triggered checks must be green before merge; require them in a path-scoped ruleset if the repository configuration supports that shape.
+
 ## Rules
 
 1. **No direct commits on `main` (or `develop`)** — *ever*. Every change lands via a topic branch and a merged PR. This applies to code, docs, ADRs, glossary entries, memory files, brainstorm output, planning artifacts, and generated docs. There is no "small enough" exception. The `.claude/settings.json` push deny is a backstop; the rule applies even to local commits, because extracting a stray `main` commit into a topic branch later costs more than cutting the branch up front. See [`feedback_no_main_commits.md`](../.claude/memory/feedback_no_main_commits.md).

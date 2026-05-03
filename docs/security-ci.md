@@ -30,6 +30,25 @@ Each gate is a separate workflow file under `.github/workflows/` so it can be en
 
 Higher-friction or domain-specific gates (CodeQL, OSSF Scorecard, markdownlint) are deferred until a concrete signal demands them. `typos`, conventional-commits PR titles, and dependency review are now implemented.
 
+## Required status checks
+
+The upstream `main` ruleset requires the always-running checks that every PR should produce:
+
+- `Verify`
+- `Conventional Commits PR title`
+- `spell check`
+- `scan for committed secrets`
+
+The ruleset also requires an up-to-date branch, one approving review, latest-push approval, stale-review dismissal, and resolved review threads. This makes the remote policy match the local rule that `npm run verify` must be green before merge.
+
+Path-triggered security workflows are intentionally not global required checks:
+
+- `actionlint` runs only for `.github/workflows/**` and `.github/actions/**`.
+- `zizmor static analysis` runs only for workflow/action changes and on its weekly schedule.
+- `dependency review` runs only for dependency manifest, lockfile, workflow, and local-action changes.
+
+If GitHub rulesets in the target repository support path-scoped required checks, require those checks for the matching paths. Otherwise, reviewers must treat the path-triggered job result as merge-blocking whenever GitHub runs it.
+
 ## Dependency review policy
 
 The dependency-review workflow uses GitHub's dependency graph diff for pull requests. It runs only when a PR changes the npm manifest/lock or GitHub Actions workflow/action files.

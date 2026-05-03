@@ -23,6 +23,8 @@ Companion to [`verify-gate.md`](verify-gate.md) and [`security-ci.md`](security-
 - **dependabot** closes the loop on the [SHA-pin policy](security-ci.md#action-pinning) — without an automated bumper, pinning is a maintenance burden that ages out the codebase.
 - **dependency-review** adds PR-diff vulnerability feedback before a lockfile or workflow dependency change reaches `main`.
 
+The upstream `main` ruleset requires the always-running PR checks (`Verify`, PR title, typos, and gitleaks). Path-triggered checks remain merge-blocking when they run, but are not global required checks because GitHub does not create them for unrelated PRs.
+
 ## Why **not** markdownlint (yet)
 
 `markdownlint-cli2` was scoped for this bundle but pulled out — the existing artefact templates produce ~2000 findings on first run, dominated by table-pipe-spacing (`MD060`), heading rules around H1 placeholders (`MD025`), and fenced-code language tags (`MD040`). Adding it without a dedicated cleanup PR would either spam CI or require disabling so many rules that the check becomes a no-op. Track it as a follow-up: a single sweep PR that auto-fixes table style and adds language tags to fenced blocks, then enable the workflow.
@@ -103,4 +105,5 @@ typos --config _typos.toml
 2. Update `dependabot.yml` `directory:` if `package.json` is not at repo root.
 3. Enable Dependabot alerts in the repository security settings.
 4. Decide whether to require the `dependency review` check in branch protection or rulesets.
-5. Decide whether to lock a `locale` in `_typos.toml`. The template stays unlocked because it mixes en-us and en-gb spellings; a real product probably picks one.
+5. Reproduce the required-check policy from [`branching.md`](branching.md#required-main-ruleset) on the integration branch.
+6. Decide whether to lock a `locale` in `_typos.toml`. The template stays unlocked because it mixes en-us and en-gb spellings; a real product probably picks one.
