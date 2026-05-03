@@ -46,13 +46,15 @@ This map keeps deferred candidates separate from checks that already exist so ad
 | PR-title lint | [`ci-automation.md`](ci-automation.md#pr-title-rules), [`.github/workflows/pr-title.yml`](../.github/workflows/pr-title.yml) | Required on every PR. |
 | Spell check | [`ci-automation.md`](ci-automation.md#typos-config), [`.github/workflows/typos.yml`](../.github/workflows/typos.yml) | Required on every PR. |
 | Dependabot version updates | [`ci-automation.md`](ci-automation.md#dependabot-policy), [`.github/dependabot.yml`](../.github/dependabot.yml) | Bumps pinned GitHub Actions and npm dev dependencies. |
+| Supply-chain posture (Scorecard) | `.github/workflows/scorecard.yml` | Weekly + push to main. Publishes SARIF to code scanning. Initial findings are advisory — triage via Security tab. |
+
+> **Note:** Scorecard findings are advisory at first. Triage results via the GitHub Security/code-scanning tab and file concrete issues before promoting any check to a required gate.
 
 ### Deferred
 
 | Candidate | Current decision |
 | --- | --- |
 | CodeQL default setup or explicit CodeQL workflow | Candidate for TypeScript/scripts and GitHub Actions code scanning once the repository settings path is chosen. |
-| OSSF Scorecard | Candidate periodic supply-chain posture report after the current P1/P2 hardening work is stable. |
 | Markdown lint | Deferred until the existing Markdown baseline is cleaned or a non-blocking changed-files rollout is designed. See [`ci-automation.md`](ci-automation.md#why-not-markdownlint-yet). |
 
 ### Rejected for now
