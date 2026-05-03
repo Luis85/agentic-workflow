@@ -314,7 +314,7 @@ The Repo Adoption Track is an agent-orchestrated, four-phase opt-in conductor sk
 - **Acceptance:**
   - Given the adopter lacks push access to the foreign remote
   - When Phase 4 attempts `git push`
-  - Then the push fails and the conductor generates `adoptions/<slug>/specorator-adoption.patch` via `git format-patch`
+  - Then the push fails and the conductor generates the deterministic file `adoptions/<slug>/specorator-adoption.patch` from `git format-patch <base>..adopt/specorator --stdout`
   - And `push-record.md` records `push_mode: patch-fallback`, the patch file path, and written fork-PR instructions
   - And the conductor does not retry the push automatically
 - **Priority:** must
@@ -394,16 +394,17 @@ The Repo Adoption Track is an agent-orchestrated, four-phase opt-in conductor sk
 
 ---
 
-### REQ-ADOPT-023 — Pre-flight: `gh auth status` checked before Phase 1
+### REQ-ADOPT-023 — Pre-flight: target-scoped `gh auth status` checked before Phase 1
 
-- **Pattern:** WHEN the adoption conductor starts and the foreign source is a git URL, THEN the conductor shall run `gh auth status` and abort with a clear authentication error message if the check fails.
+- **Pattern:** WHEN the adoption conductor starts and the foreign source is a GitHub URL, THEN the conductor shall run `gh auth status --hostname github.com --active` and abort with a clear authentication error message if the check fails.
 - **Pattern label:** Event-driven
-- **Statement:** WHEN the adoption conductor starts with a remote git URL as the source, THEN the conductor shall verify that `gh` is authenticated before cloning, and shall abort with a clear message if authentication is not established.
+- **Statement:** WHEN the adoption conductor starts with a GitHub remote URL as the source, THEN the conductor shall verify that `gh` is authenticated for `github.com` before cloning, and shall abort with a clear message if authentication is not established for that host.
 - **Acceptance:**
   - Given an adopter who has not run `gh auth login`
   - When the adopter invokes `/adopt:start <github-url>`
-  - Then the conductor runs `gh auth status`
+  - Then the conductor runs `gh auth status --hostname github.com --active`
   - And if authentication is not established, the conductor aborts before cloning and outputs the message: "GitHub CLI authentication not found. Run `gh auth login` and retry."
+  - And authentication failures for unrelated configured `gh` hosts do not block a `github.com` adoption run
 - **Priority:** must
 - **Satisfies:** RESEARCH-ADOPT-001 (A2 user assumption, Q9)
 
