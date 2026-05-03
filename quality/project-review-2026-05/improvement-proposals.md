@@ -13,7 +13,7 @@ inputs:
 
 - Recommended first draft PR: this PR, adding the repository-wide review artifacts and creating a tracking issue.
 - Tracking issue: [#293 — Project review 2026-05: repository health, risks, and improvement backlog](https://github.com/Luis85/agentic-workflow/issues/293)
-- Deferred proposals: verify flake investigation, WIP/clarification burn-down, settings audit automation, release provenance, Shape B release-flow clarification, ADR status sweep, parser boundary hardening, adopter-docs graduation.
+- Deferred proposals: verify flake investigation, WIP/clarification burn-down, settings audit automation, release provenance, Shape B release-flow clarification, ADR status sweep, parser boundary hardening, adopter-docs graduation, agentic control-plane threat modeling, operational bot drift tests, issue-mirror review checks, SBOM posture.
 
 ## Proposals
 
@@ -152,6 +152,66 @@ inputs:
 - Proposed PR title: `docs(onboarding): record first-time adopter walkthrough`.
 - Verification: `npm run check:content`; manual walkthrough log.
 
+### PRV-PROP-008 — Add an agentic control-plane threat model
+
+- Problem: critical agent behavior is spread across local permission rules, RBAC docs, operational prompts, GitHub issue/PR mutation paths, and workflow state conventions.
+- Evidence: `.claude/settings.json` contains literal-prefix allow/deny rules and a commit hook; `docs/rbac.md` maps role boundaries; operational bot prompts define fail-closed behavior; OWASP LLM and Agentic AI guidance frames prompt/tool/agency risk as a threat-modeling problem.
+- Expected benefit: makes bypass cases, trust boundaries, and test obligations explicit before adding more autonomous routines.
+- Affected surfaces: `docs/rbac.md`, `.claude/settings.json`, `agents/operational/*/PROMPT.md`, optional new `docs/security/agentic-control-plane.md`.
+- Effort: medium.
+- Risk: medium; threat models can sprawl unless scoped to concrete mutation paths.
+- Owner: security maintainer / architect.
+- Success signal: one document maps assets, actors, trust boundaries, misuse cases, controls, and verification evidence.
+- First draft PR candidate: no.
+- Proposed branch: `docs/agentic-control-plane-threat-model`.
+- Proposed PR title: `docs(security): add agentic control-plane threat model`.
+- Verification: `npm run check:links`; targeted review of changed security docs.
+
+### PRV-PROP-009 — Add dry-run and drift checks for operational bots
+
+- Problem: standalone bot prompts are intentionally duplicated from interactive surfaces, so divergence can change production automation behavior.
+- Evidence: `agents/operational/issue-breakdown-bot/PROMPT.md` says it does not import `.claude/skills/issue-breakdown/SKILL.md` or `.claude/agents/issue-breakdown.md`; both issue-breakdown and review-bot prompts expose `DRY_RUN` behavior.
+- Expected benefit: catches prompt drift, missing fail-closed behavior, and accidental write-scope expansion before a scheduled bot run.
+- Affected surfaces: `agents/operational/*/PROMPT.md`, bot workflow docs, optional test fixtures under `tests/fixtures/`.
+- Effort: medium.
+- Risk: medium; tests must avoid real GitHub mutation and remain deterministic.
+- Owner: automation maintainer.
+- Success signal: dry-run fixtures assert no real `gh issue`, `gh pr`, `git push`, or source-tree writes happen outside documented sinks.
+- First draft PR candidate: no.
+- Proposed branch: `test/operational-bot-dry-runs`.
+- Proposed PR title: `test(automation): add operational bot dry-run fixtures`.
+- Verification: `npm run test:scripts`; `npm run verify:changed`.
+
+### PRV-PROP-010 — Add issue-mirror checks to project-review handoff
+
+- Problem: issue sync and drift checks are useful project-review evidence, but they are intentionally excluded from the universal offline verify gate.
+- Evidence: `scripts/check-issues.ts` states it is not included in `npm run verify`; `scripts/sync-issues.ts` is pull-only and supports `--dry-run --json`; `docs/sink.md` documents `issues/` as the canonical local mirror.
+- Expected benefit: project reviews can detect issue metadata drift without weakening offline-safe verification.
+- Affected surfaces: `docs/project-review-workflow.md`, future `quality/<review>/review-plan.md` templates.
+- Effort: small.
+- Risk: low; documentation/checklist-only unless automation is added later.
+- Owner: project-review maintainer.
+- Success signal: project-review handoff records whether `npm run sync:issues -- --dry-run --json` and `npm run check:issues` passed, warned, or were skipped with reason.
+- First draft PR candidate: no.
+- Proposed branch: `docs/project-review-issue-checks`.
+- Proposed PR title: `docs(project-review): add issue mirror evidence checks`.
+- Verification: `npm run check:links`; `npm run verify:changed`.
+
+### PRV-PROP-011 — Record an SBOM posture decision
+
+- Problem: release trust recommendations now include provenance and SBOMs, but this repo has not decided whether SBOM output belongs in the release package, release assets, or only internal security reviews.
+- Evidence: npm provides `npm sbom`; CycloneDX provides richer npm SBOM generation; SLSA provenance guidance is adjacent but not the same artifact as an SBOM.
+- Expected benefit: prevents ad hoc SBOM generation from becoming another unowned release artifact.
+- Affected surfaces: `docs/release-operator-guide.md`, `docs/release-readiness-guide.md`, optional ADR, possibly `.github/workflows/release.yml`.
+- Effort: small for decision, medium for implementation.
+- Risk: medium if implemented in release workflow before artifact ownership is clear.
+- Owner: release manager / security maintainer.
+- Success signal: docs state whether SBOM is required, optional, deferred, or internal-only for the next release line.
+- First draft PR candidate: no.
+- Proposed branch: `docs/sbom-posture`.
+- Proposed PR title: `docs(release): record SBOM posture`.
+- Verification: `npm run check:links`; release dry-run if implementation follows.
+
 ## Issue body draft
 
 ```markdown
@@ -173,6 +233,10 @@ Improvement proposals:
 - Sweep proposed ADR statuses.
 - Keep parser hardening scoped around `parseSimpleYaml`.
 - Run a first-time adopter documentation walkthrough.
+- Add an agentic control-plane threat model.
+- Add operational bot dry-run and drift checks.
+- Add issue-mirror sync/drift evidence to project reviews.
+- Record an SBOM posture decision.
 
 First draft PR: https://github.com/Luis85/agentic-workflow/pull/294
 

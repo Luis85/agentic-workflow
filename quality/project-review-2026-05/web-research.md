@@ -28,6 +28,11 @@ This review used external sources as benchmarks, not as automatic requirements.
 | Backstage ADR guidance | https://backstage.io/docs/architecture-decisions/ | Benchmarked ADR supersession practice: records stay preserved and old records link to the superseding ADR. |
 | Google Cloud ADR guidance | https://docs.cloud.google.com/architecture/architecture-decision-records | Benchmarked ADRs as a decision history that helps future troubleshooting and system evolution. |
 | Google engineering practices | https://google.github.io/eng-practices/ | Benchmarked small, self-contained changes and review conventions. |
+| OWASP Top 10 for LLM Applications | https://owasp.org/www-project-top-10-for-large-language-model-applications/ | Benchmarked agent-facing risks such as prompt injection, insecure output handling, and excessive agency. |
+| OWASP Agentic AI threats and mitigations | https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/ | Benchmarked agentic systems as a threat-modeling problem, not just a prompt-quality problem. |
+| SLSA v1.0 producing artifacts | https://slsa.dev/spec/v1.0/requirements | Benchmarked producer, build-platform, provenance, authenticity, and isolation expectations. |
+| npm SBOM command | https://docs.npmjs.com/cli/v10/commands/npm-sbom/ | Benchmarked lightweight SBOM generation options available through npm. |
+| CycloneDX npm SBOM generator | https://github.com/CycloneDX/cyclonedx-node-npm | Benchmarked richer CycloneDX SBOM generation for npm projects. |
 
 ## Benchmark notes
 
@@ -41,3 +46,6 @@ This review used external sources as benchmarks, not as automatic requirements.
 - Diataxis validates the repo's split between tutorials, how-to, reference, and explanation. The main documentation risk is not category absence; it is making sure internal planning artifacts do not leak into first-time adopter paths.
 - ADR guidance aligns with the repository's numbered ADR practice. Review should continue checking that supersession and status changes are explicit, and that proposed ADRs do not become ambiguous long-term policy.
 - Google's public engineering-practices material reinforces this repo's "one concern per PR" rule. Recent same-day PR volume suggests preserving that rule while adding WIP discipline.
+- OWASP's LLM and agentic AI material supports treating local agent permissions, tool access, operational bots, and workflow state mutation as a control plane. Prompt instructions help, but the durable controls are least privilege, fail-closed behavior, idempotency, reviewable logs, and regression tests for bypass cases.
+- SLSA's artifact guidance separates producing provenance from consumers being able to verify it. For this repository, a release-provenance decision should include both the tarball attestation path and how downstream users would check it.
+- SBOM generation is available through the npm CLI and richer CycloneDX tooling. SBOM work should be a release-roadmap decision rather than an immediate gate, because the repository first needs to decide which release artifacts are consumer-facing.

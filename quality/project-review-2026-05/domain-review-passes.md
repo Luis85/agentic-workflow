@@ -68,6 +68,16 @@ These passes deepen the initial review by domain. Each pass separates observed e
 | Local harness deny rules | `AGENTS.md`, `.codex/instructions.md`, and branching docs forbid direct integration-branch commits | Least privilege should apply to both CI tokens and local agent actions | Strong process posture. The root checkout still had an unrelated untracked `.claude/worktrees/` entry before this review, which shows local worktree hygiene needs occasional cleanup. | Run `npm run doctor` or worktree hygiene checks before large review cycles. |
 | PR review loop | Codex opens PRs; PR #294 is draft and linked to issue #293 | Google review guidance stresses docs with behavior changes and careful review of generated/reference material | The PR loop is working. For deep reviews, prefer one draft PR with multiple review-pass commits over many loosely connected review comments. | Keep this PR draft until domain pass review is accepted. |
 
+## Pass 7 — Agentic Control Plane, Bot Drift, and Issue Integrity
+
+| Topic | Evidence | Benchmark | Deepened finding | Follow-up |
+|---|---|---|---|---|
+| Local command permissions | `.claude/settings.json` allowlists common git operations, denies direct pushes to `main`/`develop`, force pushes, `--no-verify`, and destructive repo deletes; its comment says permission rules are literal command-string prefix matches | OWASP LLM and Agentic AI guidance emphasizes prompt injection, excessive agency, tool access, and threat modeling | The repo already treats local agent execution as a security surface. The next maturity step is a threat model plus regression checks for known command-shape aliases and bypass cases. | Add an agentic control-plane threat model and permission-bypass fixture tests. |
+| Operational bot autonomy | `issue-breakdown-bot` is headless, refuses ambiguity, uses issue-level concurrency, writes sentinel sections, and supports `DRY_RUN`; `review-bot` is read-only and only creates review issues | Agentic controls should limit agency, preserve auditability, and fail closed | The bot contracts are unusually explicit. Residual risk is not the concept of bots; it is drift between standalone prompts, interactive skills, and actual workflow behavior. | Add bot dry-run fixtures and a cross-surface drift checklist. |
+| Issue mirror integrity | `issues/` is a canonical local mirror; `sync:issues` is pull-only; `check:issues` warns for missing links and hard-fails malformed frontmatter, but stays outside `verify` | SSDF/SAMM style reviews should record response and tracking evidence | The offline-safe decision is correct. Project reviews should still run issue checks as explicit evidence because stale issue metadata weakens traceability. | Add `sync:issues -- --dry-run --json` and `check:issues` to project-review handoff. |
+| Release consumer evidence | Release provenance and SBOM are separate artifacts; current review found no release attestation and no SBOM posture decision | SLSA separates provenance generation, authenticity, and verification; npm and CycloneDX provide SBOM options | The release trust roadmap should avoid bundling everything into one generic "supply chain" task. Provenance answers "how was it built"; SBOM answers "what is inside it." | Record separate decisions for artifact attestation and SBOM posture. |
+| First-reader routing | `docs/sink.md` is comprehensive and accurate; the adopter path lives across README, tutorials, how-to guides, and product page | Diataxis supports splitting docs by user need | The current doc set is powerful for maintainers but dense for first-time adopters. This is an information architecture risk, not a content absence. | Add a first-reader route that names what to read first and what to ignore until needed. |
+
 ## Domain pass backlog
 
 | Priority | Backlog item | Reason |
@@ -77,5 +87,9 @@ These passes deepen the initial review by domain. Each pass separates observed e
 | P2 | Settings evidence checklist | Closes YAML-vs-repo-settings audit gap. |
 | P2 | Release provenance decision | High leverage for supply-chain trust. |
 | P2 | Shape B release-flow note | Prevents contributor confusion during branch-model transition. |
+| P2 | Agentic control-plane threat model | Keeps expanding autonomous tooling inside explicit trust boundaries. |
+| P2 | Operational bot dry-run and drift tests | Converts prompt-level controls into regression evidence. |
+| P3 | Project-review issue mirror checks | Improves traceability without making universal verify network-dependent. |
 | P3 | ADR proposed-status sweep | Improves governance hygiene without blocking current work. |
 | P3 | First-time adopter walkthrough | Validates product documentation from the outside-in. |
+| P3 | SBOM posture decision | Complements provenance without rushing release workflow changes. |
