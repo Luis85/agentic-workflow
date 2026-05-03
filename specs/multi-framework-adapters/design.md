@@ -60,7 +60,7 @@ flowchart TD
     F -- Yes --> G[stderr: CODEX SIZE LIMIT EXCEEDED — contributing files listed\nProcess exits non-zero]
     G --> H([Maintainer trims source files and re-runs])
     F -- No --> I{Any source file > 500 lines?}
-    I -- Yes --> J[Per-file truncation notice to stdout\nOutput file capped at 491 lines\nGeneration continues]
+    I -- Yes --> J[Per-file truncation notice to stdout\nOutput capped at 490 source lines\nGeneration continues]
     I -- No --> K{Codex combined size > 28 KiB?}
     J --> K
     K -- Yes --> L[stderr: WARNING — Codex combined size NNN bytes, approaching 32768 limit\nGeneration continues]
@@ -275,7 +275,7 @@ Exit code: 0
 
 stdout (inline, before the file list, one notice per truncated file):
 ```
-adapters:sync: TRUNCATED: .claude/agents/large-agent.md exceeded 500 lines. Output .cursor/rules/agent-large-agent.mdc capped at 491 lines with truncation marker on line 491.
+adapters:sync: TRUNCATED: .claude/agents/large-agent.md exceeded 500 lines. Output .cursor/rules/agent-large-agent.mdc capped at 490 source lines.
 adapters:sync: generating adapter files...
   ...
 ```
@@ -520,7 +520,7 @@ For a CLI/script feature, "screens" are the distinct terminal states a developer
 | `adapters:check` — stale: manifest absent | Tells the developer that adapters have never been generated for this repo | stderr. Single error line stating the expected manifest path, then recovery instruction. Exit code 1. |
 | `adapters:check` — stale: output file missing | Names the output file(s) absent from the working tree | stderr. Structured block: missing line, two-space-indented path(s), recovery instruction. Exit code 1. |
 | `adapters:check` — stale: generated-file header absent or malformed | Names the output file(s) whose header has been removed or corrupted | stderr. Structured block: error line, two-space-indented path(s), explanation, recovery instruction. Exit code 1. |
-| Generated `.mdc` file (opened in Cursor) | The "screen" a Cursor user reads when they open or attach a rule | File begins with a YAML frontmatter block; body is the source agent or skill content, possibly capped at 491 lines. Truncation marker appears as a single HTML comment line at position 491 if the file was capped. |
+| Generated `.mdc` file (opened in Cursor) | The "screen" a Cursor user reads when they open or attach a rule | File begins with a YAML frontmatter block; body is the source agent or skill content, possibly capped at 490 source lines. Truncation marker appears as a single HTML comment line immediately after the last retained body line if the file was capped. |
 | Generated `.codex/agents/<slug>.md` (opened in editor or by Codex) | The "screen" a Codex adopter or contributor reads when navigating to an agent definition | File begins with the HTML comment header on line 1; body is the source agent content, possibly capped. The comment is the first visual element — immediately communicating that the file is generated. |
 | Generated `.codex/agents/INDEX.md` (Codex discovery index) | The file Codex encounters via the AGENTS.md pointer; lists every agent file path | File begins with the HTML comment header on line 1; body is a Markdown table with a row per agent file. |
 
@@ -570,7 +570,7 @@ Pattern: `<command>: TRUNCATED: <sentence>.`
 
 - Uppercase `TRUNCATED` is machine-greppable.
 - Stream: stdout (this is a generation notice, not an error).
-- The sentence names the source path, the output path, and the line number of the truncation marker.
+- The sentence names the source path and the output path.
 
 #### Component 5 — ERROR block (structured)
 
@@ -640,7 +640,7 @@ Appears as line 1 of every `.md` file written to `.codex/agents/`, `.codex/skill
 
 #### Component 9 — Truncation marker (in-file comment)
 
-Appears as line 491 of any `.mdc` file whose source exceeded 500 lines (REQ-ADAPT-005).
+Appears immediately after line 490 of retained body content in any `.mdc` file whose source exceeded 500 total output lines (REQ-ADAPT-005). For the standard 5-field frontmatter (7 lines) plus blank separator, this lands on file line 499.
 
 ```
 <!-- TRUNCATED: source exceeded 500 lines -->
@@ -728,7 +728,7 @@ Exit code `1` is the sole non-zero value. No exit code other than `0` or `1` is 
 | `HEADER_SOURCE_FIELD` | `x-source: <path>` | YAML frontmatter of every `.mdc` file |
 | `HEADER_REGENERATE_FIELD` | `x-regenerate: "npm run adapters:sync"` | YAML frontmatter of every `.mdc` file |
 | `CODEX_HEADER_PREFIX` | `<!-- GENERATED — do not edit by hand.` | First token on line 1 of every `.md` file written to `.codex/` |
-| `TRUNCATION_MARKER` | `<!-- TRUNCATED: source exceeded 500 lines -->` | Line 491 of any `.mdc` file whose source exceeded 500 lines |
+| `TRUNCATION_MARKER` | `<!-- TRUNCATED: source exceeded 500 lines -->` | Immediately after line 490 of retained body content in any file whose source exceeded 500 total output lines |
 
 The em dash in `CODEX_HEADER_PREFIX` is Unicode character U+2014. Scripts constructing this string must use the literal character, not two hyphens (`--`) or an en dash.
 
@@ -738,7 +738,6 @@ The em dash in `CODEX_HEADER_PREFIX` is Unicode character U+2014. Scripts constr
 |---|---|---|
 | `LINE_LIMIT_HARD` | `500` | Maximum source line count before truncation is applied |
 | `LINE_CAP` | `490` | Number of body lines retained when truncation applies |
-| `TRUNCATION_LINE` | `491` | Line number at which the truncation marker is placed |
 | `CODEX_WARN_BYTES` | `28672` | Combined `.codex/` byte threshold triggering a WARNING |
 | `CODEX_HARD_BYTES` | `32768` | Combined `.codex/` byte threshold triggering an ERROR and aborting generation |
 
@@ -796,10 +795,10 @@ The first-run reminder is a single sentence on its own line. It is not prefixed 
 Stream: stdout (one line per truncated file, printed before the file list)
 
 ```
-adapters:sync: TRUNCATED: .claude/agents/large-agent.md exceeded 500 lines. Output .cursor/rules/agent-large-agent.mdc capped at 491 lines with truncation marker on line 491.
+adapters:sync: TRUNCATED: .claude/agents/large-agent.md exceeded 500 lines. Output .cursor/rules/agent-large-agent.mdc capped at 490 source lines.
 ```
 
-The message names the source path, the output path, and the specific line number of the marker. Generation continues. Exit code 0. Covers REQ-ADAPT-005.
+The message names the source path and the output path. Generation continues. Exit code 0. Covers REQ-ADAPT-005.
 
 ---
 
@@ -1228,7 +1227,7 @@ Constraints:
 - Single line, no internal line breaks.
 - The em dash after `GENERATED` is U+2014 (one Unicode codepoint), not two ASCII hyphens. The header-integrity check matches the literal byte sequence including this codepoint.
 - Line 2 is always blank (improves rendering in Markdown viewers that do not suppress HTML comments — Part B B.5.2).
-- Body content begins on line 3 (or the truncation marker on line 491 if applicable for a `.mdc`; for `.md` Codex files, truncation marker placement follows the same source-line-490 convention).
+- Body content begins on line 3. When truncation applies, the truncation marker appears after body line 490 (file line 493 for `.md` Codex files; file line 499 for `.mdc` files with standard 5-field frontmatter).
 
 #### C.3.4 — Truncation marker (REQ-ADAPT-005)
 
@@ -1238,7 +1237,7 @@ A single literal line:
 <!-- TRUNCATED: source exceeded 500 lines -->
 ```
 
-Placed at line 491 of `.mdc` files whose source exceeded 500 lines. No content follows.
+Placed immediately after body line 490 of any file whose source exceeded 500 total output lines. No content follows. For `.mdc` files (standard 5-field frontmatter + blank separator = 8 header lines), this lands on file line 499; for `.codex/*.md` files (2 header lines), on file line 493.
 
 ---
 

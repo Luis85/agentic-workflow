@@ -182,7 +182,7 @@ Authoritative cross-references used throughout:
 - **Errors:** Propagates from `enforceLineLimit`.
 - **Satisfies:** REQ-ADAPT-019, REQ-ADAPT-005, REQ-ADAPT-006, REQ-ADAPT-007, REQ-ADAPT-016, REQ-ADAPT-017.
 
-> **Truncation-marker placement (canonical).** The truncation marker always immediately follows source body line 490; the file-relative line number depends on the file type's header overhead. For `.mdc` files (frontmatter-only header), the marker lands on file line 491 per REQ-ADAPT-005. For `.codex/*.md` files, the marker lands on file line 493 (line 1 = HTML comment header, line 2 = blank, lines 3–492 = body 490 source lines max, line 493 = truncation marker), consistent with DESIGN B.5.2 and DESIGN C.4.1 step 5.
+> **Truncation-marker placement (canonical).** The truncation marker always immediately follows source body line 490; the file-relative line number depends on the file type's header overhead. For `.mdc` files, the marker lands after the frontmatter block and blank separator — with the standard 5-field frontmatter (7 lines) plus blank separator (1 line), the marker is on file line 499 (7 + 1 + 490 + 1). For `.codex/*.md` files, the marker lands on file line 493 (line 1 = HTML comment header, line 2 = blank, lines 3–492 = body 490 source lines max, line 493 = truncation marker), consistent with DESIGN B.5.2 and DESIGN C.4.1 step 5.
 
 ---
 
@@ -574,7 +574,7 @@ The QA agent (Stage 8) turns these into automated tests. Each scenario lists its
 | TEST-ADAPT-020 | E2E: slug collision in fixture causes exit 1; stderr matches B.4.5; no output files written | e2e | REQ-ADAPT-025, EC-007 |
 | TEST-ADAPT-021 | E2E: synthetic large source files producing 32 KiB + 1 byte cause exit 1; B.4.6 listed contributors; no Codex outputs persisted | e2e | REQ-ADAPT-027, EC-011 |
 | TEST-ADAPT-022 | E2E: synthetic large source files producing 28 KiB + 1 byte produce exit 0 with B.4.4 warning on stderr | e2e | REQ-ADAPT-009, EC-009 |
-| TEST-ADAPT-023 | E2E: source with 600 lines produces output with truncation marker on line 491 (`.mdc`) and truncation notice on stdout (B.4.3) | e2e | REQ-ADAPT-005, EC-004 |
+| TEST-ADAPT-023 | E2E: source with 600 lines produces `.mdc` output with body truncated to 490 lines, truncation marker immediately after last body line, and truncation notice on stdout (B.4.3) | e2e | REQ-ADAPT-005, EC-004 |
 | TEST-ADAPT-024 | E2E: `cursor-doctor` reports zero errors on every generated `.mdc` from a clean fixture | e2e | NFR-ADAPT-007, REQ-ADAPT-002, REQ-ADAPT-013 |
 | TEST-ADAPT-025 | E2E: forcing a `cursor-doctor` failure (fixture with deliberately invalid frontmatter) causes exit 1 with B.4.7 framed output; manifest is not written | e2e | REQ-ADAPT-013, EC-016 |
 | TEST-ADAPT-026 | E2E: `adapters:check` with absent manifest exits 1 with B.4.10 | e2e | REQ-ADAPT-011, EC-017 |
