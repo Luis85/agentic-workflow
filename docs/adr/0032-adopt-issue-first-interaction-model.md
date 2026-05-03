@@ -45,7 +45,7 @@ The transition from `status:draft` → `status:ready-for-spec` on a GitHub issue
 
 ### 2. Trigger
 
-`/spec:start <issue-number>` is the trigger. The command reads issue body and labels to derive slug, area, depth, and track. The existing `/spec:start <slug>` form remains unchanged for small fixes and Lean/Spike workflows.
+`/spec:start <issue-number>` is the trigger. The command reads issue body and labels to derive slug, depth, and track, then proposes an area-code default for the user to accept or override. The existing `/spec:start <slug>` form remains unchanged for small fixes and Lean/Spike workflows.
 
 ### 3. Slug derivation
 
@@ -69,7 +69,7 @@ The issue body receives a thin mirror block delimited by HTML comment markers:
 
 ```
 <!-- specorator-state:begin -->
-**Stage:** <current-stage> | **Last gate:** <gate-name> | [workflow-state.md](<link>)
+**Stage:** <current-stage> | **Last gate:** <gate-name> | workflow-state.md: <link>
 <!-- specorator-state:end -->
 ```
 

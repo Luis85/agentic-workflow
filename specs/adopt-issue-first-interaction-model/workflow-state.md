@@ -2,7 +2,7 @@
 feature: adopt-issue-first-interaction-model
 area: IFI
 issue: 274
-current_stage: requirements
+current_stage: design
 status: active
 last_updated: 2026-05-03
 last_agent: pm
@@ -40,7 +40,7 @@ artifacts:
 | 10. Release | `release-notes.md` | pending |
 | 11. Learning | `retrospective.md` | pending |
 
-> **Statuses:** `pending` | `in-progress` | `complete` | `skipped` | `blocked`. Section semantics + status enums: see [`_shared/state-file-sections.md`](./_shared/state-file-sections.md).
+> **Statuses:** `pending` | `in-progress` | `complete` | `skipped` | `blocked`. Section semantics + status enums: see [`_shared/state-file-sections.md`](../../templates/_shared/state-file-sections.md).
 
 ## Skips
 
@@ -80,7 +80,7 @@ _None._
 - [x] CLAR-IFI-002 — resolved 2026-05-03: exact h3 headings locked per template in REQ-IFI-001/002/003.
 - [x] CLAR-IFI-004 — resolved 2026-05-03: status labels = 6 named values (not per-stage); added to REQ-IFI-006.
 - [x] CLAR-IFI-006 — resolved 2026-05-03: canonical label file = `.github/labels.yml`; REQ-IFI-006/007 updated.
-- [x] CLAR-IFI-012 — resolved 2026-05-03: area = first 3 chars of first slug word (existing rule); track maps to commit-type only. REQ-IFI-013 rewritten.
+- [x] CLAR-IFI-012 — resolved 2026-05-03: area prompt defaults to first 3 chars of first slug word and remains user-overridable; track maps to commit-type only. REQ-IFI-013 rewritten.
 - [x] CLAR-IFI-017 — resolved 2026-05-03: acceptance criterion fixed — conflict scenario uses `issue: 42` in existing dir vs. `/spec:start 99`. REQ-IFI-017 updated.
 - [x] CLAR-IFI-020 — resolved 2026-05-03: mapping table added inline in REQ-IFI-013; full table to live in `docs/issue-first-interaction.md`.
 - [x] CLAR-IFI-021 — resolved 2026-05-03: gate labels opt-in only; REQ-IFI-020 rewritten with v1 gate label set.

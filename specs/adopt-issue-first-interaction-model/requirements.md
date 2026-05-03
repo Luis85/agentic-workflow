@@ -16,14 +16,14 @@ updated: 2026-05-03
 
 ## Summary
 
-Specorator currently starts every workflow from a slash command whose intent exists only in the chat transcript. This feature makes a GitHub issue the durable entry point: a user opens a structured issue (feature, bug, or spike), then calls `/spec:start <issue-number>` and the workflow scaffolds itself from the parsed issue body. The issue receives a lightweight read-only mirror of workflow state after each stage, accumulates GitHub status labels, and is linked to the placeholder PR via `Closes #<n>` so it closes when that PR merges through GitHub's native auto-close behavior. The eleven workflow stages, all specialist agents, all quality gates, and all artifact schemas are unchanged. The issue layer is purely additive.
+Specorator currently starts every workflow from a slash command whose intent exists only in the chat transcript. This feature makes a GitHub issue the durable entry point: a user opens a structured issue (feature, bug, or spike), then calls `/spec:start <issue-number>` and the workflow scaffolds itself from the parsed issue body. The issue receives a lightweight read-only mirror of workflow state after each stage and accumulates GitHub status labels. The eleven workflow stages, all specialist agents, all quality gates, and all artifact schemas are unchanged. The issue layer is purely additive.
 
 ---
 
 ## Goals
 
 - G1: Give every Specorator workflow run a durable, GitHub-native record of intent that outlives the chat transcript.
-- G2: Enable `/spec:start <issue-number>` to derive the feature slug, area, depth, and track from a parsed, structured issue body — no re-entry of context by the user.
+- G2: Enable `/spec:start <issue-number>` to derive the feature slug, depth, and track from a parsed, structured issue body, with area code confirmed from a derived default — no re-entry of issue context by the user.
 - G3: Keep the sentinel mirror block in the issue body up to date after each stage completion without ever blocking a stage.
 - G4: Maintain a consistent set of GitHub labels that signal workflow status and track, usable for triage and filtering across features.
 - G5: Remove legacy free-text issue templates and replace them with structured YAML forms for feature, bug, and spike types.
@@ -146,7 +146,7 @@ Specorator currently starts every workflow from a slash command whose intent exi
 #### REQ-IFI-006 — Canonical label set defined
 
 - **Pattern:** Ubiquitous
-- **Statement:** The repository shall define a canonical label set in `.github/labels.yml` covering: status labels for each workflow stage transition, depth labels (lean/standard/spike), track labels for each supported workflow track, and one `status:ready-for-spec` label. The `status:` labels shall be: `status:draft`, `status:ready-for-spec`, `status:in-progress`, `status:paused`, `status:blocked`, `status:done`. One label per status value; not one per stage.
+- **Statement:** The repository shall define a canonical label set in `.github/labels.yml` covering: the six workflow status labels, depth labels (lean/standard/spike), and the four issue-first track labels that have canonical branch-prefix mappings. The `status:` labels shall be: `status:draft`, `status:ready-for-spec`, `status:in-progress`, `status:paused`, `status:blocked`, `status:done`. One label per status value; not one per stage.
 - **Acceptance:**
   - Given `.github/labels.yml` exists in the repository
   - When the label set is enumerated
@@ -212,7 +212,7 @@ Specorator currently starts every workflow from a slash command whose intent exi
   - Given the user runs `/spec:start 274`
   - When the command processes the argument
   - Then the command fetches issue #274 from the current repository
-  - And the command does not prompt for a feature title, area, or depth that can be derived from the parsed issue body
+  - And the command does not prompt for a feature title or depth that can be derived from the parsed issue body
 - **Priority:** must
 - **Satisfies:** IDEA-IFI-001, RESEARCH-IFI-001 (Q3)
 
@@ -244,17 +244,17 @@ Specorator currently starts every workflow from a slash command whose intent exi
 
 ---
 
-#### REQ-IFI-013 — Area code derived from slug; commit-type from track label
+#### REQ-IFI-013 — Area code selected explicitly; commit-type from track label
 
-- **Pattern:** WHEN `/spec:start` is invoked with a GitHub issue number, the `/spec:start` command shall derive (a) the feature area code from the first word of the slug (first 3 characters, uppercase) and (b) the branch commit-type from the `track:` label using the canonical mapping in `docs/issue-first-interaction.md`. The user is not prompted for either value but may override via `AskUserQuestion`.
+- **Pattern:** WHEN `/spec:start` is invoked with a GitHub issue number, the `/spec:start` command shall propose the feature area code from the first word of the slug (first 3 characters, uppercase) and require the user to accept or override that area code via `AskUserQuestion`; the command shall derive the branch commit-type from the `track:` label using the canonical mapping in `docs/issue-first-interaction.md` without prompting.
 - **Canonical track-to-commit-type mapping:** `track:feature` → `feat`; `track:bug` → `fix`; `track:spike` → `spike`; `track:specorator-improvement` → `feat`; no track label → `feat`.
 - **Acceptance:**
   - Given issue #100 has `track:specorator-improvement` and title `"adopt oauth login"` → slug `adopt-oauth-login-100`
   - When `/spec:start 100` is run
-  - Then the area code is `ADO` (first 3 chars of `adopt`)
+  - Then the default area-code prompt value is `ADO` (first 3 chars of `adopt`)
+  - And the user can accept `ADO` or override it before scaffolding
   - And the branch prefix is `feat` (mapped from `track:specorator-improvement`)
-  - And the user is not prompted for area or commit-type
-- **Note:** The `IFI` area code used in this feature's own `workflow-state.md` was set manually during initial scaffolding (before this rule existed) and is not a counter-example to the derivation rule.
+  - And the user is not prompted for commit-type
 - **Priority:** must
 - **Satisfies:** IDEA-IFI-001, RESEARCH-IFI-001 (R4, R20), resolves CLAR-IFI-012, CLAR-IFI-020
 
@@ -452,13 +452,13 @@ Specorator currently starts every workflow from a slash command whose intent exi
 
 ---
 
-#### REQ-IFI-027 — Mirror sync fails loudly on missing or duplicate sentinel markers
+#### REQ-IFI-027 — Mirror sync warns on missing or duplicate sentinel markers
 
-- **Pattern:** IF `scripts/sync-issue-mirror.sh` fetches a non-empty issue body and finds that the sentinel markers are absent or appear more than once, THEN the script shall emit a named error to stderr with instructions to restore the markers and exit without modifying the issue body. (An empty body is handled by REQ-IFI-039 and is not a missing-marker error.)
+- **Pattern:** IF `scripts/sync-issue-mirror.sh` fetches a non-empty issue body and finds that the sentinel markers are absent or appear more than once, THEN the script shall emit a named warning to stderr with instructions to restore the markers and exit without modifying the issue body. (An empty body is handled by REQ-IFI-039 and is not a missing-marker warning.)
 - **Acceptance:**
   - Given the user has accidentally deleted the `<!-- specorator-state:begin -->` marker from issue #274
   - When `scripts/sync-issue-mirror.sh adopt-issue-first-interaction-model-274` runs
-  - Then the script prints an error identifying the missing marker and the corrective action
+  - Then the script prints a warning identifying the missing marker and the corrective action
   - And the issue body is not modified
   - And the script exits with code 0 (non-fatal to the calling stage)
 - **Priority:** must
@@ -548,7 +548,7 @@ Specorator currently starts every workflow from a slash command whose intent exi
   - And no `specs/` directory, worktree, or PR is created
   - And the exit code is non-zero
 - **Priority:** must
-- **Satisfies:** resolves Gap-1
+- **Satisfies:** RESEARCH-IFI-001, resolves Gap-1
 
 ---
 
@@ -562,7 +562,7 @@ Specorator currently starts every workflow from a slash command whose intent exi
   - And no `specs/` directory, worktree, or PR is created
   - And the exit code is non-zero
 - **Priority:** must
-- **Satisfies:** resolves Gap-4
+- **Satisfies:** RESEARCH-IFI-001, resolves Gap-4
 
 ---
 
@@ -575,7 +575,7 @@ Specorator currently starts every workflow from a slash command whose intent exi
   - Then the issue body becomes exactly the sentinel block (markers + thin content)
   - And no extraneous text is added above or below the markers
 - **Priority:** must
-- **Satisfies:** resolves Gap-6
+- **Satisfies:** RESEARCH-IFI-001, resolves Gap-6
 
 ---
 
@@ -640,21 +640,21 @@ Specorator currently starts every workflow from a slash command whose intent exi
 
 ---
 
-### Area: Memory
+### Area: External release dependencies
 
 ---
 
-#### REQ-IFI-036 — Feedback note created for issue-first model
+#### REQ-IFI-036 — Feedback note tracked as separate release dependency
 
 - **Pattern:** Ubiquitous
-- **Statement:** The repository shall contain `.claude/memory/feedback_issue_first.md` documenting the issue-first workflow rule, and `.claude/memory/MEMORY.md` shall include a one-line bullet pointing to it.
+- **Statement:** The feature release shall have a separate docs-only PR that adds `.claude/memory/feedback_issue_first.md` documenting the issue-first workflow rule and updates `.claude/memory/MEMORY.md` with a one-line bullet pointing to it.
 - **Acceptance:**
-  - Given `.claude/memory/feedback_issue_first.md` exists
-  - When `.claude/memory/MEMORY.md` is read
+  - Given the separate memory PR exists
+  - When `.claude/memory/MEMORY.md` is read on that PR branch
   - Then a bullet referencing `feedback_issue_first.md` appears in the Workflow rules section
   - And `feedback_issue_first.md` states the rule that an issue should be opened before running `/spec:start` on Standard-depth tracks
 - **Priority:** must
-- **Delivery note:** Per repo operating rule (AGENTS.md §"Memory edits are docs-only"), this requirement must be fulfilled in a **separate docs-only PR** with no code changeset. It is a release dependency of this feature, not part of this feature's changeset.
+- **Delivery note:** Per repo operating rule (AGENTS.md §"Memory edits are docs-only"), this requirement is explicitly **out of scope for this feature branch's changeset**. It is a separate PR dependency that must be linked from this feature's release handoff.
 - **Satisfies:** IDEA-IFI-001
 
 ---
@@ -679,7 +679,7 @@ Specorator currently starts every workflow from a slash command whose intent exi
 ## Success metrics
 
 - **North star:** The percentage of new Specorator workflow runs (on Standard-depth tracks) that are started from a linked GitHub issue reaches 80% within 90 days of the feature shipping, measured by the ratio of `workflow-state.md` files containing `issue: <n>` to total new workflow-state files created.
-- **Supporting — label coverage:** All six status labels (`status:draft`, `status:ready-for-spec`, `status:in-progress`, `status:paused`, `status:blocked`, `status:done`), three depth labels, and all track labels are present in the repository label set within 24 hours of an adopter running `bootstrap-labels.sh`.
+- **Supporting — label coverage:** All six status labels (`status:draft`, `status:ready-for-spec`, `status:in-progress`, `status:paused`, `status:blocked`, `status:done`), three depth labels, and the four mapped track labels (`track:feature`, `track:bug`, `track:spike`, `track:specorator-improvement`) are present in the repository label set within 24 hours of an adopter running `bootstrap-labels.sh`.
 - **Supporting — mirror freshness:** The sentinel block in a linked issue reflects the correct current stage within the same session as each stage completion in all manual test runs.
 - **Supporting — zero stage blockage:** No stage in any test or production run fails to complete due to a `sync-issue-mirror.sh` error (the non-fatal exit requirement holds).
 - **Counter-metric:** The number of GitHub issues whose sentinel delimiters are corrupted or missing within the first 30 days of the feature shipping should remain at zero. An increase indicates the sentinel guard logic (REQ-IFI-027) is insufficient or the documentation (REQ-IFI-034) is unclear.
@@ -688,7 +688,7 @@ Specorator currently starts every workflow from a slash command whose intent exi
 
 ## Release criteria
 
-- [ ] All `must` requirements (REQ-IFI-001 through REQ-IFI-039 excluding `should`-priority items) pass their acceptance criteria in the test report.
+- [ ] All `must` requirements (REQ-IFI-001 through REQ-IFI-039 excluding `should`-priority items and REQ-IFI-036's separate PR dependency) pass their acceptance criteria in the test report.
 - [ ] REQ-IFI-022 (soft nudge, `should` priority) either passes acceptance or is explicitly waived with a recorded rationale in `review.md`.
 - [ ] REQ-IFI-012 (slug override, `should` priority) either passes acceptance or is explicitly waived with a recorded rationale in `review.md`.
 - [ ] All NFRs (NFR-IFI-001 through NFR-IFI-010) are met or explicitly waived with an ADR.
@@ -699,6 +699,7 @@ Specorator currently starts every workflow from a slash command whose intent exi
 - [ ] The known race-condition limitation is documented per NFR-IFI-010.
 - [ ] Test plan executed; no critical bugs open; test report present.
 - [ ] `sites/index.html` updated to reflect the issue-first entry path if that page references the workflow entry points.
+- [ ] Separate docs-only memory PR linked for REQ-IFI-036 before release sign-off.
 
 ---
 
@@ -730,4 +731,4 @@ All grill decisions (R1–R20) from issue #274 are locked. R1 revised (number su
 - [x] NFRs listed with targets.
 - [x] Success metrics defined (including a counter-metric).
 - [x] Release criteria stated.
-- [x] No open clarifications requiring PM resolution — all grill decisions locked from issue #274; 21 deferrable CLARs recorded in `workflow-state.md` for architect (spec.md).
+- [x] No open clarifications requiring PM resolution — all grill decisions locked from issue #274; 21 deferrable CLARs recorded in `workflow-state.md` for architect (spec.md), and the remaining open items are explicitly assigned to Design/Specification.
