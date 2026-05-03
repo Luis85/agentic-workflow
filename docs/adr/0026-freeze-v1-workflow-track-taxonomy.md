@@ -1,7 +1,7 @@
 ---
 id: ADR-0026
 title: Freeze the v1.0 workflow track taxonomy
-status: accepted
+status: superseded
 date: 2026-05-02
 deciders:
   - human maintainer
@@ -11,7 +11,7 @@ consulted:
 informed:
   - all agents
 supersedes: []
-superseded-by: []
+superseded-by: [ADR-0030]
 tags: [workflow, tracks, v1]
 ---
 
