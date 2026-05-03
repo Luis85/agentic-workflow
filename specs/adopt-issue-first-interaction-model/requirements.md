@@ -128,7 +128,7 @@ Specorator currently starts every workflow from a slash command whose intent exi
 #### REQ-IFI-005 — Issue form fields restricted to universally-supported types
 
 - **Pattern:** Ubiquitous
-- **Statement:** The repository's issue form templates shall use only the field types `textarea`, `input`, `dropdown`, and `checkboxes`.
+- **Statement:** The repository's issue form templates shall use only the field types `textarea`, `input`, `dropdown`, `checkboxes`, and `markdown`.
 - **Acceptance:**
   - Given any issue form template in `.github/ISSUE_TEMPLATE/`
   - When the template YAML is inspected
@@ -728,4 +728,4 @@ All grill decisions (R1–R20) from issue #274 are locked. R1 revised (number su
 - [x] NFRs listed with targets.
 - [x] Success metrics defined (including a counter-metric).
 - [x] Release criteria stated.
-- [x] No open clarifications — all grill decisions locked from issue #274.
+- [x] No open clarifications requiring PM resolution — all grill decisions locked from issue #274; 21 deferrable CLARs recorded in `workflow-state.md` for architect (spec.md).
