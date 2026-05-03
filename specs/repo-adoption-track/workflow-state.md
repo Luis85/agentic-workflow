@@ -61,7 +61,7 @@ artifacts:
   7. **Patch-file fallback specification** — for GitHub repos where push access is unavailable. PM/architect decision.
   8. **Working tree location** — `idea.md`'s `.worktrees/adopt-<slug>/` framing is incorrect (a foreign-repo clone is not a git worktree of the template repo). Correct to `adoptions/<slug>/repo/` in Requirements.
 
-  Superpowers design spec (`docs/superpowers/specs/2026-05-03-repo-adoption-track-design.md`) was not found at the stated path and was reconstructed from issues #257 and #258. The issue #257 description mentions `adoptions/<slug>/` state home and `adopt-cycle` conductor name — these are plausible inputs for Stage 4 naming but are not binding.
+  Superpowers design spec (`docs/superpowers/specs/2026-05-03-repo-adoption-track-design.md`) was not on `feat/repo-adoption-track` at research time; cherry-picked from `docs/repo-adoption-track-design` after Stage 2 commit. Now available as prior-art research input for Stage 4 (architect) — Q1–Q10 there are hypotheses, not binding architecture. The matching plan draft (`docs/superpowers/plans/2026-05-03-repo-adoption-track.md`) was deleted as obsolete (wrong shape — no REQ/T IDs, no traceability; superseded by the Specorator stages).
 
 - 2026-05-03 (analyst): `idea.md` complete. See prior research agenda bullet in this section for full detail.
 
