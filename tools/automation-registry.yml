@@ -579,6 +579,15 @@ entries:
     triggers: [schedule, push]
     used_by: [ci]
     rerun_command: gh run list --workflow scorecard.yml
+  - id: workflow:markdownlint
+    kind: workflow
+    path: .github/workflows/markdownlint.yml
+    purpose: Run markdownlint-cli2 on changed Markdown files — advisory only, never blocks merge. Findings visible in CI log; see docs/markdownlint-rollout.md for promotion plan.
+    read_only: true
+    safe_to_run_locally: false
+    emits_json: false
+    used_by: [ci]
+    rerun_command: gh run list --workflow markdownlint.yml
   - id: workflow:zizmor
     kind: workflow
     path: .github/workflows/zizmor.yml
@@ -588,6 +597,15 @@ entries:
     emits_json: false
     used_by: [ci]
     rerun_command: gh run list --workflow zizmor.yml
+  - id: workflow:codeql
+    kind: workflow
+    path: .github/workflows/codeql.yml
+    purpose: CodeQL static analysis for javascript-typescript and actions languages; uploads SARIF to GitHub code scanning.
+    read_only: true
+    safe_to_run_locally: false
+    emits_json: false
+    used_by: [ci]
+    rerun_command: gh run list --workflow codeql.yml
   - id: skill:arc42-baseline
     kind: skill
     path: .claude/skills/arc42-baseline/SKILL.md
