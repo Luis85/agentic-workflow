@@ -1,7 +1,7 @@
 ---
 feature: shape-b-branching-adoption
 area: BRANCH
-current_stage: specification
+current_stage: implementation
 status: active
 last_updated: 2026-05-03
 last_agent: architect
@@ -11,7 +11,7 @@ artifacts:
   requirements.md: complete
   design.md: complete
   spec.md: complete
-  tasks.md: pending
+  tasks.md: complete
   implementation-log.md: pending
   test-plan.md: pending
   test-report.md: pending
@@ -32,7 +32,7 @@ artifacts:
 | 3. Requirements | `requirements.md` | complete |
 | 4. Design | `design.md` | complete |
 | 5. Specification | `spec.md` | complete |
-| 6. Tasks | `tasks.md` | pending |
+| 6. Tasks | `tasks.md` | complete |
 | 7. Implementation | `implementation-log.md` + code | pending |
 | 8. Testing | `test-plan.md`, `test-report.md` | pending |
 | 9. Review | `review.md`, `traceability.md` | pending |
@@ -126,6 +126,30 @@ Plan-level meta-features may skip Stage 7-9 canonical artifacts when each sub-ta
                  #233). Spec stage was opt-in by user; tasks stage may proceed
                  if the user opts in again.
                  Next: /spec:tasks (or stop here per agreed scope).
+
+2026-05-03 (planner): tasks.md complete. 29 tasks written (T-BRANCH-001 through
+                 T-BRANCH-029) in TDD order, covering all 15 REQ-BRANCH-NNN and
+                 6 NFR-BRANCH-NNN. Breakdown by type: 10 test/verification tasks
+                 (qa), 12 implementation tasks (dev), 5 manual/remote-ops tasks
+                 (human), 1 pre-condition/scaffolding task, 1 release/state task.
+                 Key design decisions in the task plan:
+                 - T-BRANCH-001 is the mandatory gate; all other tasks depend on it.
+                 - T-BRANCH-003 (baseline deny count) precedes T-BRANCH-004
+                   (settings.json edit) to satisfy NFR-BRANCH-005 TDD ordering.
+                 - T-BRANCH-024 is an explicit discovery spike for OPEN-BRANCH-001
+                   (bot scheduler config paths); T-BRANCH-025 is conditional on its
+                   findings. If no in-repo schedulers name `main`, T-BRANCH-025
+                   becomes a documentation-only task and REQ-BRANCH-009 is
+                   satisfied by T-BRANCH-010 (default-branch flip).
+                 - Steps with irreversible remote effects (branch seeding,
+                   default-branch flip, ruleset PATCH) are owner=human.
+                 - The docs PR (T-BRANCH-022) batches IF-04 through IF-08; its
+                   five sub-tasks (T-BRANCH-017 through T-BRANCH-021) can be
+                   authored in parallel after T-BRANCH-016.
+                 First ready task: T-BRANCH-001 (human — pre-condition check).
+                 Hand-off to: human (T-BRANCH-001), then dev (T-BRANCH-003 and
+                 T-BRANCH-004 after baseline), qa (T-BRANCH-005 post-merge).
+                 Next: /spec:implement
 
 2026-05-03 (architect): design.md complete (Part C only — Parts A and B are
                  N/A, no user-facing UI surface). All 15 REQ-BRANCH-NNN and
