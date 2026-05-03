@@ -734,7 +734,7 @@ test("checkRepoImmutableSetting: probe denied (401/403) -> emits distinct Immuta
   assert.match(warnings[0].message, /401\/403/);
 });
 
-test("checkRepoImmutableSetting: probe unknown (endpoint missing / network) -> no warning, fail-quiet", () => {
+test("checkRepoImmutableSetting: probe unknown (network / parse error) -> no warning, fail-quiet", () => {
   const github: GitHubInterface = { immutableReleasesSetting: () => "unknown" };
   assert.deepEqual(
     checkRepoImmutableSetting(github),
