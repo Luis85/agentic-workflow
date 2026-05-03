@@ -10,7 +10,7 @@ artifacts:
   research.md: complete
   requirements.md: complete
   design.md: complete
-  spec.md: pending
+  spec.md: complete
   tasks.md: pending
   implementation-log.md: pending
   test-plan.md: pending
@@ -31,7 +31,7 @@ artifacts:
 | 2. Research | `research.md` | complete |
 | 3. Requirements | `requirements.md` | complete |
 | 4. Design | `design.md` | complete |
-| 5. Specification | `spec.md` | pending |
+| 5. Specification | `spec.md` | complete |
 | 6. Tasks | `tasks.md` | pending |
 | 7. Implementation | `implementation-log.md` + code | pending |
 | 8. Testing | `test-plan.md`, `test-report.md` | pending |
@@ -95,6 +95,38 @@ Plan-level meta-features may skip Stage 7-9 canonical artifacts when each sub-ta
                  legacy protection rule) are open — no blocker for design;
                  owner: architect.
                  Next: /spec:design.
+2026-05-03 (architect): spec.md complete. SPEC-BRANCH-001 written end-to-end:
+                 12 implementation interfaces (IF-01..IF-12), 6 data-structure
+                 contracts (DS-01..DS-06), 12-step ordered rollout with explicit
+                 preconditions / actions / success criteria / REQ links per step,
+                 12 enumerated edge cases (EC-001..EC-012), and an NFR verification
+                 checklist with deterministic shell-runnable checks for each of
+                 NFR-BRANCH-001..006. All 15 REQ-BRANCH-NNN + 6 NFR-BRANCH-NNN
+                 traced in the requirements coverage table at the bottom.
+                 Key spec resolutions for the three OPEN-BRANCH-NNN questions
+                 carried in from design:
+                 - OPEN-BRANCH-001 (bot scheduler config paths): IF-09 procedure
+                   = locate (`.github/workflows/<bot>.yml` first guess), edit the
+                   integration-branch arg to `develop`, escalate as a clarification
+                   if the scheduler lives outside the repo. Tasks must enumerate
+                   one task per bot with the discovered path.
+                 - OPEN-BRANCH-002 (remove `main` from Pages env allow-list):
+                   resolved as Step 11 = optional, recommended after the 30-day
+                   verification window completes.
+                 - OPEN-BRANCH-003 (CI gate failing topic PRs targeting `main`):
+                   explicitly out of scope; surfaced in EC-011 as a follow-up
+                   trigger if RISK-BRANCH-004 recurs.
+                 Hand-off to: planner (Tasks).
+                 Open items for planner: enumerate one task per IF (12 tasks
+                 minimum) plus the four bot-scheduler tasks (IF-09 expansion).
+                 Per-bot scheduler-config discovery is a Stage 6 spike that may
+                 surface a clarification (EC-010 path).
+                 Per workflow-state.md Skips section, scope was originally
+                 capped at Stage 4 + ADR + GitHub issue (Stages 5-11 gated on
+                 #233). Spec stage was opt-in by user; tasks stage may proceed
+                 if the user opts in again.
+                 Next: /spec:tasks (or stop here per agreed scope).
+
 2026-05-03 (architect): design.md complete (Part C only — Parts A and B are
                  N/A, no user-facing UI surface). All 15 REQ-BRANCH-NNN and
                  6 NFR-BRANCH-NNN mapped in the requirements coverage table.
