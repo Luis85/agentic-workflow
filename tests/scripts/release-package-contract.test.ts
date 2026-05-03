@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { repoRoot } from "../../scripts/lib/repo.js";
 import {
   ADR_NUMBERED_PATTERN,
   DOC_STUB_REQUIRED_FRONTMATTER_KEYS,
@@ -313,6 +314,18 @@ test("parseReleasePackageArgs accepts `--archive <dir>` and `--archive=<dir>`", 
     archive: "/tmp/pkg",
     archiveSource: "argv",
   });
+});
+
+test("TEST-GRAPH-008: graph directory is excluded from package files", () => {
+  const packageJson = JSON.parse(
+    fs.readFileSync(path.join(repoRoot, "package.json"), "utf8"),
+  ) as { files?: string[] };
+
+  assert.ok(Array.isArray(packageJson.files));
+  assert.equal(
+    packageJson.files.some((entry) => entry === "graph/" || entry.startsWith("graph/")),
+    false,
+  );
 });
 
 test("parseReleasePackageArgs falls back to RELEASE_PACKAGE_ARCHIVE env", () => {

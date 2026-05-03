@@ -42,3 +42,8 @@ node_modules/
 # `npm-shrinkwrap.json` is staged from it on the release runner before
 # `npm pack` (T-V05-007). Never committed to the codebase.
 npm-shrinkwrap.json
+
+# Graphify cache and local run state — per-machine SHA256 tracking files
+# and absolute-path metadata (REQ-GRAPH-005). See docs/how-to/use-graphify.md.
+graph/cache/
+graph/.graphify_*
