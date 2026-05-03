@@ -123,11 +123,21 @@ pr_url: <url-or-null>
 ### 4.2 Phase progression
 
 ```
-clone → review (in_progress → completed → gate)
-       → parity (in_progress → completed → gate)
-       → enrich (in_progress → completed → gate)
+clone → review (in_progress → completed → gate_blocked → completed)
+       → parity (in_progress → completed → gate_blocked → completed)
+       → enrich (in_progress → completed → gate_blocked → completed)
        → push   (in_progress → completed → done)
 ```
+
+`phase_status` vocabulary (single source of truth, used in §4.1 schema, §3 flow, and §7 error handling):
+
+| Value | Meaning |
+|---|---|
+| `pending` | Phase folder created, work not yet started. |
+| `in_progress` | Agent or conductor actively producing the phase artifact. |
+| `completed` | Artifact written, awaiting gate. |
+| `gate_blocked` | Awaiting user response on `AskUserQuestion`. User can approve, request revision, or abort. |
+| `done` | Terminal state for the `push` phase only. |
 
 Replay (re-run a completed phase) is supported and idempotent. Skip-ahead is refused by the skill.
 
@@ -201,8 +211,9 @@ Replay (re-run a completed phase) is supported and idempotent. Skip-ahead is ref
 ```
 1. cd adoptions/<slug>/repo/
 2. git checkout -b adopt/agentic-workflow
-3. Write marker .adopted (template version + sha + preset).
-4. git add <only enriched paths from parity.md>
+3. Write marker .adopted (template version + sha + preset) into the working tree.
+4. git add <enriched paths from parity.md> AND .adopted
+   (.adopted MUST be in the same commit so idempotency check works on re-runs)
 5. git commit -m "feat: adopt agentic-workflow"  (body: template version + ADR refs)
 6. git push -u origin adopt/agentic-workflow
    ├─ success → gh pr create --title "Adopt agentic-workflow" --body <generated>
@@ -380,10 +391,11 @@ These are intentionally not decided now; they are the spec author's job:
 2. **Steering renderers for unfamiliar stacks.** How many language-specific renderers ship in v1 (Node, Python, generic) vs one generic with placeholders?
 3. **License of generated content.** Files installed into the foreign repo carry this template's license. MIT-permissive likely fine; spec phase confirms and documents.
 4. **Constitution copy.** Foreign repo gets `memory/constitution.md` verbatim or a "starter constitution" the adopter customises? Existing template ships customisable; carry that.
-5. **`repo-adopter` agent tool list.** Concrete whitelist: Read, Write, Edit, Glob, Grep, Bash with allowlist `git status`, `git log`, `git ls-files`, `git diff` only. Confirm wording and enforcement in spec.
+5. **`repo-adopter` agent tool list — enforcement, not redebate.** §3.1 already enumerates the proposed surface (Read, Write, Edit, Glob, Grep, Bash with allowlist `git status`, `git log`, `git ls-files`, `git diff` only). Spec phase ratifies that list and decides the *enforcement mechanism* — `.claude/agents/repo-adopter.md` frontmatter, `settings.json` deny rules, or both — not whether to allow more verbs.
 6. **PR body template.** Where stored, what fields. Likely `templates/adoption-pr-body.md`.
 7. **CI in adopted repo.** Does enrichment install `.github/workflows/verify.yml` ported from this repo? Lean toward yes (verify-only workflow) but confirm.
 8. **Telemetry.** None for v1. Track in retrospective whether adoption metrics are worth collecting.
+9. **ADR-0027 sequencing relative to implementation PR.** The amending ADR must land before code, but the spec phase must decide: separate predecessor PR (ADR merges first, implementation follows) or bundled PR (ADR + scaffolding + agent + scripts in one)? Predecessor PR is the conservative reading of ADR governance; bundling is faster but couples policy approval to implementation review.
 
 ## 11. Explicit non-goals
 
