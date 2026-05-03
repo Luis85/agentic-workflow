@@ -88,8 +88,8 @@ function patchFrontmatter(raw: string, patches: Record<string, unknown>): string
             ? "[]"
             : `[${(value as string[]).map((v) => `"${v}"`).join(", ")}]`
           : typeof value === "string"
-            ? value.includes(" ")
-              ? `"${value}"`
+            ? needsYamlQuoting(value)
+              ? `"${value.replace(/"/g, '\\"')}"`
               : value
             : String(value);
 
@@ -99,6 +99,10 @@ function patchFrontmatter(raw: string, patches: Record<string, unknown>): string
     }
   }
   return result;
+}
+
+function needsYamlQuoting(s: string): boolean {
+  return /[\s:#[\]{}"]/.test(s);
 }
 
 function escapeRe(s: string): string {
@@ -161,9 +165,12 @@ for (const filePath of issueFiles) {
   const patches: Record<string, unknown> = {};
   const changes: string[] = [];
 
-  if (data["roadmap_status"] !== newRoadmapStatus) {
+  const currentStatus = data["roadmap_status"] as string | undefined;
+  if (currentStatus === "cancelled") {
+    // preserve manual cancellation; sync cannot un-cancel a locally closed issue
+  } else if (currentStatus !== newRoadmapStatus) {
     patches["roadmap_status"] = newRoadmapStatus;
-    changes.push(`roadmap_status: ${data["roadmap_status"]} → ${newRoadmapStatus}`);
+    changes.push(`roadmap_status: ${currentStatus} → ${newRoadmapStatus}`);
   }
 
   const currentLabels = Array.isArray(data["labels"]) ? (data["labels"] as string[]) : [];
@@ -172,9 +179,12 @@ for (const filePath of issueFiles) {
     changes.push(`labels updated`);
   }
 
-  if (data["milestone"] !== (newMilestone ?? "null")) {
+  const currentMilestone = data["milestone"] === "null" || data["milestone"] === null
+    ? null
+    : (data["milestone"] as string | undefined) ?? null;
+  if (currentMilestone !== newMilestone) {
     patches["milestone"] = newMilestone;
-    changes.push(`milestone: ${data["milestone"]} → ${newMilestone}`);
+    changes.push(`milestone: ${currentMilestone} → ${newMilestone}`);
   }
 
   const currentAssignees = Array.isArray(data["assignees"]) ? (data["assignees"] as string[]) : [];
