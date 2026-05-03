@@ -44,8 +44,8 @@ Implementation-ready contracts for the graphify integration. Two independent imp
   tsx scripts/graphify-run.ts [--update]
 
   Args:
-    --update   Pass through to graphify as `--update` (incremental mode).
-               If absent, full deep-mode build.
+    --update   Run graphify's incremental update mode.
+               If absent, run graphify update with --force.
 
   Exit codes:
     0   Graphify completed successfully.
@@ -55,12 +55,13 @@ Implementation-ready contracts for the graphify integration. Two independent imp
   ```
 - **Behaviour:**
   1. Parse argv; recognise only `--update` (any other arg → exit 3 with usage message).
-  2. Check graphify availability: spawn `graphify --version` synchronously with `stdio: 'ignore'`.
+  2. Check graphify availability: spawn `graphify --help` synchronously with `stdio: 'ignore'`.
      - On `ENOENT` or non-zero exit → print missing-binary message to **stderr**, exit 1.
   3. Build graphify argv:
-     - Always: `['.', '--mode', 'deep', '--output-dir', 'graph', '--exclude', 'node_modules,.worktrees,graph/cache,.git']`
-     - When `--update` passed: replace `--mode deep` with `--update`.
-     - **Note:** Exact graphify flag names (`--output-dir`, `--exclude`) are confirmed at implementation against `graphify --help`. If `--output-dir` does not exist, the wrapper changes CWD into `graph/` and invokes graphify with the absolute repo root as the path argument. Implementer MUST document the resolved flag form in the implementation log.
+     - Full build: `['update', '.', '--force']`
+     - Incremental build: `['update', '.']`
+     - Always set environment variable `GRAPHIFY_OUT=graph`.
+     - **Resolution:** Current graphifyy 0.7.0 does not expose `--output-dir`, `--exclude`, or `--version`. OQ-GRAPH-001 is resolved in `implementation-log.md`; `GRAPHIFY_OUT=graph graphify update .` is the supported terminal integration.
   4. Spawn graphify synchronously with `stdio: 'inherit'` so the developer sees graphify's progress output live.
   5. Forward graphify's exit code: 0 → wrapper exits 0; non-zero → wrapper exits 2.
 - **Pre-conditions:**
@@ -72,7 +73,7 @@ Implementation-ready contracts for the graphify integration. Two independent imp
 - **Side effects:**
   - Writes to `graph/` and `graph/cache/`.
   - May create `graph/cache/` if absent (graphify's responsibility).
-  - Reads no config files; stores no secrets, tokens, or credentials. Wrapper passes only the documented graphify CLI flags listed in step 3 (NFR-GRAPH-003, NFR-GRAPH-004).
+  - Reads no config files; stores no secrets, tokens, or credentials. Wrapper passes only the documented graphify CLI command listed in step 3 (NFR-GRAPH-003, NFR-GRAPH-004).
 - **Errors:** See exit codes above. Missing-binary message text is fixed (see SPEC-GRAPH-005).
 - **Satisfies:** REQ-GRAPH-002, REQ-GRAPH-003, REQ-GRAPH-004, REQ-GRAPH-008, NFR-GRAPH-002, NFR-GRAPH-003, NFR-GRAPH-004
 
@@ -85,7 +86,7 @@ Implementation-ready contracts for the graphify integration. Two independent imp
   ```json
   "graph": "tsx scripts/graphify-run.ts"
   ```
-- **Behaviour:** Dispatches to SPEC-GRAPH-001 with no `--update` flag (full deep build).
+- **Behaviour:** Dispatches to SPEC-GRAPH-001 with no `--update` flag (forced graphify update).
 - **Pre-conditions:** None beyond SPEC-GRAPH-001.
 - **Post-conditions:** Equivalent to SPEC-GRAPH-001 invoked without `--update`.
 - **Side effects:** As SPEC-GRAPH-001.
@@ -115,13 +116,14 @@ Implementation-ready contracts for the graphify integration. Two independent imp
 - **Kind:** Text rule appended to repo `.gitignore`
 - **Signature:**
   ```gitignore
-  # Graphify cache — per-machine SHA256 tracking files (REQ-GRAPH-005).
-  # See docs/how-to/use-graphify.md.
+  # Graphify cache and local run state — per-machine SHA256 tracking files
+  # and absolute-path metadata (REQ-GRAPH-005). See docs/how-to/use-graphify.md.
   graph/cache/
+  graph/.graphify_*
   ```
-- **Behaviour:** Git ignores any file under `graph/cache/`.
+- **Behaviour:** Git ignores any file under `graph/cache/` and graphify's local `.graphify_*` run metadata.
 - **Pre-conditions:** Standard repo `.gitignore` exists at repo root.
-- **Post-conditions:** `git status` does not list anything under `graph/cache/` as untracked or modified.
+- **Post-conditions:** `git status` does not list anything under `graph/cache/` or `graph/.graphify_*` as untracked or modified.
 - **Side effects:** None.
 - **Errors:** N/A.
 - **Satisfies:** REQ-GRAPH-005
@@ -139,7 +141,7 @@ Implementation-ready contracts for the graphify integration. Two independent imp
   See also: docs/how-to/use-graphify.md
   ```
 - **Behaviour:** Exact text emitted to stderr, then `process.exit(1)`. No trailing whitespace; UTF-8; LF line endings (Node default).
-- **Pre-conditions:** Graphify check failed (ENOENT or non-zero exit from `graphify --version`).
+- **Pre-conditions:** Graphify check failed (ENOENT or non-zero exit from `graphify --help`).
 - **Post-conditions:** Process exits with code 1; nothing written to stdout.
 - **Side effects:** None.
 - **Errors:** N/A.
@@ -154,7 +156,7 @@ Implementation-ready contracts for the graphify integration. Two independent imp
   - Frontmatter: `title`, `folder` (`docs/how-to`), `description`, `entry_point: false`.
   - **Why graphify?** — one paragraph linking to the PRD purpose and graph.html.
   - **Install** — commands to install graphify globally; minimum version (latest stable as of integration date).
-  - **Verify install** — `graphify --version`.
+  - **Verify install** — `graphify --help`.
   - **Run** — `npm run graph` (full) and `npm run graph:update` (incremental).
   - **Browse the graph** — open `graph/graph.html` in a browser.
   - **Troubleshooting** — what the missing-binary message means; how to add graphify to PATH on macOS/Windows/Linux.
@@ -204,7 +206,7 @@ graph/
 - `graph.html` MUST be valid HTML (browser-loadable).
 - `graph.json` MUST parse as JSON (`JSON.parse` succeeds).
 - `GRAPH_REPORT.md` MUST be Markdown (no specific schema beyond what graphify produces).
-- Combined size of tracked files MUST be ≤ 10 MB (NFR-GRAPH-005).
+- Combined size of `graph.html` and `graph.json` MUST be ≤ 10 MB (NFR-GRAPH-005).
 
 ### `scripts/graphify-run.ts` argv schema
 
@@ -230,7 +232,7 @@ stateDiagram-v2
   [*] --> ParseArgs
   ParseArgs --> CheckBinary: argv valid
   ParseArgs --> Exit3: argv invalid
-  CheckBinary --> SpawnGraphify: graphify --version exits 0
+  CheckBinary --> SpawnGraphify: graphify --help exits 0
   CheckBinary --> Exit1: ENOENT or non-zero
   SpawnGraphify --> Exit0: graphify exits 0
   SpawnGraphify --> Exit2: graphify exits non-zero
@@ -248,7 +250,7 @@ stateDiagram-v2
 | Input | Rule |
 |---|---|
 | `argv` | Must be `[]` or `["--update"]` exactly. Case-sensitive. |
-| `graphify --version` exit | Code 0 = available; ENOENT or non-zero = unavailable. |
+| `graphify --help` exit | Code 0 = available; ENOENT or non-zero = unavailable. |
 | `graph/` writability | Must be writable; if not (e.g., readonly mount), graphify will exit non-zero → wrapper exits 2. Wrapper does not pre-check. |
 
 ---
@@ -275,11 +277,11 @@ stateDiagram-v2
 | Test ID | Scenario | Type | Requirements |
 |---|---|---|---|
 | TEST-GRAPH-001 | `tsx scripts/graphify-run.ts --help` is rejected (exit 3 with usage message) | unit | REQ-GRAPH-002, REQ-GRAPH-008 |
-| TEST-GRAPH-002 | `tsx scripts/graphify-run.ts` with stubbed `graphify` (passes `--version`) → spawns graphify with deep flags | unit (mock spawn) | REQ-GRAPH-002 |
-| TEST-GRAPH-003 | `tsx scripts/graphify-run.ts --update` with stubbed graphify → spawns graphify with `--update` flag | unit (mock spawn) | REQ-GRAPH-003 |
+| TEST-GRAPH-002 | `tsx scripts/graphify-run.ts` with stubbed `graphify` (passes `--help`) → spawns `graphify update . --force` with `GRAPHIFY_OUT=graph` | unit (mock spawn) | REQ-GRAPH-002 |
+| TEST-GRAPH-003 | `tsx scripts/graphify-run.ts --update` with stubbed graphify → spawns `graphify update .` with `GRAPHIFY_OUT=graph` | unit (mock spawn) | REQ-GRAPH-003 |
 | TEST-GRAPH-004 | `tsx scripts/graphify-run.ts` with absent graphify (mocked ENOENT) → exit 1, exact stderr message | unit (mock spawn) | REQ-GRAPH-008 |
 | TEST-GRAPH-005 | `tsx scripts/graphify-run.ts --bad-arg` → exit 3 with usage | unit | REQ-GRAPH-002 |
-| TEST-GRAPH-006 | `tsx scripts/graphify-run.ts` when `graphify --version` is mocked to exit 1 → wrapper exits 1 (treats as unavailable) | unit | REQ-GRAPH-008 |
+| TEST-GRAPH-006 | `tsx scripts/graphify-run.ts` when `graphify --help` is mocked to exit 1 → wrapper exits 1 (treats as unavailable) | unit | REQ-GRAPH-008 |
 | TEST-GRAPH-007 | After integration, `git status` shows nothing under `graph/cache/` | integration | REQ-GRAPH-005 |
 | TEST-GRAPH-008 | `npm pack --dry-run` output contains zero `graph/` entries | integration | REQ-GRAPH-006 |
 | TEST-GRAPH-009 | `npm run check:links` passes including `docs/how-to/use-graphify.md` | integration | REQ-GRAPH-007 |
