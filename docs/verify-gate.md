@@ -14,6 +14,8 @@ The verify gate is a **project‑level contract**: every project that uses this 
 
 If any stage fails, **stop**. Fix the failure. Re‑run only the failing stage in isolation while iterating, then re‑run the full `verify` once it's green.
 
+The verify gate is the **last** local check before push; the rights and harness deny rules that bound what an agent or bot can do in the first place are collected in [`docs/rbac.md`](rbac.md).
+
 ## What this looks like in practice
 
 The exact command differs per language:

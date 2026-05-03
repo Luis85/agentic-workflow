@@ -18,6 +18,8 @@ Each gate is a separate workflow file under `.github/workflows/` so it can be en
 | **gitleaks** | [`.github/workflows/gitleaks.yml`](../.github/workflows/gitleaks.yml) | PR + push to `main` + weekly schedule | Committed secrets — API keys, tokens, private keys — detected against the full git history. |
 | **dependency-review** | [`.github/workflows/dependency-review.yml`](../.github/workflows/dependency-review.yml) | PRs touching `package.json`, `package-lock.json`, `npm-shrinkwrap.json`, or workflow/action files | New vulnerable npm or GitHub Actions dependencies introduced by the PR diff. Fails on `high` and `critical` severities; license policy is deferred. |
 
+The least-privilege `permissions:` block on each workflow is documented in [`docs/rbac.md`](rbac.md) §GitHub Actions, alongside the harness and branch-protection rules that bound the rest of the autonomous flow.
+
 ## Why separate workflows
 
 - **Independent failure surfaces.** A flaky workflow lint should not block a security scan and vice versa.
