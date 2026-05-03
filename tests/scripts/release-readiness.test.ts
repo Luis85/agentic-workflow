@@ -11,8 +11,11 @@ import {
   EXPECTED_PACKAGE_REGISTRY,
   EXPECTED_PACKAGE_REPOSITORY,
   RELEASE_READINESS_DIAGNOSTIC_CODES,
+  RELEASE_READINESS_WARNING_CODES,
   checkReleaseReadiness,
+  checkRepoImmutableSetting,
   parseReleaseReadinessArgs,
+  type GitHubInterface,
   type GitInterface,
   type QualitySignals,
 } from "../../scripts/lib/release-readiness.js";
@@ -111,6 +114,10 @@ const STUB_GIT: GitInterface = {
   resolveRef(ref) {
     if (ref === `v${VERSION}`) return TAG_SHA;
     if (ref === "refs/heads/main" || ref === "main") return TAG_SHA;
+    return null;
+  },
+  firstParentChain(ref) {
+    if (ref === "refs/heads/main" || ref === "main") return [TAG_SHA];
     return null;
   },
 };
@@ -583,7 +590,7 @@ test("tag readiness: missing tag fails TagMissing", () => {
     const report = checkReleaseReadiness({
       version: VERSION,
       repoRoot,
-      git: { resolveRef: () => null },
+      git: { resolveRef: () => null, firstParentChain: () => null },
       qualitySignals: GREEN_QUALITY,
     });
     const d = report.diagnostics.find(
@@ -595,16 +602,27 @@ test("tag readiness: missing tag fails TagMissing", () => {
   }
 });
 
-test("tag readiness: tag SHA differs from main HEAD fails TagNotAtMain", () => {
+test("tag readiness: tag SHA off `main` first-parent chain fails TagNotAtMain", () => {
   const repoRoot = createFixture();
+  const TAG = "a".repeat(40);
+  const HEAD = "b".repeat(40);
+  const ANCESTOR = "c".repeat(40);
   try {
     const report = checkReleaseReadiness({
       version: VERSION,
       repoRoot,
       git: {
         resolveRef(ref) {
-          if (ref === `v${VERSION}`) return "a".repeat(40);
-          if (ref === "refs/heads/main" || ref === "main") return "b".repeat(40);
+          if (ref === `v${VERSION}`) return TAG;
+          if (ref === "refs/heads/main" || ref === "main") return HEAD;
+          return null;
+        },
+        firstParentChain(ref) {
+          // `main` first-parent ancestry omits the tag SHA — covers the
+          // "tag on a feature-branch tip merged via a PR" case where the
+          // tag is reachable via the second-parent edge but never lands on
+          // main proper.
+          if (ref === "refs/heads/main" || ref === "main") return [HEAD, ANCESTOR];
           return null;
         },
       },
@@ -613,10 +631,116 @@ test("tag readiness: tag SHA differs from main HEAD fails TagNotAtMain", () => {
     const d = report.diagnostics.find(
       (x) => x.code === RELEASE_READINESS_DIAGNOSTIC_CODES.TagNotAtMain,
     );
-    assert.ok(d, "expected TagNotAtMain when tag SHA != main HEAD");
+    assert.ok(d, "expected TagNotAtMain when tag SHA is not on main first-parent chain");
+    assert.match(
+      d!.message,
+      /first-parent history/,
+      "diagnostic message should explain the first-parent semantics",
+    );
   } finally {
     cleanup(repoRoot);
   }
+});
+
+test("tag readiness: tag SHA on `main` first-parent ancestry (not at HEAD) passes — #233 prevention F", () => {
+  const repoRoot = createFixture();
+  const HEAD = "b".repeat(40);
+  const TAG = "a".repeat(40);
+  const ANCESTOR = "c".repeat(40);
+  try {
+    const report = checkReleaseReadiness({
+      version: VERSION,
+      repoRoot,
+      git: {
+        resolveRef(ref) {
+          if (ref === `v${VERSION}`) return TAG;
+          if (ref === "refs/heads/main" || ref === "main") return HEAD;
+          return null;
+        },
+        firstParentChain(ref) {
+          // `main` first-parent: HEAD → TAG → ANCESTOR. Tag is on chain,
+          // but main has advanced past it. Strict-HEAD reading would
+          // reject; first-parent-history reading accepts (ADR-0020 says
+          // "tag is reachable from main", not "tag is at HEAD").
+          if (ref === "refs/heads/main" || ref === "main") return [HEAD, TAG, ANCESTOR];
+          return null;
+        },
+      },
+      qualitySignals: GREEN_QUALITY,
+    });
+    const d = report.diagnostics.find(
+      (x) => x.code === RELEASE_READINESS_DIAGNOSTIC_CODES.TagNotAtMain,
+    );
+    assert.equal(
+      d,
+      undefined,
+      "TagNotAtMain must not fire when tag is on main first-parent ancestry — #233 prevention F",
+    );
+  } finally {
+    cleanup(repoRoot);
+  }
+});
+
+test("tag readiness: unresolvable first-parent chain fails TagNotAtMain", () => {
+  const repoRoot = createFixture();
+  try {
+    const report = checkReleaseReadiness({
+      version: VERSION,
+      repoRoot,
+      git: {
+        resolveRef(ref) {
+          if (ref === `v${VERSION}`) return TAG_SHA;
+          if (ref === "refs/heads/main" || ref === "main") return TAG_SHA;
+          return null;
+        },
+        firstParentChain: () => null,
+      },
+      qualitySignals: GREEN_QUALITY,
+    });
+    const d = report.diagnostics.find(
+      (x) => x.code === RELEASE_READINESS_DIAGNOSTIC_CODES.TagNotAtMain,
+    );
+    assert.ok(d, "expected TagNotAtMain when first-parent chain is unresolvable");
+  } finally {
+    cleanup(repoRoot);
+  }
+});
+
+test("checkRepoImmutableSetting: setting enabled -> emits ImmutableRepo (#233 prevention E)", () => {
+  const github: GitHubInterface = { immutableReleasesSetting: () => "enabled" };
+  const warnings = checkRepoImmutableSetting(github);
+  assert.equal(warnings.length, 1, "expected exactly one warning");
+  assert.equal(warnings[0].code, RELEASE_READINESS_WARNING_CODES.ImmutableRepo);
+  assert.match(warnings[0].message, /ENABLED/);
+  assert.match(warnings[0].message, /tag/);
+});
+
+test("checkRepoImmutableSetting: setting disabled -> no warning", () => {
+  const github: GitHubInterface = { immutableReleasesSetting: () => "disabled" };
+  assert.deepEqual(checkRepoImmutableSetting(github), []);
+});
+
+test("checkRepoImmutableSetting: probe denied (401/403) -> emits distinct ImmutableProbeDenied (Codex P2 round 4)", () => {
+  // Round-3 coerced 401/403 to enabled which created a persistent false
+  // positive against repos where the workflow token cannot read the
+  // endpoint — operators saw "ENABLED" every dispatch even when the
+  // setting was off. Distinct code lets the operator tell "confirmed on"
+  // from "could not verify".
+  const github: GitHubInterface = { immutableReleasesSetting: () => "denied" };
+  const warnings = checkRepoImmutableSetting(github);
+  assert.equal(warnings.length, 1, "expected exactly one warning for denied probe");
+  assert.equal(warnings[0].code, RELEASE_READINESS_WARNING_CODES.ImmutableProbeDenied);
+  assert.match(warnings[0].message, /Could not verify/);
+  assert.match(warnings[0].message, /401\/403/);
+});
+
+test("checkRepoImmutableSetting: probe unknown (endpoint missing / network) -> no warning, fail-quiet", () => {
+  const github: GitHubInterface = { immutableReleasesSetting: () => "unknown" };
+  assert.deepEqual(
+    checkRepoImmutableSetting(github),
+    [],
+    "unknown result must NOT emit a warning — the probe is informational and a missing signal must not block dispatch",
+  );
 });
 
 test("parseReleaseReadinessArgs accepts --version and --archive in argv and env", () => {

@@ -1,0 +1,96 @@
+name: Issue breakdown bot
+
+# Phase 2 of the issue-breakdown track. Triggered when an operator (or another
+# automation) applies the `breakdown-me` label to an issue. The trigger contract,
+# concurrency, and permissions are pinned by this workflow; the actual model
+# invocation that runs `agents/operational/issue-breakdown-bot/PROMPT.md`
+# against the issue payload is intentionally a placeholder — adopters wire
+# their preferred Claude Code action (e.g. `anthropics/claude-code-action`)
+# in a fork. See `agents/operational/issue-breakdown-bot/README.md`.
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: read
+
+concurrency:
+  # One run per issue. `cancel-in-progress: false` so a queued run waits
+  # rather than killing the in-flight one — `gh issue edit --body` is
+  # last-write-wins and not safe to interrupt mid-write.
+  group: issue-breakdown-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  decompose:
+    name: Decompose issue into draft PRs
+    if: github.event.label.name == 'breakdown-me'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write          # branch push for feat/* + chore/* (never main / develop)
+      issues: write             # comment + edit body + remove label
+      pull-requests: write      # gh pr create
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 0        # full history so the bot can resolve `<integration-branch>` and cut feature branches off it
+
+      - name: Confirm bot prompt + agent artifacts exist
+        run: |
+          set -euo pipefail
+          test -f agents/operational/issue-breakdown-bot/PROMPT.md
+          test -f agents/operational/issue-breakdown-bot/README.md
+          test -f .claude/agents/issue-breakdown.md
+          test -f .claude/skills/issue-breakdown/SKILL.md
+          test -f templates/issue-breakdown-pr-body-template.md
+          test -f templates/issue-breakdown-issue-section.md
+
+      # ---------------------------------------------------------------------
+      # PLACEHOLDER — adopters replace this step with a Claude Code runner.
+      #
+      # The runner must:
+      #   1. Load the prompt at `agents/operational/issue-breakdown-bot/PROMPT.md`.
+      #   2. Pass the issue payload via `${GITHUB_EVENT_PATH}` (already on disk).
+      #   3. Have access to `gh` (already installed on `ubuntu-latest`) authed via
+      #      `GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}`.
+      #   4. Exit non-zero on refusal so the closing comment step below
+      #      (which only runs on success) is skipped and the `breakdown-me`
+      #      label stays on the issue.
+      #
+      # Until wired, the workflow falls back to posting a one-time comment
+      # explaining how to enable the bot, so issues labelled `breakdown-me`
+      # do not silently sit forever.
+      # ---------------------------------------------------------------------
+      - name: Notify operator (placeholder — replace with Claude Code runner)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          body=$(cat <<'EOF'
+          The `breakdown-me` label was received and the issue-breakdown-bot workflow ran, but no Claude Code runner is wired into `.github/workflows/issue-breakdown-bot.yml` yet — the model-invocation step is a placeholder.
+
+          To enable the bot end-to-end:
+
+          1. Replace the `Notify operator (placeholder ...)` step in `.github/workflows/issue-breakdown-bot.yml` with your team's preferred Claude Code action (e.g. `anthropics/claude-code-action`), pointing it at `agents/operational/issue-breakdown-bot/PROMPT.md` and the issue payload from `${GITHUB_EVENT_PATH}`.
+          2. Add the `ANTHROPIC_API_KEY` (or equivalent) secret to the repository.
+          3. Re-apply the `breakdown-me` label to re-trigger.
+
+          In the meantime, the interactive conductor still works locally:
+
+          ```
+          /issue:breakdown <issue-number>
+          ```
+
+          See `agents/operational/issue-breakdown-bot/README.md` for the full setup checklist and `docs/issue-breakdown-track.md` for the track methodology.
+          EOF
+          )
+          gh issue comment "${ISSUE_NUMBER}" --repo "${REPO}" --body "${body}
+
+          ---
+          Workflow run: ${RUN_URL}"

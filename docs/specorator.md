@@ -1,8 +1,8 @@
 # Specorator — Quality-Driven, Agentic Development Workflow
 
-**Version:** 0.2 · **Status:** Foundation + Skills layer · **Purpose:** Foundation for iteration
+**Version:** 0.5.1 · **Status:** Release infrastructure in review · **Purpose:** Spec-driven, agentic workflow template
 
-v0.2 adds the reusable skills layer, operational bots, and branching / verify / worktree guidance on top of the v0.1 lifecycle foundation.
+v0.5.1 is the recovery release for v0.5 — republishes the GitHub Release page after the Immutable Releases incident on the v0.5.0 publish dispatch ([#233](https://github.com/Luis85/agentic-workflow/issues/233)). v0.5.0 added the release workflow, GitHub Release and Package distribution path, and fresh-surface package contract on top of the lifecycle, skills, automation, and quality-gate foundation; v0.5.1 carries no behavioural changes — only version metadata and the documentation surfaces that mirror the version differ.
 
 A solution-agnostic, **spec-driven** workflow for building software with humans and AI agents. Treats specifications as the source of truth and code as their artifact. Covers the full SDLC: Product → UX → UI → Engineering → Testing → Quality → Delivery → Operations.
 
@@ -43,6 +43,8 @@ See [`memory/constitution.md`](../memory/constitution.md) for the full version. 
 ---
 
 ## 2. Workflow overview
+
+The canonical v1.0 workflow track taxonomy is frozen in [ADR-0026](adr/0026-freeze-v1-workflow-track-taxonomy.md). The core lifecycle is one track; 11 opt-in or companion tracks sit around it. Do not infer new tracks from new checklists, skills, or review paths unless a superseding ADR adds a new state-bearing workflow.
 
 ```mermaid
 flowchart LR
@@ -97,6 +99,8 @@ flowchart LR
 - **Quality Assurance Track** — an ISO 9001-aligned evidence workflow for checking project execution health and delivery readiness. Produces `quality-plan.md`, checklists, `quality-review.md`, and `improvement-plan.md`. Defined in [`docs/quality-assurance-track.md`](quality-assurance-track.md). **Use for internal readiness, quality drift review, release readiness, supplier assurance, or audit preparation.**
 - **Roadmap Management Track** — an outcome-led product/project planning workflow for roadmaps, delivery confidence, stakeholder alignment, and team communication. Produces `roadmap-board.md`, `delivery-plan.md`, `stakeholder-map.md`, `communication-log.md`, and `decision-log.md` under `roadmaps/<slug>/`. Defined in [`docs/roadmap-management-track.md`](roadmap-management-track.md). **Use when product direction, project delivery constraints, stakeholder expectations, and team communication need one maintained source of truth.**
 - **Design Track** — a four-phase, brand-aware surface-creation workflow (Frame → Sketch → Mock → Handoff) for producing new user-visible surfaces under the Specorator brand system. Produces `design-brief.md`, `sketch.md`, an optional `mock.html`, and `design-handoff.md` under `designs/<slug>/`. Defined in [`docs/design-track.md`](design-track.md); rationale in [ADR-0019](adr/0019-add-design-track.md). **Use when creating a new surface (docs site, marketing page, onboarding flow, dashboard) or significantly redesigning an existing one. Do not use for feature-level UI work — use `/spec:design` (Stage 4) instead.**
+
+Agentic security review guidance is a QA/reviewer extension, not a separate track in the v1.0 taxonomy. See [ADR-0026](adr/0026-freeze-v1-workflow-track-taxonomy.md).
 
 ---
 
@@ -166,6 +170,10 @@ Quality gates per stage are summarised below; the full Definition of Done lives 
 ### 3.10 Release
 - **Goal:** Prepare the feature for delivery.
 - **Optional companion artifact:** Use `release-readiness-guide.md` when the increment needs an explicit go/no-go packet across product value, user experience, stakeholder approval, engineering, security/privacy/compliance, operations, support, data, commercial, or communications perspectives.
+- **Distribution channels (template-level releases).** When the release publishes the Specorator template itself, it ships through two GitHub-native channels: a **GitHub Release** (source archive plus a tarball asset attached at publish time) and a **GitHub Package** on the npm endpoint at `https://npm.pkg.github.com` under the scoped name `@luis85/agentic-workflow`. The package contract that defines registry, identity, contents, version source, and consumer install path is recorded in [`specs/version-0-5-plan/package-contract.md`](../specs/version-0-5-plan/package-contract.md).
+- **Operator path.** Publishing is a manually authorized `workflow_dispatch` action triggered through [`.github/workflows/release.yml`](../.github/workflows/release.yml). The maintainer follows the step-by-step operator guide at [`docs/release-operator-guide.md`](release-operator-guide.md): pre-flight readiness, dry run, confirm gate ([SPEC-V05-002](../specs/version-0-5-plan/spec.md)), publish, failed-publish recovery (manual targeted commands once `gh release create` has succeeded — the workflow is not rerunnable past that step), rollback (forward-only supersession), and post-release cleanup.
+- **Release-tag hold.** If release readiness is green but the tag, GitHub Release, package publish, or stable promotion still needs explicit human authorization, keep the workflow in Stage 10: `current_stage: release`, `status: active`, and `release-notes.md: in-progress`. Add a `workflow-state.md` hand-off note marked `release-tag hold` that names the readiness verdict, pending irreversible action, required authorization, and owning issue / PR. Do not advance to Stage 11 or set `status: done` until the irreversible action has completed or been explicitly abandoned.
+- **Cross-version handoff.** When a release-quality signal from one cycle is consumed by a later cycle, write the consumption contract in the later cycle's `specs/<version>/` folder and cross-link it from the earlier cycle's release notes. See [`docs/cross-version-handoff.md`](cross-version-handoff.md).
 - **Released package shape — fresh-surface starter.** When a release publishes the Specorator template itself (a tagged GitHub Release source archive, a GitHub Package, or any future packaging target), the released artifact ships as a fresh-surface starter, not as the codebase state. Documentation ships in stub form, ADRs are excluded so the consumer's first ADR is `ADR-0001`, and the 10 intake folders (`inputs/`, `specs/`, `discovery/`, `projects/`, `portfolio/`, `roadmaps/`, `quality/`, `scaffolding/`, `stock-taking/`, `sales/`) ship empty. The contract is template-wide and applies to every release. Source of truth: [ADR-0021](adr/0021-release-package-fresh-surface.md). Methodology: [`docs/release-package-contents.md`](release-package-contents.md). The release readiness check enforces the contract before publish.
 - **Quality gate:** Changelog written. Release readiness conditions and approvals summarized or the guide is explicitly marked not used. Rollback plan documented. Observability hooks in place. Known limitations disclosed. When the release publishes the Specorator template itself, the fresh-surface contract (ADR-0021) is asserted green or an explicit operator waiver is recorded.
 
@@ -235,7 +243,9 @@ artifacts:                             # status enum: pending | in-progress | co
   retrospective.md: pending
 ```
 
-Plus the body sections (Skips, Blocks, Hand-off notes, Open clarifications) per the canonical template at [`templates/workflow-state-template.md`](../templates/workflow-state-template.md).
+Plus the body sections (Notes on meta-features, Skips, Blocks, Hand-off notes, Open clarifications) per the canonical template at [`templates/workflow-state-template.md`](../templates/workflow-state-template.md).
+
+Meta-features are plan-level features whose implementation is a sequence of sub-task PRs rather than a single source tree. They may skip Stage 7-9 canonical artifacts (`implementation-log.md`, `test-plan.md`, `test-report.md`, `review.md`, `traceability.md`) only when each sub-task PR carries its own implementation evidence, tests, review, and trace links. The `## Skips` section must name each skipped artifact, explain the rationale, and point to the per-PR evidence. See [`templates/_shared/state-file-sections.md`](../templates/_shared/state-file-sections.md) for the full rule and [`specs/version-0-3-plan/workflow-state.md`](../specs/version-0-3-plan/workflow-state.md) for the precedent.
 
 ### 5.2 Orchestrator responsibilities
 
@@ -341,7 +351,7 @@ The workflow is iterative, not waterfall:
 ## 10. Future extensions
 
 - Domain-specific template variants (mobile, ML, infra)
-- Automated artifact validation and an RTM generator — see the v0.2 plans in [`README.md`](../README.md) (Versioning section)
+- Automated artifact validation and an RTM generator — see the roadmap in [`README.md`](../README.md#roadmap)
 - Layered template overrides (`templates/overrides/`)
 - Metrics and maturity model
 - CI quality gates

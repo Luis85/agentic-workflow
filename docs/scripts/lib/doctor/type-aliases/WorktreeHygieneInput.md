@@ -22,6 +22,12 @@
 
 ***
 
+### registeredWorktreeBranches?
+
+> `optional` **registeredWorktreeBranches?**: `Record`\<`string`, `string`\>
+
+***
+
 ### registeredWorktrees
 
 > **registeredWorktrees**: `string`[]

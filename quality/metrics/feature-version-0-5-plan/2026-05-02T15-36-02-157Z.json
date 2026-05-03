@@ -1,0 +1,71 @@
+{
+  "generatedAt": "2026-05-02T15:36:02.157Z",
+  "root": "D:\\Projects\\agentic-workflow\\.worktrees\\v05-closeout",
+  "scope": "feature:version-0-5-plan",
+  "summary": {
+    "workflowCount": 1,
+    "markdownFiles": 833,
+    "docsWithFrontmatter": 141,
+    "qualityReviews": 0,
+    "checklistItems": 0,
+    "checklistGaps": 0,
+    "overallScore": 97.9,
+    "maturity": {
+      "level": 3,
+      "name": "Traceable",
+      "summary": "Requirements have expected downstream links for the current stages.",
+      "evidence": [
+        "1 workflow state file(s) found.",
+        "Required Markdown frontmatter is complete.",
+        "Average stage score is 97.9%.",
+        "Average stage-aware requirement chain coverage is 89.4%."
+      ],
+      "gaps": [
+        "No completed workflow has complete downstream test evidence yet."
+      ],
+      "nextStep": "Drive completed workflows through testing and review evidence."
+    }
+  },
+  "workflows": [
+    {
+      "feature": "version-0-5-plan",
+      "area": "V05",
+      "path": "specs/version-0-5-plan/workflow-state.md",
+      "status": "done",
+      "currentStage": "learning",
+      "stageScore": 97.9,
+      "artifactCompletion": 100,
+      "artifactPresence": 100,
+      "expectedArtifactCompletion": 100,
+      "expectedArtifactPresence": 100,
+      "frontmatterCoverage": 100,
+      "requirementCoverage": 89.4,
+      "stageTraceabilityCoverage": 89.4,
+      "testCoverage": 68.2,
+      "testCoverageExpected": true,
+      "earsCoverage": 100,
+      "earsExpected": true,
+      "openClarifications": 0,
+      "blockers": 0,
+      "counts": {
+        "artifactsExpected": 13,
+        "artifactsExpectedForStage": 13,
+        "artifactsComplete": 13,
+        "artifactsCompleteForStage": 13,
+        "artifactsPresent": 13,
+        "artifactsPresentForStage": 13,
+        "artifactsWithFrontmatter": 13,
+        "requirements": 22,
+        "requirementsWithSpec": 22,
+        "requirementsWithTasks": 22,
+        "requirementsWithTests": 15,
+        "tests": 12
+      }
+    }
+  ],
+  "signals": {
+    "missingFrontmatter": [],
+    "activeBlockers": [],
+    "openClarifications": []
+  }
+}

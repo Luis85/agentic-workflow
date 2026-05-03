@@ -27,5 +27,18 @@ node_modules/
 # See docs/worktrees.md.
 .worktrees/
 
+# issue-breakdown skill — transient PR/issue body files staged for `gh ... --body-file`.
+# Never committed; deleted at end of run. See docs/issue-breakdown-track.md.
+.issue-breakdown-staging/
+
 # caveman:compress backups — kept locally for diff/sanity checks only.
 *.original.md
+
+# Release pipeline staging — produced by `npm run build:release-archive`.
+# Never committed; rebuilt fresh on every release-workflow run.
+.release-staging/
+
+# Publication-canonical lockfile — `package-lock.json` is the codebase form;
+# `npm-shrinkwrap.json` is staged from it on the release runner before
+# `npm pack` (T-V05-007). Never committed to the codebase.
+npm-shrinkwrap.json

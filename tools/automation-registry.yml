@@ -229,6 +229,16 @@ entries:
     emits_json: false
     used_by: [human, agent, ci]
     rerun_command: npm run check:product-page
+  - id: check:public-surfaces
+    kind: check
+    command: npm run check:public-surfaces
+    path: scripts/check-public-surfaces.ts
+    purpose: Validate adopter-facing public surfaces against package version, changelog releases, and agent/skill inventory.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: true
+    used_by: [human, agent, ci]
+    rerun_command: npm run check:public-surfaces
   - id: check:sites-tokens-mirror
     kind: check
     command: npm run check:sites-tokens-mirror
@@ -253,7 +263,7 @@ entries:
     kind: check
     command: npm run check:frontmatter
     path: scripts/check-frontmatter.ts
-    purpose: Validate required frontmatter conventions.
+    purpose: Validate required frontmatter conventions and reject future-dated update fields.
     read_only: true
     safe_to_run_locally: true
     emits_json: true
@@ -339,6 +349,26 @@ entries:
     emits_json: true
     used_by: [human, agent, ci]
     rerun_command: npm run check:release-readiness -- --version <X.Y.Z> [--archive <dir>]
+  - id: build:release-archive
+    kind: script
+    command: npm run build:release-archive
+    path: scripts/build-release-archive.ts
+    purpose: Stage a fresh-surface copy of the repository under .release-staging — strip numbered ADRs and stubify shipping docs/**/*.md per ADR-0021 / SPEC-V05-010 (T-V05-013) so npm pack ships the released form.
+    read_only: false
+    safe_to_run_locally: true
+    emits_json: true
+    used_by: [human, agent, ci]
+    rerun_command: npm run build:release-archive -- --out <dir>
+  - id: prepack
+    kind: script
+    command: npm run prepack
+    path: scripts/release-prepack-guard.mjs
+    purpose: npm prepack lifecycle guard (T-V05-013 round-2) — refuses npm pack of @luis85/agentic-workflow from any cwd that lacks the .release-staging-marker, so bare npm pack from the repo root fails closed before a tarball is produced. No-op for any other package name.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: false
+    used_by: [human, agent, ci]
+    rerun_command: npm run prepack
   - id: docs:scripts
     kind: script
     command: npm run docs:scripts
@@ -426,6 +456,15 @@ entries:
     emits_json: false
     used_by: [ci]
     rerun_command: gh run list --workflow gitleaks.yml
+  - id: workflow:issue-breakdown-bot
+    kind: workflow
+    path: .github/workflows/issue-breakdown-bot.yml
+    purpose: Trigger contract for the issue-breakdown-bot — fires on the `breakdown-me` label and queues one decomposition per issue. Model invocation step is a placeholder for adopters to wire their preferred Claude Code action.
+    read_only: false
+    safe_to_run_locally: false
+    emits_json: false
+    used_by: [ci]
+    rerun_command: gh run list --workflow issue-breakdown-bot.yml
   - id: workflow:pages
     kind: workflow
     path: .github/workflows/pages.yml
@@ -561,6 +600,15 @@ entries:
     emits_json: false
     used_by: [agent]
     rerun_command: open .claude/skills/grill/SKILL.md
+  - id: skill:issue-breakdown
+    kind: skill
+    path: .claude/skills/issue-breakdown/SKILL.md
+    purpose: Agent-facing reusable workflow skill.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: false
+    used_by: [agent]
+    rerun_command: open .claude/skills/issue-breakdown/SKILL.md
   - id: skill:new-adr
     kind: skill
     path: .claude/skills/new-adr/SKILL.md
@@ -786,6 +834,15 @@ entries:
     emits_json: false
     used_by: [agent, human]
     rerun_command: open agents/operational/docs-review-bot/PROMPT.md
+  - id: operational-agent:issue-breakdown-bot
+    kind: operational-agent
+    path: agents/operational/issue-breakdown-bot
+    purpose: Headless variant of /issue:breakdown. Triggered by the breakdown-me label; opens one draft PR per parallelisable batch in tasks.md.
+    read_only: false
+    safe_to_run_locally: false
+    emits_json: false
+    used_by: [agent, human]
+    rerun_command: open agents/operational/issue-breakdown-bot/PROMPT.md
   - id: operational-agent:plan-recon-bot
     kind: operational-agent
     path: agents/operational/plan-recon-bot

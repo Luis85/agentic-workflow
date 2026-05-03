@@ -491,20 +491,26 @@ test("worktreeHygieneCheck warns for unregistered .worktrees directories", () =>
 
   assert.equal(result.status, "warn");
   assert.equal(result.detail, "2 registered; 1 hygiene warning(s)");
-  assert.match(result.hint || "", /\.worktrees\/stale-empty is not registered/);
+  assert.match(result.hint || "", /\.worktrees\/stale-empty is not registered \(branch unknown; merge state unknown\)/);
+  assert.match(result.hint || "", /git worktree prune/);
 });
 
-test("worktreeHygieneCheck warns for merged local branches", () => {
+test("worktreeHygieneCheck warns for merged local branches and registered stale worktrees", () => {
   const result = worktreeHygieneCheck({
-    registeredWorktrees: ["/repo"],
+    registeredWorktrees: ["/repo", "/repo/.worktrees/old"],
+    registeredWorktreeBranches: {
+      "/repo/.worktrees/old": "feat/old",
+    },
     worktreeDirectories: [],
-    mergedBranches: ["main", "feat/old", "feat/current"],
+    mergedBranches: ["main", "feat/old", "feat/other", "feat/current"],
     currentBranch: "feat/current",
   });
 
   assert.equal(result.status, "warn");
-  assert.equal(result.detail, "1 registered; 1 hygiene warning(s)");
-  assert.match(result.hint || "", /feat\/old is already merged into origin\/main/);
+  assert.equal(result.detail, "2 registered; 2 hygiene warning(s)");
+  assert.match(result.hint || "", /\.worktrees\/old uses feat\/old, already merged into origin\/main/);
+  assert.match(result.hint || "", /feat\/other is already merged into origin\/main/);
+  assert.match(result.hint || "", /git worktree prune/);
 });
 
 function tempRepo(): string {

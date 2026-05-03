@@ -3,8 +3,11 @@ import fs from "node:fs";
 import path from "node:path";
 import {
   checkReleaseReadiness,
+  checkRepoImmutableSetting,
   parseReleaseReadinessArgs,
+  type GitHubInterface,
   type GitInterface,
+  type ImmutableSettingProbe,
   type QualitySignals,
 } from "./lib/release-readiness.js";
 import { collectQualityMetrics } from "./lib/quality-metrics.js";
@@ -128,6 +131,25 @@ const report = checkReleaseReadiness({
   qualitySignals,
 });
 
+// Prevention E from #233 — emit a non-blocking warning when the most
+// recent Release is immutable (heuristic: Repo Setting "Immutable
+// releases" is on). Surface as a GitHub Actions `::warning::` annotation
+// to stderr so dispatch operators see it inline. The probe never adds to
+// `report.diagnostics` so it cannot fail the gate (the v0.5.0 incident
+// showed the setting is not always operator-controlled — failing closed
+// could block legitimate dispatches).
+//
+// Runs unconditionally — including under `--json`. The dispatch workflow
+// invokes this script as `npm run check:release-readiness -- --json`, so
+// gating the probe on `!--json` would have made it dead code in exactly
+// the path the prevention is meant for (Codex P1 on PR #242). The JSON
+// contract on `report.diagnostics` and `process.exit` is unchanged —
+// warnings only land on stderr as `::warning::` annotations.
+const warnings = checkRepoImmutableSetting(realGitHub());
+for (const warning of warnings) {
+  console.error(`::warning::${warning.code}: ${warning.message}`);
+}
+
 failIfErrors(report.diagnostics, heading);
 
 function realGit(): GitInterface {
@@ -156,6 +178,86 @@ function realGit(): GitInterface {
       } catch {
         return null;
       }
+    },
+    firstParentChain(ref: string): readonly string[] | null {
+      // `git rev-list --first-parent <ref>` walks merge commits via their
+      // left parent only — exactly the chain a release tag may sit on per
+      // ADR-0020 §Compliance. Output is one SHA per line, newest first.
+      // Used by `checkTagOnMainHistory` to relax the strict-HEAD reading
+      // that tripped during the v0.5.1 recovery dispatch (#233 prevention F).
+      try {
+        const out = execFileSync(
+          "git",
+          ["rev-list", "--first-parent", ref],
+          {
+            cwd: repoRoot,
+            encoding: "utf8",
+            windowsHide: true,
+            stdio: ["ignore", "pipe", "ignore"],
+          },
+        );
+        return out.split(/\r?\n/).map((s) => s.trim()).filter((s) => s !== "");
+      } catch {
+        return null;
+      }
+    },
+  };
+}
+
+function realGitHub(): GitHubInterface {
+  return {
+    immutableReleasesSetting(): ImmutableSettingProbe {
+      // `gh api repos/{owner}/{repo}/immutable-releases` returns
+      // `{enabled: bool, enforced_by_owner: bool}`. The setting is on if
+      // either flag is true (org-level enforcement counts even when the
+      // repo's own toggle is off).
+      //
+      // Failure handling returns four distinct states (Codex P2 round 4
+      // on PR #242 — round 3 coerced 401/403 -> true, which produced an
+      // indistinguishable false positive against repos where the
+      // workflow token cannot read the endpoint):
+      //
+      //   - 401/403/Bad credentials/Resource not accessible -> "denied"
+      //     so checkRepoImmutableSetting emits ImmutableProbeDenied
+      //     ("could not verify; check manually") instead of pretending
+      //     the setting is confirmed on.
+      //   - Endpoint missing (404 — older GitHub instance) -> "unknown",
+      //     fail quiet. The warning was never going to be authoritative
+      //     on a host without the endpoint.
+      //   - Anything else (network blip, parse error) -> "unknown",
+      //     fail quiet. Transient errors should not pollute the warning.
+      //
+      // GITHUB_REPOSITORY is set on every workflow run; locally, gh's
+      // default repo (configured via `gh repo set-default` or the current
+      // git remote) is used implicitly.
+      let out: string;
+      try {
+        out = execFileSync(
+          "gh",
+          [
+            "api",
+            "repos/{owner}/{repo}/immutable-releases",
+            "--jq",
+            ".enabled or (.enforced_by_owner // false)",
+          ],
+          {
+            cwd: repoRoot,
+            encoding: "utf8",
+            windowsHide: true,
+            stdio: ["ignore", "pipe", "pipe"],
+          },
+        );
+      } catch (err) {
+        const stderr = String((err as { stderr?: Buffer | string }).stderr ?? "");
+        if (/HTTP 401|HTTP 403|Bad credentials|Resource not accessible/i.test(stderr)) {
+          return "denied";
+        }
+        return "unknown";
+      }
+      const trimmed = out.trim();
+      if (trimmed === "true") return "enabled";
+      if (trimmed === "false") return "disabled";
+      return "unknown";
     },
   };
 }

@@ -108,3 +108,11 @@ updated: 2026-05-02
 - **Depends on:** T-V05-005, T-V05-009, T-V05-010
 - **Owner:** qa
 - **Estimate:** S
+
+### T-V05-013 — Automate strip-and-stubify packaging step
+
+- **Description:** Close OQ-V05-003 by automating the codebase-form → released-form transform. Add `scripts/lib/release-stubify.ts` (transform a single Markdown doc into stub form per `templates/release-package-stub.md`: synthesise frontmatter from path, preserve top-level `# ` heading and `## ` section headings, replace body and section bodies with `<!-- TODO: -->` markers, append the stub trailer) and `scripts/lib/release-archive-builder.ts` (stage a transformed copy of the repository under a build directory: filter numbered ADRs `docs/adr/[0-9][0-9][0-9][0-9]-*.md`, stubify every `docs/**/*.md` except `docs/adr/templates/release-package-stub.md` itself, copy other files as-is). Add `scripts/build-release-archive.ts` CLI exposing `npm run build:release-archive -- --out <dir>`. Wire `.github/workflows/release.yml` step 5 to call the builder before `npm pack`. Add `.npmignore` defence-in-depth (numbered ADRs + `.worktrees/`). Resolves DEFECT-V05-001 by satisfying SPEC-V05-010 assertions 1 and 3 against the actual `package.json#files` allowlist. The codebase form remains as authored per `docs/release-package-contents.md` line 40 ("maintainers reading the codebase see one shape, consumers receive another"); the build script produces the released form on a runner-local staging dir.
+- **Satisfies:** REQ-V05-005, REQ-V05-012, NFR-V05-002, NFR-V05-005, SPEC-V05-004, SPEC-V05-010
+- **Depends on:** T-V05-002, T-V05-007, T-V05-012
+- **Owner:** dev
+- **Estimate:** L
