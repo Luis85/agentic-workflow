@@ -9,6 +9,7 @@ title: "Example"
 count: 3
 empty: []
 owner: null
+labels: ["priority,high", "plain"]
 artifacts:
   idea.md: complete
   spec.md: in-progress # inline comment
@@ -18,6 +19,7 @@ artifacts:
       count: 3,
       empty: [],
       owner: null,
+      labels: ["priority,high", "plain"],
       artifacts: {
         "idea.md": "complete",
         "spec.md": "in-progress",
@@ -56,4 +58,17 @@ test("replaceGeneratedBlock replaces only named generated content", () => {
 
 test("toPosix normalizes Windows separators", () => {
   assert.equal(toPosix("docs\\adr\\README.md"), "docs/adr/README.md");
+});
+
+test("parseSimpleYaml unescapes double-quoted strings with embedded quotes and backslashes", () => {
+  assert.deepEqual(
+    parseSimpleYaml(`
+labels: ["plain", "has \\"quote\\"", "has \\\\ slash"]
+title: "say \\"hello\\""
+`),
+    {
+      labels: ["plain", 'has "quote"', "has \\ slash"],
+      title: 'say "hello"',
+    },
+  );
 });

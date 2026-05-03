@@ -1,0 +1,259 @@
+/**
+ * Drift check for the issues/ folder.
+ *
+ * Warns when a specs/<slug>/ directory has no linked issues/<n>-<slug>.md file.
+ * Hard-fails (exit 1) on issue files with malformed or missing required frontmatter.
+ *
+ * This check is intentionally NOT included in `npm run verify` (see ADR-0031 §6).
+ * Run it explicitly: `npm run check:issues`
+ *
+ * Flags:
+ *   --json   Emit structured JSON instead of console output.
+ */
+
+import fs from "node:fs";
+import path from "node:path";
+import {
+  extractFrontmatter,
+  parseSimpleYaml,
+  readText,
+  relativeToRoot,
+  repoRoot,
+  walkFiles,
+} from "./lib/repo.js";
+
+const VALID_ROADMAP_STATUSES = new Set([
+  "planned",
+  "in-progress",
+  "in-review",
+  "shipped",
+  "cancelled",
+]);
+const VALID_TYPES = new Set(["feature", "bug", "chore", "docs"]);
+// "specification" is canonical (matches workflow-state-template.md and specorator.md §3.0).
+const VALID_STAGES = new Set([
+  "idea",
+  "research",
+  "requirements",
+  "design",
+  "specification",
+  "tasks",
+  "implementation",
+  "testing",
+  "review",
+  "release",
+  "learning",
+  "done",
+]);
+
+const REQUIRED_FRONTMATTER_KEYS = [
+  "title",
+  "feature_slug",
+  "type",
+  "roadmap_status",
+  "stage",
+  "created_at",
+  "updated_at",
+];
+
+// Keys that must be present in the file but are allowed to be null (e.g. before GitHub push).
+const NULLABLE_FRONTMATTER_KEYS = [
+  "issue_number",
+  "github_url",
+  "labels",
+  "milestone",
+  "assignees",
+];
+
+const wantsJson = process.argv.includes("--json");
+
+const warnings: string[] = [];
+const errors: string[] = [];
+
+// 1. Collect spec slugs (exclude examples/)
+const specsRoot = path.join(repoRoot, "specs");
+const specSlugs: string[] = [];
+if (fs.existsSync(specsRoot)) {
+  for (const entry of fs.readdirSync(specsRoot, { withFileTypes: true })) {
+    if (entry.isDirectory()) specSlugs.push(entry.name);
+  }
+}
+
+// 2. Collect issue files and validate frontmatter
+const issuesBySrcSlug = new Map<string, string>(); // featureSlug → relPath
+const issuesRoot = path.join(repoRoot, "issues");
+
+if (fs.existsSync(issuesRoot)) {
+  const issueFiles = walkFiles("issues", (f) => {
+    const base = path.basename(f);
+    return base.endsWith(".md") && base !== "README.md";
+  });
+
+  for (const filePath of issueFiles) {
+    const rel = relativeToRoot(filePath);
+    const text = readText(filePath);
+    const fm = extractFrontmatter(text);
+
+    if (!fm) {
+      errors.push(`${rel}: missing YAML frontmatter`);
+      continue;
+    }
+
+    const data = parseSimpleYaml(fm.raw);
+
+    // Required key checks (must exist and have a non-null, non-empty value)
+    for (const key of REQUIRED_FRONTMATTER_KEYS) {
+      if (isMissingRequiredValue(data[key])) {
+        errors.push(`${rel}: missing required frontmatter key "${key}"`);
+      }
+    }
+
+    // Type validation for required scalar keys
+    for (const key of REQUIRED_FRONTMATTER_KEYS) {
+      const value = data[key];
+      if (!isMissingRequiredValue(value) && !isRequiredScalarValue(value)) {
+        errors.push(`${rel}: ${key} must be a string scalar, got ${JSON.stringify(value)}`);
+      }
+    }
+
+    // Nullable key checks (must be present in the file, but null is allowed)
+    for (const key of NULLABLE_FRONTMATTER_KEYS) {
+      if (!(key in data)) {
+        errors.push(`${rel}: missing frontmatter key "${key}" (may be null)`);
+      }
+    }
+
+    // Type validation for nullable keys
+    const issueNum = data["issue_number"];
+    if (issueNum !== null && issueNum !== undefined && typeof issueNum !== "number") {
+      errors.push(`${rel}: issue_number must be an integer or null, got ${JSON.stringify(issueNum)}`);
+    }
+    if (typeof issueNum === "number" && issueNum <= 0) {
+      errors.push(`${rel}: issue_number must be a positive integer or null, got ${issueNum}`);
+    }
+    const labels = data["labels"];
+    if (labels !== null && labels !== undefined && !Array.isArray(labels)) {
+      errors.push(`${rel}: labels must be an array or null, got ${JSON.stringify(labels)}`);
+    }
+    const assignees = data["assignees"];
+    if (assignees !== null && assignees !== undefined && !Array.isArray(assignees)) {
+      errors.push(`${rel}: assignees must be an array or null, got ${JSON.stringify(assignees)}`);
+    }
+    const milestone = data["milestone"];
+    if (milestone !== null && milestone !== undefined && typeof milestone !== "string") {
+      errors.push(`${rel}: milestone must be a string or null, got ${JSON.stringify(milestone)}`);
+    }
+    const githubUrl = data["github_url"];
+    if (githubUrl !== null && githubUrl !== undefined && typeof githubUrl !== "string") {
+      errors.push(`${rel}: github_url must be a string or null, got ${JSON.stringify(githubUrl)}`);
+    }
+
+    // ISO date validation for timestamp fields
+    const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+    for (const key of ["created_at", "updated_at"]) {
+      const v = data[key];
+      if (typeof v === "string" && !ISO_DATE_RE.test(v)) {
+        errors.push(`${rel}: ${key} must be in YYYY-MM-DD format, got "${v}"`);
+      }
+    }
+
+    // Enum validation
+    const rs = data["roadmap_status"];
+    if (rs !== undefined && rs !== null && !VALID_ROADMAP_STATUSES.has(rs as string)) {
+      errors.push(
+        `${rel}: invalid roadmap_status "${rs}" — must be one of: ${[...VALID_ROADMAP_STATUSES].join(", ")}`,
+      );
+    }
+
+    const t = data["type"];
+    if (t !== undefined && t !== null && !VALID_TYPES.has(t as string)) {
+      errors.push(
+        `${rel}: invalid type "${t}" — must be one of: ${[...VALID_TYPES].join(", ")}`,
+      );
+    }
+
+    const st = data["stage"];
+    if (st !== undefined && st !== null && !VALID_STAGES.has(st as string)) {
+      errors.push(
+        `${rel}: invalid stage "${st}" — must be one of: ${[...VALID_STAGES].join(", ")}`,
+      );
+    }
+
+    const slug = data["feature_slug"];
+    if (slug && typeof slug === "string") {
+      // Cross-validate: slug in frontmatter must match the slug in the filename (<number>-<slug>.md).
+      const basename = path.basename(filePath, ".md");
+      const dashIndex = basename.indexOf("-");
+      const fileSlug = dashIndex >= 0 ? basename.slice(dashIndex + 1) : basename;
+      if (slug !== fileSlug) {
+        errors.push(
+          `${rel}: feature_slug "${slug}" does not match filename slug "${fileSlug}"`,
+        );
+        // Register the file slug too so the spec whose name matches the filename
+        // doesn't also get a spurious "no linked issue" warning.
+        issuesBySrcSlug.set(fileSlug, rel);
+      }
+      issuesBySrcSlug.set(slug, rel);
+    }
+
+    // Cross-validate: issue_number must match the numeric prefix of the filename (<number>-<slug>.md).
+    if (typeof issueNum === "number" && issueNum !== null) {
+      const basename = path.basename(filePath, ".md");
+      const dashIndex = basename.indexOf("-");
+      if (dashIndex > 0) {
+        const prefixStr = basename.slice(0, dashIndex);
+        if (/^\d+$/.test(prefixStr)) {
+          const fileNum = parseInt(prefixStr, 10);
+          if (issueNum !== fileNum) {
+            errors.push(`${rel}: issue_number ${issueNum} does not match filename prefix ${fileNum}`);
+          }
+        }
+      }
+    }
+  }
+}
+
+// 3. Warn for specs without a linked issue
+for (const slug of specSlugs) {
+  if (!issuesBySrcSlug.has(slug)) {
+    warnings.push(
+      `specs/${slug}/ has no linked issue — create issues/0-${slug}.md from templates/issue-template.md`,
+    );
+  }
+}
+
+// Output
+if (wantsJson) {
+  console.log(JSON.stringify({ errors, warnings }, null, 2));
+} else {
+  for (const w of warnings) console.warn(`[warn] check:issues: ${w}`);
+  for (const e of errors) console.error(`[error] check:issues: ${e}`);
+
+  if (errors.length === 0 && warnings.length === 0) {
+    console.log("check:issues: ok");
+  } else if (errors.length === 0) {
+    console.log(`check:issues: ${warnings.length} warning(s) — no hard errors`);
+  }
+}
+
+// Malformed frontmatter = hard fail; missing issues = warn only (exit 0)
+if (errors.length > 0) {
+  process.exit(1);
+}
+
+function isMissingRequiredValue(value: unknown): boolean {
+  return (
+    value === undefined ||
+    value === null ||
+    value === "" ||
+    (isPlainObject(value) && Object.keys(value).length === 0)
+  );
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isRequiredScalarValue(value: unknown): value is string {
+  return typeof value === "string" && !/^\{[^{}]*:[^{}]*\}$/.test(value.trim());
+}

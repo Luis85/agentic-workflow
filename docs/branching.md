@@ -22,7 +22,7 @@ Pick **one** of the two shapes below for your project. Both are supported by thi
 | `demo` (optional) | Deployable preview / GitHub Pages. | **No** — promoted from `main` or `develop`. |
 | `feat/*`, `fix/*`, `refactor/*`, `chore/*`, `docs/*` | Topic branches. Cut from `develop`. | Yes (topic branch only). |
 
-The default `.claude/settings.json` shipped with this template denies pushes to both `main` and `develop` so either shape is safe out of the box. Loosen the denylist deliberately, never silently.
+The default `.claude/settings.json` shipped with this template denies pushes to both `main` and `develop` so either shape is safe out of the box. Loosen the denylist deliberately, never silently. The full set of rights the workflow needs across local git, GitHub, Pages, Packages, and the Claude Code harness is collected in [`docs/rbac.md`](rbac.md).
 
 ## Topic branch prefixes
 
@@ -47,6 +47,27 @@ PR titles are validated by [`.github/workflows/pr-title.yml`](../.github/workflo
 Scopes are optional. The expected shape is `<type>: <subject>` or `<type>(<scope>): <subject>`. The subject must start with an alphanumeric character and must not end with a period.
 
 Use `docs:` for planning artifacts, specs, workflow notes, README changes, and other documentation-only work. Do not use descriptive-but-unsupported types such as `plan:`, `release:`, or `workflow:` unless the CI allowlist is updated in the same concern.
+
+## Required main ruleset
+
+This upstream repository protects the default branch with a GitHub ruleset named `main`. Downstream projects should reproduce the same contract on their integration branch, whether that branch is `main` in Shape A or `develop` in Shape B.
+
+The ruleset must:
+
+- block branch deletion;
+- block non-fast-forward updates;
+- require pull requests before merge;
+- require the branch to be up to date before merge;
+- require all review threads to be resolved before merge;
+- require these always-running status checks:
+  - `Verify`
+  - `Conventional Commits PR title`
+  - `spell check`
+  - `scan for committed secrets`
+
+Workflow-path security checks (`actionlint`, `zizmor static analysis`, and `dependency review`) stay path-triggered so ordinary docs and script PRs are not blocked by jobs that never run. When a PR changes `.github/workflows/**`, `.github/actions/**`, or dependency manifests, the relevant path-triggered checks must be green before merge; require them in a path-scoped ruleset if the repository configuration supports that shape.
+
+Approving reviews are intentionally not required in the upstream ruleset yet. Solo-maintainer and agent-heavy iteration currently gets more value from required CI, PR-only integration, and resolved review threads than from mandatory approval ceremony. Revisit this when there is a regular second reviewer or code-owner model.
 
 ## Rules
 

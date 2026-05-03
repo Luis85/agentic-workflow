@@ -90,6 +90,17 @@
           }
         ]
       }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c 'import sys,json,re,subprocess; d=json.load(sys.stdin); cmd=d.get(\"tool_input\",{}).get(\"command\",\"\"); dq=chr(34); sq=chr(39); cleaned=re.sub(dq+r\"[^\"+dq+r\"]*\"+dq+r\"|\"+sq+r\"[^\"+sq+r\"]*\"+sq,\"\",cmd); re.search(r\"\\bgit\\b[^|]*\\scommit\\b\",cleaned) or sys.exit(0); b=subprocess.run([\"git\",\"symbolic-ref\",\"--short\",\"HEAD\"],capture_output=True,text=True).stdout.strip(); b in(\"main\",\"develop\") and (print(\"[branch-guard] Commit on\",repr(b),\"blocked. Use a topic branch.\") or sys.exit(2))' 2>/dev/null || exit 0"
+          }
+        ]
+      }
     ]
   },
   "_comment": "Baseline permissions for projects using this workflow. Tighten by adding repo-specific allow/deny rules; do not loosen any deny rule without an ADR. See docs/branching.md for the branching model these rules assume. Permission rules are prefix matches against the literal command string — keep deny rules at the top of any new entries you add and verify that whitespace / short-flag aliases (-n for --no-verify, -f for --force) are also covered.",
