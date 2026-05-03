@@ -268,8 +268,8 @@ Plan-level meta-features may skip Stage 7-9 canonical artifacts when each sub-ta
                   exist in the repo. T-BRANCH-025 converted to documentation-only N/A finding.
 - [x] OPEN-BRANCH-002 — whether to remove `main` from the github-pages environment allow-list immediately at
                   rollout step 7 or leave it for a follow-up. Architecturally optional. Owner: spec author.
-                  RESOLVED 2026-05-04: Pages env allow-list now contains demo, develop, main. Main retained for
-                  backwards compatibility (no harm). Remote op T-BRANCH-006 complete.
+                  RESOLVED 2026-05-03: Pages env allow-list updated to contain demo, develop, main. Main retained
+                  for backwards compatibility (no harm). Remote op T-BRANCH-006 complete.
 - [x] OPEN-BRANCH-003 — whether to add a PR-base CI check that fails when a topic PR targets `main`
                   (RISK-BRANCH-004 mitigation). Out of scope for this feature per PRD NG; flagged for future.
                   Owner: spec author / future feature.
