@@ -75,11 +75,11 @@ The design spec lives in the primary working directory (`D:\Projects\agentic-wor
 - [ ] **Step 1: Copy from the primary working tree**
 
 ```bash
-cp ../../../docs/superpowers/specs/2026-05-04-issue-draft-track-design.md \
+cp ../../docs/superpowers/specs/2026-05-04-issue-draft-track-design.md \
    docs/superpowers/specs/2026-05-04-issue-draft-track-design.md
 ```
 
-(Run from `.worktrees/issue-draft-track/`. The `../../../` path resolves to the repo root.)
+(Run from `.worktrees/issue-draft-track/`. `../../` resolves to the repo root.)
 
 - [ ] **Step 2: Run verify**
 
