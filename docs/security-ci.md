@@ -49,13 +49,14 @@ This map keeps deferred candidates separate from checks that already exist so ad
 | Spell check | [`ci-automation.md`](ci-automation.md#typos-config), [`.github/workflows/typos.yml`](../.github/workflows/typos.yml) | Required on every PR. |
 | Dependabot version updates | [`ci-automation.md`](ci-automation.md#dependabot-policy), [`.github/dependabot.yml`](../.github/dependabot.yml) | Bumps pinned GitHub Actions and npm dev dependencies. |
 | Dependabot alerts | GitHub repository settings | Alerts on vulnerable dependencies introduced to the repo. Security update PRs are opt-in. |
+| Markdown lint (advisory) | `.github/workflows/markdownlint.yml` | PR-triggered, changed files only, non-blocking. Promotion plan: `docs/markdownlint-rollout.md`. |
 
 ### Deferred
 
 | Candidate | Current decision |
 | --- | --- |
 | OSSF Scorecard | Candidate periodic supply-chain posture report after the current P1/P2 hardening work is stable. |
-| Markdown lint | Deferred until the existing Markdown baseline is cleaned or a non-blocking changed-files rollout is designed. See [`ci-automation.md`](ci-automation.md#why-not-markdownlint-yet). |
+| Markdown lint | Non-blocking changed-files workflow active. See `docs/markdownlint-rollout.md` for the promotion plan. |
 
 ### Rejected for now
 
