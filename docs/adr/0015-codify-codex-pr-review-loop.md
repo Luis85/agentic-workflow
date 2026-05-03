@@ -1,7 +1,7 @@
 ---
 id: ADR-0015
 title: Codify a bounded Codex review loop on every pull request
-status: proposed
+status: accepted
 date: 2026-05-01
 deciders:
   - human
@@ -21,7 +21,7 @@ tags: [workflow, github, review, automation, codex]
 
 ## Status
 
-Proposed
+Accepted
 
 ## Context
 

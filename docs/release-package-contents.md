@@ -96,6 +96,7 @@ The maintenance rule is: **the enumeration in this page, the enumeration in `ADR
 
 - [ADR-0021 — Ship the released template package as a fresh-surface starter](adr/0021-release-package-fresh-surface.md) — source of truth.
 - [`templates/release-package-stub.md`](../templates/release-package-stub.md) — reference shape for stub-form documentation.
+- [`docs/release-operator-guide.md`](release-operator-guide.md) — runnable operator path that consumes this contract before publish.
 - [`docs/specorator.md`](specorator.md) §3.10 (Release stage) — forward link.
 - [`docs/sink.md`](sink.md) — folder ownership and layout.
 - `specs/version-0-5-plan/spec.md` SPEC-V05-005 (release readiness validation) and SPEC-V05-010 (fresh-surface contract).

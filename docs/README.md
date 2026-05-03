@@ -56,10 +56,18 @@ Look-it-up, normative. Authoritative; not narrative.
 
 - [`specorator.md`](./specorator.md) — the full workflow definition.
 - [`project-scaffolding-track.md`](./project-scaffolding-track.md) — source-led onboarding track for turning collected docs into starter artifacts.
+- [`design-track.md`](./design-track.md) — brand-aware surface creation workflow.
+- [`issue-breakdown-track.md`](./issue-breakdown-track.md) — post-tasks issue-to-draft-PR decomposition workflow.
 - [`roadmap-management-track.md`](./roadmap-management-track.md) — product/project roadmap management, stakeholder alignment, and team communication workflow.
 - [`quality-assurance-track.md`](./quality-assurance-track.md) — ISO 9001-aligned quality assurance review workflow.
 - [`release-readiness-guide.md`](./release-readiness-guide.md) — Stage 10 go/no-go guide for product perspectives and stakeholder requirements.
-- [`workflow-overview.md`](./workflow-overview.md) — one-page cheat sheet + slash-command list.
+- [`release-operator-guide.md`](./release-operator-guide.md) — runnable operator path for publishing a tagged GitHub Release and (when enabled) a GitHub Package.
+- [`release-package-contents.md`](./release-package-contents.md) — fresh-surface contract for what ships in the released template package.
+- [`cross-version-handoff.md`](./cross-version-handoff.md) — location, naming, and link rules for handoff contracts consumed by a later release cycle.
+- [`workflow-overview.md`](./workflow-overview.md) — one-page lifecycle cheat sheet.
+- [`slash-commands.md`](./slash-commands.md) — generated Claude Code slash-command inventory.
+- [`cross-tool/`](./cross-tool/) — walkthroughs for Codex, Cursor, Aider, Copilot, and Gemini.
+- [`onboarding/personas.md`](./onboarding/personas.md) — role-keyed first steps for product, engineering, team lead, solo builder, and non-Claude users.
 - [`ears-notation.md`](./ears-notation.md) — the requirement-syntax catalogue.
 - [`traceability.md`](./traceability.md) — the ID scheme and the requirement → spec → task → code → test chain.
 - [`obsidian-metadata.md`](./obsidian-metadata.md) — frontmatter compatibility rules for Obsidian source mode, Obsidian Properties UI, and repository checks.
@@ -97,6 +105,8 @@ Understanding-oriented. Background, rationale, and the *why* behind decisions.
 - [`quality-assurance-track.md`](./quality-assurance-track.md) — why project execution health needs evidence-backed QA checklists and corrective actions.
 - [`portfolio-track.md`](./portfolio-track.md) — why portfolios sit above the Specorator lifecycle.
 - [`stock-taking-track.md`](./stock-taking-track.md) — why brownfield projects need a separate inventory step.
+- [`design-track.md`](./design-track.md) — why branded surface creation is separate from feature-level Stage 4 design.
+- [`issue-breakdown-track.md`](./issue-breakdown-track.md) — why post-tasks issue work gets its own decomposition workflow.
 - [`adr/`](./adr/) — the rationale half of each ADR file. (The index lives under Reference above.)
 
 *Quadrant last reviewed: 2026-04-28.*

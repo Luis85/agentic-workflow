@@ -2,7 +2,7 @@
 description: Roadmap Management Track - Bootstrap. Scaffold a roadmap workspace under roadmaps/<slug>/ with state and strategy artifacts.
 argument-hint: <roadmap-slug>
 allowed-tools: [Read, Edit, Write, Bash]
-model: sonnet
+model: haiku
 ---
 
 # /roadmap:start

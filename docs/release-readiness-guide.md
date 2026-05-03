@@ -25,6 +25,8 @@ The artifact is lazy: small internal releases may skip it and document readiness
 
 `/spec:release` still produces `release-notes.md` as the canonical Stage 10 output. The release readiness guide is supporting evidence that the release manager may create during the prepare phase before asking for production authorization.
 
+For template-level releases (publishing this repository as a tagged GitHub Release and GitHub Package), the runnable operator path is [`docs/release-operator-guide.md`](release-operator-guide.md). The two artifacts are complementary: this guide records *whether* the release should ship (perspectives, evidence, conditions), the operator guide records *how* to ship it (workflow inputs, confirm gate, recovery, cleanup).
+
 The guide should answer four questions:
 
 1. What increment is going to production, and why now?

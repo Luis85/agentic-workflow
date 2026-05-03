@@ -87,6 +87,8 @@ Use `/quality:start <slug> [scope]` when a project, portfolio, feature, release,
 
 Use [`release-readiness-guide.md`](release-readiness-guide.md) during `/spec:release` when production readiness depends on multiple product perspectives, stakeholder requirements, approvals, or conditions.
 
+For template-level releases (publishing this repository as a tagged GitHub Release plus a GitHub Package), the runnable operator path is [`release-operator-guide.md`](release-operator-guide.md) — pre-flight readiness, dry run, confirm gate, publish, failed-publish recovery, and post-release cleanup.
+
 Use `/roadmap:start <slug>` when product direction, project delivery confidence, stakeholder expectations, and team communication need a shared roadmap artifact.
 
 ## State file (`specs/<feature>/workflow-state.md`)
@@ -126,6 +128,9 @@ Plus body sections (Skips, Blocks, Hand-off notes, Open clarifications). Canonic
 
 # glossary:
 /glossary:new
+
+# Issue Breakdown Track:
+/issue:breakdown
 
 # Portfolio Track:
 /portfolio:start  /portfolio:x      /portfolio:y
