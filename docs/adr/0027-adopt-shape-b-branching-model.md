@@ -1,7 +1,7 @@
 ---
 id: ADR-0027
 title: Adopt Shape B branching model (develop / main / demo) for the template
-status: proposed
+status: Accepted
 date: 2026-05-03
 deciders:
   - architect
@@ -22,7 +22,7 @@ tags: [branching, governance, release, pages]
 
 ## Status
 
-Proposed
+Accepted
 
 ## Context
 

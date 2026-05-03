@@ -282,7 +282,7 @@ grep -c "develop" docs/worktrees.md  # must be >= 1 in the cut-from context
 **Required edits:** any prose in either file that names `main` as the **PR target for topic work** must name `develop`. As of the current text neither file makes that explicit naming, so the edit may reduce to:
 
 1. In `AGENTS.md` operating-rules, append to the "Branch per concern; verify before push" bullet: *"Topic PRs target `develop` (Shape B per ADR-0027); `main` carries only promoted, tagged commits."*
-2. In `CLAUDE.md` conventions, append to the `.claude/settings.json` permission-rules bullet: *"Topic PRs target `develop`; `demo` is the Pages source. See [`docs/branching.md`](docs/branching.md)."*
+2. In `CLAUDE.md` conventions, append to the `.claude/settings.json` permission-rules bullet: *"Topic PRs target `develop`; `demo` is the Pages source. See `docs/branching.md`."*
 
 **Verification:**
 

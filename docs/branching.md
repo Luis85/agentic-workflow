@@ -4,25 +4,29 @@ A small, opinionated model designed to make automated review, parallel agents, a
 
 ## The branches
 
+This template repository operates under **Shape B** as of [ADR-0027](adr/0027-adopt-shape-b-branching-model.md) (2026-05-03). Shape A is retained below as a documented option for downstream adopters who do not yet ship versioned releases; it is no longer the active model for template-own operations.
+
 Pick **one** of the two shapes below for your project. Both are supported by this template's bots and skills.
 
-### Shape A — single integration branch (recommended for v0 → v1)
+### Shape B — separate integration and release (active for this template)
+
+| Branch | Role | Direct push? |
+| --- | --- | --- |
+| `develop` | Integration. Always green. Topic PRs target `develop`. | **No** — PR only. |
+| `main` | Release. Receives only promotion merges from `develop`. Tagged commits, no in‑flight work. | **No** — promoted from `develop`. |
+| `demo` | GitHub Pages source. Receives only promotion merges from `main` after each tag. | **No** — promoted from `main` via the manual `chore/promote-demo` PR. |
+| `feat/*`, `fix/*`, `refactor/*`, `chore/*`, `docs/*` | Topic branches. Cut from `develop`, live in `.worktrees/<slug>/`. | Yes (topic branch only). |
+
+### Shape A — single integration branch (adopter option)
+
+Recommended for downstream projects that do not yet cut versioned releases.
 
 | Branch | Role | Direct push? |
 | --- | --- | --- |
 | `main` | Integration + release. Always green. | **No** — PR only. |
 | `feat/*`, `fix/*`, `refactor/*`, `chore/*`, `docs/*` | Topic branches. Cut from `main`, live in `.worktrees/<slug>/`. | Yes (push the topic branch only). |
 
-### Shape B — separate integration and release (recommended once you ship)
-
-| Branch | Role | Direct push? |
-| --- | --- | --- |
-| `develop` | Integration. Always green. PRs land here. | **No** — PR only. |
-| `main` | Release. Tagged commits, no in‑flight work. | **No** — promoted from `develop`. |
-| `demo` (optional) | Deployable preview / GitHub Pages. | **No** — promoted from `main` or `develop`. |
-| `feat/*`, `fix/*`, `refactor/*`, `chore/*`, `docs/*` | Topic branches. Cut from `develop`. | Yes (topic branch only). |
-
-The default `.claude/settings.json` shipped with this template denies pushes to both `main` and `develop` so either shape is safe out of the box. Loosen the denylist deliberately, never silently. The full set of rights the workflow needs across local git, GitHub, Pages, Packages, and the Claude Code harness is collected in [`docs/rbac.md`](rbac.md).
+The default `.claude/settings.json` shipped with this template denies pushes to `main`, `develop`, and `demo` so either shape is safe out of the box. Loosen the denylist deliberately, never silently. The full set of rights the workflow needs across local git, GitHub, Pages, Packages, and the Claude Code harness is collected in [`docs/rbac.md`](rbac.md).
 
 ## Topic branch prefixes
 
@@ -33,7 +37,7 @@ The default `.claude/settings.json` shipped with this template denies pushes to 
 | `refactor/` | Internal change, no behaviour change. |
 | `chore/` | Dependencies, tooling, CI, repo maintenance. |
 | `docs/` | Documentation only. |
-| `release/` | Versioned release prep — see [Release branches](#release-branches-releasevxyz). |
+| `release/` | *(Shape A only)* Versioned release prep — see [Release path under Shape B](#release-path-under-shape-b) for the active flow and the Shape A historical callout. Not used under Shape B; promotion replaces the dedicated release branch. |
 | `claude/` | Agent‑opened branches (this is the convention `Claude Code` uses by default). |
 
 These prefixes match the allowlist in `.claude/settings.json` and the regexes in the operational bots' branch‑name idempotency checks. Adding a new prefix means updating both.
@@ -48,9 +52,9 @@ Scopes are optional. The expected shape is `<type>: <subject>` or `<type>(<scope
 
 Use `docs:` for planning artifacts, specs, workflow notes, README changes, and other documentation-only work. Do not use descriptive-but-unsupported types such as `plan:`, `release:`, or `workflow:` unless the CI allowlist is updated in the same concern.
 
-## Required main ruleset
+## Required ruleset for `develop`, `main`, `demo`
 
-This upstream repository protects the default branch with a GitHub ruleset named `main`. Downstream projects should reproduce the same contract on their integration branch, whether that branch is `main` in Shape A or `develop` in Shape B.
+This upstream repository protects all three Shape B branches with a single GitHub ruleset whose `conditions.ref_name.include` covers `refs/heads/main`, `refs/heads/develop`, and `refs/heads/demo`. Downstream projects should reproduce the same contract on every protected branch they operate, whether that is `main` alone in Shape A or all three in Shape B.
 
 The ruleset must:
 
@@ -64,6 +68,8 @@ The ruleset must:
   - `Conventional Commits PR title`
   - `spell check`
   - `scan for committed secrets`
+
+**Bypass list.** The maintainer is the sole bypass actor on `demo` so the manual `chore/promote-demo` PR can be merged via the GitHub UI without a PAT. No bypass actors on `main` or `develop`.
 
 Workflow-path security checks (`actionlint`, `zizmor static analysis`, and `dependency review`) stay path-triggered so ordinary docs and script PRs are not blocked by jobs that never run. When a PR changes `.github/workflows/**`, `.github/actions/**`, or dependency manifests, the relevant path-triggered checks must be green before merge; require them in a path-scoped ruleset if the repository configuration supports that shape.
 
@@ -80,66 +86,34 @@ Approving reviews are intentionally not required in the upstream ruleset yet. So
 7. **Maintainer (or autonomous‑merge rule) merges**, not the author. See [`feedback_autonomous_merge.md`](../.claude/memory/feedback_autonomous_merge.md).
 8. **Codex opens the PR when it makes the change.** See [`.codex/workflows/pr-delivery.md`](../.codex/workflows/pr-delivery.md) for the expected worktree → verify → push → PR → next-step loop.
 
-## Why `develop` exists in Shape B
+## Why `develop` and `demo` exist now
 
-Two reasons:
+[ADR-0027](adr/0027-adopt-shape-b-branching-model.md) (2026-05-03) supersedes ADR-0020 and activates Shape B for this template:
 
 1. **Releases are durable.** `main` only carries commits that have been promoted. Reverts on `develop` don't pollute the release history.
 2. **The operational bots key off the integration branch.** A separate `develop` keeps `review-bot`, `plan-recon-bot`, etc. from spinning up against half‑shipped release commits.
+3. **GitHub Pages serves a validated state.** `pages.yml` triggers on `demo`, so the public preview reflects the last tagged `main` HEAD rather than in-progress work.
 
 If your project doesn't ship versioned releases, Shape A is enough. Don't introduce `develop` until you actually need it.
 
-## Promotion (Shape B only)
+## Release path under Shape B
 
-`develop` → `main` is a fast‑forward (or merge commit if you prefer). It happens at release time, not continuously. The release ADR template (`templates/release-notes-template.md`) covers the artifacts.
+Under Shape B the release path is the **`develop → main` promotion PR** plus a follow-up **`chore/promote-demo` PR**. There is no dedicated `release/vX.Y.Z` branch — release-prep work (version bump, `CHANGELOG.md` entry, lifecycle release-notes finalization) lands on `develop` like any other docs/chore PR before the promotion.
 
-## Release branches (`release/vX.Y.Z`)
+1. **Release-prep on `develop`.** Cut ordinary topic branches from `develop` for the version bump in `package.json`, the `CHANGELOG.md` entry, lifecycle release-notes finalization in `specs/<feature>/release-notes.md`, and any release-only documentation updates. Each of these is a normal topic PR targeting `develop` — one concern per PR, verify before push.
+2. **Promotion PR `develop → main`.** Once `develop` carries the full release contents, the maintainer opens a promotion PR from `develop` into `main`. The v0.5 release readiness check runs on the PR. After CI is green, the maintainer merges the promotion PR.
+3. **Tag from `main`.** The `vX.Y.Z` tag is cut on the merge commit on `main` — never on `develop`, never on a topic branch. Traceability stays clean: tag → commit on `main` → merged promotion PR → CHANGELOG entry → release notes.
+4. **Demo promotion `main → demo`.** After the tag is cut, the maintainer opens a `chore/promote-demo` PR that fast-forwards `demo` to the tagged commit on `main`. The maintainer is the sole bypass actor in the ruleset for `demo`, so this PR can be merged via the GitHub UI without a PAT. `pages.yml` triggers on push to `demo` and deploys via OIDC.
+5. **Authorization boundary.** Cutting and merging the promotion PRs is ordinary topic-branch work and follows the normal review and verify gate. **Publishing** the GitHub Release and (when enabled) the GitHub Package is a separate, manually authorized step: only an authorized maintainer triggers the `workflow_dispatch` release workflow, and only after the readiness check, v0.4 quality signals, and human authorization input are all green ([REQ-V05-002](../specs/version-0-5-plan/requirements.md), SPEC-V05-002). Pre-merge release prep is reversible; tag creation and publish are not.
 
-This template uses **Shape A plus an explicit `release/vX.Y.Z` branch** as its release branching strategy ([ADR-0020](adr/0020-v05-release-branch-strategy.md)). It applies whenever you cut a tagged release through the v0.5 release workflow, regardless of whether your project also uses Shape B.
-
-### When to cut a release branch
-
-Cut `release/vX.Y.Z` when you enter the **release prep window** — the moment you start finalizing a specific version for publication. One release branch per planned version. Don't cut a `release/*` branch speculatively, and don't reuse one across versions; if a release is abandoned, delete the branch and start a new one for the next version.
-
-The release branch is cut from the canonical release source:
-
-- **Shape A:** cut from `main`.
-- **Shape B:** cut from `develop` (Shape B users still tag from `main` after promotion — see below).
-
-### What lives on a release branch
-
-Only release-prep work. Everything that is not "this specific version's release prep" belongs on its own topic branch.
-
-- Version bump in `package.json` (and any locked counterparts).
-- `CHANGELOG.md` entry for the new version.
-- Lifecycle release notes finalization in `specs/<feature>/release-notes.md`.
-- Release-only documentation updates (e.g., README install snippets that pin the new version).
-- Generated release-readiness artifacts produced by the v0.5 readiness check.
-
-Do **not** land new features, refactors, or non-release fixes on `release/*`. Those go through ordinary topic branches first; the release branch only collects what they need to ship.
-
-### How a release branch merges back
-
-1. Open a PR from `release/vX.Y.Z` into the canonical release source (`main` in Shape A; `develop`-then-`main` promotion in Shape B).
-2. Run the v0.5 release readiness check on the PR. It must pass before merge.
-3. Reviewer merges the PR like any other PR — no force-push, no direct commit on the protected branch.
-4. **Tag from `main`** after the merge lands. The tag (`vX.Y.Z`) is created on the merge commit on `main`, never on the release branch itself and never on a feature branch. This keeps NFR-V05-002 traceability clean: tag → commit on `main` → merged release PR → changelog → release notes.
-5. Delete the `release/vX.Y.Z` branch locally and on the remote once the tag is cut. Release branches are not reused.
-
-### Authorization boundary
-
-Cutting, pushing, and merging a `release/vX.Y.Z` PR is ordinary topic-branch work and follows the normal review and verify gate. **Publishing** the GitHub Release and (when enabled) the GitHub Package is a separate, manually authorized step: only an authorized maintainer triggers the `workflow_dispatch` release workflow, and only after the readiness check, v0.4 quality signals, and human authorization input are all green ([REQ-V05-002](../specs/version-0-5-plan/requirements.md), SPEC-V05-002). Pre-merge release prep is reversible; tag creation and publish are not.
-
-### Why not `develop` in v0.5
-
-The v0.5 plan keeps Shape A and explicitly does not introduce a permanent `develop` branch ([ADR-0020](adr/0020-v05-release-branch-strategy.md)). The push-deny on `develop` in `.claude/settings.json` stays in place as forward-compatibility insurance — adopting Shape B later is a documentation and settings change, not a history rewrite.
+> **Shape A only — historical convention.** Adopters operating Shape A may use a dedicated `release/vX.Y.Z` topic branch for release prep ([ADR-0020](adr/0020-v05-release-branch-strategy.md), superseded for this template by ADR-0027). The Shape A flow is: cut `release/vX.Y.Z` from `main`, land version bump + CHANGELOG + release notes on it, open a PR back into `main`, run the readiness check, merge, tag from `main`, delete the release branch. This template no longer follows that flow; the active release path is the `develop → main` promotion PR described above.
 
 ## Settings
 
 The default `.claude/settings.json` permission rules assume:
 
 - Push to `feat/*`, `fix/*`, `refactor/*`, `chore/*`, `docs/*`, `claude/*` is allowed.
-- Push to `main` and `develop` is denied. Force‑push to either is denied.
+- Push to `main`, `develop`, and `demo` is denied. Force‑push to any of the three is denied.
 - `git commit --no-verify` and `git push --no-verify` are denied.
 
 If your project uses non‑standard prefixes, update both the allowlist and the bots' regexes.
