@@ -48,13 +48,16 @@ This map keeps deferred candidates separate from checks that already exist so ad
 | PR-title lint | [`ci-automation.md`](ci-automation.md#pr-title-rules), [`.github/workflows/pr-title.yml`](../.github/workflows/pr-title.yml) | Required on every PR. |
 | Spell check | [`ci-automation.md`](ci-automation.md#typos-config), [`.github/workflows/typos.yml`](../.github/workflows/typos.yml) | Required on every PR. |
 | Dependabot version updates | [`ci-automation.md`](ci-automation.md#dependabot-policy), [`.github/dependabot.yml`](../.github/dependabot.yml) | Bumps pinned GitHub Actions and npm dev dependencies. |
+| Supply-chain posture (Scorecard) | `.github/workflows/scorecard.yml` | Weekly + push to main. Uploads SARIF as an artifact for every repo and to code scanning on public repos. Initial findings are advisory — triage via Security tab. |
+| Dependabot alerts | GitHub repository settings | Alerts on vulnerable dependencies introduced to the repo. Security update PRs are opt-in. |
 | Markdown lint (advisory) | `.github/workflows/markdownlint.yml` | PR-triggered, changed files only, non-blocking. Promotion plan: `docs/markdownlint-rollout.md`. |
+
+> **Note:** Scorecard findings are advisory at first. Public repositories also publish results to the GitHub Security/code-scanning tab; private/internal downstream repositories still receive the SARIF artifact without requiring GitHub Code Security. Triage results and file concrete issues before promoting any check to a required gate.
 
 ### Deferred
 
 | Candidate | Current decision |
 | --- | --- |
-| OSSF Scorecard | Candidate periodic supply-chain posture report after the current P1/P2 hardening work is stable. |
 | Markdown lint | Non-blocking changed-files workflow active. See `docs/markdownlint-rollout.md` for the promotion plan. |
 
 ### Rejected for now
@@ -62,7 +65,7 @@ This map keeps deferred candidates separate from checks that already exist so ad
 | Candidate | Why not now |
 | --- | --- |
 | License blocking in dependency review | Needs an explicit license allow/deny policy before it can be a fair merge gate. |
-| Dependabot security update PRs by default | Disabled until the alert baseline is known and the maintainer wants automatic remediation PR volume. Dependabot alerts should still be enabled. |
+| Dependabot security update PRs by default | Disabled until the alert baseline is known and the maintainer wants automatic remediation PR volume. Dependabot alerts are enabled (see Implemented table). |
 | Global required checks for path-triggered workflows | GitHub does not create those checks for unrelated PRs, so a global requirement can deadlock ordinary documentation or script changes. Use path-scoped rulesets where available. |
 
 ## Required status checks

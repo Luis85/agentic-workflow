@@ -569,6 +569,16 @@ entries:
     emits_json: false
     used_by: [ci]
     rerun_command: gh run list --workflow verify.yml
+  - id: workflow:scorecard
+    kind: workflow
+    path: .github/workflows/scorecard.yml
+    purpose: Weekly supply-chain posture report via OSSF Scorecard. Uploads SARIF as an artifact and publishes to GitHub code scanning on public repos. Findings are advisory; see docs/security-ci.md for triage guidance.
+    read_only: false
+    safe_to_run_locally: false
+    emits_json: false
+    triggers: [schedule, push]
+    used_by: [ci]
+    rerun_command: gh run list --workflow scorecard.yml
   - id: workflow:markdownlint
     kind: workflow
     path: .github/workflows/markdownlint.yml
