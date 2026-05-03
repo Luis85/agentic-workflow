@@ -188,7 +188,7 @@ The Repo Adoption Track is an agent-orchestrated, four-phase opt-in conductor sk
   - When Phase 3 runs to completion
   - Then all five files exist under `adoptions/<slug>/repo/` at their manifest paths
   - And `enrich-preview.md` lists each generated file with a one-line purpose description
-  - And no `conflict` entry from `parity.md` is overwritten in the working tree during Phase 3
+  - And no `conflict` entry with `resolution: skip-this-file`, `resolution: manual-merge-needed`, or `resolution: TBD` is overwritten in the working tree during Phase 3
 - **Priority:** must
 - **Satisfies:** IDEA-ADOPT-001 (desired outcome), RESEARCH-ADOPT-001 (Q3, §Phase contracts 5.3)
 
@@ -526,6 +526,22 @@ The Repo Adoption Track is an agent-orchestrated, four-phase opt-in conductor sk
   - And that ADR has been merged in a predecessor PR before the implementation PR opens
 - **Priority:** must
 - **Satisfies:** IDEA-ADOPT-001 (constraints, ADR-0026), RESEARCH-ADOPT-001 (Q1 recommendation, CLAR-ADOPT-001)
+
+---
+
+### REQ-ADOPT-032 — Phase 3 (Enrich): overwrite files with `accept-template-version` resolution
+
+- **Pattern:** Ubiquitous
+- **Statement:** The adoption agent shall overwrite each file in the working tree at `adoptions/<slug>/repo/` whose corresponding `parity.md` entry carries `resolution: accept-template-version` with the canonical template version of that file, and shall list each such overwrite in `adoptions/<slug>/enrich-preview.md` with a notation of `overwrite (accept-template-version)`.
+- **Acceptance:**
+  - Given `parity.md` contains a `conflict` entry for `.claude/settings.json` with `resolution: accept-template-version`
+  - When Phase 3 runs to completion
+  - Then the file at `adoptions/<slug>/repo/.claude/settings.json` matches the template canonical version byte-for-byte
+  - And `enrich-preview.md` lists `.claude/settings.json` with the notation `overwrite (accept-template-version)`
+  - And given a separate conflict entry has `resolution: skip-this-file`
+  - Then that file is not modified in the working tree
+- **Priority:** must
+- **Satisfies:** CLAR-ADOPT-018 (Option A resolution), REQ-ADOPT-009 (Phase 3 write scope extended)
 
 ---
 
