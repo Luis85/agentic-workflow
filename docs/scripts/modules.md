@@ -15,6 +15,7 @@
 - [check-content](check-content/README.md)
 - [check-fast](check-fast/README.md)
 - [check-frontmatter](check-frontmatter/README.md)
+- [check-index-bleed](check-index-bleed/README.md)
 - [check-issues](check-issues/README.md)
 - [check-markdown-links](check-markdown-links/README.md)
 - [check-obsidian](check-obsidian/README.md)
