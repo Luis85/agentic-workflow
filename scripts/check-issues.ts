@@ -216,5 +216,5 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 }
 
 function isRequiredScalarValue(value: unknown): value is string {
-  return typeof value === "string" && !/^[\[{].*[\]}]$/.test(value.trim());
+  return typeof value === "string" && !/^\{[^{}]*:[^{}]*\}$/.test(value.trim());
 }

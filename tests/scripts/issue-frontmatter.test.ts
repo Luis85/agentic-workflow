@@ -1,6 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { serializeIssueFrontmatterValue } from "../../scripts/lib/issue-frontmatter.js";
+import {
+  isMissingGitHubIssueError,
+  serializeIssueFrontmatterValue,
+} from "../../scripts/lib/issue-frontmatter.js";
 
 test("issue frontmatter serializer escapes quoted array items", () => {
   assert.equal(
@@ -13,4 +16,11 @@ test("issue frontmatter serializer quotes scalar strings only when needed", () =
   assert.equal(serializeIssueFrontmatterValue("plain"), "plain");
   assert.equal(serializeIssueFrontmatterValue("has: colon"), '"has: colon"');
   assert.equal(serializeIssueFrontmatterValue('has "quote"'), '"has \\"quote\\""');
+});
+
+test("GitHub issue missing error detection excludes transport failures", () => {
+  assert.equal(isMissingGitHubIssueError("no issues match your search"), true);
+  assert.equal(isMissingGitHubIssueError("HTTP 404: Not Found"), true);
+  assert.equal(isMissingGitHubIssueError("could not resolve host: github.com"), false);
+  assert.equal(isMissingGitHubIssueError("GraphQL: Could not resolve to an Issue"), false);
 });

@@ -16,6 +16,10 @@ export function serializeIssueFrontmatterValue(value: unknown): string {
   return String(value);
 }
 
+export function isMissingGitHubIssueError(stderr: string): boolean {
+  return /\b(no issues match|not found)\b/i.test(stderr);
+}
+
 function needsYamlQuoting(s: string): boolean {
   return /[\s:#[\]{}"]/.test(s);
 }

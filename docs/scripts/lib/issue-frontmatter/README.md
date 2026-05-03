@@ -14,4 +14,5 @@ entry_point: true
 
 ## Functions
 
+- [isMissingGitHubIssueError](functions/isMissingGitHubIssueError.md)
 - [serializeIssueFrontmatterValue](functions/serializeIssueFrontmatterValue.md)

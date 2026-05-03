@@ -33,7 +33,10 @@ import {
   walkFiles,
   writeText,
 } from "./lib/repo.js";
-import { serializeIssueFrontmatterValue } from "./lib/issue-frontmatter.js";
+import {
+  isMissingGitHubIssueError,
+  serializeIssueFrontmatterValue,
+} from "./lib/issue-frontmatter.js";
 
 const isDryRun = process.argv.includes("--dry-run");
 const wantsJson = process.argv.includes("--json");
@@ -77,7 +80,7 @@ function fetchGitHubIssue(number: number): GitHubIssue | null {
   // gh exits non-zero for both "issue not found" and API/network failures.
   // Only treat genuine 404s as null; re-throw everything else so the caller
   // can abort rather than silently leaving metadata stale.
-  if (/could not resolve|no issues match|not found/i.test(stderr)) {
+  if (isMissingGitHubIssueError(stderr)) {
     return null;
   }
   throw new Error(`gh issue view ${number} failed: ${stderr.trim() || "unknown error"}`);

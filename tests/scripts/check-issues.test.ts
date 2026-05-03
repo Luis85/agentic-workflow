@@ -98,7 +98,7 @@ test("check:issues accepts documented spec stage alias", () => {
     [
       "---",
       "issue_number: null",
-      "title: Spec Alias Test",
+      'title: "[RFC] Spec Alias Test"',
       "feature_slug: spec-alias-test",
       "type: feature",
       "roadmap_status: planned",
@@ -111,7 +111,7 @@ test("check:issues accepts documented spec stage alias", () => {
       "updated_at: 2026-05-03",
       "---",
       "",
-      "# Spec Alias Test",
+      "# [RFC] Spec Alias Test",
       "",
     ].join("\n"),
     "utf8",
