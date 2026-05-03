@@ -142,7 +142,7 @@ Improvement proposals:
 - Keep parser hardening scoped around `parseSimpleYaml`.
 - Run a first-time adopter documentation walkthrough.
 
-First draft PR: <PR URL after creation>
+First draft PR: https://github.com/Luis85/agentic-workflow/pull/294
 
 Verification:
 - `npm ci`

@@ -1,12 +1,12 @@
 ---
 id: PRV-PRJ-STATE-001
 title: Project review 2026-05 — state
-status: in-progress
+status: complete
 created: 2026-05-04
 review_slug: project-review-2026-05
 scope: repository-wide project, process, documentation, automation, and governance review
 issue_url: https://github.com/Luis85/agentic-workflow/issues/293
-pr_url:
+pr_url: https://github.com/Luis85/agentic-workflow/pull/294
 branch: docs/project-review-2026-05
 commit:
 verification:
@@ -29,7 +29,7 @@ Review the `Luis85/agentic-workflow` repository as a productized template for sp
 | Inspect | complete | `quality/project-review-2026-05/history-review.md` |
 | Synthesize | complete | `quality/project-review-2026-05/findings.md` |
 | Propose | complete | `quality/project-review-2026-05/improvement-proposals.md` |
-| Handoff | in-progress | GitHub issue #293 opened; draft PR to be filled after publishing |
+| Handoff | complete | GitHub issue #293 and draft PR #294 are linked |
 
 ## Hand-off notes
 
@@ -38,6 +38,7 @@ Review the `Luis85/agentic-workflow` repository as a productized template for sp
 - 2026-05-04 — First `npm run verify:json` attempt failed at `test:scripts`; rerunning `npm run test:scripts` and `npm run verify:json` passed without code changes. Treat as a reliability signal, not a confirmed deterministic failure.
 - 2026-05-04 — GitHub evidence showed open PR #291 with failing `Verify`; other listed security and hygiene checks passed.
 - 2026-05-04 — Review tracking issue opened: https://github.com/Luis85/agentic-workflow/issues/293.
+- 2026-05-04 — Draft PR opened: https://github.com/Luis85/agentic-workflow/pull/294.
 
 ## Remaining risks
 
