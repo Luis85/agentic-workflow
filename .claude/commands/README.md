@@ -44,6 +44,10 @@ One command per workflow phase. Subdirectories namespace commands (`spec/specify
 /project:post      /project:report    /project:start
 /project:weekly
 
+# project-review:
+/project-review:handoff     /project-review:inspect     /project-review:plan
+/project-review:propose     /project-review:start       /project-review:synthesize
+
 # Quality Assurance Track:
 /quality:check    /quality:improve  /quality:plan
 /quality:review   /quality:start    /quality:status

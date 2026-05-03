@@ -699,6 +699,15 @@ entries:
     emits_json: false
     used_by: [agent]
     rerun_command: open .claude/skills/quality-metrics/SKILL.md
+  - id: skill:project-review
+    kind: skill
+    path: .claude/skills/project-review/SKILL.md
+    purpose: Agent-facing reusable workflow skill for evidence-backed project reviews, improvement proposals, and first draft PR handoff.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: false
+    used_by: [agent]
+    rerun_command: open .claude/skills/project-review/SKILL.md
   - id: skill:record-decision
     kind: skill
     path: .claude/skills/record-decision/SKILL.md
