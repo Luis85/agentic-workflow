@@ -13,7 +13,7 @@ inputs:
 
 - Recommended first draft PR: this PR, adding the repository-wide review artifacts and creating a tracking issue.
 - Tracking issue: [#293 — Project review 2026-05: repository health, risks, and improvement backlog](https://github.com/Luis85/agentic-workflow/issues/293)
-- Deferred proposals: verify flake investigation, WIP/clarification burn-down, settings audit automation, release provenance, parser boundary hardening, adopter-docs graduation.
+- Deferred proposals: verify flake investigation, WIP/clarification burn-down, settings audit automation, release provenance, Shape B release-flow clarification, ADR status sweep, parser boundary hardening, adopter-docs graduation.
 
 ## Proposals
 
@@ -80,7 +80,7 @@ inputs:
 ### PRV-PROP-005 — Add release provenance or an explicit SLSA posture decision
 
 - Problem: release composition is controlled, but consumers do not yet receive clear provenance/attestation evidence.
-- Evidence: SLSA Build L1 expects provenance describing build platform, process, and inputs; current release flow builds a staged archive but no explicit provenance artifact was found.
+- Evidence: SLSA Build L1 expects provenance describing build platform, process, and inputs; current release flow builds a staged archive but no explicit provenance artifact was found. GitHub artifact attestations can cover build assets; npm trusted publishing/provenance applies to an npmjs.com publication path rather than the current GitHub Packages publish path.
 - Expected benefit: improves supply-chain transparency and complements existing Scorecard/CodeQL/dependency-review controls.
 - Affected surfaces: `.github/workflows/release.yml`, `docs/release-operator-guide.md`, `docs/release-readiness-guide.md`, possibly ADR.
 - Effort: medium to large.
@@ -91,6 +91,36 @@ inputs:
 - Proposed branch: `docs/release-provenance-decision`.
 - Proposed PR title: `docs(release): record SLSA provenance posture`.
 - Verification: release dry-run, `npm run check:release-readiness`, `npm run verify:json`.
+
+### PRV-PROP-005A — Clarify Shape B release flow
+
+- Problem: Shape B is now active for integration work, but release docs and workflow comments still preserve v0.5 Shape A assumptions.
+- Evidence: ruleset applies to `main`, `develop`, and `demo`; PRs target `develop`; `release.yml` still creates Releases against `main`; ADR-0020 is superseded by proposed ADR-0027.
+- Expected benefit: contributors can tell whether tags and releases still happen from `main` after `develop` promotion.
+- Affected surfaces: `docs/branching.md`, `docs/release-operator-guide.md`, `.github/workflows/release.yml` comments, ADR-0027 status.
+- Effort: small.
+- Risk: low; documentation first.
+- Owner: release manager / maintainer.
+- Success signal: one paragraph states the current Shape B release path and references the governing ADR.
+- First draft PR candidate: no.
+- Proposed branch: `docs/shape-b-release-flow`.
+- Proposed PR title: `docs(release): clarify Shape B release flow`.
+- Verification: `npm run check:links`; `npm run verify:changed`.
+
+### PRV-PROP-005B — Sweep proposed ADR statuses
+
+- Problem: proposed ADRs in core workflow areas can become ambiguous policy when related work has partly shipped.
+- Evidence: proposed ADRs found for Obsidian layer, log-shaped artifact sharding, issue breakdown, doc-as-contract review, Shape B, and repo adoption; ADR-0020 is superseded by ADR-0027.
+- Expected benefit: cleaner governance and easier onboarding for reviewers and downstream adopters.
+- Affected surfaces: `docs/adr/*.md`, `docs/adr/README.md`.
+- Effort: small to medium.
+- Risk: medium; accepting or superseding an ADR is governance-significant.
+- Owner: architect / maintainer.
+- Success signal: each proposed ADR has an explicit next action: accept, keep proposed with reason/date, or supersede.
+- First draft PR candidate: no.
+- Proposed branch: `docs/adr-status-sweep`.
+- Proposed PR title: `docs(adr): review proposed decision statuses`.
+- Verification: `npm run check:adr-index`; `npm run verify:changed`.
 
 ### PRV-PROP-006 — Keep parser hardening scoped and do not expand `parseSimpleYaml`
 
@@ -139,6 +169,8 @@ Improvement proposals:
 - Burn down active blockers and clarifications before expanding feature work.
 - Add repository settings evidence or `check-rbac` automation.
 - Record or implement release provenance/SLSA posture.
+- Clarify Shape B release flow.
+- Sweep proposed ADR statuses.
 - Keep parser hardening scoped around `parseSimpleYaml`.
 - Run a first-time adopter documentation walkthrough.
 

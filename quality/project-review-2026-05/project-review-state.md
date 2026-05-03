@@ -30,6 +30,7 @@ Review the `Luis85/agentic-workflow` repository as a productized template for sp
 | Synthesize | complete | `quality/project-review-2026-05/findings.md` |
 | Propose | complete | `quality/project-review-2026-05/improvement-proposals.md` |
 | Handoff | complete | GitHub issue #293 and draft PR #294 are linked |
+| Deepen domain passes | complete | `quality/project-review-2026-05/domain-review-passes.md` |
 
 ## Hand-off notes
 
@@ -39,6 +40,7 @@ Review the `Luis85/agentic-workflow` repository as a productized template for sp
 - 2026-05-04 — GitHub evidence showed open PR #291 with failing `Verify`; other listed security and hygiene checks passed.
 - 2026-05-04 — Review tracking issue opened: https://github.com/Luis85/agentic-workflow/issues/293.
 - 2026-05-04 — Draft PR opened: https://github.com/Luis85/agentic-workflow/pull/294.
+- 2026-05-04 — Domain deepening pass added across governance/WIP, CI supply chain, release provenance, quality tooling, docs adoption, and RBAC/agent boundaries.
 
 ## Remaining risks
 
