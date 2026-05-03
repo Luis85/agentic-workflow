@@ -1,8 +1,8 @@
 ---
 feature: graphify-integration
 area: GRAPH            # short uppercase code; used in IDs (REQ-<AREA>-NNN)
-current_stage: requirements     # idea | research | requirements | design | specification | tasks | implementation | testing | review | release | learning
-status: active          # active | blocked | paused | done
+current_stage: implementation     # idea | research | requirements | design | specification | tasks | implementation | testing | review | release | learning
+status: paused          # active | blocked | paused | done
 last_updated: 2026-05-03
 last_agent: planner
 artifacts:              # canonical machine-readable map; the table below is its human view
@@ -85,6 +85,10 @@ artifacts:              # canonical machine-readable map; the table below is its
                            able batches. T-GRAPH-001 first task. /spec:implement next.
 2026-05-03 (orchestrator): Tracking issue: #263
                            https://github.com/Luis85/agentic-workflow/issues/263
+2026-05-03 (orchestrator): Paused before /spec:implement. Resume from
+                           .worktrees/graphify-integration/ via /orchestrate; first
+                           task = T-GRAPH-001 (create graph/ + .gitkeep). Batch 1
+                           parallelisable: T-001, T-002, T-003, T-006.
 ```
 
 ## Open clarifications
