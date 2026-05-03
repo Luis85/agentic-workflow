@@ -150,7 +150,7 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 │           └── NNNN-<slug>.md               # project-local sequence, e.g. ADR-CLI-0001
 ├── inputs/                                  # canonical ingestion folder for new work packages (per ADR-0017)
 │   └── README.md                            # purpose, retention rules, what does/does not belong here
-├── issues/                                  # canonical local mirror of feature issue tracking (per ADR-0030)
+├── issues/                                  # canonical local mirror of feature issue tracking (per ADR-0031)
 │   ├── README.md                            # entry point: naming rules, schema, sync and drift-check commands
 │   └── <number>-<slug>.md                   # one file per issue; number = GitHub issue number (0 = placeholder)
 ├── sites/                                   # public product page (directly openable static entrypoint)
@@ -392,12 +392,12 @@ The 11 intake folders enumerated in this sink (`inputs/`, `specs/`, `discovery/`
 
 ## Issues sub-tree
 
-`issues/` is the **canonical local mirror of feature issue tracking** — one Markdown file per issue, with structured frontmatter that maps to GitHub Issues and exposes roadmap status across the Specorator lifecycle. Adopted by [ADR-0030](adr/0030-adopt-issues-folder-for-canonical-issue-tracking.md).
+`issues/` is the **canonical local mirror of feature issue tracking** — one Markdown file per issue, with structured frontmatter that maps to GitHub Issues and exposes roadmap status across the Specorator lifecycle. Adopted by [ADR-0031](adr/0031-adopt-issues-folder-for-canonical-issue-tracking.md).
 
 - **Created at `/spec:start`.** Every feature bootstrapped with `/spec:start` gets an `issues/0-<slug>.md` file. If `gh` is available, the command pushes the issue to GitHub and backfills the real issue number and URL.
 - **Living roadmap state.** `roadmap_status` (`planned | in-progress | in-review | shipped | cancelled`) and `stage` are updated as the feature progresses. Agents advancing `workflow-state.md` should mirror changes here.
 - **Pull-synced from GitHub.** `npm run sync:issues` fetches current label, milestone, assignee, and state from GitHub Issues and updates local frontmatter. Does not create new local files from GitHub-only issues.
-- **Drift check.** `npm run check:issues` warns for specs without a linked issue and hard-fails on malformed frontmatter. Not included in `npm run verify` (offline-safe by design, per ADR-0030 §6).
+- **Drift check.** `npm run check:issues` warns for specs without a linked issue and hard-fails on malformed frontmatter. Not included in `npm run verify` (offline-safe by design, per ADR-0031 §6).
 - **Permanent record.** Issue files persist after shipping or cancellation. Set `roadmap_status: shipped` or `roadmap_status: cancelled` to archive.
 
 ## Examples sub-tree

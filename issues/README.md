@@ -76,4 +76,4 @@ Issue files are permanent. Cancelled or shipped issues remain as historical reco
 
 ## Package release
 
-`issues/` ships with only this `README.md` in the released Specorator template package. Per [ADR-0021](../docs/adr/0021-release-package-fresh-surface.md) and [ADR-0030](../docs/adr/0030-adopt-issues-folder-for-canonical-issue-tracking.md).
+`issues/` ships with only this `README.md` in the released Specorator template package. Per [ADR-0021](../docs/adr/0021-release-package-fresh-surface.md) and [ADR-0031](../docs/adr/0031-adopt-issues-folder-for-canonical-issue-tracking.md).

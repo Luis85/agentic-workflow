@@ -9,7 +9,7 @@
  *   - updated_at
  *
  * Does NOT create new local files for GitHub issues that have no local mirror.
- * Does NOT push changes to GitHub (pull-only per ADR-0030 §4).
+ * Does NOT push changes to GitHub (pull-only per ADR-0031 §4).
  *
  * Requirements:
  *   - `gh` CLI installed and authenticated with read access to the repository.
@@ -159,7 +159,7 @@ for (const filePath of issueFiles) {
   const data = parseSimpleYaml(parsed.raw);
   const issueNumber = typeof data["issue_number"] === "number" ? data["issue_number"] : null;
   fileMetas.push({ filePath, rel, parsed, data, issueNumber });
-  if (issueNumber) issueNumbers.push(issueNumber);
+  if (issueNumber !== null && issueNumber > 0) issueNumbers.push(issueNumber);
 }
 
 // Second pass: fetch exactly the issues referenced locally (no pagination limit).
@@ -172,8 +172,8 @@ try {
 }
 
 for (const { filePath, rel, parsed, data, issueNumber } of fileMetas) {
-  if (!issueNumber) {
-    results.push({ file: rel, changes: [], skipped: "issue_number is null (not yet pushed to GitHub)" });
+  if (issueNumber === null || issueNumber === 0) {
+    results.push({ file: rel, changes: [], skipped: "issue_number is null or 0 (not yet pushed to GitHub)" });
     continue;
   }
 

@@ -4,7 +4,7 @@
  * Warns when a specs/<slug>/ directory has no linked issues/<n>-<slug>.md file.
  * Hard-fails (exit 1) on issue files with malformed or missing required frontmatter.
  *
- * This check is intentionally NOT included in `npm run verify` (see ADR-0030 §6).
+ * This check is intentionally NOT included in `npm run verify` (see ADR-0031 §6).
  * Run it explicitly: `npm run check:issues`
  *
  * Flags:

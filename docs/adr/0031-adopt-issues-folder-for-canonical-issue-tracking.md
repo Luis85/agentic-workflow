@@ -1,5 +1,5 @@
 ---
-id: ADR-0030
+id: ADR-0031
 title: Adopt issues/ folder as the canonical local mirror of feature issue tracking
 status: accepted
 date: 2026-05-03
@@ -12,7 +12,7 @@ superseded-by: []
 tags: [workflow, issues, github, tracking]
 ---
 
-# ADR-0030 — Adopt issues/ folder as the canonical local mirror of feature issue tracking
+# ADR-0031 — Adopt issues/ folder as the canonical local mirror of feature issue tracking
 
 ## Status
 
