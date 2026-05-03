@@ -59,3 +59,16 @@ test("replaceGeneratedBlock replaces only named generated content", () => {
 test("toPosix normalizes Windows separators", () => {
   assert.equal(toPosix("docs\\adr\\README.md"), "docs/adr/README.md");
 });
+
+test("parseSimpleYaml unescapes double-quoted strings with embedded quotes and backslashes", () => {
+  assert.deepEqual(
+    parseSimpleYaml(`
+labels: ["plain", "has \\"quote\\"", "has \\\\ slash"]
+title: "say \\"hello\\""
+`),
+    {
+      labels: ["plain", 'has "quote"', "has \\ slash"],
+      title: 'say "hello"',
+    },
+  );
+});

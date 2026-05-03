@@ -128,6 +128,9 @@ if (fs.existsSync(issuesRoot)) {
     if (issueNum !== null && issueNum !== undefined && typeof issueNum !== "number") {
       errors.push(`${rel}: issue_number must be an integer or null, got ${JSON.stringify(issueNum)}`);
     }
+    if (typeof issueNum === "number" && issueNum <= 0) {
+      errors.push(`${rel}: issue_number must be a positive integer or null, got ${issueNum}`);
+    }
     const labels = data["labels"];
     if (labels !== null && labels !== undefined && !Array.isArray(labels)) {
       errors.push(`${rel}: labels must be an array or null, got ${JSON.stringify(labels)}`);
@@ -143,6 +146,15 @@ if (fs.existsSync(issuesRoot)) {
     const githubUrl = data["github_url"];
     if (githubUrl !== null && githubUrl !== undefined && typeof githubUrl !== "string") {
       errors.push(`${rel}: github_url must be a string or null, got ${JSON.stringify(githubUrl)}`);
+    }
+
+    // ISO date validation for timestamp fields
+    const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+    for (const key of ["created_at", "updated_at"]) {
+      const v = data[key];
+      if (typeof v === "string" && !ISO_DATE_RE.test(v)) {
+        errors.push(`${rel}: ${key} must be in YYYY-MM-DD format, got "${v}"`);
+      }
     }
 
     // Enum validation
@@ -182,6 +194,21 @@ if (fs.existsSync(issuesRoot)) {
         issuesBySrcSlug.set(fileSlug, rel);
       }
       issuesBySrcSlug.set(slug, rel);
+    }
+
+    // Cross-validate: issue_number must match the numeric prefix of the filename (<number>-<slug>.md).
+    if (typeof issueNum === "number" && issueNum !== null) {
+      const basename = path.basename(filePath, ".md");
+      const dashIndex = basename.indexOf("-");
+      if (dashIndex > 0) {
+        const prefixStr = basename.slice(0, dashIndex);
+        if (/^\d+$/.test(prefixStr)) {
+          const fileNum = parseInt(prefixStr, 10);
+          if (issueNum !== fileNum) {
+            errors.push(`${rel}: issue_number ${issueNum} does not match filename prefix ${fileNum}`);
+          }
+        }
+      }
     }
   }
 }

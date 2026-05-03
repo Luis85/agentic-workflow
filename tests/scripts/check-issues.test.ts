@@ -177,3 +177,125 @@ test("check:issues rejects feature_slug that does not match filename slug", () =
     fs.rmSync(specDir, { recursive: true, force: true });
   }
 });
+
+test("check:issues rejects issue_number: 0", () => {
+  fs.writeFileSync(
+    tempIssue,
+    [
+      "---",
+      "issue_number: 0",
+      'title: "Zero Issue Number Test"',
+      "feature_slug: blank-required-test",
+      "type: feature",
+      "roadmap_status: planned",
+      "stage: idea",
+      "github_url: null",
+      "labels: []",
+      "milestone: null",
+      "assignees: []",
+      "created_at: 2026-05-03",
+      "updated_at: 2026-05-03",
+      "---",
+      "",
+      "# Zero Issue Number Test",
+      "",
+    ].join("\n"),
+    "utf8",
+  );
+
+  try {
+    const result = spawnSync(process.execPath, ["--import", "tsx", "scripts/check-issues.ts", "--json"], {
+      cwd: repoRoot,
+      encoding: "utf8",
+      windowsHide: true,
+    });
+
+    assert.notEqual(result.status, 0);
+    const output = JSON.parse(result.stdout) as { errors: string[] };
+    assert.ok(output.errors.some((e) => e.includes("issue_number must be a positive integer or null, got 0")));
+  } finally {
+    fs.rmSync(tempIssue, { force: true });
+  }
+});
+
+test("check:issues rejects non-ISO date in created_at and updated_at", () => {
+  fs.writeFileSync(
+    tempIssue,
+    [
+      "---",
+      "issue_number: null",
+      'title: "ISO Date Test"',
+      "feature_slug: blank-required-test",
+      "type: feature",
+      "roadmap_status: planned",
+      "stage: idea",
+      "github_url: null",
+      "labels: []",
+      "milestone: null",
+      "assignees: []",
+      "created_at: 05/03/2026",
+      "updated_at: someday",
+      "---",
+      "",
+      "# ISO Date Test",
+      "",
+    ].join("\n"),
+    "utf8",
+  );
+
+  try {
+    const result = spawnSync(process.execPath, ["--import", "tsx", "scripts/check-issues.ts", "--json"], {
+      cwd: repoRoot,
+      encoding: "utf8",
+      windowsHide: true,
+    });
+
+    assert.notEqual(result.status, 0);
+    const output = JSON.parse(result.stdout) as { errors: string[] };
+    assert.ok(output.errors.some((e) => e.includes('created_at must be in YYYY-MM-DD format, got "05/03/2026"')));
+    assert.ok(output.errors.some((e) => e.includes('updated_at must be in YYYY-MM-DD format, got "someday"')));
+  } finally {
+    fs.rmSync(tempIssue, { force: true });
+  }
+});
+
+test("check:issues rejects issue_number that does not match filename prefix", () => {
+  const mismatchFile = path.join(repoRoot, "issues", "42-num-prefix-test.md");
+  fs.writeFileSync(
+    mismatchFile,
+    [
+      "---",
+      "issue_number: 99",
+      'title: "Prefix Mismatch Test"',
+      "feature_slug: num-prefix-test",
+      "type: feature",
+      "roadmap_status: planned",
+      "stage: idea",
+      "github_url: null",
+      "labels: []",
+      "milestone: null",
+      "assignees: []",
+      "created_at: 2026-05-03",
+      "updated_at: 2026-05-03",
+      "---",
+      "",
+      "# Prefix Mismatch Test",
+      "",
+    ].join("\n"),
+    "utf8",
+  );
+
+  try {
+    const result = spawnSync(process.execPath, ["--import", "tsx", "scripts/check-issues.ts", "--json"], {
+      cwd: repoRoot,
+      encoding: "utf8",
+      windowsHide: true,
+    });
+
+    assert.notEqual(result.status, 0);
+    const output = JSON.parse(result.stdout) as { errors: string[] };
+    assert.ok(output.errors.some((e) => e.includes("issue_number 99 does not match filename prefix 42")));
+  } finally {
+    fs.rmSync(mismatchFile, { force: true });
+  }
+});

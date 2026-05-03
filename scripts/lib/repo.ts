@@ -222,7 +222,13 @@ function parseYamlScalar(value: string): unknown {
     if (!inner) return [];
     return splitYamlFlowArray(inner).map((item) => parseYamlScalar(item.trim()));
   }
-  return value.replace(/^["']|["']$/g, "");
+  if (value.startsWith('"') && value.endsWith('"') && value.length >= 2) {
+    return value.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, "\\");
+  }
+  if (value.startsWith("'") && value.endsWith("'") && value.length >= 2) {
+    return value.slice(1, -1);
+  }
+  return value;
 }
 
 function splitYamlFlowArray(inner: string): string[] {
