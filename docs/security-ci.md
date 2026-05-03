@@ -49,11 +49,13 @@ When iterating on workflow YAML or hunting a leaked secret without waiting for C
 
 ```bash
 # actionlint
-bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+ACTIONLINT_INSTALLER_SHA=914e7df21a07ef503a81201c76d2b11c789d3fca
+ACTIONLINT_VERSION=1.7.12
+bash <(curl -fsSL "https://raw.githubusercontent.com/rhysd/actionlint/${ACTIONLINT_INSTALLER_SHA}/scripts/download-actionlint.bash") "${ACTIONLINT_VERSION}"
 ./actionlint -color
 
 # zizmor (requires uv: https://github.com/astral-sh/uv)
-uvx zizmor .
+uvx zizmor==1.24.1 .
 
 # gitleaks (requires the gitleaks binary: https://github.com/gitleaks/gitleaks)
 gitleaks detect --source . --redact
@@ -90,6 +92,12 @@ Pinning to SHA is a hard requirement enforced by zizmor's `unpinned-uses` rule. 
 3. Verify the workflow still parses (`actionlint`) and is happy with zizmor.
 
 SHA bumps are automated by Dependabot — see [`ci-automation.md`](ci-automation.md#dependabot-policy).
+
+Pinned tool installers follow the same review habit even when they are not
+GitHub Actions `uses:` references. `actionlint.yml` pins both the upstream
+installer script commit and the downloaded actionlint release version.
+`zizmor.yml` pins the PyPI package version used by `uvx`; bump it in the
+workflow and the local-equivalent command above in the same PR.
 
 ## Adopting in a downstream project
 
