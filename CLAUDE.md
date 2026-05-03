@@ -7,6 +7,7 @@ Entry point for Claude Code in this repository.
 @AGENTS.md
 @memory/constitution.md
 @.claude/memory/MEMORY.md
+@docs/specorator-product/README.md
 
 ## What this repo is
 
@@ -21,17 +22,9 @@ The **lifecycle workflow** (Stages 1–11) has two equivalent entry points:
 
 State lives in `specs/<feature-slug>/workflow-state.md`. Each `/spec:*` command spawns its specialist subagent from `.claude/agents/` — don't bypass; agent scoping is intentional. Slash commands update `workflow-state.md` on stage completion — don't edit by hand mid-workflow.
 
-### Other tracks (opt-in)
+### Other tracks
 
-| Track | When to use | Conductor skill | Manual entry | Reference |
-|---|---|---|---|---|
-| **Discovery** | blank-page ideation, no brief | [`discovery-sprint`](.claude/skills/discovery-sprint/SKILL.md) | `/discovery:start` | [`docs/discovery-track.md`](docs/discovery-track.md) ([ADR-0005](docs/adr/0005-add-discovery-track-before-stage-1.md)) |
-| **Stock-taking** | brownfield, inventory existing system | [`stock-taking`](.claude/skills/stock-taking/SKILL.md) | `/stock:start` | [`docs/stock-taking-track.md`](docs/stock-taking-track.md) ([ADR-0007](docs/adr/0007-add-stock-taking-track-for-legacy-projects.md)) |
-| **Sales** | service provider, pre-contract (RFP / SOW) | [`sales-cycle`](.claude/skills/sales-cycle/SKILL.md) | `/sales:start` | [`docs/sales-cycle.md`](docs/sales-cycle.md) ([ADR-0006](docs/adr/0006-add-sales-cycle-track-before-discovery.md)) |
-| **Project Manager** | client engagement governance (P3.Express) | [`project-run`](.claude/skills/project-run/SKILL.md) | `/project:start` | [`docs/project-track.md`](docs/project-track.md) ([ADR-0008](docs/adr/0008-add-project-manager-track.md)) |
-| **Portfolio** | multi-feature / multi-program (P5 Express) | [`portfolio-track`](.claude/skills/portfolio-track/SKILL.md) | `/portfolio:start` | [`docs/portfolio-track.md`](docs/portfolio-track.md) ([ADR-0009](docs/adr/0009-add-portfolio-manager-role.md)) |
-
-Each track produces a handoff artifact that feeds the next: `chosen-brief.md`, `stock-taking-inventory.md`, `order.md`. See the per-track methodology doc for details.
+The v1.0 track taxonomy is frozen in [ADR-0026](docs/adr/0026-freeze-v1-workflow-track-taxonomy.md). Besides the core lifecycle, opt-in / companion tracks are: Discovery (`/discovery:start`), Stock-taking (`/stock-taking:start`), Sales (`/sales:start`), Project Manager (`/project:start`), Roadmap (`/roadmap:start`), Portfolio (`/portfolio:start`), Quality Assurance (`/quality:start`), Project Scaffolding (`/scaffold:start`), Design (`/design:start`), Issue-breakdown (`/issue:breakdown`), and Specorator Improvement (`/specorator:update`). See `docs/*-track.md`, `docs/specorator.md`, and `.claude/skills/README.md` for methodology and conductor details.
 
 ## Conventions specific to Claude Code
 

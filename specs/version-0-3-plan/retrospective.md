@@ -66,11 +66,11 @@ updated: 2026-05-01
 
 | Action | Type | Owner | Due |
 |---|---|---|---|
-| Add a `test` alias in `package.json` that delegates to `test:scripts`, so the standard `npm test` idiom works in addition to the custom script. Update `release-notes-template.md` Verification steps to mention `npm test`. | tooling | dev | 2026-06-01 (v0.4 cycle) |
-| Add a §Notes-on-meta-features paragraph to `templates/workflow-state-template.md` and `docs/specorator.md` clarifying that plan-level features may legitimately skip Stage 7-9 artifacts when each sub-task ships as its own PR. Required content: a §Skips rationale plus per-PR trace evidence. | template | analyst | 2026-06-01 (v0.4 cycle) |
-| Promote the v0.3 hard-fail validators (skipped-stage docs, examples coverage, TEST → REQ/NFR coverage) into required CI gates. Source list: `release-notes.md` §Validation baseline for v0.4. | tooling | release-manager | v0.4 cycle |
-| Add the deferred CLAR-V03-002 advisory check ("every `REQ-*`/`NFR-*` has at least one covering `TEST-*`") to v0.4 scope. Decide on test-plan format lock first; until then, the check would block legitimate PRs. | adr / validator | analyst | v0.4 cycle |
-| Update `tasks.md` template guidance: a task that touches more than one independent code path or artifact should be labelled "may slice" so PR planners expect it to land as several PRs. Avoids retrospective surprise. | template | planner | 2026-06-01 |
+| Add a `test` alias in `package.json` that delegates to `test:scripts`, so the standard `npm test` idiom works in addition to the custom script. Update `release-notes-template.md` Verification steps to mention `npm test`. | tooling | dev | 2026-06-01 (v0.4 cycle); [#211](https://github.com/Luis85/agentic-workflow/issues/211) |
+| Add a §Notes-on-meta-features paragraph to `templates/workflow-state-template.md` and `docs/specorator.md` clarifying that plan-level features may legitimately skip Stage 7-9 artifacts when each sub-task ships as its own PR. Required content: a §Skips rationale plus per-PR trace evidence. | template | analyst | 2026-06-01 (v0.4 cycle); [#212](https://github.com/Luis85/agentic-workflow/issues/212) |
+| Promote the v0.3 hard-fail validators (skipped-stage docs, examples coverage, TEST → REQ/NFR coverage) into required CI gates. Source list: `release-notes.md` §Validation baseline for v0.4. | tooling | release-manager | v0.4 cycle; [#89](https://github.com/Luis85/agentic-workflow/issues/89) |
+| Add the deferred CLAR-V03-002 advisory check ("every `REQ-*`/`NFR-*` has at least one covering `TEST-*`") to v0.4 scope. Decide on test-plan format lock first; until then, the check would block legitimate PRs. | adr / validator | analyst | v0.4 cycle; [#89](https://github.com/Luis85/agentic-workflow/issues/89) |
+| Update `tasks.md` template guidance: a task that touches more than one independent code path or artifact should be labelled "may slice" so PR planners expect it to land as several PRs. Avoids retrospective surprise. | template | planner | 2026-06-01; [#217](https://github.com/Luis85/agentic-workflow/issues/217) |
 
 ## Lessons (one-liners worth remembering)
 

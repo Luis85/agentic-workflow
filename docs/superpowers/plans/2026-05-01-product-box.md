@@ -35,7 +35,7 @@ sites/box/styles.css                               box-page styles (lifts brand 
 sites/box/og-card.svg                              static social-share image
 sites/box/README.md                                folder entry doc
 docs/product-box.md                                methodology doc
-docs/adr/0019-add-product-box-feature.md           ADR
+docs/adr/0023-add-product-box-feature.md           ADR
 
 scripts/lib/product-box/types.ts                   TypeScript types for box.yml
 scripts/lib/product-box/validate.ts                schema validator
@@ -121,15 +121,15 @@ Expected: both paths exist. No copy or restore needed — these are tracked on `
 
 If either file is missing, the design PR has not yet merged; abort and wait for it to land before continuing.
 
-### Task 1.2: File ADR-0019
+### Task 1.2: File ADR-0023
 
 **Files:**
-- Create: `docs/adr/0019-add-product-box-feature.md`
+- Create: `docs/adr/0023-add-product-box-feature.md`
 
 - [ ] **Step 1: Run the new-adr skill or copy the template**
 
 ```bash
-cp templates/adr-template.md docs/adr/0019-add-product-box-feature.md
+cp templates/adr-template.md docs/adr/0023-add-product-box-feature.md
 ```
 
 - [ ] **Step 2: Fill ADR content**
@@ -138,7 +138,7 @@ Replace the template body with:
 
 ```markdown
 ---
-id: ADR-0019
+id: ADR-0023
 title: Add product-box feature for early-stage envisioned-product visualization
 status: accepted
 date: 2026-05-01
@@ -153,7 +153,7 @@ superseded-by: []
 tags: [product-page, visualization, agent, skill]
 ---
 
-# ADR-0019 — Add product-box feature for early-stage envisioned-product visualization
+# ADR-0023 — Add product-box feature for early-stage envisioned-product visualization
 
 ## Status
 
@@ -242,7 +242,7 @@ Cons: no agent judgment for tone or brand voice; hard to extend; contradicts exi
 npm run fix:adr-index
 ```
 
-Expected: `docs/adr/README.md` regenerated with ADR-0019 entry.
+Expected: `docs/adr/README.md` regenerated with ADR-0023 entry.
 
 - [ ] **Step 4: Verify ADR check passes**
 
@@ -255,8 +255,8 @@ Expected: exit 0, no output errors.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add docs/adr/0019-add-product-box-feature.md docs/adr/README.md
-git commit -m "docs(adr): file ADR-0019 for product-box feature"
+git add docs/adr/0023-add-product-box-feature.md docs/adr/README.md
+git commit -m "docs(adr): file ADR-0023 for product-box feature"
 ```
 
 ### Task 1.3: Write methodology doc
@@ -323,7 +323,7 @@ The box agent owns this slot. The product-page agent must not strip or rewrite c
 
 ## See also
 
-- ADR-0019 — `docs/adr/0019-add-product-box-feature.md`
+- ADR-0023 — `docs/adr/0023-add-product-box-feature.md`
 - Spec — `docs/superpowers/specs/2026-05-01-product-box-design.md`
 - Plan — `docs/superpowers/plans/2026-05-01-product-box.md`
 - Skill — `.claude/skills/product-box/SKILL.md`
@@ -1497,7 +1497,7 @@ You do **not** resolve sources, prompt the user, or write `box.yml`. Those are t
 - `.claude/skills/product-box/SKILL.md` (contract).
 - `.claude/skills/specorator-design/SKILL.md` (brand tokens).
 - `docs/superpowers/specs/2026-05-01-product-box-design.md` (spec).
-- `docs/adr/0019-add-product-box-feature.md` (decision).
+- `docs/adr/0023-add-product-box-feature.md` (decision).
 
 ## Brand dependency
 
@@ -1636,7 +1636,7 @@ The `orchestrate` skill calls `/product:box` after `/spec:idea`, `/discovery:han
 - Don't strip or rewrite `sites/index.html` content outside the slot markers.
 - Don't invent tokens, customer logos, integrations, metrics, or roadmap commitments.
 - Don't bypass the schema. Box is concept-tier but still bounded.
-- Don't carry feature-level scope. One box per repo, project-level only (per ADR-0019).
+- Don't carry feature-level scope. One box per repo, project-level only (per ADR-0023).
 ```
 
 - [ ] **Step 2: Write `README.md`**
@@ -1654,7 +1654,7 @@ entry_point: false
 See `SKILL.md` (this folder) for the contract and procedure. Pairs with `.claude/agents/product-box-designer.md` (rendering) and `scripts/lib/product-box/` (libs).
 
 Spec: `docs/superpowers/specs/2026-05-01-product-box-design.md`.
-ADR: `docs/adr/0019-add-product-box-feature.md`.
+ADR: `docs/adr/0023-add-product-box-feature.md`.
 Methodology: `docs/product-box.md`.
 ```
 
@@ -2104,7 +2104,7 @@ Standalone, deployable visualization of the envisioned product. Owned by the `pr
 
 Do not edit the HTML, CSS, or SVG by hand — they are regenerated from `box.yml` by the agent. Edit `box.yml`, then run `/product:box`.
 
-See `docs/product-box.md` for the methodology, `docs/adr/0019-add-product-box-feature.md` for the decision, and `docs/superpowers/specs/2026-05-01-product-box-design.md` for the spec.
+See `docs/product-box.md` for the methodology, `docs/adr/0023-add-product-box-feature.md` for the decision, and `docs/superpowers/specs/2026-05-01-product-box-design.md` for the spec.
 ```
 
 - [ ] **Step 3: Compute skill hash and patch box.yml**
@@ -2253,7 +2253,7 @@ Under `## Workflow rules` (or a new `## Public surface` section if it makes more
 In the existing skills/track table, add:
 
 ```markdown
-| **Product box** | new project, brief written, envisioned product visualization | `.claude/skills/product-box/SKILL.md` | `/product:box` | `docs/product-box.md` (ADR-0019) |
+| **Product box** | new project, brief written, envisioned product visualization | `.claude/skills/product-box/SKILL.md` | `/product:box` | `docs/product-box.md` (ADR-0023) |
 ```
 
 - [ ] **Step 4: docs/sink.md — register destinations**

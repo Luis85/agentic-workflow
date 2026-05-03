@@ -29,6 +29,9 @@ One command per workflow phase. Subdirectories namespace commands (`spec/specify
 # glossary:
 /glossary:new
 
+# Issue Breakdown Track:
+/issue:breakdown
+
 # Portfolio Track:
 /portfolio:start  /portfolio:x      /portfolio:y
 /portfolio:z

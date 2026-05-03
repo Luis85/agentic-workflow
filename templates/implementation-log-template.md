@@ -18,6 +18,8 @@ A running record of *what* was implemented, *why* a deviation was taken, and *wh
 
 ## Entry template
 
+Avoid starting nested task subsections with a bare `### T-<AREA>-NNN` heading at column 0. Traceability validators treat that pattern as a task definition and may report duplicate-definition or area-validation failures. Use the dated entry heading below, or use a non-definition form such as `#### Task: T-<AREA>-NNN` inside an entry.
+
 ```
 ### YYYY-MM-DD — T-<AREA>-NNN — <short title>
 - **Files changed:** path1:lines, path2:lines

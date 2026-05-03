@@ -3,8 +3,8 @@ feature: project-consistency-hardening
 area: CONS
 current_stage: requirements
 status: active
-last_updated: 2026-05-01
-last_agent: pm
+last_updated: 2026-05-02
+last_agent: codex
 artifacts:
   idea.md: skipped
   research.md: complete
@@ -52,9 +52,17 @@ artifacts:
 ```text
 2026-05-01 (pm): Baseline review executed with `npm run verify` and `npm run self-check`.
                  Requirements draft tracks consistency hardening follow-ups.
+2026-05-02 (Decider): CLAR-CONS-001 and CLAR-CONS-002 resolved in the cross-plan
+                       clarification slate. Historical completed workflows without
+                       captured test evidence are template-era exceptions, not targets
+                       for invented backfill. Going forward, completed workflows need
+                       explicit test-report evidence or an approved exception marker.
+                       Active release-blocking clarification debt takes priority over
+                       new release feature work; after this slate, resume v0.6
+                       unblockers, then v0.7.1/Zod, then v0.8/v0.9 implementation.
 ```
 
 ## Open clarifications
 
-- [ ] CLAR-CONS-001 — Confirm whether completed historical workflows should be backfilled with explicit test-report evidence or intentionally marked as template-era exceptions.
-- [ ] CLAR-CONS-002 — Confirm priority ordering across clarification debt (v0.5, v0.6, v0.8, v0.9) versus new release feature work.
+- [x] CLAR-CONS-001 — Historical completed workflows without captured test evidence are intentionally marked as template-era exceptions; do not invent backfilled evidence. New completed workflows require machine-checkable test-report evidence or an approved exception marker.
+- [x] CLAR-CONS-002 — Active release-blocking clarification debt takes priority over new release feature work. After this slate, sequence work as v0.6 unblockers, then v0.7.1/Zod, then v0.8/v0.9 implementation.

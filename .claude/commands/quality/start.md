@@ -2,7 +2,7 @@
 description: Start an ISO 9001-aligned quality assurance review for a project, portfolio, or active feature.
 argument-hint: "<quality-review-slug> [scope]"
 allowed-tools: [Read, Edit, Write, Bash, Grep]
-model: sonnet
+model: haiku
 ---
 
 # /quality:start

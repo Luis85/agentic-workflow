@@ -72,6 +72,12 @@ export const checkTasks = [
     script: "scripts/check-product-page.ts",
   },
   {
+    name: "check:public-surfaces",
+    label: "Public surface drift",
+    script: "scripts/check-public-surfaces.ts",
+    jsonDiagnostics: true,
+  },
+  {
     name: "check:sites-tokens-mirror",
     label: "Sites tokens mirror",
     script: "scripts/check-sites-tokens-mirror.ts",
@@ -139,6 +145,7 @@ export const contentCheckTasks = checkTasks.filter((task) =>
     "check:script-docs",
     "check:workflow-docs",
     "check:product-page",
+    "check:public-surfaces",
     "check:frontmatter",
     "check:obsidian",
     "check:obsidian-assets",

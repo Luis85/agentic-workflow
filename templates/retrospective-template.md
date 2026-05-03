@@ -47,13 +47,14 @@ updated: YYYY-MM-DD
 ## Actions
 
 > Each action has an owner and a follow-up.
+> Carry-forward actions must link to a GitHub issue, PR, or roadmap item before the retro is complete.
 
-| Action | Type | Owner | Due |
-|---|---|---|---|
-| Update `templates/<x>` to add … | template | … | … |
-| Tighten `qa.md` agent scope to … | agent | … | … |
-| Add ADR-NNNN for … | adr | … | … |
-| Amend constitution Article … | constitution | … | … |
+| Action | Type | Owner | Due | Tracker |
+|---|---|---|---|---|
+| Update `templates/<x>` to add … | template | … | … | [#NNN](https://github.com/<owner>/<repo>/issues/NNN) |
+| Tighten `qa.md` agent scope to … | agent | … | … | [#NNN](https://github.com/<owner>/<repo>/issues/NNN) |
+| Add ADR-NNNN for … | adr | … | … | [#NNN](https://github.com/<owner>/<repo>/issues/NNN) |
+| Amend constitution Article … | constitution | … | … | [#NNN](https://github.com/<owner>/<repo>/issues/NNN) |
 
 ## Lessons (one-liners worth remembering)
 

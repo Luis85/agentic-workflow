@@ -4,7 +4,7 @@
 
 ## Context: where we are
 
-The full plan is at `docs/superpowers/plans/2026-05-01-token-budget-cleanup.md`. Eleven chunks were defined. State as of 2026-05-01:
+The full plan is at `docs/superpowers/plans/2026-05-01-token-budget-cleanup.md`. Eleven chunks were defined. State as of 2026-05-02:
 
 | Chunk | Title | PR | Status |
 |---|---|---|---|
@@ -14,7 +14,7 @@ The full plan is at `docs/superpowers/plans/2026-05-01-token-budget-cleanup.md`.
 | 2 | Skill catalog descriptions compressed | [#119](https://github.com/Luis85/agentic-workflow/pull/119) | ❌ CLOSED (not merged) |
 | 5 | Glob/Grep worktree-exclusion docs | [#120](https://github.com/Luis85/agentic-workflow/pull/120) | ✅ MERGED |
 | 8 | Operational bot prompts compressed | — | ⚠️ DROPPED — `caveman:compress` was a no-op (0% reduction) on these already-concise files |
-| 10 | Repeatable `token-budget-review` skill + `/token-review` command | [#123](https://github.com/Luis85/agentic-workflow/pull/123) | 🟡 OPEN |
+| 10 | Repeatable `token-budget-review` skill + `/token-review` command | [#123](https://github.com/Luis85/agentic-workflow/pull/123) | ✅ MERGED |
 | 3 | Skill body factoring (`_shared/conductor-pattern.md`) | — | ⏳ TODO |
 | 4 | Examples sub-tree trim (`cli-todo/` 50 KB → ≤ 5 KB; full version moved) | — | ⏳ TODO |
 | 6 | Docs heavyweights (`README.md` split, ADR `## Summary` blocks) | — | ⏳ TODO |
@@ -32,9 +32,13 @@ The full plan is at `docs/superpowers/plans/2026-05-01-token-budget-cleanup.md`.
 ## Worktree state
 
 - **Worktree:** `D:\Projects\agentic-workflow\.worktrees\token-budget\`
-- **Current branch in that worktree:** `chore/add-token-review-skill` (== open PR #123)
+- **Last completed branch in that worktree:** `chore/add-token-review-skill` (merged via PR #123)
 - **Still under `.worktrees/token-budget` but uncommitted:** none — clean now.
 - The umbrella branch `chore/token-budget-cleanup` and per-chunk branches (`chore/token-compress-pass`, `chore/dedupe-always-loaded`, `chore/worktree-pollution`, `chore/skill-descriptions`, `chore/ops-bots-compress`) all merged or were rejected; safe to delete locally.
+
+## Decision recorded 2026-05-02
+
+Resume the token-budget cleanup before the v1.0 freeze. Keep Chunks 3, 4, 6, and 7 as independent fresh-from-`origin/main` PRs. Keep Chunk 9 as the final gate PR after the human confirms the budget caps. Do not retry Chunk 2 or revive Chunk 8 unless the human explicitly reopens them.
 
 ## Caveats discovered (worth carrying forward)
 
@@ -70,9 +74,8 @@ Continue the token-budget cleanup. Read these first:
 
 State summary (skip if you've already loaded the continuation doc):
 
-  - Merged: PR #116 (umbrella plan), #117 (Chunk 0 compress), #118 (Chunk 1 dedupe), #120 (Chunk 5 worktree docs).
+  - Merged: PR #116 (umbrella plan), #117 (Chunk 0 compress), #118 (Chunk 1 dedupe), #120 (Chunk 5 worktree docs), #123 (Chunk 10 token-budget-review skill).
   - Closed unmerged: PR #119 (Chunk 2 skill descriptions) — do NOT retry without explicit approval.
-  - Open: PR #123 (Chunk 10 token-budget-review skill) — wait for merge before relying on it.
   - Dropped: Chunk 8 (caveman:compress is a no-op on the ops bot prompts).
   - Remaining: Chunks 3, 4, 6, 7, 9.
 
@@ -102,7 +105,7 @@ your chunk's structural change on top.
 ## Quick references for the new session
 
 - **Plan doc:** `docs/superpowers/plans/2026-05-01-token-budget-cleanup.md`
-- **Skill (now merging):** `.claude/skills/token-budget-review/`
+- **Skill:** `.claude/skills/token-budget-review/`
 - **Slash command:** `/token-review` (defined in `.claude/commands/token-review.md`)
-- **Audit re-run command (when skill is merged):** `/token-review` — produces a fresh measurement set + plan in `docs/superpowers/plans/<date>-token-budget-cleanup.md`.
+- **Audit re-run command:** `/token-review` — produces a fresh measurement set + plan in `docs/superpowers/plans/<date>-token-budget-cleanup.md`.
 - **Settings to check before any push:** `.claude/settings.json` (branch + verify denies).

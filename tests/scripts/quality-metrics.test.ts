@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import {
@@ -18,6 +19,21 @@ import {
   stageTraceabilityCoverage,
   traceabilityExpectation,
 } from "../../scripts/lib/quality-metrics.js";
+
+test("quality metrics CLI honors npm_config_feature from npm bare --feature form", () => {
+  const output = execFileSync(process.execPath, ["--import", "tsx", "scripts/quality-metrics.ts", "--json"], {
+    cwd: process.cwd(),
+    encoding: "utf8",
+    env: {
+      ...process.env,
+      npm_config_feature: "quality-assurance-workflow",
+    },
+  });
+  const metrics = JSON.parse(output);
+
+  assert.equal(metrics.scope, "feature:quality-assurance-workflow");
+  assert.equal(metrics.summary.workflowCount, 1);
+});
 
 test("collectQualityMetrics reports repository workflow KPIs", () => {
   const metrics = collectQualityMetrics({ feature: "quality-assurance-workflow" });
@@ -42,12 +58,16 @@ test("renderQualityMetrics includes the headline KPIs and attention signals", ()
 test("collectQualityMetrics scores active workflows by current stage", () => {
   const metrics = collectQualityMetrics({ feature: "version-0-5-plan" });
   const workflow = metrics.workflows[0];
-  assert.equal(workflow.status, "active");
-  assert.equal(workflow.currentStage, "implementation");
-  assert.equal(workflow.testCoverageExpected, false);
-  assert.equal(workflow.testCoverage, 0);
-  assert.equal(workflow.requirementCoverage, 100);
-  assert.equal(workflow.stageScore > workflow.artifactCompletion, true);
+  assert.equal(workflow.status, "done");
+  // v0.5 is at Stage 11 (learning) with retrospective.md complete; status is
+  // done after closeout. Expectations track the live `current_stage` so this
+  // test must be updated when the feature advances.
+  assert.equal(workflow.currentStage, "learning");
+  assert.equal(workflow.testCoverageExpected, true);
+  assert.equal(workflow.testCoverage > 0, true);
+  assert.equal(workflow.earsCoverage, 100);
+  assert.equal(workflow.artifactCompletion, 100);
+  assert.equal(workflow.stageScore >= 95, true);
 });
 
 test("collectQualityMetrics treats done workflows as fully expected", () => {
@@ -79,14 +99,71 @@ test("collectQualityMetrics counts skipped canonical artifacts as expected-compl
 });
 
 test("collectQualityMetrics surfaces open clarifications in workflow counts and signals", () => {
-  const metrics = collectQualityMetrics({ feature: "project-consistency-hardening" });
-  const workflow = metrics.workflows[0];
-  // Two unresolved CLAR-CONS-* checklist items in workflow-state.md §Open clarifications.
-  assert.equal(workflow.openClarifications >= 2, true);
-  assert.equal(
-    metrics.signals.openClarifications.some((signal) => signal.includes("project-consistency-hardening")),
-    true,
-  );
+  const fixtureDir = fs.mkdtempSync(path.join("specs", "__quality-metrics-open-clarification-fixture-"));
+  const feature = path.basename(fixtureDir);
+
+  try {
+    fs.writeFileSync(
+      path.join(fixtureDir, "workflow-state.md"),
+      `---
+feature: ${feature}
+area: QMO
+current_stage: idea
+status: active
+last_updated: 2026-05-02
+last_agent: test
+artifacts:
+  idea.md: pending
+  research.md: pending
+  requirements.md: pending
+  design.md: pending
+  spec.md: pending
+  tasks.md: pending
+  implementation-log.md: pending
+  test-plan.md: pending
+  test-report.md: pending
+  review.md: pending
+  traceability.md: pending
+  release-notes.md: pending
+  retrospective.md: pending
+---
+
+# Workflow state - quality metrics open clarification fixture
+
+## Stage progress
+
+| Stage | Artifact | Status |
+|---|---|---|
+| 1. Idea | \`idea.md\` | pending |
+
+## Skips
+
+- None.
+
+## Blocks
+
+- None.
+
+## Hand-off notes
+
+- Test fixture.
+
+## Open clarifications
+
+- [ ] CLAR-QMO-001 - Fixture open question.
+`,
+    );
+
+    const metrics = collectQualityMetrics({ feature });
+    const workflow = metrics.workflows[0];
+    assert.equal(workflow.openClarifications, 1);
+    assert.equal(
+      metrics.signals.openClarifications.some((signal) => signal.includes(feature)),
+      true,
+    );
+  } finally {
+    fs.rmSync(fixtureDir, { recursive: true, force: true });
+  }
 });
 
 test("collectQualityMetrics ignores resolved clarification checklist items", () => {

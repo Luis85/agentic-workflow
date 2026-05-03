@@ -22,23 +22,32 @@ Records of architecturally significant decisions. Format follows Michael Nygard'
 | [0007](0007-add-stock-taking-track-for-legacy-projects.md) | Add a Stock-taking Track for projects that build on existing systems | Accepted |
 | [0008](0008-add-project-manager-track.md) | Add an opt-in Project Manager Track based on P3.Express | Accepted |
 | [0009](0009-add-portfolio-manager-role.md) | Add opt-in Portfolio Manager role and P5 Express portfolio track | Accepted |
-| [0010](0010-shard-glossary-into-one-file-per-term.md) | Shard the glossary into one file per term under docs/glossary/ | Proposed |
-| [0011](0011-add-project-scaffolding-track.md) | Add a Project Scaffolding Track for source-led template adoption | Proposed |
-| [0012](0012-add-roadmap-management-track.md) | Add a Roadmap Management Track for product and project planning | Proposed |
+| [0010](0010-shard-glossary-into-one-file-per-term.md) | Shard the glossary into one file per term under docs/glossary/ | Accepted |
+| [0011](0011-add-project-scaffolding-track.md) | Add a Project Scaffolding Track for source-led template adoption | Accepted |
+| [0012](0012-add-roadmap-management-track.md) | Add a Roadmap Management Track for product and project planning | Accepted |
 | [0013](0013-add-obsidian-as-ui-layer.md) | Add Obsidian as an opt-in UI layer | Proposed |
 | [0014](0014-shard-log-shaped-artifacts-for-bases.md) | Shard log-shaped artifacts for Bases | Proposed |
-| [0015](0015-codify-codex-pr-review-loop.md) | Codify a bounded Codex review loop on every pull request | Proposed |
-| [0016](0016-design-system-as-skill.md) | Adopt the specorator-design skill as the canonical brand source | Proposed |
-| [0017](0017-adopt-inputs-folder-as-canonical-ingestion-zone.md) | Adopt `inputs/` as the canonical ingestion folder for new work packages | Proposed |
-| [0018](0018-sites-consumes-tokens.md) | Flip sites/styles.css to consume design-system tokens | Proposed |
-| [0019](0019-add-design-track.md) | Add a Design Track as an opt-in first-party workflow | Proposed |
-| [0020](0020-v05-release-branch-strategy.md) | Adopt Shape A with release/vX.Y.Z branches for v0.5 releases | Accepted |
+| [0015](0015-codify-codex-pr-review-loop.md) | Codify a bounded Codex review loop on every pull request | Accepted |
+| [0016](0016-design-system-as-skill.md) | Adopt the specorator-design skill as the canonical brand source | Accepted |
+| [0017](0017-adopt-inputs-folder-as-canonical-ingestion-zone.md) | Adopt `inputs/` as the canonical ingestion folder for new work packages | Accepted |
+| [0018](0018-sites-consumes-tokens.md) | Flip sites/styles.css to consume design-system tokens | Accepted |
+| [0019](0019-add-design-track.md) | Add a Design Track as an opt-in first-party workflow | Accepted |
+| [0020](0020-v05-release-branch-strategy.md) | Adopt Shape A with release/vX.Y.Z branches for v0.5 releases | Superseded |
 | [0021](0021-release-package-fresh-surface.md) | Ship the released template package as a fresh-surface starter | Accepted |
+| [0022](0022-add-issue-breakdown-track.md) | Adopt issue-breakdown track for parallelising post-tasks issue work | Proposed |
+| [0023](0023-adopt-zod-as-first-runtime-dependency.md) | Adopt zod as the first runtime dependency for script-layer validation | Accepted |
+| [0024](0024-lock-specorator-agentic-workflow-naming-contract.md) | Lock the Specorator and agentic-workflow naming contract | Accepted |
+| [0025](0025-adopt-doc-as-contract-review-protocol.md) | Adopt a doc-as-contract review protocol | Proposed |
+| [0026](0026-freeze-v1-workflow-track-taxonomy.md) | Freeze the v1.0 workflow track taxonomy | Accepted |
+| [0027](0027-adopt-shape-b-branching-model.md) | Adopt Shape B branching model (develop / main / demo) for the template | Proposed |
+| [0028](0028-claude-baseline-as-canonical-source-for-adapters.md) | Treat the Claude baseline as the canonical source for multi-framework adapters | Accepted |
+| [0029](0029-adapter-pipeline-additive-only.md) | Make the multi-framework adapter pipeline additive-only over canonical sources | Accepted |
 <!-- END GENERATED: adr-index -->
 
 ## Conventions
 
 - Files are named `NNNN-imperative-title.md`. Numbers are zero-padded, monotonic, never reused.
+- Long-lived implementation plans should use `ADR-NEXT` until execution, or re-check the next free number immediately before opening the PR that files the ADR. Do not reserve numeric slots in stale plans without verifying the index.
 - Title is in the imperative mood: *"Use PostgreSQL"*, not *"PostgreSQL was chosen"*.
 - Status is one of: `Proposed`, `Accepted`, `Deprecated`, `Superseded by ADR-NNNN`.
 - ADR **bodies** are immutable. To change a decision, supersede it; only the predecessor's `status` and `superseded-by` pointer fields may be updated.
