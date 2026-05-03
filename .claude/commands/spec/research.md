@@ -20,5 +20,5 @@ Run **stage 2 — Research**.
    - ends with a recommendation.
 5. Run the quality gate.
 6. Update `workflow-state.md`.
-7. **Post-stage gate** — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage`, `roadmap_status`, `updated_at`), push the branch, and mark the PR ready for review.
+7. **Post-stage gate** — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage`, `roadmap_status`, `updated_at`), push the branch. Do not mark PR ready yet — PR stays draft through planning stages.
 8. Recommend `/spec:requirements` next (or `/spec:clarify` if anything is fuzzy).

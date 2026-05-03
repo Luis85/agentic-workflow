@@ -22,5 +22,5 @@ Run **stage 8 — Testing**.
      - coverage gaps disclosed.
 5. Verify every EARS clause has ≥ 1 test referencing its REQ ID. Orphan tests and orphan requirements are defects.
 6. Update `workflow-state.md`.
-7. **Post-stage gate** — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage`, `roadmap_status`, `updated_at`), push the branch, and mark the PR ready for review.
+7. **Post-stage gate** — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage: testing`, `roadmap_status: in-review`, `updated_at`), push the branch, and **mark the PR ready for review** (`gh pr ready`) — testing complete means the feature is ready for human code review.
 8. If any S1/S2 failure is open, recommend looping back to `/spec:implement`. Otherwise recommend `/spec:review`.

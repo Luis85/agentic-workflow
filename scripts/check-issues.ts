@@ -30,12 +30,12 @@ const VALID_ROADMAP_STATUSES = new Set([
   "cancelled",
 ]);
 const VALID_TYPES = new Set(["feature", "bug", "chore", "docs"]);
+// "specification" is canonical (matches workflow-state-template.md and specorator.md §3.0).
 const VALID_STAGES = new Set([
   "idea",
   "research",
   "requirements",
   "design",
-  "spec",
   "specification",
   "tasks",
   "implementation",

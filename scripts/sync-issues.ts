@@ -99,7 +99,9 @@ function deriveRoadmapStatus(ghState: string, labels: string[]): string {
   if (labels.includes("shipped") || labels.includes("released")) return "shipped";
   if (labels.includes("in-review") || labels.includes("review")) return "in-review";
   if (labels.includes("in-progress") || labels.includes("wip")) return "in-progress";
-  if (ghState === "CLOSED") return "shipped";
+  // CLOSED without a shipped/released label means won't-fix, duplicate, or not-planned —
+  // map to "cancelled" so a closed-not-shipped issue doesn't become "shipped" on next sync.
+  if (ghState === "CLOSED") return "cancelled";
   return "planned";
 }
 

@@ -21,5 +21,5 @@ Run **stage 3 — Requirements**.
    - release criteria are specified.
 5. Run the quality gate. If any requirement is fuzzy, surface it under **Open clarifications** in `workflow-state.md` and **recommend the user run `/spec:clarify`** before accepting the PRD. Slash commands are user-invoked entry points; this command does not call them itself.
 6. Update `workflow-state.md`.
-7. **Post-stage gate** — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage`, `roadmap_status`, `updated_at`), push the branch, and mark the PR ready for review.
+7. **Post-stage gate** — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage`, `roadmap_status`, `updated_at`), push the branch. Do not mark PR ready yet — PR stays draft through planning stages.
 8. Recommend `/spec:design` next (or `/spec:clarify` first if step 5 surfaced any).

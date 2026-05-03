@@ -22,5 +22,5 @@ Run **stage 11 — Learning**. Mandatory after every feature, including clean sh
    - lessons.
 4. Update `workflow-state.md`: mark `retrospective.md: complete`, set `status: done`.
 5. If amendments touch the kit, the retrospective **drafts** the proposed change inside `retrospective.md` (Actions table); the human (not the agent) sequences any PR against `templates/`, `.claude/agents/`, `docs/quality-framework.md`, or `memory/constitution.md`.
-6. **Post-stage gate** — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage: learning`, `roadmap_status: shipped`, `updated_at`), push the branch, and mark the PR ready for review.
+6. **Post-stage gate** — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage: learning`, `roadmap_status: shipped`, `updated_at`), push the branch. PR is already marked ready (or merged) at this stage.
 7. Print closing summary: feature complete; suggest `/spec:start <slug>` for the next feature, plus a list of open action items from the retro.

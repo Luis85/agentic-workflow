@@ -28,7 +28,7 @@ Run **stage 7 — Implementation** for a single task.
    ```
    Per-task commits are local-only and reversible (`git reset --soft HEAD~1` undoes the last). Do not push from this command. If `docs/steering/tech.md` opts out (`auto_commit: false`), stage only and surface the proposed message for the user to commit.
 7. Update `workflow-state.md` (and the task's checkbox in `tasks.md`).
-8. **Post-stage gate** (last task only — when all non-skipped tasks are done) — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage: implementation`, `roadmap_status: in-progress` → `in-review` when all done, `updated_at`), push the branch, and mark the PR ready for review.
+8. **Post-stage gate** (last task only — when all non-skipped tasks are done) — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage: implementation`, `roadmap_status: in-progress`, `updated_at`), push the branch. Do not mark PR ready yet — that happens after testing completes.
 9. Recommend the next ready task. Recommend `/spec:test` only when **all non-skipped tasks** in `tasks.md` (every owner: dev / qa / sre / human) are checked done.
 
 ## Don't

@@ -92,17 +92,17 @@ test("check:issues rejects malformed required frontmatter value types", () => {
   }
 });
 
-test("check:issues accepts documented spec stage alias", () => {
+test("check:issues accepts canonical specification stage value", () => {
   fs.writeFileSync(
     tempIssue,
     [
       "---",
       "issue_number: null",
-      'title: "[RFC] Spec Alias Test"',
-      "feature_slug: spec-alias-test",
+      'title: "[RFC] Spec Stage Test"',
+      "feature_slug: spec-stage-test",
       "type: feature",
       "roadmap_status: planned",
-      "stage: spec",
+      "stage: specification",
       "github_url: null",
       "labels: []",
       "milestone: null",
@@ -111,7 +111,7 @@ test("check:issues accepts documented spec stage alias", () => {
       "updated_at: 2026-05-03",
       "---",
       "",
-      "# [RFC] Spec Alias Test",
+      "# [RFC] Spec Stage Test",
       "",
     ].join("\n"),
     "utf8",

@@ -143,7 +143,7 @@ Every stage command runs two standard phases around the specialist agent's work.
    - Update `roadmap_status` using the mapping below.
    - Set `updated_at` to today.
 2. **Push the branch** (`git push`) so the PR reflects the latest work.
-3. **Mark PR ready for review** (`gh pr ready <PR>`) so reviewers are notified. If no PR exists (user declined at pre-stage), skip this step.
+3. **Mark PR ready for review** (`gh pr ready <PR>`) **only when completing the testing stage** — this is the point at which the feature is ready for human code review. For all earlier stages (idea through implementation), skip this step; the PR stays draft while work is in progress. If no PR exists (user declined at pre-stage), skip this step.
 
 #### `roadmap_status` by stage
 

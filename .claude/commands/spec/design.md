@@ -20,7 +20,7 @@ Run **stage 4 — Design**. This stage has three contributors; sequence them del
 9. The architect also fills the cross-cutting **Requirements coverage** table — every PRD requirement maps to at least one design section.
 10. Run the design quality gate.
 11. Update `workflow-state.md`.
-12. **Post-stage gate** — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage`, `roadmap_status`, `updated_at`), push the branch, and mark the PR ready for review.
+12. **Post-stage gate** — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage`, `roadmap_status`, `updated_at`), push the branch. Do not mark PR ready yet — PR stays draft through planning stages.
 13. Recommend `/spec:specify` next.
 
 ## Note

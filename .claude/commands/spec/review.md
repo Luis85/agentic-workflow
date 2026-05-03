@@ -18,7 +18,7 @@ Run **stage 9 — Review**.
    - If the diff touches no UI surfaces, skip the brand-reviewer dispatch and record `Brand review: not-applicable` in `review.md`.
 5. **Once both subagents have returned, the `reviewer` agent merges brand findings into `review.md` under a `## Brand review` section, then computes the final verdict: Approved / Approved with conditions / Blocked.** Blocking brand findings flip the verdict to `Blocked` or `Approved with conditions` per the severity model in `.claude/agents/brand-reviewer.md`. The verdict line is written exactly once, after all findings (general + brand) are present in `review.md`.
 6. Update `workflow-state.md`.
-7. **Post-stage gate** — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage`, `roadmap_status: in-review`, `updated_at`), push the branch, and mark the PR ready for review.
+7. **Post-stage gate** — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage: review`, `roadmap_status: in-review`, `updated_at`), push the branch. PR is already marked ready (from testing stage).
 8. If Blocked, recommend going back to the owning stage. Else recommend `/spec:release`.
 
 ## Don't

@@ -22,5 +22,5 @@ Run **stage 10 — Release**. Irreversible actions (tagging, publishing, deployi
 4. **Stop and ask the human** for explicit authorisation to proceed with the irreversible actions. Authorisation in the past does not authorise the present; ask for the current release.
 5. Only after explicit authorisation, **re-spawn the `release-manager` subagent in publish mode** (the prepare-phase agent has already returned; subagents are stateless across the human-authorisation pause). The publish-phase agent performs each irreversible side effect (tag push, registry publish, deploy trigger) one at a time, announcing each before it runs. The step-4 authorisation covers the announced sequence; any deviation requires a fresh ask.
 6. Update `workflow-state.md`.
-7. **Post-stage gate** — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage: release`, `roadmap_status: shipped`, `updated_at`), push the branch, and mark the PR ready for review.
+7. **Post-stage gate** — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage: release`, `roadmap_status: shipped`, `updated_at`), push the branch. PR is already marked ready (or merged) at this stage.
 8. Recommend `/spec:retro` next.

@@ -15,5 +15,5 @@ Run **stage 1 — Idea**.
 4. **Spawn the `analyst` subagent** with the brief (the user's prompt + any prior notes in the workflow-state).
 5. The analyst produces `specs/<slug>/idea.md` from `templates/idea-template.md` and runs the quality gate at the bottom.
 6. Update `workflow-state.md`: mark `idea.md: complete` (or `in-progress` if blocked), set `current_stage: research`, append a hand-off note.
-7. **Post-stage gate** — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage`, `roadmap_status`, `updated_at`), push the branch, and mark the PR ready for review.
+7. **Post-stage gate** — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage`, `roadmap_status`, `updated_at`), push the branch. Do not mark PR ready yet — PR stays draft through planning stages.
 8. Recommend `/spec:research` next.

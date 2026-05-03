@@ -24,5 +24,5 @@ Run **stage 5 — Specification**.
 5. Every spec item traces to ≥ 1 requirement ID.
 6. Run the quality gate. **Recommend the user run `/spec:analyze`** to cross-check spec ↔ requirements ↔ design consistency before proceeding (slash commands are user-invoked).
 7. Update `workflow-state.md`.
-8. **Post-stage gate** — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage`, `roadmap_status`, `updated_at`), push the branch, and mark the PR ready for review.
+8. **Post-stage gate** — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage`, `roadmap_status`, `updated_at`), push the branch. Do not mark PR ready yet — PR stays draft through planning stages.
 9. Recommend `/spec:analyze` (optional gate) followed by `/spec:tasks` next.
