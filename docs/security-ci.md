@@ -93,7 +93,7 @@ Use this checklist after creating a downstream repository or auditing this upstr
 
 | Setting | Required posture | Source |
 | --- | --- | --- |
-| Integration-branch ruleset | Protect `main` for Shape A, or `develop` for Shape B; block deletion and non-fast-forward updates; require PRs; require up-to-date branches; require resolved review threads. | [`branching.md#required-main-ruleset`](branching.md#required-main-ruleset) |
+| Integration-branch ruleset | Protect `main` for Shape A, or `develop`, `main`, and `demo` for Shape B; block deletion and non-fast-forward updates; require PRs; require up-to-date branches; require resolved review threads. | [`branching.md#required-ruleset-for-develop-main-demo`](branching.md#required-ruleset-for-develop-main-demo) |
 | Always-running required checks | Require `Verify`, `Conventional Commits PR title`, `spell check`, and `scan for committed secrets`. | This document and [`ci-automation.md`](ci-automation.md#why-these-automation-gates) |
 | Path-triggered checks | Require `actionlint`, `zizmor static analysis`, and `dependency review` only with path-scoped rulesets when supported; otherwise treat them as merge-blocking whenever they run. | [Required status checks](#required-status-checks) |
 | Dependabot alerts | Enable repository-level Dependabot alerts so new advisories against already-merged dependencies surface outside PR review. | [`ci-automation.md#dependabot-policy`](ci-automation.md#dependabot-policy) |
@@ -101,7 +101,7 @@ Use this checklist after creating a downstream repository or auditing this upstr
 | Code scanning | Enable code scanning visibility. Both `zizmor` and `codeql` publish SARIF to the Security tab. | [Automation posture map](#automation-posture-map) |
 | Secret scanning | Enable GitHub secret scanning when the account plan supports it; keep `gitleaks` as the committed CI safety net. | [Workflow table](#security-ci-gates) |
 | GitHub Pages | Enable Pages for the product page workflow if the project publishes `sites/index.html`. | [`rbac.md#github-pages`](rbac.md#github-pages) |
-| CODEOWNERS | Replace placeholder owners in [`.github/CODEOWNERS`](../.github/CODEOWNERS) with real users or teams for a live repository, or document that the file is template-only. | [`branching.md`](branching.md#required-main-ruleset) |
+| CODEOWNERS | Replace placeholder owners in [`.github/CODEOWNERS`](../.github/CODEOWNERS) with real users or teams for a live repository, or document that the file is template-only. | [`branching.md`](branching.md#required-ruleset-for-develop-main-demo) |
 
 ## Dependency review policy
 
