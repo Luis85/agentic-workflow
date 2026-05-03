@@ -468,7 +468,7 @@ Each task is ~½ day (estimate S or M), has a stable ID, references ≥ 1 requir
 
 ### T-ADAPT-027 🧪 — E2E tests: `adapters:sync` hard failure scenarios
 
-- **Description:** Write e2e tests covering hard failure cases for `adapters:sync`: (1) slug collision — exit 1, stderr matches B.4.5, no output files written (TEST-ADAPT-020); (2) Codex combined size > 32 KiB — exit 1, B.4.6 lists contributors, no Codex files persisted (TEST-ADAPT-021); (3) Codex combined size 28 KiB + 1 byte — exit 0, B.4.4 warning on stderr (TEST-ADAPT-022); (4) 600-line source — output has truncation marker on line 491 for `.mdc` and B.4.3 truncation notice on stdout (TEST-ADAPT-023); (5) `cursor-doctor` structural error (fixture with deliberately invalid frontmatter) — exit 1, B.4.7 framed output, manifest not written (TEST-ADAPT-025).
+- **Description:** Write e2e tests covering hard failure cases for `adapters:sync`: (1) slug collision — exit 1, stderr matches B.4.5, no output files written (TEST-ADAPT-020); (2) Codex combined size > 32 KiB — exit 1, B.4.6 lists contributors, no Codex files persisted (TEST-ADAPT-021); (3) Codex combined size 28 KiB + 1 byte — exit 0, B.4.4 warning on stderr (TEST-ADAPT-022); (4) 600-line source — `.mdc` output retains 490 body lines, places the truncation marker immediately after the retained body (file line 499 with the standard frontmatter), and emits B.4.3 truncation notice on stdout (TEST-ADAPT-023); (5) `cursor-doctor` structural error (fixture with deliberately invalid frontmatter) — exit 1, B.4.7 framed output, manifest not written (TEST-ADAPT-025).
 - **Satisfies:** SPEC-ADAPT-001, REQ-ADAPT-025, REQ-ADAPT-005, REQ-ADAPT-009, REQ-ADAPT-027, REQ-ADAPT-013, EC-004, EC-007, EC-009, EC-011, EC-016
 - **Owner:** qa
 - **Depends on:** T-ADAPT-026
@@ -476,7 +476,7 @@ Each task is ~½ day (estimate S or M), has a stable ID, references ≥ 1 requir
 - **Definition of done:**
   - [ ] Five test cases as specified.
   - [ ] Test for 32 KiB hard limit verifies no `.codex/agents/` or `.codex/skills/` files written.
-  - [ ] Test for truncation verifies file line count is 491 and marker text is exact.
+  - [ ] Test for truncation verifies the rendered `.mdc` file does not exceed 500 total lines, the marker text is exact, and the marker immediately follows retained body line 490.
   - [ ] Test for cursor-doctor failure verifies manifest is absent after the run.
   - [ ] Each test verifies the exact exit code (0 or 1) and correct stream (stdout vs stderr).
   - [ ] Tests fail with wrong behaviour before full pipeline is implemented.

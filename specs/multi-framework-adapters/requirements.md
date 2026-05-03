@@ -249,12 +249,13 @@ Specorator is built and maintained through Claude Code; its agent definitions, s
 ### REQ-ADAPT-005 — Cursor adapter individual file size limit
 
 - **Pattern:** Ubiquitous
-- **Statement:** The adapter generation script shall produce each Cursor `.mdc` file with a total line count (including frontmatter) of no more than 500 lines, and if any source file's body would produce more than 500 total file lines, the script shall truncate the source body to 490 lines and append `<!-- TRUNCATED: source exceeded 500 lines -->` immediately after the last retained body line.
+- **Statement:** The adapter generation script shall produce each Cursor `.mdc` file with a total line count (including frontmatter) of no more than 500 lines, and if any source file's body plus the standard Cursor frontmatter would produce more than 500 total file lines, the script shall truncate the source body to 490 lines and append `<!-- TRUNCATED: source exceeded 500 lines -->` immediately after the last retained body line.
 - **Acceptance:**
   - Given all generated `.mdc` files in `.cursor/rules/`
   - When each file's total line count (including frontmatter) is measured
   - Then no file exceeds 500 lines
   - And any file whose source would have produced more than 500 total lines contains the text `<!-- TRUNCATED: source exceeded 500 lines -->` immediately after the 490th retained body line
+  - And with the standard 5-field Cursor frontmatter plus blank separator, a truncated `.mdc` file has the marker on file line 499 (7 frontmatter lines + 1 blank separator + 490 retained body lines + 1 marker)
 - **Priority:** must
 - **Satisfies:** RESEARCH-ADAPT-001 (Q1 — size and token limits: 500 lines/file)
 
