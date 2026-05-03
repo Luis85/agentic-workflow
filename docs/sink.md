@@ -192,6 +192,7 @@ The root `README.md` is the public repository entry point and is exempt from thi
 | `memory/constitution.md` | Human (amended by ADR) | Append-only after amendments |
 | `docs/specorator.md`, `docs/quality-framework.md`, `docs/traceability.md`, `docs/ears-notation.md` | Human | Versioned (v0.1, v0.2…) |
 | `docs/sink.md` | Human | Versioned alongside specorator |
+| `docs/rbac.md` | Human (template maintainer) | Living — updated in the same PR as any change to `.claude/settings.json` allow/deny, `.claude/agents/*` `tools:` frontmatter, `.github/workflows/*` `permissions:` blocks, `package.json#publishConfig`, branch protection on `main` / `develop`, or operational-bot auth contract. See [`docs/rbac.md`](rbac.md) §Maintenance. |
 | `docs/steering/*` | Human | Updated as project evolves |
 | `docs/adr/NNNN-*.md` | Architect / any agent that flags | **Immutable from creation** per ADR-0001: only YAML `status` (proposed → accepted → deprecated → superseded) and `supersedes` / `superseded-by` pointers may change. Body (Context, Decision, Alternatives, Consequences) is frozen on creation. To revise rationale, supersede via new ADR. |
 | `docs/CONTEXT.md`, `docs/CONTEXT-MAP.md`, `docs/contexts/*.md` | `domain-context` skill | Additive, agent-updated |
