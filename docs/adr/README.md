@@ -38,7 +38,7 @@ Records of architecturally significant decisions. Format follows Michael Nygard'
 | [0023](0023-adopt-zod-as-first-runtime-dependency.md) | Adopt zod as the first runtime dependency for script-layer validation | Accepted |
 | [0024](0024-lock-specorator-agentic-workflow-naming-contract.md) | Lock the Specorator and agentic-workflow naming contract | Accepted |
 | [0025](0025-adopt-doc-as-contract-review-protocol.md) | Adopt a doc-as-contract review protocol | Proposed |
-| [0026](0026-freeze-v1-workflow-track-taxonomy.md) | Freeze the v1.0 workflow track taxonomy | Superseded by ADR-0030 |
+| [0026](0026-freeze-v1-workflow-track-taxonomy.md) | Freeze the v1.0 workflow track taxonomy | Superseded |
 | [0027](0027-adopt-shape-b-branching-model.md) | Adopt Shape B branching model (develop / main / demo) for the template | Proposed |
 | [0030](0030-add-repo-adoption-track.md) | Add Repo Adoption Track as v1.1 opt-in companion track | Proposed |
 <!-- END GENERATED: adr-index -->
