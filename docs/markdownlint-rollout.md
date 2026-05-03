@@ -11,7 +11,7 @@ The repo deferred `markdownlint-cli2` because an initial trial found ~2000 findi
 
 ## Current state
 
-A non-blocking workflow (`.github/workflows/markdownlint.yml`) runs on PRs touching `**/*.md` files. It reports findings in the CI log but never blocks merge.
+A non-blocking workflow (`.github/workflows/markdownlint.yml`) runs on PRs touching `**/*.md` files. It installs pinned `markdownlint-cli2@0.22.1`, reports findings in the CI log, and marks only the lint result as advisory.
 
 ## Promotion phases
 
@@ -41,7 +41,7 @@ Track cleanup PRs here:
 ### Phase 3 — promote to blocking (after Phase 2)
 
 - Add `.markdownlint.jsonc` with rule overrides at repo root
-- Remove `|| true` from the workflow run step
+- Remove `continue-on-error: true` from the lint result step
 - Add `markdownlint` to the required-status-checks list in the GitHub ruleset docs
 - Update `docs/security-ci.md` posture map: Deferred → Implemented
 
