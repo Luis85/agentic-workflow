@@ -59,7 +59,7 @@ The taxonomy now reads:
 | 10 | Design | Opt-in surface creation | `/design:start` | `designs/<slug>/design-state.md` | ADR-0019 |
 | 11 | Issue Breakdown | Opt-in post-tasks parallelisation | `/issue:breakdown` | `specs/<slug>/issue-breakdown-log.md` | ADR-0022 |
 | 12 | Specorator Improvement | Opt-in template improvement | `/specorator:update` | existing docs/spec artifacts | `docs/specorator.md` |
-| 13 | **Repo Adoption** | **Opt-in companion (v1.1)** | **`/adopt:start <url>`** | **`adoptions/<slug>/`** | **`docs/repo-adoption-track.md` (this ADR)** |
+| 13 | **Repo Adoption** | **Opt-in companion (v1.1)** | **`/adopt:start <url>`** | **`adoptions/<slug>/`** | ADR-0030 (this document) |
 
 This ADR supersedes ADR-0026 in the narrow sense that the count of first-party tracks moves from 12 to 13. ADR-0026's substantive content — the freeze rule, the classification of agentic security as an extension, the immutability of Stage 4 — remains in force. The amendment process described in ADR-0026 (file a superseding ADR) is the path being exercised here, exactly as anticipated.
 
@@ -102,7 +102,7 @@ The Repo Adoption Track ships in the v1.1 release window. The v1.0 release is un
 
 ## Compliance
 
-- `AGENTS.md`, `CLAUDE.md`, `docs/specorator.md`, `.claude/skills/README.md`, `sites/index.html`, and `README.md` reference Repo Adoption as the thirteenth track and link this ADR.
+- **Pending implementation:** `AGENTS.md`, `CLAUDE.md`, `docs/specorator.md`, `.claude/skills/README.md`, `sites/index.html`, and `README.md` shall be updated in the implementation PR to reference Repo Adoption as the thirteenth track and link this ADR.
 - ADR-0026's frontmatter records `status: superseded` and `superseded-by: [ADR-0030]`; ADR-0026's body is not modified.
 - The implementation PR for the Repo Adoption Track references this ADR (REQ-ADOPT-031).
 - Reviewers treat any further state-bearing first-party workflow proposal in v1.1 or v1.2 as requiring its own superseding ADR; the precedent set here is supersession, not implicit growth.
