@@ -97,7 +97,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cmd=$(python3 -c 'import sys,json; d=json.load(sys.stdin); print(d.get(\"tool_input\",{}).get(\"command\",\"\"))' 2>/dev/null || echo ''); echo \"$cmd\" | grep -qE 'git\\b[^|;&]*\\s+commit\\b' || exit 0; branch=$(git symbolic-ref --short HEAD 2>/dev/null || echo ''); [ \"$branch\" != \"main\" ] && [ \"$branch\" != \"develop\" ] && exit 0; echo \"[branch-guard] Commit on '$branch' is blocked. Switch to a topic branch first.\"; exit 2"
+            "command": "cmd=$(python3 -c 'import sys,json; d=json.load(sys.stdin); print(d.get(\"tool_input\",{}).get(\"command\",\"\"))' 2>/dev/null || echo ''); echo \"$cmd\" | grep -qE '(^|[|;&]\\s*)([A-Z_]+=\\S+\\s+)*git\\b[^|;&]*\\s+commit\\b' || exit 0; branch=$(git symbolic-ref --short HEAD 2>/dev/null || echo ''); [ \"$branch\" != \"main\" ] && [ \"$branch\" != \"develop\" ] && exit 0; echo \"[branch-guard] Commit on '$branch' is blocked. Switch to a topic branch first.\"; exit 2"
           }
         ]
       }
