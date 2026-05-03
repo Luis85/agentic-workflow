@@ -40,7 +40,7 @@ The default `.claude/settings.json` shipped with this template denies pushes to 
 | `release/` | *(Shape A only)* Versioned release prep — see [Release path under Shape B](#release-path-under-shape-b) for the active flow and the Shape A historical callout. Not used under Shape B; promotion replaces the dedicated release branch. |
 | `claude/` | Agent‑opened branches (this is the convention `Claude Code` uses by default). |
 
-These prefixes match the allowlist in `.claude/settings.json` and the regexes in the operational bots' branch‑name idempotency checks. Adding a new prefix means updating both.
+The active prefixes (`feat/`, `fix/`, `refactor/`, `chore/`, `docs/`, `claude/`, `portfolio/`) match the allowlist in `.claude/settings.json` and the regexes in the operational bots' branch‑name idempotency checks. The `release/` prefix is Shape A only and is not pre-approved in the default allowlist; Shape A adopters must add `Bash(git push origin release/*)` and the `-u` variant to their own `.claude/settings.json`. Adding any new prefix means updating both the allowlist and the bot regexes.
 
 ## Pull request titles
 
