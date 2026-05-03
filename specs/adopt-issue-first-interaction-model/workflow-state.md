@@ -94,9 +94,9 @@ _None._
 - [ ] CLAR-IFI-024 [REQ-IFI-023] — on first scaffold, "last completed gate" value is undefined; no gate has been completed yet.
 - [ ] CLAR-IFI-026 [REQ-IFI-024] — sync invocation on slug-mode (no `issue:` field) not specified: silently skip or script handles null arg?
 - [ ] CLAR-IFI-027 [REQ-IFI-029] — exact `workflow-state.status` → label name mapping is undefined; "or equivalent" makes the acceptance criterion untestable.
-- [ ] Gap-1 — No requirement for non-existent issue number (404): error message, exit code, no scaffold.
-- [ ] Gap-4 — No requirement for empty or whitespace-only issue title (produces empty slug before suffix).
-- [ ] Gap-6 — No requirement for null/empty issue body at sentinel block append time.
+- [x] Gap-1 — resolved 2026-05-03: REQ-IFI-037 added (404 → error + no scaffold).
+- [x] Gap-4 — resolved 2026-05-03: REQ-IFI-038 added (empty/whitespace title → error + no scaffold).
+- [x] Gap-6 — resolved 2026-05-03: REQ-IFI-039 added (null/empty body → write sentinel as entire body).
 
 ### Deferrable to spec.md
 

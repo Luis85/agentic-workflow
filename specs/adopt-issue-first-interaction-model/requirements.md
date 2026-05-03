@@ -249,11 +249,12 @@ Specorator currently starts every workflow from a slash command whose intent exi
 - **Pattern:** WHEN `/spec:start` is invoked with a GitHub issue number, the `/spec:start` command shall derive (a) the feature area code from the first word of the slug (first 3 characters, uppercase) and (b) the branch commit-type from the `track:` label using the canonical mapping in `docs/issue-first-interaction.md`. The user is not prompted for either value but may override via `AskUserQuestion`.
 - **Canonical track-to-commit-type mapping:** `track:feature` → `feat`; `track:bug` → `fix`; `track:spike` → `spike`; `track:specorator-improvement` → `feat`; no track label → `feat`.
 - **Acceptance:**
-  - Given issue #274 has `track:specorator-improvement` and slug `adopt-issue-first-interaction-model-274`
-  - When `/spec:start 274` is run
+  - Given issue #100 has `track:specorator-improvement` and title `"adopt oauth login"` → slug `adopt-oauth-login-100`
+  - When `/spec:start 100` is run
   - Then the area code is `ADO` (first 3 chars of `adopt`)
   - And the branch prefix is `feat` (mapped from `track:specorator-improvement`)
   - And the user is not prompted for area or commit-type
+- **Note:** The `IFI` area code used in this feature's own `workflow-state.md` was set manually during initial scaffolding (before this rule existed) and is not a counter-example to the derivation rule.
 - **Priority:** must
 - **Satisfies:** IDEA-IFI-001, RESEARCH-IFI-001 (R4, R20), resolves CLAR-IFI-012, CLAR-IFI-020
 
