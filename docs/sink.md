@@ -107,11 +107,16 @@ Where every markdown artifact in this kit lives, who owns it, and how it evolves
 ├── quality/                                 # one folder per QA review (ISO 9001-aligned, opt-in)
 │   └── <quality-review-slug>/
 │       ├── quality-state.md                 # QA review state machine, owned by /quality:* commands
+│       ├── project-review-state.md          # project-review state machine, owned by /project-review:* commands (LAZY)
 │       ├── quality-plan.md                  # plan, scope, ISO 9001 alignment, readiness criteria
 │       ├── checklists/
 │       │   └── project-execution.md         # evidence-backed checklist items
 │       ├── quality-review.md                # readiness verdict, findings, risks
-│       └── improvement-plan.md              # corrective actions and effectiveness checks
+│       ├── improvement-plan.md              # corrective actions and effectiveness checks
+│       ├── review-plan.md                   # project-review evidence plan (LAZY)
+│       ├── history-review.md                # project-review git/artifact/PR/CI evidence summary (LAZY)
+│       ├── findings.md                      # project-review learnings and findings (LAZY)
+│       └── improvement-proposals.md         # project-review proposals + first draft PR candidate (LAZY)
 ├── specs/                                   # one folder per feature
 │   └── <slug>/
 │       ├── workflow-state.md                # state machine, owned by /spec:* commands
@@ -229,6 +234,11 @@ The root `README.md` is the public repository entry point and is exempt from thi
 | `quality/<review>/checklists/*.md` | `quality-assurance` skill | Evidence-backed checklists; updated during Check, preserving gaps |
 | `quality/<review>/quality-review.md` | `quality-assurance` skill | Written in Review; states readiness, nonconformities, risks, and evidence gaps |
 | `quality/<review>/improvement-plan.md` | `quality-assurance` skill | Written in Improve; corrective actions remain open until effectiveness is verified |
+| `quality/<review>/project-review-state.md` | `/project-review:start`, then `/project-review:*` commands on transition | Project-review state machine; project-review skill-owned |
+| `quality/<review>/review-plan.md` | `project-review` skill | Written in Plan; names evidence sources, review questions, exclusions, and first PR criteria |
+| `quality/<review>/history-review.md` | `project-review` skill | Written in Inspect; summarizes git, artifact, PR, issue, CI, and retrospective signals |
+| `quality/<review>/findings.md` | `project-review` skill | Written in Synthesize; records strengths, friction, risks, and root-cause hypotheses |
+| `quality/<review>/improvement-proposals.md` | `project-review` skill | Written in Propose; ranks improvements and drafts issue/PR handoff |
 | `discovery/<sprint>/discovery-state.md` | `/discovery:start`, then `/discovery:*` commands on transition | Sprint state machine; facilitator-owned |
 | `discovery/<sprint>/<phase>.md` | The phase's owning facilitator + consulted specialists (per `docs/discovery-track.md` §3) | Each phase writes once; later phases never rewrite upstream phase artifacts |
 | `discovery/<sprint>/chosen-brief.md` | `facilitator` (Handoff) | One per surviving concept; mandatory input to `/spec:idea` |
@@ -353,6 +363,12 @@ When a team needs an ISO 9001-aligned readiness check, the Quality Assurance Tra
 
 The track supports internal readiness and audit preparation, but it does not grant certification or replace an accredited auditor. See [`docs/quality-assurance-track.md`](quality-assurance-track.md) for the methodology.
 
+## Project-review workflow sub-tree
+
+When a team wants to learn from project history and turn those learnings into concrete improvement work, the Project-review workflow creates project-review artifacts under `quality/<review-slug>/`. It reviews artifacts, git history, issues, PRs, CI, and retrospectives; then opens a tracking issue and first draft PR from a dedicated worktree.
+
+This workflow deliberately reuses `quality/` instead of adding a new top-level intake folder. Its artifacts are quality-and-learning evidence, and the first implementation proposal follows the normal topic-branch PR workflow. See [`docs/project-review-workflow.md`](project-review-workflow.md) for the methodology.
+
 ## Release readiness companion artifact
 
 When a completed increment needs an explicit production go/no-go decision, Stage 10 may create `specs/<feature>/release-readiness-guide.md` from `templates/release-readiness-guide-template.md`. The guide collects product value, user experience, stakeholder, engineering, security/privacy/compliance, operations, support, data, commercial, and communication readiness evidence.
@@ -419,6 +435,7 @@ These skills append to cross-workflow files:
 - `domain-context` → `docs/CONTEXT.md` (or `CONTEXT-MAP.md` + `contexts/<name>.md`).
 - `new-glossary-entry` → `docs/glossary/<slug>.md` (via `/glossary:new`). Per [ADR-0010](adr/0010-shard-glossary-into-one-file-per-term.md), supersedes the deprecated `ubiquitous-language` → `docs/UBIQUITOUS_LANGUAGE.md` flow.
 - `quality-assurance` → `quality/<review>/quality-state.md`, `quality-plan.md`, `checklists/*.md`, `quality-review.md`, and `improvement-plan.md`.
+- `project-review` → `quality/<review>/project-review-state.md`, `review-plan.md`, `history-review.md`, `findings.md`, `improvement-proposals.md`, plus GitHub issue/PR text during handoff.
 - `quality-metrics` → `quality/metrics/<scope>/<timestamp>.json` when invoked with `--save`.
 - `roadmap-management` → `roadmaps/<slug>/roadmap-state.md`, `roadmap-strategy.md`, `roadmap-board.md`, `delivery-plan.md`, `stakeholder-map.md`, `communication-log.md`, and `decision-log.md`.
 - `specorator-improvement` → the affected template surfaces: `scripts/`, `tests/scripts/`, `package.json`, `.github/workflows/`, `.claude/commands/`, `.claude/skills/`, `.claude/agents/`, `templates/`, `docs/`, and the owning `specs/<slug>/` artifacts.
