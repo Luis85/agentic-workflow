@@ -29,7 +29,7 @@ jobs:
     if: github.event.label.name == 'breakdown-me' && vars.ISSUE_BREAKDOWN_BOT_ENABLED != 'true'
     runs-on: ubuntu-latest
     permissions:
-      issues: write
+      issues: write           # placeholder only posts the operator notice; no branch or PR token scope
     steps:
       - name: Notify operator that the runner is disabled
         env:
@@ -67,6 +67,7 @@ jobs:
     name: Decompose issue into draft PRs
     if: github.event.label.name == 'breakdown-me' && vars.ISSUE_BREAKDOWN_BOT_ENABLED == 'true'
     runs-on: ubuntu-latest
+    environment: issue-breakdown-bot
     permissions:
       contents: write          # branch push for feat/* + chore/* (never main / develop)
       issues: write             # comment + edit body + remove label
