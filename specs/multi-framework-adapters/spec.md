@@ -95,7 +95,7 @@ Authoritative cross-references used throughout:
 - **Errors:** Enumerated in `CheckResult.kind`:
   | `kind` | Trigger | Microcopy ref |
   |---|---|---|
-  | `no-manifest` | Manifest absent or unparseable as JSON | B.4.10 |
+  | `no-manifest` | Manifest absent or unparsable as JSON | B.4.10 |
   | `missing-output` | Path in `outputs[]` not present on disk | B.4.11 |
   | `stale-source` | SHA-256 of any `sources[].path` or of `scripts/adapters/generate.mjs` differs from manifest | B.4.9 |
   | `malformed-header` | Generated-file header absent or malformed in any output file | B.4.12 |
