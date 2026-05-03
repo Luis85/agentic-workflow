@@ -8,21 +8,27 @@
 # Patterns are evaluated bottom-to-top; the last match wins.
 # Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-customizations/about-code-owners
 
+# ── Adopter note ──────────────────────────────────────────────────────────────
+# When you fork this template, replace all @Luis85 handles below with your own
+# GitHub user or team handles. Rules without a valid owner are silently ignored
+# by GitHub, so invalid handles = no automatic reviewer assignment.
+# ─────────────────────────────────────────────────────────────────────────────
+
 # Default — every PR gets at least one reviewer.
-*                                     @placeholder-owner
+*                                     @Luis85
 
 # User-facing documentation surface.
 # Owns the Diátaxis hub, tutorials, how-to recipes, reference and explanation
 # files, and the playbooks. Renames or removals here MUST update docs/README.md
 # in the same PR (see CONTRIBUTING.md).
-/docs/                                @placeholder-docs-owner
-/docs/README.md                       @placeholder-docs-owner
-/docs/tutorials/                      @placeholder-docs-owner
-/docs/how-to/                         @placeholder-docs-owner
+/docs/                                @Luis85
+/docs/README.md                       @Luis85
+/docs/tutorials/                      @Luis85
+/docs/how-to/                         @Luis85
 
 # Top-level docs that ship to readers (README, CLAUDE/AGENTS root context).
-/README.md                            @placeholder-docs-owner
-/CONTRIBUTING.md                      @placeholder-docs-owner
+/README.md                            @Luis85
+/CONTRIBUTING.md                      @Luis85
 
 # Operational bots — own their own prompts and READMEs.
-/agents/operational/                  @placeholder-ops-owner
+/agents/operational/                  @Luis85
