@@ -1,7 +1,7 @@
 ---
 feature: repo-adoption-track
 area: ADOPT
-current_stage: design
+current_stage: specification
 status: active
 last_updated: 2026-05-03
 last_agent: architect
