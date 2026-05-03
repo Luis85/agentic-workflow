@@ -356,7 +356,7 @@ No foreign-repo write happens in CI. Mocked: conductor has a dry-run flag emitti
 - `scripts/check-script-docs.ts` enforces docs for new scripts.
 - `scripts/check-command-docs.ts` enforces docs for `/adopt:*` commands.
 - `scripts/check-agents.ts` enforces `repo-adopter` agent has README + frontmatter.
-- ADR check: `0027-add-repo-adoption-track.md` must exist and be linked from the index before merge.
+- ADR check: `0030-add-repo-adoption-track.md` must exist and be linked from the index before merge.
 
 ### 8.6 Manual end-to-end test plan (for v1 release)
 

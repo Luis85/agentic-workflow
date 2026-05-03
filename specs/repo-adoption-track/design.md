@@ -267,7 +267,8 @@ Patch file written.
 To open a PR from a fork:
   1. Fork <url> on GitHub.
   2. Clone your fork: git clone <fork-url> && cd <repo>
-  3. Apply the patch: git am adoptions/<slug>/specorator-adoption.patch
+  3. Apply the patch: git am <template-repo-path>/adoptions/<slug>/specorator-adoption.patch
+     (full absolute path printed above; patch lives in the template repo, not the fork)
   4. Push your branch: git push origin adopt/specorator
   5. Open a PR from your fork against <url> default branch.
 
@@ -674,7 +675,8 @@ Patch file written.
 To open a PR from a fork:
   1. Fork <url> on GitHub.
   2. Clone your fork: git clone <fork-url> && cd <repo>
-  3. Apply the patch: git am adoptions/<slug>/specorator-adoption.patch
+  3. Apply the patch: git am <template-repo-path>/adoptions/<slug>/specorator-adoption.patch
+     (full absolute path printed above; patch lives in the template repo, not the fork)
   4. Push your branch: git push origin adopt/specorator
   5. Open a PR from your fork against <url> default branch.
 
