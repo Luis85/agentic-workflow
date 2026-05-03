@@ -28,7 +28,6 @@ The v1.0 track taxonomy is frozen in [ADR-0026](docs/adr/0026-freeze-v1-workflow
 
 ## Conventions specific to Claude Code
 
-- **Template-self changes route through `/specorator:update`.** Any change to `docs/`, `.claude/`, `scripts/`, `templates/`, `memory/`, `AGENTS.md`, or `CLAUDE.md` that isn't downstream feature delivery must use the Specorator Improvement Track — invoke `/specorator:update` *before* generic brainstorming or planning skills. Keywords: new track, new agent, new skill, new workflow, update template, change workflow.
 - Subagents are project-scoped (`.claude/agents/`) with intentionally narrow tool lists. Missing tool = feature, not bug. Agent-class table lives in [`AGENTS.md`](AGENTS.md).
 - Skills live in `.claude/skills/` — see [`.claude/skills/README.md`](.claude/skills/README.md). Auto-trigger from natural language; explicit invoke via `/<skill-name>`.
 - Operational bots live under `agents/operational/`. Each = `PROMPT.md` + `README.md`; the prompt is the source of truth the scheduled run loads.
@@ -46,4 +45,3 @@ The v1.0 track taxonomy is frozen in [ADR-0026](docs/adr/0026-freeze-v1-workflow
 - Don't expand the workflow with new stages or roles without an ADR.
 - Don't write code from a vague brief — run the upstream stages first or explicitly mark them skipped.
 - Don't merge feature work directly into workflow template files (`docs/`, `templates/`, `.claude/`) unless you're improving the *template itself*.
-- Don't use generic brainstorming or superpowers planning skills for template-self changes — route to `/specorator:update` first (see `Conventions` above). Artifacts must land in `specs/<feature>/`, not `docs/superpowers/`.

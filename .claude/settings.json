@@ -97,7 +97,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cmd=$(python3 -c 'import sys,json; d=json.load(sys.stdin); print(d.get(\"tool_input\",{}).get(\"command\",\"\"))' 2>/dev/null || echo ''); echo \"$cmd\" | grep -qE '(^|[|;&]\\s*)([A-Za-z_][A-Za-z0-9_]*=\\S+\\s+)*git\\b[^|;&]*\\s+commit\\b' || exit 0; branch=$(git symbolic-ref --short HEAD 2>/dev/null || echo ''); [ \"$branch\" != \"main\" ] && [ \"$branch\" != \"develop\" ] && exit 0; echo \"[branch-guard] Commit on '$branch' is blocked. Switch to a topic branch first.\"; exit 2"
+            "command": "python3 -c 'import sys,json,re,subprocess; d=json.load(sys.stdin); cmd=d.get(\"tool_input\",{}).get(\"command\",\"\"); dq=chr(34); sq=chr(39); cleaned=re.sub(dq+r\"[^\"+dq+r\"]*\"+dq+r\"|\"+sq+r\"[^\"+sq+r\"]*\"+sq,\"\",cmd); re.search(r\"\\bgit\\b[^|]*\\scommit\\b\",cleaned) or sys.exit(0); b=subprocess.run([\"git\",\"symbolic-ref\",\"--short\",\"HEAD\"],capture_output=True,text=True).stdout.strip(); b in(\"main\",\"develop\") and (print(\"[branch-guard] Commit on\",repr(b),\"blocked. Use a topic branch.\") or sys.exit(2))' 2>/dev/null || exit 0"
           }
         ]
       }
