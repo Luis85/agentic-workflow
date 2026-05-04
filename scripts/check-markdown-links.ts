@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { failIfErrors, markdownFiles, readText, relativeToRoot, repoRoot } from "./lib/repo.js";
-import { collectAnchors, linkDiagnostic, safeDecode, shouldIgnoreTarget } from "./lib/markdown-links.js";
+import { collectAnchors, isCodeFenceDelimiter, linkDiagnostic, safeDecode, shouldIgnoreTarget, stripInlineCode } from "./lib/markdown-links.js";
 
 const errors = [];
 const linkPattern = /!?\[[^\]]*?\]\(([^)\s]+(?:\s+"[^"]*")?)\)/g;
@@ -9,9 +9,16 @@ const linkPattern = /!?\[[^\]]*?\]\(([^)\s]+(?:\s+"[^"]*")?)\)/g;
 for (const filePath of markdownFiles()) {
   const text = readText(filePath);
   const lines = text.split(/\r?\n/);
+  let inFence = false;
   for (let lineIndex = 0; lineIndex < lines.length; lineIndex += 1) {
     const line = lines[lineIndex];
-    for (const match of line.matchAll(linkPattern)) {
+    if (isCodeFenceDelimiter(line)) {
+      inFence = !inFence;
+      continue;
+    }
+    if (inFence) continue;
+    const scanLine = stripInlineCode(line);
+    for (const match of scanLine.matchAll(linkPattern)) {
       const rawTarget = match[1].replace(/\s+"[^"]*"$/, "").trim();
       const target = rawTarget.replace(/^<|>$/g, "");
       if (shouldIgnoreTarget(target)) continue;

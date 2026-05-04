@@ -86,3 +86,11 @@ export function githubSlug(value: string): string {
     .trim()
     .replace(/\s/gu, "-");
 }
+
+export function isCodeFenceDelimiter(line: string): boolean {
+  return /^(`{3,}|~{3,})/.test(line);
+}
+
+export function stripInlineCode(line: string): string {
+  return line.replace(/`+[^`\n]*`+/g, "");
+}
