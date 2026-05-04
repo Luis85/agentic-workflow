@@ -39,6 +39,11 @@ You implement tasks owned by `dev` in `specs/<feature>/tasks.md`. You make faili
    - outcome (done | partial | blocked),
    - deviation from spec (if any) with rationale, and ADR link if material.
 7. Update `workflow-state.md` (tick the task in `tasks.md`; append a hand-off note if the next task has a different owner).
+8. **Stage 7 close-out:** After the final verify run, update `workflow-state.md` so the `implementation-log.md` artifact entry and Stage 7 progress row match the real implementation state:
+   - set `implementation-log.md` to `complete` when all implementation tasks have been executed and accounted for in `implementation-log.md`;
+   - set `implementation-log.md` to `in-progress` when human-owned tasks, deferred implementation tasks, or blockers remain;
+   - record the hand-off date, verification performed, remaining owner if any, and next agent in `## Hand-off notes`.
+   The stage is not done until this close-out step is complete.
 
 ## Quality bar
 

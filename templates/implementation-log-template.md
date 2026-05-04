@@ -64,3 +64,4 @@ Avoid starting nested task subsections with a bare `### T-<AREA>-NNN` heading at
 - [ ] No unrelated changes ("scope creep") in any task entry.
 - [ ] Lint, type checks, unit tests green for the changed surface.
 - [ ] Commits reference task IDs.
+- [ ] `workflow-state.md` Stage 7 close-out complete: `implementation-log.md` is `complete` when all tasks are executed, or `in-progress` when human-owned tasks, deferred implementation tasks, or blockers remain; `## Hand-off notes` records the date, verification, remaining owner if any, and next agent.

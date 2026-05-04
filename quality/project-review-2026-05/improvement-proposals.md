@@ -1,0 +1,305 @@
+---
+id: PRV-PRJ-PROP-001
+title: Agentic workflow — improvement proposals
+status: complete
+created: 2026-05-04
+inputs:
+  - quality/project-review-2026-05/findings.md
+---
+
+# Improvement proposals — agentic-workflow
+
+## Recommendation summary
+
+- Recommended first draft PR: this PR, adding the repository-wide review artifacts and creating a tracking issue.
+- Tracking issue: [#293 — Project review 2026-05: repository health, risks, and improvement backlog](https://github.com/Luis85/agentic-workflow/issues/293)
+- Deferred proposals: verify flake investigation, WIP/clarification burn-down, settings audit automation, release provenance, Shape B release-flow clarification, ADR status sweep, parser boundary hardening, adopter-docs graduation, agentic control-plane threat modeling, operational bot drift tests, issue-mirror review checks, SBOM posture, product positioning architecture, promotion proof assets, runtime/plugin packaging boundaries.
+
+## Proposals
+
+### PRV-PROP-001 — Keep the project review as a durable quality artifact
+
+- Problem: repository-wide reviews can disappear into chat unless captured as repeatable artifacts.
+- Evidence: `docs/project-review-workflow.md` already defines a review sink; this review produced actionable findings across process, CI, docs, and settings.
+- Expected benefit: creates a repeatable baseline for future project reviews and gives GitHub issues/PRs concrete evidence to link.
+- Affected surfaces: `quality/project-review-2026-05/`, GitHub issue, draft PR.
+- Effort: small.
+- Risk: low; documentation-only.
+- Owner: project reviewer / maintainer.
+- Success signal: issue and draft PR are linked, review artifacts pass `npm run verify:json`.
+- First draft PR candidate: yes.
+- Proposed branch: `docs/project-review-2026-05`.
+- Proposed PR title: `docs(quality): add 2026-05 project review`.
+- Verification: `npm ci`, `npm run test:scripts`, `npm run verify:json`.
+
+### PRV-PROP-002 — Investigate and stabilize the verify failure pattern
+
+- Problem: a gate that sometimes fails then passes without changes weakens the "verify before push" contract.
+- Evidence: first local `npm run verify:json` failed at `test:scripts`; reruns passed; GitHub PR #291 showed failing `Verify`.
+- Expected benefit: restores confidence that failures represent code or artifact defects, not non-determinism.
+- Affected surfaces: `scripts/test-scripts.ts`, relevant test fixtures, CI logs.
+- Effort: medium.
+- Risk: medium; fix may touch shared test runner behavior.
+- Owner: script tooling maintainer.
+- Success signal: repeated `npm run verify:json` passes locally and on CI; failure mode has a tracked root cause or a fixed test.
+- First draft PR candidate: no.
+- Proposed branch: `fix/verify-stability`.
+- Proposed PR title: `fix(verify): stabilize script test gate`.
+- Verification: repeated `npm run verify:json`; CI Verify on PR; targeted failing test reruns.
+
+### PRV-PROP-003 — Enforce a temporary WIP burn-down before new feature expansion
+
+- Problem: active workflow count, blockers, and clarifications are higher than the current process can comfortably absorb.
+- Evidence: `npm run self-check` reported 20 workflow states, 3 blockers, open clarifications in 3 features, and issue #292 already asks to block feature work until tooling debt is cleared.
+- Expected benefit: reduces context churn, shortens review queues, and makes release readiness easier to judge.
+- Affected surfaces: GitHub issues #292, #255, #209, open PRs, active `specs/*/workflow-state.md`.
+- Effort: medium.
+- Risk: medium; may delay feature work.
+- Owner: maintainer / roadmap manager.
+- Success signal: zero active blockers, no unresolved open clarifications in active specs, and self-check score trending upward.
+- First draft PR candidate: no.
+- Proposed branch: `docs/wip-burn-down-plan`.
+- Proposed PR title: `docs(quality): add WIP burn-down plan`.
+- Verification: `npm run self-check`; `npm run quality:metrics`.
+
+### PRV-PROP-004 — Add a settings evidence checklist or `check-rbac` follow-up
+
+- Problem: GitHub rulesets, Pages, Dependabot alerts, Code Security, secret scanning, and maintainer 2FA are not fully represented by committed YAML.
+- Evidence: docs already list required settings; ruleset API confirms active rules for `main`, `develop`, `demo`; branch protection endpoint returns 404 because rulesets are used instead of legacy protection.
+- Expected benefit: closes the gap between documented security posture and audit evidence.
+- Affected surfaces: `docs/rbac.md`, `docs/security-ci.md`, optional `scripts/check-rbac.ts`.
+- Effort: medium.
+- Risk: low to medium depending on automation depth.
+- Owner: security / tooling maintainer.
+- Success signal: one command or checklist records settings evidence with dates and API commands.
+- First draft PR candidate: no.
+- Proposed branch: `docs/settings-evidence-checklist`.
+- Proposed PR title: `docs(security): add repository settings evidence checklist`.
+- Verification: `npm run check:links`; API command dry-run.
+
+### PRV-PROP-005 — Add release provenance or an explicit SLSA posture decision
+
+- Problem: release composition is controlled, but consumers do not yet receive clear provenance/attestation evidence.
+- Evidence: SLSA Build L1 expects provenance describing build platform, process, and inputs; current release flow builds a staged archive but no explicit provenance artifact was found. GitHub artifact attestations can cover build assets; npm trusted publishing/provenance applies to an npmjs.com publication path rather than the current GitHub Packages publish path.
+- Expected benefit: improves supply-chain transparency and complements existing Scorecard/CodeQL/dependency-review controls.
+- Affected surfaces: `.github/workflows/release.yml`, `docs/release-operator-guide.md`, `docs/release-readiness-guide.md`, possibly ADR.
+- Effort: medium to large.
+- Risk: medium; release automation is sensitive.
+- Owner: release manager / security maintainer.
+- Success signal: release artifacts include provenance or docs record an explicit deferral with rationale.
+- First draft PR candidate: no.
+- Proposed branch: `docs/release-provenance-decision`.
+- Proposed PR title: `docs(release): record SLSA provenance posture`.
+- Verification: release dry-run, `npm run check:release-readiness`, `npm run verify:json`.
+
+### PRV-PROP-005A — Clarify Shape B release flow
+
+- Problem: Shape B is now active for integration work, but release docs and workflow comments still preserve v0.5 Shape A assumptions.
+- Evidence: ruleset applies to `main`, `develop`, and `demo`; PRs target `develop`; `release.yml` still creates Releases against `main`; ADR-0020 is superseded by proposed ADR-0027.
+- Expected benefit: contributors can tell whether tags and releases still happen from `main` after `develop` promotion.
+- Affected surfaces: `docs/branching.md`, `docs/release-operator-guide.md`, `.github/workflows/release.yml` comments, ADR-0027 status.
+- Effort: small.
+- Risk: low; documentation first.
+- Owner: release manager / maintainer.
+- Success signal: one paragraph states the current Shape B release path and references the governing ADR.
+- First draft PR candidate: no.
+- Proposed branch: `docs/shape-b-release-flow`.
+- Proposed PR title: `docs(release): clarify Shape B release flow`.
+- Verification: `npm run check:links`; `npm run verify:changed`.
+
+### PRV-PROP-005B — Sweep proposed ADR statuses
+
+- Problem: proposed ADRs in core workflow areas can become ambiguous policy when related work has partly shipped.
+- Evidence: proposed ADRs found for Obsidian layer, log-shaped artifact sharding, issue breakdown, doc-as-contract review, Shape B, and repo adoption; ADR-0020 is superseded by ADR-0027.
+- Expected benefit: cleaner governance and easier onboarding for reviewers and downstream adopters.
+- Affected surfaces: `docs/adr/*.md`, `docs/adr/README.md`.
+- Effort: small to medium.
+- Risk: medium; accepting or superseding an ADR is governance-significant.
+- Owner: architect / maintainer.
+- Success signal: each proposed ADR has an explicit next action: accept, keep proposed with reason/date, or supersede.
+- First draft PR candidate: no.
+- Proposed branch: `docs/adr-status-sweep`.
+- Proposed PR title: `docs(adr): review proposed decision statuses`.
+- Verification: `npm run check:adr-index`; `npm run verify:changed`.
+
+### PRV-PROP-006 — Keep parser hardening scoped and do not expand `parseSimpleYaml`
+
+- Problem: a custom YAML subset parser is useful but easy to overextend.
+- Evidence: `scripts/lib/repo.ts` implements `parseSimpleYaml`; issue #209 tracks Zod validation; specs explicitly defer replacing the YAML boundary.
+- Expected benefit: prevents subtle state-file parsing bugs while preserving current lightweight tooling.
+- Affected surfaces: issue #209, `scripts/lib/repo.ts`, `scripts/lib/*` validators.
+- Effort: medium.
+- Risk: medium; parser changes can affect many checks.
+- Owner: script tooling maintainer.
+- Success signal: schema validation improves around parser outputs without increasing the parser's accepted YAML surface.
+- First draft PR candidate: no.
+- Proposed branch: `feat/zod-parser-boundaries`.
+- Proposed PR title: `feat(scripts): validate parser boundaries with zod`.
+- Verification: `npm run test:scripts`; parser fixture tests; `npm run verify:json`.
+
+### PRV-PROP-007 — Run a first-time adopter documentation walkthrough
+
+- Problem: the repo contains strong internal process documentation, but adopter-facing guidance still needs proof from an external user's path.
+- Evidence: Diataxis-aligned docs exist; `docs/tutorials/first-feature.md` and `docs/how-to/` are present; internal plans remain extensive.
+- Expected benefit: clarifies what a new user should read, run, and ignore during first adoption.
+- Affected surfaces: `docs/tutorials/first-feature.md`, `docs/how-to/`, `README.md`, `sites/index.html`.
+- Effort: medium.
+- Risk: low.
+- Owner: docs maintainer.
+- Success signal: a clean-room walkthrough produces no missing-step issues or produces filed follow-ups.
+- First draft PR candidate: no.
+- Proposed branch: `docs/adopter-walkthrough`.
+- Proposed PR title: `docs(onboarding): record first-time adopter walkthrough`.
+- Verification: `npm run check:content`; manual walkthrough log.
+
+### PRV-PROP-008 — Add an agentic control-plane threat model
+
+- Problem: critical agent behavior is spread across local permission rules, RBAC docs, operational prompts, GitHub issue/PR mutation paths, and workflow state conventions.
+- Evidence: `.claude/settings.json` contains literal-prefix allow/deny rules and a commit hook; `docs/rbac.md` maps role boundaries; operational bot prompts define fail-closed behavior; OWASP LLM and Agentic AI guidance frames prompt/tool/agency risk as a threat-modeling problem.
+- Expected benefit: makes bypass cases, trust boundaries, and test obligations explicit before adding more autonomous routines.
+- Affected surfaces: `docs/rbac.md`, `.claude/settings.json`, `agents/operational/*/PROMPT.md`, optional new `docs/security/agentic-control-plane.md`.
+- Effort: medium.
+- Risk: medium; threat models can sprawl unless scoped to concrete mutation paths.
+- Owner: security maintainer / architect.
+- Success signal: one document maps assets, actors, trust boundaries, misuse cases, controls, and verification evidence.
+- First draft PR candidate: no.
+- Proposed branch: `docs/agentic-control-plane-threat-model`.
+- Proposed PR title: `docs(security): add agentic control-plane threat model`.
+- Verification: `npm run check:links`; targeted review of changed security docs.
+
+### PRV-PROP-009 — Add dry-run and drift checks for operational bots
+
+- Problem: standalone bot prompts are intentionally duplicated from interactive surfaces, so divergence can change production automation behavior.
+- Evidence: `agents/operational/issue-breakdown-bot/PROMPT.md` says it does not import `.claude/skills/issue-breakdown/SKILL.md` or `.claude/agents/issue-breakdown.md`; both issue-breakdown and review-bot prompts expose `DRY_RUN` behavior.
+- Expected benefit: catches prompt drift, missing fail-closed behavior, and accidental write-scope expansion before a scheduled bot run.
+- Affected surfaces: `agents/operational/*/PROMPT.md`, bot workflow docs, optional test fixtures under `tests/fixtures/`.
+- Effort: medium.
+- Risk: medium; tests must avoid real GitHub mutation and remain deterministic.
+- Owner: automation maintainer.
+- Success signal: dry-run fixtures assert no real `gh issue`, `gh pr`, `git push`, or source-tree writes happen outside documented sinks.
+- First draft PR candidate: no.
+- Proposed branch: `test/operational-bot-dry-runs`.
+- Proposed PR title: `test(automation): add operational bot dry-run fixtures`.
+- Verification: `npm run test:scripts`; `npm run verify:changed`.
+
+### PRV-PROP-010 — Add issue-mirror checks to project-review handoff
+
+- Problem: issue sync and drift checks are useful project-review evidence, but they are intentionally excluded from the universal offline verify gate.
+- Evidence: `scripts/check-issues.ts` states it is not included in `npm run verify`; `scripts/sync-issues.ts` is pull-only and supports `--dry-run --json`; `docs/sink.md` documents `issues/` as the canonical local mirror.
+- Expected benefit: project reviews can detect issue metadata drift without weakening offline-safe verification.
+- Affected surfaces: `docs/project-review-workflow.md`, future `quality/<review>/review-plan.md` templates.
+- Effort: small.
+- Risk: low; documentation/checklist-only unless automation is added later.
+- Owner: project-review maintainer.
+- Success signal: project-review handoff records whether `npm run sync:issues -- --dry-run --json` and `npm run check:issues` passed, warned, or were skipped with reason.
+- First draft PR candidate: no.
+- Proposed branch: `docs/project-review-issue-checks`.
+- Proposed PR title: `docs(project-review): add issue mirror evidence checks`.
+- Verification: `npm run check:links`; `npm run verify:changed`.
+
+### PRV-PROP-011 — Record an SBOM posture decision
+
+- Problem: release trust recommendations now include provenance and SBOMs, but this repo has not decided whether SBOM output belongs in the release package, release assets, or only internal security reviews.
+- Evidence: npm provides `npm sbom`; CycloneDX provides richer npm SBOM generation; SLSA provenance guidance is adjacent but not the same artifact as an SBOM.
+- Expected benefit: prevents ad hoc SBOM generation from becoming another unowned release artifact.
+- Affected surfaces: `docs/release-operator-guide.md`, `docs/release-readiness-guide.md`, optional ADR, possibly `.github/workflows/release.yml`.
+- Effort: small for decision, medium for implementation.
+- Risk: medium if implemented in release workflow before artifact ownership is clear.
+- Owner: release manager / security maintainer.
+- Success signal: docs state whether SBOM is required, optional, deferred, or internal-only for the next release line.
+- First draft PR candidate: no.
+- Proposed branch: `docs/sbom-posture`.
+- Proposed PR title: `docs(release): record SBOM posture`.
+- Verification: `npm run check:links`; release dry-run if implementation follows.
+
+### PRV-PROP-012 — Define the Specorator product ladder
+
+- Problem: public copy should make the adoption model obvious: the workflow is the product, harness support is the channel, and runtime/plugin extensions enhance the experience.
+- Evidence: `docs/specorator-product/product.md` says "the workflow is the product"; README and product page mention tool-agnostic support; Claude Code docs distinguish project-local `.claude/` configuration from shareable plugins; Codex and Cursor both support repository-level instruction surfaces.
+- Expected benefit: avoids users waiting for `specorator-runtime` or a plugin before adopting the method, while still creating a clear reason to install purpose-built extensions later.
+- Affected surfaces: README, `sites/index.html`, `docs/product-brief.md`, `docs/specorator-product/product.md`, future `docs/specorator-runtime.md`, plugin marketplace copy.
+- Effort: small to medium.
+- Risk: medium; positioning changes should avoid overclaiming support for integrations that are not shipped yet.
+- Owner: product maintainer / release manager.
+- Success signal: first-time readers can explain the four-layer model: Markdown workflow core, harness adapters, `specorator-runtime`, and plugin/marketplace extensions.
+- First draft PR candidate: no.
+- Proposed branch: `docs/product-positioning-ladder`.
+- Proposed PR title: `docs(product): define Specorator product ladder`.
+- Verification: `npm run check:links`; product-page content check.
+
+### PRV-PROP-013 — Build proof-shaped promotion assets
+
+- Problem: marketing the workflow as a product needs evidence that the method changes outcomes, not only a long list of stages and tracks.
+- Evidence: `examples/cli-todo/` provides a traceable worked example; product page already has a workflow visual and FAQ; GitHub README guidance emphasizes what the project does, why useful, how to start, where to get help, and who maintains it.
+- Expected benefit: gives developers, PMs, and enterprise evaluators a concrete reason to try Specorator and a shareable demo loop.
+- Affected surfaces: `sites/index.html`, `README.md`, `docs/product-brief.md`, `examples/`, optional short screencast script.
+- Effort: medium.
+- Risk: low to medium; proof assets must be kept in sync with the actual workflow.
+- Owner: product maintainer / docs maintainer.
+- Success signal: a visitor can see one feature move from idea to requirements to tasks to tests to PR, including the verify gate, in under ten minutes.
+- First draft PR candidate: no.
+- Proposed branch: `docs/product-proof-assets`.
+- Proposed PR title: `docs(product): add Specorator proof assets`.
+- Verification: `npm run check:product-page`; `npm run check:links`; manual proof walkthrough.
+
+### PRV-PROP-014 — Record runtime and plugin packaging boundaries
+
+- Problem: `specorator-runtime` and the Claude plugin can become strategically important, but their promises should be bounded before promotion copy hardens.
+- Evidence: current distribution is repository, GitHub Release, and GitHub Package; Claude plugin docs position plugins as reusable, versioned, shareable extensions with marketplace distribution; existing cross-tool guides already make the Markdown workflow usable without a runtime.
+- Expected benefit: clarifies what belongs in the open-core workflow, what `specorator-runtime` automates, what the Claude plugin packages, and what future Cursor/Codex adapters should do.
+- Affected surfaces: new runtime/plugin roadmap doc, README roadmap, `docs/specorator-product/product.md`, optional ADR if distribution boundaries become load-bearing.
+- Effort: medium.
+- Risk: medium; premature packaging decisions can constrain the product before user feedback.
+- Owner: product maintainer / tooling maintainer.
+- Success signal: runtime and plugin are described as optional accelerators with explicit jobs-to-be-done, install paths, versioning expectations, and non-goals.
+- First draft PR candidate: no.
+- Proposed branch: `docs/runtime-plugin-boundaries`.
+- Proposed PR title: `docs(product): define runtime and plugin boundaries`.
+- Verification: `npm run check:links`; ADR/index checks if an ADR is added.
+
+## Issue body draft
+
+```markdown
+## Project review
+
+Scope: repository-wide review of `agentic-workflow` / Specorator as of 2026-05-04, covering governance, workflow state, git/GitHub history, CI/security posture, docs, release process, and external benchmarks.
+
+Key learnings:
+- Strong governance, traceability, CI security, and release-surface discipline are worth preserving.
+- Main risks are WIP/clarification load, verify reliability, settings evidence gaps, release provenance, parser boundary debt, and adopter-doc graduation.
+
+Improvement proposals:
+- Keep this project review as a durable quality artifact.
+- Investigate the verify pass-after-fail pattern.
+- Burn down active blockers and clarifications before expanding feature work.
+- Add repository settings evidence or `check-rbac` automation.
+- Record or implement release provenance/SLSA posture.
+- Clarify Shape B release flow.
+- Sweep proposed ADR statuses.
+- Keep parser hardening scoped around `parseSimpleYaml`.
+- Run a first-time adopter documentation walkthrough.
+- Add an agentic control-plane threat model.
+- Add operational bot dry-run and drift checks.
+- Add issue-mirror sync/drift evidence to project reviews.
+- Record an SBOM posture decision.
+- Define the Specorator product ladder: workflow core, harness adapters, runtime, and plugins.
+- Build proof-shaped promotion assets around one traceable feature and cross-harness handoff.
+- Record runtime and plugin packaging boundaries before marketing them as ecosystem extensions.
+
+First draft PR: https://github.com/Luis85/agentic-workflow/pull/294
+
+Verification:
+- `npm ci`
+- `npm run test:scripts`
+- `npm run verify:json`
+
+Remaining risks:
+- Review is broad but not an exhaustive static analysis of every artifact.
+- Some GitHub settings require maintainer confirmation outside committed files.
+```
+
+## Quality gate
+
+- [x] At least one proposal is small enough for a draft PR.
+- [x] Every proposal links back to at least one finding.
+- [x] Governance or constitution changes are explicitly escalated instead of silently applied.
