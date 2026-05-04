@@ -95,7 +95,36 @@ function stripBlockQuotePrefix(line: string): string {
 }
 
 function stripInlineCodeSpansGlobal(text: string): string {
-  const chars = text.split("");
+  const blocks = splitIntoInlineBlocks(text);
+  return blocks.map(stripInlineCodeSpansInBlock).join("\n");
+}
+
+function splitIntoInlineBlocks(text: string): string[] {
+  const lines = text.split("\n");
+  const blocks: string[] = [];
+  let current: string[] = [];
+  const flush = () => {
+    if (current.length > 0) {
+      blocks.push(current.join("\n"));
+      current = [];
+    }
+  };
+  for (const line of lines) {
+    const isBlank = /^[ \t]*$/.test(line);
+    const isHeading = /^[ \t]{0,3}#{1,6}([ \t]|$)/.test(line);
+    if (isBlank || isHeading) {
+      flush();
+      blocks.push(line);
+    } else {
+      current.push(line);
+    }
+  }
+  flush();
+  return blocks;
+}
+
+function stripInlineCodeSpansInBlock(block: string): string {
+  const chars = block.split("");
   let i = 0;
   while (i < chars.length) {
     if (chars[i] !== "`") {

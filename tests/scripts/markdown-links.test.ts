@@ -114,6 +114,25 @@ test("stripCodeRegions blanks fenced blocks nested in block quotes", () => {
   assert.equal(stripped[3], "after [real](./real.md)");
 });
 
+test("stripCodeRegions does not pair backticks across heading or blank-line boundaries", () => {
+  const acrossHeading = ["# Title `", "See [bad](missing.md) and `ok`."].join("\n");
+  const stripped1 = stripCodeRegions(acrossHeading);
+  assert.equal(
+    stripped1.includes("[bad](missing.md)"),
+    true,
+    "stray backtick in heading must not consume a link in the paragraph below",
+  );
+  assert.equal(stripped1.includes("ok"), false, "real inline code in the paragraph is still stripped");
+
+  const acrossBlank = ["leading `paragraph", "", "[real](./real.md) paired `tail"].join("\n");
+  const stripped2 = stripCodeRegions(acrossBlank);
+  assert.equal(
+    stripped2.includes("[real](./real.md)"),
+    true,
+    "backticks must not pair across a blank line",
+  );
+});
+
 test("stripCodeRegions handles inline code spans that cross line boundaries", () => {
   const input = ["before `code", "[x](missing.md)", "end` after"].join("\n");
   const stripped = stripCodeRegions(input);
