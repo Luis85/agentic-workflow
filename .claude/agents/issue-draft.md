@@ -54,12 +54,16 @@ Read `workflow-state.md`. If `draft_pr` already set, surface to conductor: "draf
 ```bash
 # Detect integration branch (already resolved in Step 1)
 BRANCH="feat/<slug>-draft"
+if git ls-remote --exit-code origin "${BRANCH}" >/dev/null 2>&1; then
+  BRANCH="feat/<slug>-draft-2"
+fi
 git switch -c "${BRANCH}" <integration-branch>
 git commit --allow-empty -m "chore(<area>): open draft discussion for <slug>"
 git push -u origin "${BRANCH}"
+git switch <integration-branch>
 ```
 
-If branch name collides on remote, append `-2` and retry once.
+`BRANCH` holds the final branch name (with any `-2` suffix). Switch back to the integration branch after push — the draft branch carries no source diff.
 
 ### Step 6 — Render and open draft PR
 
@@ -115,11 +119,32 @@ Append the three new optional fields to the YAML frontmatter of `specs/<slug>/wo
 
 ```yaml
 draft_pr: <pr-number>
-draft_pr_branch: feat/<slug>-draft
+draft_pr_branch: <BRANCH>
 issue_number: <n>
 ```
 
-Use the Edit tool to add these lines. Never overwrite existing frontmatter fields.
+Use `${BRANCH}` (the variable from Step 5 — includes any `-2` suffix). Use the Edit tool to add these lines. Never overwrite existing frontmatter fields.
+
+### Step 8.5 — Commit workflow-state changes on a housekeeping branch
+
+`workflow-state.md` is now modified but uncommitted. Commit it on a short-lived housekeeping branch so the working tree is left clean and the metadata is not lost on a branch switch.
+
+```bash
+RUNID=$(date -u +%Y%m%d%H%M)
+HOUSEKEEPING="chore/issue-draft-state-<slug>-${RUNID}"
+git switch -c "${HOUSEKEEPING}" <integration-branch>
+git add specs/<slug>/workflow-state.md
+git commit -m "chore(issue-draft): record draft PR state for <slug>"
+git push -u origin "${HOUSEKEEPING}"
+gh pr create \
+  --base <integration-branch> \
+  --head "${HOUSEKEEPING}" \
+  --title "chore(issue-draft): record draft PR state for <slug>" \
+  --body "Records draft_pr (#<pr-number>), draft_pr_branch, and issue_number in specs/<slug>/workflow-state.md. Safe to merge whenever convenient — does not block the draft PR."
+git switch <integration-branch>
+```
+
+If the housekeeping push is denied, surface the failure with the local commit SHA so the operator can rescue the state manually. Do not silently swallow.
 
 ### Step 9 — Report
 
@@ -127,9 +152,9 @@ Return to the conductor:
 
 ```
 Draft PR #<pr-number> opened: feat(<area>): <feature title> [draft]
-Branch: feat/<slug>-draft
+Branch: <BRANCH>
 Issue PRD block applied to #<n>
-State recorded in specs/<slug>/workflow-state.md
+State recorded in specs/<slug>/workflow-state.md (housekeeping PR: #<housekeeping-pr>)
 ```
 
 ## Constraints
