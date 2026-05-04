@@ -2,9 +2,9 @@
 feature: shape-b-branching-adoption
 area: BRANCH
 current_stage: learning
-status: paused
+status: done
 last_updated: 2026-05-03
-last_agent: reviewer
+last_agent: retrospective
 artifacts:
   idea.md: complete
   research.md: complete
@@ -261,11 +261,16 @@ Plan-level meta-features may skip Stage 7-9 canonical artifacts when each sub-ta
                   being phased out by GitHub; rulesets give one allow-list spanning main+develop+demo with a
                   single bypass list (the maintainer) for the manual demo promotion. Recorded in ADR-0027
                   §Compliance.
-- [ ] OPEN-BRANCH-001 — exact path/syntax for the four scheduler-only bot configs (review-bot, plan-recon-bot,
+- [x] OPEN-BRANCH-001 — exact path/syntax for the four scheduler-only bot configs (review-bot, plan-recon-bot,
                   dep-triage-bot, actions-bump-bot). Likely .github/workflows/<bot>.yml; some may live outside
                   the repo. Owner: spec author. Does not block specification start.
-- [ ] OPEN-BRANCH-002 — whether to remove `main` from the github-pages environment allow-list immediately at
+                  RESOLVED 2026-05-03 (dev T-BRANCH-024 spike): no .github/workflows/<bot>.yml scheduler files
+                  exist in the repo. T-BRANCH-025 converted to documentation-only N/A finding.
+- [x] OPEN-BRANCH-002 — whether to remove `main` from the github-pages environment allow-list immediately at
                   rollout step 7 or leave it for a follow-up. Architecturally optional. Owner: spec author.
-- [ ] OPEN-BRANCH-003 — whether to add a PR-base CI check that fails when a topic PR targets `main`
+                  RESOLVED 2026-05-03: Pages env allow-list updated to contain demo, develop, main. Main retained
+                  for backwards compatibility (no harm). Remote op T-BRANCH-006 complete.
+- [x] OPEN-BRANCH-003 — whether to add a PR-base CI check that fails when a topic PR targets `main`
                   (RISK-BRANCH-004 mitigation). Out of scope for this feature per PRD NG; flagged for future.
                   Owner: spec author / future feature.
+                  RESOLVED 2026-05-03: explicitly out of scope per PRD NG. No action required for this feature.
