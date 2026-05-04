@@ -1215,9 +1215,12 @@ In `AGENTS.md`, locate the `| **Issue-breakdown** *(opt-in)* |` row.
 
 - [ ] **Step 2: Add the `Issue-draft` row directly after it**
 
-```markdown
-| **Issue-draft** *(opt-in)* | `.claude/agents/issue-draft.md` | Post-Stage-1. Opens early draft PR from `idea.md`; evolves issue body as living PRD via `issue-pr-sync`. | [`docs/issue-draft-track.md`](docs/issue-draft-track.md) ([ADR-0034](docs/adr/0034-add-issue-draft-track.md)) |
-```
+Add a new row matching the `Issue-breakdown` row format:
+
+- **Class** column: `**Issue-draft** *(opt-in)*`
+- **Location** column: `` `.claude/agents/issue-draft.md` ``
+- **Purpose** column: `Post-Stage-1. Opens early draft PR from `idea.md`; evolves issue body as living PRD via `issue-pr-sync`.`
+- **Methodology** column: link to `docs/issue-draft-track.md` and append `(ADR-0034)` linking to `docs/adr/0034-add-issue-draft-track.md` — paths resolve from the `AGENTS.md` location at repo root.
 
 - [ ] **Step 3: Run verify**
 

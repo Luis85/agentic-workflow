@@ -44,7 +44,7 @@ Repo = **template for spec-driven, agentic software development**. Defines workf
 
 ## Agent classes
 
-The canonical v1.0 track taxonomy is frozen in [`ADR-0026`](docs/adr/0026-freeze-v1-workflow-track-taxonomy.md). Agent classes below implement the core lifecycle and the opt-in/companion tracks in that taxonomy.
+Track taxonomy frozen in [`ADR-0026`](docs/adr/0026-freeze-v1-workflow-track-taxonomy.md). Below: agent classes per track.
 
 | Class | Location | Purpose | Methodology |
 |---|---|---|---|
@@ -59,20 +59,20 @@ The canonical v1.0 track taxonomy is frozen in [`ADR-0026`](docs/adr/0026-freeze
 | **Quality assurance** *(opt-in)* | `.claude/skills/quality-assurance/SKILL.md` | ISO 9001-aligned readiness review. State lives `quality/<slug>/`. | [`docs/quality-assurance-track.md`](docs/quality-assurance-track.md) |
 | **Project review** *(opt-in)* | `.claude/skills/project-review/SKILL.md` | Evidence-backed project history review. Captures learnings, proposes improvements, opens an issue, and creates the first draft PR from its own worktree. State lives `quality/<slug>/`. | [`docs/project-review-workflow.md`](docs/project-review-workflow.md) |
 | **Issue-breakdown** *(opt-in)* | `.claude/agents/issue-breakdown.md` | Post-tasks. Issue → draft PRs. Appends log + hand-off. | [`docs/issue-breakdown-track.md`](docs/issue-breakdown-track.md) |
-| **Issue-draft** *(opt-in)* | `.claude/agents/issue-draft.md` | Post-Stage-1. Opens early draft PR from `idea.md`; evolves issue body as living PRD via `issue-pr-sync`. | [`docs/issue-draft-track.md`](docs/issue-draft-track.md) ([ADR-0034](docs/adr/0034-add-issue-draft-track.md)) |
+| **Issue-draft** *(opt-in)* | `.claude/agents/issue-draft.md` | Post-Stage-1. Early draft PR from `idea.md`; living-PRD issue body. | [`docs/issue-draft-track.md`](docs/issue-draft-track.md) |
 | **Design** *(opt-in)* | `.claude/agents/design-lead.md` | Brand-aware surface creation. State lives `designs/<slug>/`. | [`docs/design-track.md`](docs/design-track.md) ([ADR-0019](docs/adr/0019-add-design-track.md)) |
 | **Specorator improvement** *(companion)* | `.claude/skills/specorator-improvement/SKILL.md` | Improve this template's scripts, tooling, workflows, docs, agents, skills, templates, state, or operations. | [`docs/specorator.md`](docs/specorator.md#15-improving-specorator-itself) |
 | **Operational bots** | `agents/operational/` | Scheduled routines (review-bot, docs-review-bot, plan-recon-bot, dep-triage-bot, actions-bump-bot). `PROMPT.md` + `README.md` per bot. | — |
 
-Skills (`.claude/skills/`) = reusable how-tos any agent invokes (`verify`, `new-adr`, `review-fix`). Eleven workflow-conductor skills are the conversational entry points — see [`.claude/skills/README.md`](.claude/skills/README.md).
+Skills (`.claude/skills/`) = reusable how-tos any agent invokes. Conductor skills are the conversational entry points — see [`.claude/skills/README.md`](.claude/skills/README.md).
 
 ## Tool-specific notes
 
-- **Claude Code.** Subagents at `.claude/agents/`, slash commands at `.claude/commands/`, skills at `.claude/skills/`, memory at `.claude/memory/`, permissions at `.claude/settings.json`. `CLAUDE.md` imports this file plus constitution + memory index.
+- **Claude Code.** Subagents, commands, skills, memory under `.claude/`; permissions in `.claude/settings.json`. `CLAUDE.md` imports this file plus constitution + memory index.
 - **Codex.** Primary context = this file. Codex specifics in [`.codex/`](.codex/README.md).
 - **Cursor / Aider.** Primary context = this file. `.cursor/rules/` optional.
 - **All tools.** Templates in `templates/` are framework-agnostic Markdown.
 
 ## When the harness gets in your way
 
-Process-light by design, but with local + CI quality signals (`npm run verify`, PR-title checks, spell check, Pages deployment, security scans, dep automation). Branch protection is intentionally light for early template adoption. Fighting tooling? Fix the process, don't work around it.
+Process-light, with local + CI quality signals (`npm run verify`, PR-title checks, spell check, Pages, security scans, deps). Branch protection is light for early adoption. Fighting tooling? Fix the process, don't work around it.
