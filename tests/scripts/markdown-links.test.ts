@@ -104,6 +104,26 @@ test("stripCodeRegions still strips spans when an escape is itself escaped", () 
   assert.equal(stripped.endsWith(" trailing"), true);
 });
 
+test("stripCodeRegions blanks fenced blocks nested in block quotes", () => {
+  const input = ["> ```", "> [x](missing.md)", "> ```", "after [real](./real.md)"].join("\n");
+  const stripped = stripCodeRegions(input).split("\n");
+  assert.equal(stripped.length, 4);
+  assert.equal(stripped[0], "");
+  assert.equal(stripped[1], "");
+  assert.equal(stripped[2], "");
+  assert.equal(stripped[3], "after [real](./real.md)");
+});
+
+test("stripCodeRegions handles inline code spans that cross line boundaries", () => {
+  const input = ["before `code", "[x](missing.md)", "end` after"].join("\n");
+  const stripped = stripCodeRegions(input);
+  assert.equal(stripped.length, input.length);
+  assert.equal(stripped.includes("missing.md"), false, "link inside multi-line span is blanked");
+  assert.equal(stripped.startsWith("before "), true);
+  assert.equal(stripped.endsWith(" after"), true);
+  assert.equal(stripped.split("\n").length, 3, "newlines are preserved across the span");
+});
+
 test("stripCodeRegions rejects backtick fence openers whose info string contains backticks", () => {
   const input = ["```js `inline` style explainer", "after [real](./real.md)"].join("\n");
   const stripped = stripCodeRegions(input).split("\n");

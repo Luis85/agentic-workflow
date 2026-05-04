@@ -43,22 +43,28 @@ function linkDiagnosticMessage(code: LinkDiagnosticCode, target: string): string
 /**
  * Replace fenced code blocks and inline code spans with whitespace so the link
  * scanner does not match path-like substrings inside code examples. Newlines
- * and total character offsets within a line are preserved, so diagnostic line
- * numbers continue to match the original source.
+ * and total character offsets are preserved, so diagnostic line numbers
+ * continue to match the original source. Block-quoted fences are recognised,
+ * and inline code spans may cross line boundaries.
  */
 export function stripCodeRegions(text: string): string {
+  return stripInlineCodeSpansGlobal(stripFencedBlocks(text));
+}
+
+function stripFencedBlocks(text: string): string {
   const lines = text.split(/\r?\n/);
   const out: string[] = [];
   let fenceChar: "`" | "~" | null = null;
   let fenceLen = 0;
   for (const line of lines) {
-    const fenceMatch = /^ {0,3}(`{3,}|~{3,})/.exec(line);
+    const body = stripBlockQuotePrefix(line);
+    const fenceMatch = /^ {0,3}(`{3,}|~{3,})/.exec(body);
     if (fenceChar !== null) {
       if (
         fenceMatch &&
         fenceMatch[1][0] === fenceChar &&
         fenceMatch[1].length >= fenceLen &&
-        line.slice(fenceMatch[0].length).trim() === ""
+        body.slice(fenceMatch[0].length).trim() === ""
       ) {
         fenceChar = null;
         fenceLen = 0;
@@ -67,10 +73,10 @@ export function stripCodeRegions(text: string): string {
       continue;
     }
     if (fenceMatch) {
-      const info = line.slice(fenceMatch[0].length);
+      const info = body.slice(fenceMatch[0].length);
       const isBacktickFence = fenceMatch[1][0] === "`";
       if (isBacktickFence && info.includes("`")) {
-        out.push(stripInlineCodeSpans(line));
+        out.push(line);
         continue;
       }
       fenceChar = fenceMatch[1][0] as "`" | "~";
@@ -78,59 +84,62 @@ export function stripCodeRegions(text: string): string {
       out.push("");
       continue;
     }
-    out.push(stripInlineCodeSpans(line));
+    out.push(line);
   }
   return out.join("\n");
 }
 
-function stripInlineCodeSpans(line: string): string {
-  let result = "";
+function stripBlockQuotePrefix(line: string): string {
+  const match = /^(?:[ \t]{0,3}>[ \t]?)+/.exec(line);
+  return match ? line.slice(match[0].length) : line;
+}
+
+function stripInlineCodeSpansGlobal(text: string): string {
+  const chars = text.split("");
   let i = 0;
-  while (i < line.length) {
-    if (line[i] !== "`") {
-      result += line[i];
+  while (i < chars.length) {
+    if (chars[i] !== "`") {
       i += 1;
       continue;
     }
     let runLen = 0;
-    while (i + runLen < line.length && line[i + runLen] === "`") runLen += 1;
-    if (isBackslashEscaped(line, i)) {
-      result += line.slice(i, i + runLen);
+    while (i + runLen < chars.length && chars[i + runLen] === "`") runLen += 1;
+    if (isBackslashEscaped(chars, i)) {
       i += runLen;
       continue;
     }
-    const closeIdx = findClosingBackticks(line, i + runLen, runLen);
+    const closeIdx = findClosingBackticksGlobal(chars, i + runLen, runLen);
     if (closeIdx === -1) {
-      result += line.slice(i, i + runLen);
       i += runLen;
       continue;
     }
-    const spanLen = closeIdx + runLen - i;
-    result += " ".repeat(spanLen);
+    for (let k = i; k < closeIdx + runLen; k += 1) {
+      if (chars[k] !== "\n" && chars[k] !== "\r") chars[k] = " ";
+    }
     i = closeIdx + runLen;
   }
-  return result;
+  return chars.join("");
 }
 
-function isBackslashEscaped(line: string, pos: number): boolean {
+function isBackslashEscaped(chars: string[], pos: number): boolean {
   let backslashes = 0;
   let j = pos - 1;
-  while (j >= 0 && line[j] === "\\") {
+  while (j >= 0 && chars[j] === "\\") {
     backslashes += 1;
     j -= 1;
   }
   return backslashes % 2 === 1;
 }
 
-function findClosingBackticks(line: string, start: number, runLen: number): number {
+function findClosingBackticksGlobal(chars: string[], start: number, runLen: number): number {
   let i = start;
-  while (i < line.length) {
-    if (line[i] !== "`") {
+  while (i < chars.length) {
+    if (chars[i] !== "`") {
       i += 1;
       continue;
     }
     let len = 0;
-    while (i + len < line.length && line[i + len] === "`") len += 1;
+    while (i + len < chars.length && chars[i + len] === "`") len += 1;
     if (len === runLen) return i;
     i += len;
   }
