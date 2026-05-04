@@ -112,6 +112,20 @@ Agent stages and commits both edits on a fresh `chore/issue-breakdown-audit-issu
 
 If the housekeeping push is denied (operator's permissions don't allow `chore/*`), surface the failure with the local commit SHA so the operator can rescue the audit trail manually.
 
+### Step 9.75 — Post-breakdown sync (non-fatal)
+
+Invoke the `issue-pr-sync` skill (`.claude/skills/issue-pr-sync/SKILL.md`) with:
+
+- `stage: breakdown`
+- `slug: <slug>`
+- `draft_pr`: read from `specs/<slug>/workflow-state.md`
+- `issue_number`: read from `specs/<slug>/workflow-state.md`
+- `slice_prs`: the list of PR numbers just opened (for populating the Tasks section)
+
+If `draft_pr` is absent in `workflow-state.md`, the skill exits silently. If `gh` fails, the skill warns and returns — do not abort the `/issue:breakdown` run.
+
+This step runs **after Step 9.5** (housekeeping commit). The working tree is already clean; no git state is affected.
+
 ### Step 10 — Report
 
 Print a 4-line summary to the user:
