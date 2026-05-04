@@ -96,7 +96,7 @@ function checkCss(text: string) {
 function checkPagesWorkflow(text: string) {
   const required: Array<[string, string]> = [
     ["branches:", "Pages workflow must restrict push branches"],
-    ["- main", "Pages workflow must deploy from main"],
+    ["- demo", "Pages workflow must deploy from demo"],
     ["workflow_dispatch:", "Pages workflow must support manual dispatch"],
     ["actions/configure-pages", "Pages workflow must configure Pages"],
     ["actions/upload-pages-artifact", "Pages workflow must upload a Pages artifact"],
