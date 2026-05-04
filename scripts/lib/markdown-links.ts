@@ -67,6 +67,12 @@ export function stripCodeRegions(text: string): string {
       continue;
     }
     if (fenceMatch) {
+      const info = line.slice(fenceMatch[0].length);
+      const isBacktickFence = fenceMatch[1][0] === "`";
+      if (isBacktickFence && info.includes("`")) {
+        out.push(stripInlineCodeSpans(line));
+        continue;
+      }
       fenceChar = fenceMatch[1][0] as "`" | "~";
       fenceLen = fenceMatch[1].length;
       out.push("");

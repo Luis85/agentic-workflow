@@ -85,3 +85,14 @@ test("stripCodeRegions leaves unmatched backticks alone", () => {
   const stripped = stripCodeRegions("a ` lone backtick and [link](./real.md)");
   assert.equal(stripped, "a ` lone backtick and [link](./real.md)");
 });
+
+test("stripCodeRegions rejects backtick fence openers whose info string contains backticks", () => {
+  const input = ["```js `inline` style explainer", "after [real](./real.md)"].join("\n");
+  const stripped = stripCodeRegions(input).split("\n");
+  assert.equal(stripped.length, 2);
+  assert.equal(
+    stripped[1],
+    "after [real](./real.md)",
+    "a backtick line with backtick info string must not open a fence",
+  );
+});

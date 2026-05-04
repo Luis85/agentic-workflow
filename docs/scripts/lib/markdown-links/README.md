@@ -24,3 +24,4 @@ entry_point: true
 - [safeDecode](functions/safeDecode.md)
 - [shouldIgnoreTarget](functions/shouldIgnoreTarget.md)
 - [slugVariants](functions/slugVariants.md)
+- [stripCodeRegions](functions/stripCodeRegions.md)
