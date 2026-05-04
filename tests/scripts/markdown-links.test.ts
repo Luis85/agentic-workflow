@@ -86,6 +86,24 @@ test("stripCodeRegions leaves unmatched backticks alone", () => {
   assert.equal(stripped, "a ` lone backtick and [link](./real.md)");
 });
 
+test("stripCodeRegions treats escaped backticks as literals, not code-span delimiters", () => {
+  const stripped = stripCodeRegions("\\`[bad](missing.md)\\` real");
+  assert.equal(
+    stripped,
+    "\\`[bad](missing.md)\\` real",
+    "escaped backticks must not blank the link target between them",
+  );
+});
+
+test("stripCodeRegions still strips spans when an escape is itself escaped", () => {
+  const input = "leading \\\\`code (foo.md)` trailing";
+  const stripped = stripCodeRegions(input);
+  assert.equal(stripped.length, input.length);
+  assert.equal(stripped.includes("foo.md"), false, "double-backslash leaves backtick unescaped");
+  assert.equal(stripped.startsWith("leading \\\\"), true);
+  assert.equal(stripped.endsWith(" trailing"), true);
+});
+
 test("stripCodeRegions rejects backtick fence openers whose info string contains backticks", () => {
   const input = ["```js `inline` style explainer", "after [real](./real.md)"].join("\n");
   const stripped = stripCodeRegions(input).split("\n");

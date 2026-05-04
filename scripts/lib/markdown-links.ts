@@ -94,6 +94,11 @@ function stripInlineCodeSpans(line: string): string {
     }
     let runLen = 0;
     while (i + runLen < line.length && line[i + runLen] === "`") runLen += 1;
+    if (isBackslashEscaped(line, i)) {
+      result += line.slice(i, i + runLen);
+      i += runLen;
+      continue;
+    }
     const closeIdx = findClosingBackticks(line, i + runLen, runLen);
     if (closeIdx === -1) {
       result += line.slice(i, i + runLen);
@@ -105,6 +110,16 @@ function stripInlineCodeSpans(line: string): string {
     i = closeIdx + runLen;
   }
   return result;
+}
+
+function isBackslashEscaped(line: string, pos: number): boolean {
+  let backslashes = 0;
+  let j = pos - 1;
+  while (j >= 0 && line[j] === "\\") {
+    backslashes += 1;
+    j -= 1;
+  }
+  return backslashes % 2 === 1;
 }
 
 function findClosingBackticks(line: string, start: number, runLen: number): number {
