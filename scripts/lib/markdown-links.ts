@@ -40,6 +40,82 @@ function linkDiagnosticMessage(code: LinkDiagnosticCode, target: string): string
   return `links to missing anchor ${target}`;
 }
 
+/**
+ * Replace fenced code blocks and inline code spans with whitespace so the link
+ * scanner does not match path-like substrings inside code examples. Newlines
+ * and total character offsets within a line are preserved, so diagnostic line
+ * numbers continue to match the original source.
+ */
+export function stripCodeRegions(text: string): string {
+  const lines = text.split(/\r?\n/);
+  const out: string[] = [];
+  let fenceChar: "`" | "~" | null = null;
+  let fenceLen = 0;
+  for (const line of lines) {
+    const fenceMatch = /^ {0,3}(`{3,}|~{3,})/.exec(line);
+    if (fenceChar !== null) {
+      if (
+        fenceMatch &&
+        fenceMatch[1][0] === fenceChar &&
+        fenceMatch[1].length >= fenceLen &&
+        line.slice(fenceMatch[0].length).trim() === ""
+      ) {
+        fenceChar = null;
+        fenceLen = 0;
+      }
+      out.push("");
+      continue;
+    }
+    if (fenceMatch) {
+      fenceChar = fenceMatch[1][0] as "`" | "~";
+      fenceLen = fenceMatch[1].length;
+      out.push("");
+      continue;
+    }
+    out.push(stripInlineCodeSpans(line));
+  }
+  return out.join("\n");
+}
+
+function stripInlineCodeSpans(line: string): string {
+  let result = "";
+  let i = 0;
+  while (i < line.length) {
+    if (line[i] !== "`") {
+      result += line[i];
+      i += 1;
+      continue;
+    }
+    let runLen = 0;
+    while (i + runLen < line.length && line[i + runLen] === "`") runLen += 1;
+    const closeIdx = findClosingBackticks(line, i + runLen, runLen);
+    if (closeIdx === -1) {
+      result += line.slice(i, i + runLen);
+      i += runLen;
+      continue;
+    }
+    const spanLen = closeIdx + runLen - i;
+    result += " ".repeat(spanLen);
+    i = closeIdx + runLen;
+  }
+  return result;
+}
+
+function findClosingBackticks(line: string, start: number, runLen: number): number {
+  let i = start;
+  while (i < line.length) {
+    if (line[i] !== "`") {
+      i += 1;
+      continue;
+    }
+    let len = 0;
+    while (i + len < line.length && line[i + len] === "`") len += 1;
+    if (len === runLen) return i;
+    i += len;
+  }
+  return -1;
+}
+
 export function shouldIgnoreTarget(target: string): boolean {
   if (!target || target.startsWith("#")) return false;
   if (/^(https?:|mailto:|app:|plugin:)/.test(target)) return true;

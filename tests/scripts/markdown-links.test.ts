@@ -7,6 +7,7 @@ import {
   safeDecode,
   shouldIgnoreTarget,
   slugVariants,
+  stripCodeRegions,
 } from "../../scripts/lib/markdown-links.js";
 
 test("collectAnchors follows GitHub-style duplicate heading suffixes", () => {
@@ -41,4 +42,46 @@ test("shouldIgnoreTarget skips external and template-placeholder links", () => {
   assert.equal(shouldIgnoreTarget("https://example.com"), true);
   assert.equal(shouldIgnoreTarget("specs/<feature-slug>/workflow-state.md"), true);
   assert.equal(shouldIgnoreTarget("./local.md"), false);
+});
+
+test("stripCodeRegions blanks fenced code blocks while preserving line numbers", () => {
+  const input = [
+    "before",
+    "```",
+    "see [text](missing.md) here",
+    "```",
+    "after [real](./real.md)",
+  ].join("\n");
+  const stripped = stripCodeRegions(input).split("\n");
+  assert.equal(stripped.length, 5);
+  assert.equal(stripped[0], "before");
+  assert.equal(stripped[1], "");
+  assert.equal(stripped[2], "");
+  assert.equal(stripped[3], "");
+  assert.equal(stripped[4], "after [real](./real.md)");
+});
+
+test("stripCodeRegions blanks tilde fences and respects fence length", () => {
+  const input = ["~~~~", "[x](y.md)", "~~~", "still inside [a](b.md)", "~~~~", "out"].join("\n");
+  const stripped = stripCodeRegions(input).split("\n");
+  assert.deepEqual(stripped, ["", "", "", "", "", "out"]);
+});
+
+test("stripCodeRegions blanks inline code spans without shifting columns", () => {
+  const stripped = stripCodeRegions("see `0027-adopt-shape-b.md` and [real](./real.md)");
+  assert.equal(stripped.length, "see `0027-adopt-shape-b.md` and [real](./real.md)".length);
+  assert.equal(stripped.includes("0027-adopt-shape-b.md"), false);
+  assert.equal(stripped.endsWith("[real](./real.md)"), true);
+});
+
+test("stripCodeRegions handles nested backtick runs in inline code", () => {
+  const stripped = stripCodeRegions("text ``with ` backtick (foo.md)`` rest");
+  assert.equal(stripped.includes("foo.md"), false);
+  assert.equal(stripped.startsWith("text "), true);
+  assert.equal(stripped.endsWith(" rest"), true);
+});
+
+test("stripCodeRegions leaves unmatched backticks alone", () => {
+  const stripped = stripCodeRegions("a ` lone backtick and [link](./real.md)");
+  assert.equal(stripped, "a ` lone backtick and [link](./real.md)");
 });
