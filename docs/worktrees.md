@@ -17,10 +17,12 @@ Worktrees give each branch its own filesystem view that shares the underlying `.
 
 ## Lifecycle
 
+Cut every topic branch from the integration branch — `develop` for this template repo under Shape B ([ADR-0027](adr/0027-adopt-shape-b-branching-model.md)), `main` for adopters operating Shape A. The examples below use `develop`; substitute `main` if your project follows Shape A.
+
 ```bash
-# 1. Create a worktree for a new branch, off the integration branch
+# 1. Create a worktree for a new branch, cut from develop (the integration branch)
 git fetch origin
-git worktree add .worktrees/<slug> -b <prefix>/<slug> origin/<integration-branch>
+git worktree add .worktrees/<slug> -b <prefix>/<slug> origin/develop
 
 # 2. Work inside it
 cd .worktrees/<slug>
@@ -30,8 +32,8 @@ cd .worktrees/<slug>
 # … implement, commit, push, open PR …
 
 # 3. After the PR merges, clean up
-cd ../..                             # back to the main checkout
-git pull --ff-only                   # bring the integration branch to the merge commit
+cd ../..                             # back to the main checkout on develop
+git pull --ff-only                   # bring develop to the merge commit
 git worktree remove .worktrees/<slug>
 git branch -d <prefix>/<slug>
 git worktree prune                   # if needed
@@ -56,8 +58,9 @@ For anything that touches code, runs tests, or is reviewed by an automated revie
 - **`git pull` while inside the main checkout's integration branch with worktrees open.** Safe — the worktrees see the new commits the next time they `fetch`.
 - **Deleting a worktree directory with `rm -rf`.** Use `git worktree remove`. A bare `rm -rf` leaves a stale `.git/worktrees/<slug>` administrative entry; `git worktree prune` cleans that up after the fact.
 - **Empty directories left under `.worktrees/`.** `npm run doctor` warns when a directory exists under `.worktrees/` but is not registered as a git worktree. Confirm it is empty and unrelated to active work before deleting it.
-- **Merged local branches piling up.** `npm run doctor` warns when local topic branches are already merged into `origin/main`. Delete them after the PR merge is confirmed and the matching worktree is removed.
+- **Merged local branches piling up.** `npm run doctor` warns when local topic branches are already merged into the integration branch (`origin/develop` under Shape B; `origin/main` under Shape A). Delete them after the PR merge is confirmed and the matching worktree is removed.
 - **Staged new files bleeding across branches on `git checkout`.** When you switch branches while the index contains files staged for addition that are not tracked on either branch, git carries them into the new branch's index. A subsequent commit — even one that targets a single specific file — silently includes every staged file, pulling work from the wrong branch into your commit. **The fix is worktrees:** each worktree has its own index, so files staged in one branch never appear in another. If you must use the main checkout, run `npm run check:index-bleed` before committing; see [Issue #261](https://github.com/Luis85/agentic-workflow/issues/261) for the full incident report.
+- **Creating a worktree from inside another worktree.** Running `git worktree add` while your cwd is `.worktrees/<slug>/` creates the new worktree as `.worktrees/<slug>/.worktrees/<new-slug>/`, not `.worktrees/<new-slug>/` under the repo root. The canonical path for all worktrees is `.worktrees/<slug>/` directly under the repo root. Always run worktree commands from the main repo root.
 
 ## Settings
 

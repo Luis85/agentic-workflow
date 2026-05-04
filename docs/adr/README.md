@@ -39,7 +39,7 @@ Records of architecturally significant decisions. Format follows Michael Nygard'
 | [0024](0024-lock-specorator-agentic-workflow-naming-contract.md) | Lock the Specorator and agentic-workflow naming contract | Accepted |
 | [0025](0025-adopt-doc-as-contract-review-protocol.md) | Adopt a doc-as-contract review protocol | Proposed |
 | [0026](0026-freeze-v1-workflow-track-taxonomy.md) | Freeze the v1.0 workflow track taxonomy | Accepted |
-| [0027](0027-adopt-shape-b-branching-model.md) | Adopt Shape B branching model (develop / main / demo) for the template | Proposed |
+| [0027](0027-adopt-shape-b-branching-model.md) | Adopt Shape B branching model (develop / main / demo) for the template | Accepted |
 | [0028](0028-claude-baseline-as-canonical-source-for-adapters.md) | Treat the Claude baseline as the canonical source for multi-framework adapters | Accepted |
 | [0029](0029-adapter-pipeline-additive-only.md) | Make the multi-framework adapter pipeline additive-only over canonical sources | Accepted |
 | [0030](0030-add-repo-adoption-track.md) | Add Repo Adoption Track as v1.1 opt-in companion track | Proposed |
