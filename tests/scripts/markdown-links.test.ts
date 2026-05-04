@@ -114,6 +114,27 @@ test("stripCodeRegions blanks fenced blocks nested in block quotes", () => {
   assert.equal(stripped[3], "after [real](./real.md)");
 });
 
+test("stripCodeRegions does not pair backticks across setext underlines or thematic breaks", () => {
+  const acrossSetext = ["Title `", "===", "See [bad](missing.md) and `ok`."].join("\n");
+  const stripped1 = stripCodeRegions(acrossSetext);
+  assert.equal(
+    stripped1.includes("[bad](missing.md)"),
+    true,
+    "stray backtick before a setext underline must not pair across blocks",
+  );
+  assert.equal(stripped1.includes("ok"), false);
+
+  const acrossThematic = ["paragraph `", "---", "after [bad](missing.md) `tail`"].join("\n");
+  const stripped2 = stripCodeRegions(acrossThematic);
+  assert.equal(stripped2.includes("[bad](missing.md)"), true);
+  assert.equal(stripped2.includes("tail"), false);
+
+  const acrossThematicAsterisks = ["lead `", "***", "[real](./real.md) `code`"].join("\n");
+  const stripped3 = stripCodeRegions(acrossThematicAsterisks);
+  assert.equal(stripped3.includes("[real](./real.md)"), true);
+  assert.equal(stripped3.includes("code"), false);
+});
+
 test("stripCodeRegions does not pair backticks across heading or blank-line boundaries", () => {
   const acrossHeading = ["# Title `", "See [bad](missing.md) and `ok`."].join("\n");
   const stripped1 = stripCodeRegions(acrossHeading);

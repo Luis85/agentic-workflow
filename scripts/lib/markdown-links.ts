@@ -110,9 +110,7 @@ function splitIntoInlineBlocks(text: string): string[] {
     }
   };
   for (const line of lines) {
-    const isBlank = /^[ \t]*$/.test(line);
-    const isHeading = /^[ \t]{0,3}#{1,6}([ \t]|$)/.test(line);
-    if (isBlank || isHeading) {
+    if (isBlockBoundary(line)) {
       flush();
       blocks.push(line);
     } else {
@@ -121,6 +119,16 @@ function splitIntoInlineBlocks(text: string): string[] {
   }
   flush();
   return blocks;
+}
+
+function isBlockBoundary(line: string): boolean {
+  if (/^[ \t]*$/.test(line)) return true;
+  if (/^[ \t]{0,3}#{1,6}([ \t]|$)/.test(line)) return true;
+  if (/^[ ]{0,3}(=+|-+)[ \t]*$/.test(line)) return true;
+  if (/^[ ]{0,3}(?:-[ \t]*){3,}$/.test(line)) return true;
+  if (/^[ ]{0,3}(?:\*[ \t]*){3,}$/.test(line)) return true;
+  if (/^[ ]{0,3}(?:_[ \t]*){3,}$/.test(line)) return true;
+  return false;
 }
 
 function stripInlineCodeSpansInBlock(block: string): string {
