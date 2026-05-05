@@ -18,7 +18,7 @@ Shared conductor rules: `.claude/skills/_shared/conductor-pattern.md`.
 
 - `docs/superpowers/specs/2026-05-04-issue-draft-track-design.md` — source-of-truth design.
 - `docs/issue-draft-track.md` — methodology.
-- `docs/adr/0034-add-issue-draft-track.md` — rationale.
+- `docs/adr/0035-add-issue-draft-track.md` — rationale.
 - `memory/constitution.md` — Articles I, II, VI, IX.
 
 ## Inputs
@@ -98,4 +98,4 @@ Print a 3-line summary:
 - Methodology: `docs/issue-draft-track.md`.
 - Agent: `.claude/agents/issue-draft.md`.
 - Shared sync skill: `.claude/skills/issue-pr-sync/SKILL.md`.
-- ADR: `docs/adr/0034-add-issue-draft-track.md`.
+- ADR: `docs/adr/0035-add-issue-draft-track.md`.

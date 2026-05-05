@@ -27,7 +27,7 @@
 | 3 | `templates/issue-prd-template.md` | PRD sentinel block template |
 | 4 | `templates/issue-draft-pr-body-template.md` | Draft PR body skeleton |
 | 5 | `docs/issue-draft-track.md` | Methodology doc |
-| 6 | `docs/adr/0034-add-issue-draft-track.md` | ADR |
+| 6 | `docs/adr/0035-add-issue-draft-track.md` | ADR |
 | 7 | `.claude/skills/issue-pr-sync/SKILL.md` | Shared sync skill (no command) |
 | 8 | `.claude/agents/issue-draft.md` | Specialist subagent |
 | 9 | `.claude/skills/issue-draft/SKILL.md` | Conductor skill |
@@ -322,7 +322,7 @@ entry_point: false
 
 Opt-in track that runs *after* `/spec:idea`. Opens a draft PR seeded from `idea.md`, applies a PRD sentinel block to the parent issue body, and keeps both in sync via the `issue-pr-sync` shared skill as each subsequent stage completes.
 
-Filed by ADR-0034 (`docs/adr/0034-add-issue-draft-track.md`).
+Filed by ADR-0035 (`docs/adr/0035-add-issue-draft-track.md`).
 
 ## When to use
 
@@ -385,7 +385,7 @@ Not for:
 ## References
 
 - Design spec: `docs/superpowers/specs/2026-05-04-issue-draft-track-design.md`.
-- ADR: `docs/adr/0034-add-issue-draft-track.md`.
+- ADR: `docs/adr/0035-add-issue-draft-track.md`.
 - Shared skill: `.claude/skills/issue-pr-sync/SKILL.md`.
 - Companion track: `docs/issue-breakdown-track.md`.
 - Sink: `docs/sink.md`.
@@ -408,18 +408,18 @@ git commit -m "docs(workflow): add issue-draft track methodology doc"
 
 ---
 
-### Task 7: Create ADR-0034
+### Task 7: Create ADR-0035
 
 **Files:**
-- Create: `docs/adr/0034-add-issue-draft-track.md`
+- Create: `docs/adr/0035-add-issue-draft-track.md`
 
 - [ ] **Step 1: Create the file**
 
-Create `docs/adr/0034-add-issue-draft-track.md`:
+Create `docs/adr/0035-add-issue-draft-track.md`:
 
 ```markdown
 ---
-id: ADR-0034
+id: ADR-0035
 title: Add issue-draft track for early draft PR and living PRD from /spec:idea
 status: proposed
 date: 2026-05-04
@@ -434,7 +434,7 @@ superseded-by: []
 tags: [workflow, github, issue-lifecycle]
 ---
 
-# ADR-0034 — Add issue-draft track for early draft PR and living PRD from /spec:idea
+# ADR-0035 — Add issue-draft track for early draft PR and living PRD from /spec:idea
 
 ## Status
 
@@ -530,8 +530,8 @@ Expected: exit 0. The ADR index check auto-discovers the new file.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add docs/adr/0034-add-issue-draft-track.md
-git commit -m "docs(adr): ADR-0034 add issue-draft track"
+git add docs/adr/0035-add-issue-draft-track.md
+git commit -m "docs(adr): ADR-0035 add issue-draft track"
 ```
 
 ---
@@ -918,7 +918,7 @@ Shared conductor rules: `.claude/skills/_shared/conductor-pattern.md`.
 
 - `docs/superpowers/specs/2026-05-04-issue-draft-track-design.md` — source-of-truth design.
 - `docs/issue-draft-track.md` — methodology.
-- `docs/adr/0034-add-issue-draft-track.md` — rationale.
+- `docs/adr/0035-add-issue-draft-track.md` — rationale.
 - `memory/constitution.md` — Articles I, II, VI, IX.
 
 ## Inputs
@@ -998,7 +998,7 @@ Print a 3-line summary:
 - Methodology: `docs/issue-draft-track.md`.
 - Agent: `.claude/agents/issue-draft.md`.
 - Shared sync skill: `.claude/skills/issue-pr-sync/SKILL.md`.
-- ADR: `docs/adr/0034-add-issue-draft-track.md`.
+- ADR: `docs/adr/0035-add-issue-draft-track.md`.
 ```
 
 - [ ] **Step 2: Run verify**
@@ -1048,7 +1048,7 @@ The skill enforces:
 - The feature linked from the issue must have `idea.md` status `complete` in its `workflow-state.md`. If not, it will tell you to run `/spec:idea` first.
 - Re-runs are idempotent: if `draft_pr` is already set in `workflow-state.md`, the conductor surfaces the existing PR and aborts.
 
-See `docs/issue-draft-track.md` for the full methodology and `docs/adr/0034-add-issue-draft-track.md` for the rationale.
+See `docs/issue-draft-track.md` for the full methodology and `docs/adr/0035-add-issue-draft-track.md` for the rationale.
 ```
 
 - [ ] **Step 2: Run `npm run fix` to regenerate command inventory**
@@ -1220,7 +1220,7 @@ Add a new row matching the `Issue-breakdown` row format:
 - **Class** column: `**Issue-draft** *(opt-in)*`
 - **Location** column: `` `.claude/agents/issue-draft.md` ``
 - **Purpose** column: `Post-Stage-1. Opens early draft PR from `idea.md`; evolves issue body as living PRD via `issue-pr-sync`.`
-- **Methodology** column: link to `docs/issue-draft-track.md` and append `(ADR-0034)` linking to `docs/adr/0034-add-issue-draft-track.md` — paths resolve from the `AGENTS.md` location at repo root.
+- **Methodology** column: link to `docs/issue-draft-track.md` and append `(ADR-0035)` linking to `docs/adr/0035-add-issue-draft-track.md` — paths resolve from the `AGENTS.md` location at repo root.
 
 - [ ] **Step 3: Run verify**
 
@@ -1318,7 +1318,7 @@ Expected: `headRefName` is `feat/issue-draft-track`; commits include all tasks a
 - [ ] `.claude/skills/issue-draft/SKILL.md` exists with valid `name` frontmatter.
 - [ ] `.claude/commands/issue/draft.md` exists and is listed in the command-inventory generated block.
 - [ ] `docs/issue-draft-track.md` exists with valid frontmatter.
-- [ ] `docs/adr/0034-add-issue-draft-track.md` exists with valid frontmatter.
+- [ ] `docs/adr/0035-add-issue-draft-track.md` exists with valid frontmatter.
 - [ ] `templates/issue-prd-template.md` and `templates/issue-draft-pr-body-template.md` exist with valid frontmatter.
 - [ ] All five stage-conductor commands (research, requirements, design, specify, tasks) contain a `issue-pr-sync` invocation step.
 - [ ] `.claude/skills/issue-breakdown/SKILL.md` contains Step 9.75.

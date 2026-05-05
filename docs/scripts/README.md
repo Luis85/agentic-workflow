@@ -222,6 +222,7 @@ In GitHub Actions, `verify` requests JSON diagnostics from supported check scrip
 | `npm run automation:registry:discover` | Emit candidate registry entries for newly discovered automation surfaces. |
 | `npm run check:automation-registry` | Validate `tools/automation-registry.yml` against package scripts, workflows, skills, and operational agents. |
 | `npm run check:agents` | Validate lifecycle agents, skills, and operational agents as product artifacts. |
+| `npm run check:cli-contract` | Validate the specorator CLI contract: bin entry, script existence, tsx in dependencies, registered scripts on disk, SPECORATOR_ROOT injection. |
 | `npm run check:links` | Validate local Markdown links and anchors. |
 | `npm run check:adr-index` | Confirm `docs/adr/README.md` matches the ADR files. |
 | `npm run check:commands` | Confirm generated slash-command inventories are current. |

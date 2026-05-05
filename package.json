@@ -19,6 +19,9 @@
   "author": "Luis Mendez",
   "repository": "https://github.com/Luis85/agentic-workflow",
   "type": "module",
+  "bin": {
+    "specorator": "./scripts/specorator-bin.mjs"
+  },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com",
     "access": "public"
@@ -59,6 +62,7 @@
     "check:workflow": "tsx scripts/check-workflow.ts",
     "check:automation-registry": "tsx scripts/check-automation-registry.ts",
     "check:agents": "tsx scripts/check-agents.ts",
+    "check:cli-contract": "tsx scripts/check-cli-contract.ts",
     "check:links": "tsx scripts/check-markdown-links.ts",
     "check:adr-index": "tsx scripts/check-adr-index.ts",
     "check:commands": "tsx scripts/check-command-docs.ts",
@@ -94,9 +98,11 @@
   "engines": {
     "node": ">=20"
   },
+  "dependencies": {
+    "tsx": "^4.20.6"
+  },
   "devDependencies": {
     "@types/node": "^25.5.0",
-    "tsx": "^4.20.6",
     "typedoc": "^0.28.19",
     "typedoc-plugin-markdown": "^4.11.0",
     "typescript": "^6.0.2",

@@ -9,7 +9,7 @@ entry_point: false
 
 Opt-in track that runs *after* `/spec:idea`. Opens a draft PR seeded from `idea.md`, applies a PRD sentinel block to the parent issue body, and keeps both in sync via the `issue-pr-sync` shared skill as each subsequent stage completes.
 
-Filed by ADR-0034 (`docs/adr/0034-add-issue-draft-track.md`).
+Filed by ADR-0035 (`docs/adr/0035-add-issue-draft-track.md`).
 
 ## When to use
 
@@ -72,7 +72,7 @@ Not for:
 ## References
 
 - Design spec: `docs/superpowers/specs/2026-05-04-issue-draft-track-design.md`.
-- ADR: `docs/adr/0034-add-issue-draft-track.md`.
+- ADR: `docs/adr/0035-add-issue-draft-track.md`.
 - Shared skill: `.claude/skills/issue-pr-sync/SKILL.md`.
 - Companion track: `docs/issue-breakdown-track.md`.
 - Sink: `docs/sink.md`.

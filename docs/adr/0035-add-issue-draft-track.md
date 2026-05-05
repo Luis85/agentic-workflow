@@ -1,5 +1,5 @@
 ---
-id: ADR-0034
+id: ADR-0035
 title: Add issue-draft track for early draft PR and living PRD from /spec:idea
 status: proposed
 date: 2026-05-04
@@ -14,7 +14,7 @@ superseded-by: []
 tags: [workflow, github, issue-lifecycle]
 ---
 
-# ADR-0034 — Add issue-draft track for early draft PR and living PRD from /spec:idea
+# ADR-0035 — Add issue-draft track for early draft PR and living PRD from /spec:idea
 
 ## Status
 
