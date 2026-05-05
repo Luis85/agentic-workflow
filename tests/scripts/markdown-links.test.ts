@@ -3,11 +3,13 @@ import assert from "node:assert/strict";
 import {
   collectAnchors,
   githubSlug,
+  isCodeFenceDelimiter,
   linkDiagnostic,
   safeDecode,
   shouldIgnoreTarget,
   slugVariants,
   stripCodeRegions,
+  stripInlineCode,
 } from "../../scripts/lib/markdown-links.js";
 
 test("collectAnchors follows GitHub-style duplicate heading suffixes", () => {
@@ -173,4 +175,35 @@ test("stripCodeRegions rejects backtick fence openers whose info string contains
     "after [real](./real.md)",
     "a backtick line with backtick info string must not open a fence",
   );
+});
+
+test("isCodeFenceDelimiter identifies opening and closing fenced code block markers", () => {
+  assert.equal(isCodeFenceDelimiter("```"), true);
+  assert.equal(isCodeFenceDelimiter("```typescript"), true);
+  assert.equal(isCodeFenceDelimiter("~~~"), true);
+  assert.equal(isCodeFenceDelimiter("~~~~"), true);
+  assert.equal(isCodeFenceDelimiter("``"), false);
+  assert.equal(isCodeFenceDelimiter("not a fence"), false);
+  assert.equal(isCodeFenceDelimiter("  ```"), false);
+});
+
+test("stripInlineCode removes backtick-delimited code spans from a line", () => {
+  assert.equal(stripInlineCode("`[text](missing.md)`"), "");
+  assert.equal(stripInlineCode("See `[text](path.md)` for details"), "See  for details");
+  assert.equal(stripInlineCode("``double-backtick``"), "");
+  assert.equal(stripInlineCode("[real](link.md) and `[fake](missing.md)`"), "[real](link.md) and ");
+});
+
+test("bare path inside a code fence is not flagged as a broken link (isCodeFenceDelimiter + stripInlineCode guard)", () => {
+  const fencedBlock = "```\n[broken](no-such-file.md)\n```";
+  const lines = fencedBlock.split("\n");
+  const linkPattern = /!?\[[^\]]*?\]\(([^)\s]+(?:\s+"[^"]*")?)\)/g;
+  let inFence = false;
+  const matches: string[] = [];
+  for (const line of lines) {
+    if (isCodeFenceDelimiter(line)) { inFence = !inFence; continue; }
+    if (inFence) continue;
+    for (const m of stripInlineCode(line).matchAll(linkPattern)) matches.push(m[1]);
+  }
+  assert.deepEqual(matches, []);
 });
