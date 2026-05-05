@@ -46,12 +46,7 @@ function printHelp(): void {
 function main(): void {
   const argv = process.argv.slice(2);
 
-  if (argv.length === 0 || argv[0] === "--help" || argv[0] === "-h") {
-    printHelp();
-    process.exit(0);
-  }
-
-  // Extract global --cwd flag
+  // Parse --cwd first so it is stripped before --help / subcommand checks
   let cwd: string | undefined;
   const filteredArgv: string[] = [];
   for (let i = 0; i < argv.length; i++) {
@@ -60,6 +55,11 @@ function main(): void {
     } else {
       filteredArgv.push(argv[i]!);
     }
+  }
+
+  if (filteredArgv.length === 0 || filteredArgv[0] === "--help" || filteredArgv[0] === "-h") {
+    printHelp();
+    process.exit(0);
   }
 
   const subcommand = filteredArgv[0];

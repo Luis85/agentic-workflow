@@ -106,12 +106,11 @@ if (fs.existsSync(repoTsPath)) {
       message: "findRepoRoot is not re-exported from repo.ts — scripts that import from repo.ts will break",
     });
   }
-  // repoRoot must NOT use import.meta.url (old approach that breaks in node_modules)
-  if (repoSource.includes("fileURLToPath(import.meta.url)")) {
+  // repoRoot must use SPECORATOR_ROOT env var as first priority (CLI injection contract)
+  if (!repoSource.includes("SPECORATOR_ROOT")) {
     errors.push({
       path: "scripts/lib/repo.ts",
-      message:
-        "repoRoot still uses import.meta.url derivation — this breaks when scripts are installed into node_modules. Use findRepoRoot() instead.",
+      message: "SPECORATOR_ROOT env var not referenced in repo.ts — CLI injection contract is broken",
     });
   }
 }

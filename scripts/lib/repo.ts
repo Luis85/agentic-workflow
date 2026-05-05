@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { DiagnosticInput, checkResult, formatDiagnostic, wantsJson } from "./diagnostics.js";
 import { findRepoRoot } from "./find-repo-root.js";
 export { findRepoRoot };
@@ -14,14 +15,27 @@ export type SimpleYaml = Record<string, unknown>;
 /**
  * Absolute filesystem path to the repository root.
  *
- * Resolved from the `SPECORATOR_ROOT` environment variable when set (injected by
- * the `specorator` CLI dispatcher), or by walking up from `process.cwd()` to the
- * nearest directory containing `package.json` or `.git`.
+ * Resolved in priority order:
+ * 1. `SPECORATOR_ROOT` environment variable (injected by the `specorator` CLI dispatcher).
+ * 2. Walk up from `process.cwd()` to the nearest `package.json` or `.git` sentinel.
+ * 3. Walk up from this file's own directory — fallback for scripts invoked from
+ *    an unrelated working directory (e.g. a test that temporarily changes CWD).
  *
  * Script helpers resolve all checked and generated paths from this directory so
  * commands behave the same regardless of the caller's current working directory.
  */
-export const repoRoot: string = process.env["SPECORATOR_ROOT"] ?? findRepoRoot();
+function resolveRepoRoot(): string {
+  if (process.env["SPECORATOR_ROOT"]) return process.env["SPECORATOR_ROOT"];
+  try {
+    return findRepoRoot(process.cwd());
+  } catch {
+    // Script invoked from an unrelated directory (e.g. a test with a temp CWD).
+    // Walk up from this file's own location — always succeeds inside the repo.
+    return findRepoRoot(path.dirname(fileURLToPath(import.meta.url)));
+  }
+}
+
+export const repoRoot: string = resolveRepoRoot();
 
 const ignoredDirs = new Set([
   ".git",
