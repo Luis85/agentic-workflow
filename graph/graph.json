@@ -745,7 +745,7 @@
       "label": "firstLine()",
       "file_type": "code",
       "source_file": "scripts/doctor.ts",
-      "source_location": "L252",
+      "source_location": "L255",
       "id": "scripts_doctor_firstline",
       "community": 6,
       "norm_label": "firstline()"
@@ -754,7 +754,7 @@
       "label": "installHint()",
       "file_type": "code",
       "source_file": "scripts/doctor.ts",
-      "source_location": "L256",
+      "source_location": "L259",
       "id": "scripts_doctor_installhint",
       "community": 6,
       "norm_label": "installhint()"
@@ -763,7 +763,7 @@
       "label": "failureHint()",
       "file_type": "code",
       "source_file": "scripts/doctor.ts",
-      "source_location": "L263",
+      "source_location": "L266",
       "id": "scripts_doctor_failurehint",
       "community": 6,
       "norm_label": "failurehint()"
@@ -18330,5 +18330,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "01aacd080fa6e740b646a23a85b41ba2534bf048"
+  "built_at_commit": "d6431631017707aadc0ba0c39e4b2635ff0501d1"
 }

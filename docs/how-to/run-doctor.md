@@ -13,7 +13,7 @@
 
 1. From the repo root, run — `npm run doctor`.
 2. Read the output top-to-bottom. The script runs ten checks and prints one line per check (`pass` / `warn` / `fail`):
-   - **Node** — version satisfies the engines field (`>=20`).
+   - **Node** — version satisfies the engines field (`>=20.6`).
    - **npm** — present on `PATH`.
    - **git** — present on `PATH`.
    - **branch** — current branch, upstream, and ahead/behind state.

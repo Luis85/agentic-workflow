@@ -3,7 +3,7 @@
 ## Stack
 
 - **Primary artifact format:** Markdown with YAML frontmatter where required.
-- **Runtime for checks:** Node.js 20+.
+- **Runtime for checks:** Node.js 20.6+.
 - **Language for automation:** TypeScript run through `tsx`.
 - **Package manager:** npm with `npm-shrinkwrap.json`.
 - **Public page:** static HTML/CSS/JS under `sites/`, deployed by GitHub Pages.

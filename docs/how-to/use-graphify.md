@@ -14,7 +14,7 @@ entry_point: false
 **Prerequisites:**
 
 - Python 3.10 or newer.
-- Node.js 20 or newer.
+- Node.js 20.6 or newer.
 - Repository dependencies installed with `npm ci`.
 
 ## Why graphify?
