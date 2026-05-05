@@ -156,11 +156,11 @@ export function collectQualityMetrics(options: QualityMetricOptions = {}): Quali
   const metadataDocs = docs.filter(requiresFrontmatterForMetrics);
   const missingFrontmatter = docs
     .filter(requiresFrontmatterForMetrics)
-    .filter((file) => !extractFrontmatter(readText(file)))
+    .filter((file) => !safeExtractFrontmatter(file))
     .map(relativeToRoot);
 
   const qualityFiles = walkFiles("quality", (file) => file.endsWith(".md"));
-  const checklistText = qualityFiles.map(readText).join("\n");
+  const checklistText = qualityFiles.map(safeReadText).join("\n");
   const checklistItems = [...checklistText.matchAll(checklistItemPattern)].length;
   const checklistGaps = [...checklistText.matchAll(checklistGapPattern)].length;
 
@@ -638,7 +638,7 @@ function readWorkflowMetric(statePath: string): WorkflowMetric | null {
   const existingArtifacts = artifactNames.filter((artifact) => fs.existsSync(path.join(featureDir, artifact)));
   const existingExpectedArtifacts = expectedArtifacts.filter((artifact) => fs.existsSync(path.join(featureDir, artifact)));
   const artifactsWithFrontmatter = existingArtifacts.filter((artifact) =>
-    Boolean(extractFrontmatter(readText(path.join(featureDir, artifact)))),
+    Boolean(safeExtractFrontmatter(path.join(featureDir, artifact))),
   );
   const completeArtifacts = completeCanonicalArtifacts(artifacts);
   const completeExpectedArtifacts = completeArtifactsFor(expectedArtifacts, artifacts);
@@ -710,6 +710,15 @@ function safeExtractFrontmatter(filePath: string): ReturnType<typeof extractFron
     return extractFrontmatter(readText(filePath));
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code === "ENOENT") return null;
+    throw err;
+  }
+}
+
+function safeReadText(filePath: string): string {
+  try {
+    return readText(filePath);
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return "";
     throw err;
   }
 }

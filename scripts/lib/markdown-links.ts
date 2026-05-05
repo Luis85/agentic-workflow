@@ -40,6 +40,150 @@ function linkDiagnosticMessage(code: LinkDiagnosticCode, target: string): string
   return `links to missing anchor ${target}`;
 }
 
+/**
+ * Replace fenced code blocks and inline code spans with whitespace so the link
+ * scanner does not match path-like substrings inside code examples. Newlines
+ * and total character offsets are preserved, so diagnostic line numbers
+ * continue to match the original source. Block-quoted fences are recognised,
+ * and inline code spans may cross line boundaries.
+ */
+export function stripCodeRegions(text: string): string {
+  return stripInlineCodeSpansGlobal(stripFencedBlocks(text));
+}
+
+function stripFencedBlocks(text: string): string {
+  const lines = text.split(/\r?\n/);
+  const out: string[] = [];
+  let fenceChar: "`" | "~" | null = null;
+  let fenceLen = 0;
+  for (const line of lines) {
+    const body = stripBlockQuotePrefix(line);
+    const fenceMatch = /^ {0,3}(`{3,}|~{3,})/.exec(body);
+    if (fenceChar !== null) {
+      if (
+        fenceMatch &&
+        fenceMatch[1][0] === fenceChar &&
+        fenceMatch[1].length >= fenceLen &&
+        body.slice(fenceMatch[0].length).trim() === ""
+      ) {
+        fenceChar = null;
+        fenceLen = 0;
+      }
+      out.push("");
+      continue;
+    }
+    if (fenceMatch) {
+      const info = body.slice(fenceMatch[0].length);
+      const isBacktickFence = fenceMatch[1][0] === "`";
+      if (isBacktickFence && info.includes("`")) {
+        out.push(line);
+        continue;
+      }
+      fenceChar = fenceMatch[1][0] as "`" | "~";
+      fenceLen = fenceMatch[1].length;
+      out.push("");
+      continue;
+    }
+    out.push(line);
+  }
+  return out.join("\n");
+}
+
+function stripBlockQuotePrefix(line: string): string {
+  const match = /^(?:[ \t]{0,3}>[ \t]?)+/.exec(line);
+  return match ? line.slice(match[0].length) : line;
+}
+
+function stripInlineCodeSpansGlobal(text: string): string {
+  const blocks = splitIntoInlineBlocks(text);
+  return blocks.map(stripInlineCodeSpansInBlock).join("\n");
+}
+
+function splitIntoInlineBlocks(text: string): string[] {
+  const lines = text.split("\n");
+  const blocks: string[] = [];
+  let current: string[] = [];
+  const flush = () => {
+    if (current.length > 0) {
+      blocks.push(current.join("\n"));
+      current = [];
+    }
+  };
+  for (const line of lines) {
+    if (isBlockBoundary(line)) {
+      flush();
+      blocks.push(line);
+    } else {
+      current.push(line);
+    }
+  }
+  flush();
+  return blocks;
+}
+
+function isBlockBoundary(line: string): boolean {
+  if (/^[ \t]*$/.test(line)) return true;
+  if (/^[ \t]{0,3}#{1,6}([ \t]|$)/.test(line)) return true;
+  if (/^[ ]{0,3}(=+|-+)[ \t]*$/.test(line)) return true;
+  if (/^[ ]{0,3}(?:-[ \t]*){3,}$/.test(line)) return true;
+  if (/^[ ]{0,3}(?:\*[ \t]*){3,}$/.test(line)) return true;
+  if (/^[ ]{0,3}(?:_[ \t]*){3,}$/.test(line)) return true;
+  if (/^(?: {4}|\t)/.test(line)) return true;
+  return false;
+}
+
+function stripInlineCodeSpansInBlock(block: string): string {
+  const chars = block.split("");
+  let i = 0;
+  while (i < chars.length) {
+    if (chars[i] !== "`") {
+      i += 1;
+      continue;
+    }
+    let runLen = 0;
+    while (i + runLen < chars.length && chars[i + runLen] === "`") runLen += 1;
+    if (isBackslashEscaped(chars, i)) {
+      i += runLen;
+      continue;
+    }
+    const closeIdx = findClosingBackticksGlobal(chars, i + runLen, runLen);
+    if (closeIdx === -1) {
+      i += runLen;
+      continue;
+    }
+    for (let k = i; k < closeIdx + runLen; k += 1) {
+      if (chars[k] !== "\n" && chars[k] !== "\r") chars[k] = " ";
+    }
+    i = closeIdx + runLen;
+  }
+  return chars.join("");
+}
+
+function isBackslashEscaped(chars: string[], pos: number): boolean {
+  let backslashes = 0;
+  let j = pos - 1;
+  while (j >= 0 && chars[j] === "\\") {
+    backslashes += 1;
+    j -= 1;
+  }
+  return backslashes % 2 === 1;
+}
+
+function findClosingBackticksGlobal(chars: string[], start: number, runLen: number): number {
+  let i = start;
+  while (i < chars.length) {
+    if (chars[i] !== "`") {
+      i += 1;
+      continue;
+    }
+    let len = 0;
+    while (i + len < chars.length && chars[i + len] === "`") len += 1;
+    if (len === runLen) return i;
+    i += len;
+  }
+  return -1;
+}
+
 export function shouldIgnoreTarget(target: string): boolean {
   if (!target || target.startsWith("#")) return false;
   if (/^(https?:|mailto:|app:|plugin:)/.test(target)) return true;
@@ -85,4 +229,12 @@ export function githubSlug(value: string): string {
     .replace(/[^\p{L}\p{N}\s-]/gu, "")
     .trim()
     .replace(/\s/gu, "-");
+}
+
+export function isCodeFenceDelimiter(line: string): boolean {
+  return /^(`{3,}|~{3,})/.test(line);
+}
+
+export function stripInlineCode(line: string): string {
+  return line.replace(/`+[^`\n]*`+/g, "");
 }

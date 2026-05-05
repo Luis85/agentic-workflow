@@ -14,7 +14,7 @@ entry_point: false
 **Prerequisites:**
 
 - Python 3.10 or newer.
-- Node.js 20 or newer.
+- Node.js 20.6 or newer.
 - Repository dependencies installed with `npm ci`.
 
 ## Why graphify?
@@ -29,7 +29,13 @@ Install graphify from PyPI. The package name is `graphifyy`; the terminal comman
 python -m pip install --user --upgrade graphifyy
 ```
 
-This integration was verified with `graphifyy` 0.7.0. Use 0.7.0 or newer so `GRAPHIFY_OUT=graph graphify update .` writes to the committed `graph/` directory.
+Use `graphifyy` 0.7.6 or newer. This integration was smoke-tested with the current PyPI package, `graphifyy` 0.7.7, after the upstream `v0.7.6` GitHub release. The wrapper still uses the supported command shape:
+
+```bash
+GRAPHIFY_OUT=graph GRAPHIFY_NO_TIPS=1 graphify update .
+```
+
+The newer 0.7.x line records graph freshness metadata, writes a manifest after full rebuilds, supports a graph merge driver through `graphify hook install`, and fixes several update/cluster-only edge cases.
 
 ## Verify Install
 
@@ -55,7 +61,17 @@ npm run graph:update
 
 The wrapper sets `GRAPHIFY_OUT=graph` and then calls `graphify update .`. The full rebuild adds `--force`; the incremental command leaves graphify's normal update behavior intact.
 
-The repository includes [`.graphifyignore`](../../.graphifyignore), which keeps generated graph artifacts, worktrees, dependency folders, and local staging directories out of the graph. This prevents the graph from ingesting itself and keeps repeated rebuilds stable.
+The repository includes [`.graphifyignore`](../../.graphifyignore), which keeps generated graph artifacts, worktrees, dependency folders, and local staging directories out of the graph. This prevents the graph from ingesting itself and keeps repeated rebuilds stable. Local run state such as `graph/cache/`, `graph/manifest.json`, and `graph/cost.json` is intentionally gitignored.
+
+## Optional Git Hooks
+
+Graphify 0.7.x can install local git hooks and a merge driver for `graph.json`:
+
+```bash
+graphify hook install
+```
+
+Use this only in a personal checkout. The hook setup writes to local git configuration and should not be committed as part of this template. It is useful if you frequently regenerate the graph because it auto-rebuilds code-only graph changes after commits and helps union-merge concurrent `graph.json` updates.
 
 ## Browse The Graph
 
@@ -80,7 +96,7 @@ On macOS or Linux, ensure `python -m site --user-base` plus `/bin` is in `PATH`.
 
 If graphify prints `warning: skill is from graphify ... Run 'graphify install' to update.`, the graph rebuild still succeeded. That warning refers to the assistant skill installed in your home directory, not this repository. Run `graphify install` only if you want graphify to update that global assistant integration.
 
-Do not run two graphify rebuilds in the same checkout at the same time; graphify owns the cache under `graph/cache/` while it is running. If the repository came from `git archive` rather than `git clone`, `.gitignore` is not active until the folder becomes a git worktree, so avoid committing `graph/cache/` from that extracted copy.
+Do not run two graphify rebuilds in the same checkout at the same time; graphify owns the cache and manifest state under `graph/` while it is running. If the repository came from `git archive` rather than `git clone`, `.gitignore` is not active until the folder becomes a git worktree, so avoid committing `graph/cache/`, `graph/manifest.json`, or `graph/cost.json` from that extracted copy.
 
 ## Contributing Back
 
