@@ -46,5 +46,7 @@ npm-shrinkwrap.json
 # Graphify cache and local run state — per-machine SHA256 tracking files
 # and absolute-path metadata (REQ-GRAPH-005). See docs/how-to/use-graphify.md.
 graph/cache/
+graph/manifest.json
+graph/cost.json
 graph/.graphify_*
 graphify-out/
