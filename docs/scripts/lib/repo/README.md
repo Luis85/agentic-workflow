@@ -23,7 +23,6 @@ entry_point: true
 
 ## Functions
 
-- [findRepoRoot](functions/findRepoRoot.md)
 - [extractFrontmatter](functions/extractFrontmatter.md)
 - [failIfErrors](functions/failIfErrors.md)
 - [markdownFiles](functions/markdownFiles.md)
