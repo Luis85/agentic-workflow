@@ -108,6 +108,6 @@ typos --config _typos.toml
 1. Replace the README badge URLs with your own repo coordinates (or remove the row).
 2. Update `dependabot.yml` `directory:` if `package.json` is not at repo root.
 3. Enable Dependabot alerts in the repository security settings.
-4. Reproduce the required-check policy from [`branching.md`](branching.md#required-main-ruleset) and [`security-ci.md`](security-ci.md#repository-settings-checklist) on the integration branch.
+4. Reproduce the required-check policy from [`branching.md`](branching.md#required-ruleset-for-develop-main-demo) and [`security-ci.md`](security-ci.md#repository-settings-checklist) on the integration branch.
 5. Decide whether to require `dependency review`, `actionlint`, and `zizmor static analysis` through path-scoped rulesets.
 6. Decide whether to lock a `locale` in `_typos.toml`. The template stays unlocked because it mixes en-us and en-gb spellings; a real product probably picks one.
