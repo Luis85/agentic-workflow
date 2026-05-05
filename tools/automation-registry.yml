@@ -199,6 +199,16 @@ entries:
     emits_json: true
     used_by: [human, agent, ci]
     rerun_command: npm run check:agents
+  - id: check:cli-contract
+    kind: check
+    command: npm run check:cli-contract
+    path: scripts/check-cli-contract.ts
+    purpose: Validate the specorator CLI contract — bin entry points to specorator-bin.mjs, scripts exist, tsx in dependencies, registered scripts on disk, SPECORATOR_ROOT injection.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: true
+    used_by: [human, agent, ci]
+    rerun_command: npm run check:cli-contract
   - id: check:links
     kind: check
     command: npm run check:links
@@ -696,6 +706,24 @@ entries:
     emits_json: false
     used_by: [agent]
     rerun_command: open .claude/skills/issue-breakdown/SKILL.md
+  - id: skill:issue-draft
+    kind: skill
+    path: .claude/skills/issue-draft/SKILL.md
+    purpose: Agent-facing reusable workflow skill.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: false
+    used_by: [agent]
+    rerun_command: open .claude/skills/issue-draft/SKILL.md
+  - id: skill:issue-pr-sync
+    kind: skill
+    path: .claude/skills/issue-pr-sync/SKILL.md
+    purpose: Agent-facing reusable workflow skill.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: false
+    used_by: [agent]
+    rerun_command: open .claude/skills/issue-pr-sync/SKILL.md
   - id: skill:new-adr
     kind: skill
     path: .claude/skills/new-adr/SKILL.md

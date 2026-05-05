@@ -135,7 +135,7 @@ Plus body sections (Skips, Blocks, Hand-off notes, Open clarifications). Canonic
 /glossary:new
 
 # Issue Breakdown Track:
-/issue:breakdown
+/issue:breakdown  /issue:draft
 
 # Portfolio Track:
 /portfolio:start  /portfolio:x      /portfolio:y

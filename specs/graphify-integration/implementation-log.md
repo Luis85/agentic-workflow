@@ -7,7 +7,7 @@ status: draft
 owner: dev
 tracking_issue: https://github.com/Luis85/agentic-workflow/issues/263
 created: 2026-05-03
-updated: 2026-05-03
+updated: 2026-05-05
 ---
 
 # Implementation Log — Graphify Knowledge Graph Integration
@@ -60,3 +60,14 @@ Availability is checked with `graphify --help`, which is the supported CLI probe
 - Combined `graph.html` + `graph.json` size: 1,016,650 bytes.
 - Wall-clock: approximately 11 seconds.
 - `graph/cache/` and `graph/.graphify_root` remained untracked after `.gitignore` update.
+
+## 2026-05-05 — Graphify 0.7.x Maintenance Update
+
+- Checked upstream release state: GitHub latest release is `v0.7.6` and PyPI latest package is `graphifyy` 0.7.7.
+- Upgraded the local verification binary from `graphifyy` 0.7.0 to 0.7.7.
+- Confirmed `graphify update .` and `--force` remain the supported wrapper command shape.
+- Updated `docs/how-to/use-graphify.md` to require 0.7.6 or newer, note the 0.7.7 PyPI smoke test, and document the optional `graphify hook install` merge-driver workflow.
+- Added `.gitignore` exclusions for newer local run state written under this repository's custom `GRAPHIFY_OUT=graph` directory: `graph/manifest.json` and `graph/cost.json`.
+- Regenerated committed graph artifacts with `npm run graph` under `graphifyy` 0.7.7.
+- Regenerated artifact evidence: 538 nodes, 1265 edges, 24 communities; combined `graph.html` + `graph.json` size 1,112,807 bytes.
+- `graph/cache/` and `graph/.graphify_root` remained untracked after regeneration.

@@ -238,12 +238,15 @@ function printResult(result: CheckResult): void {
 }
 
 function validateNodeVersion(output: string): Omit<CheckResult, "name"> | null {
-  const major = Number(output.replace(/^v/, "").split(".")[0]);
-  if (major < 20) {
+  const [major = 0, minor = 0] = output
+    .replace(/^v/, "")
+    .split(".")
+    .map((part) => Number(part));
+  if (major < 20 || (major === 20 && minor < 6)) {
     return {
       status: "fail",
-      detail: `${output} does not satisfy >=20`,
-      hint: "install Node 20 or newer",
+      detail: `${output} does not satisfy >=20.6`,
+      hint: "install Node 20.6 or newer",
     };
   }
   return null;
@@ -254,7 +257,7 @@ function firstLine(value: unknown): string {
 }
 
 function installHint(command: string): string | undefined {
-  if (command === "node") return "install Node 20 or newer";
+  if (command === "node") return "install Node 20.6 or newer";
   if (command === "npm") return "install npm with Node";
   if (command === "git") return "install Git";
   return undefined;
