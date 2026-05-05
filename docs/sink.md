@@ -257,6 +257,11 @@ The root `README.md` is the public repository entry point and is exempt from thi
 | `specs/<slug>/<artifact>.md` | The stage's owning agent (per `docs/specorator.md` §3) | Each stage writes once; later stages **never rewrite** upstream artifacts |
 | `specs/<slug>/release-readiness-guide.md` | `release-manager` (Stage 10, optional) | Lazy go/no-go packet; feeds `release-notes.md`, release authorization, quality review, and retrospective follow-up |
 | `specs/<slug>/issue-breakdown-log.md` | `issue-breakdown` agent | Append-only — dated entries, never rewritten |
+| `templates/issue-prd-template.md` | `issue-draft` conductor | Template (versioned; read-only after initial write) |
+| `templates/issue-draft-pr-body-template.md` | `issue-draft` conductor | Template (versioned; read-only after initial write) |
+| `specs/<slug>/workflow-state.md` `draft_pr` field | `issue-draft` agent | Write-once at `/issue:draft` time |
+| `specs/<slug>/workflow-state.md` `draft_pr_branch` field | `issue-draft` agent | Write-once at `/issue:draft` time |
+| `specs/<slug>/workflow-state.md` `issue_number` field | `issue-draft` agent | Write-once at `/issue:draft` time |
 | `portfolio/<slug>/portfolio-state.md` | `/portfolio:start`, then `/portfolio:*` commands on each cycle | Cycle state machine; portfolio-manager-owned |
 | `portfolio/<slug>/portfolio-definition.md` | `/portfolio:start` (created), Z cycle Z2 (status updates) | Ongoing; X and Y cycles read but do not rewrite |
 | `portfolio/<slug>/portfolio-roadmap.md` | X cycle (X2, X3) | Updated in place each X run; previous exec summaries appended |

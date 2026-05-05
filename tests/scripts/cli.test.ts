@@ -9,7 +9,8 @@ import { findRepoRoot } from "../../scripts/lib/repo.js";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const cliScript = path.join(repoRoot, "scripts/cli.ts");
-const localTsx = path.join(repoRoot, "node_modules", ".bin", "tsx");
+const localTsxCli = path.join(repoRoot, "node_modules", "tsx", "dist", "cli.mjs");
+const runCliArgs = (...args: string[]) => [localTsxCli, cliScript, ...args];
 
 // ── findRepoRoot unit tests ───────────────────────────────────────────────────
 
@@ -94,7 +95,7 @@ test("findRepoRoot finds the repo root from a subdirectory of this project", () 
 // ── CLI dispatcher integration tests ─────────────────────────────────────────
 
 test("cli --help exits 0 and lists verify subcommand", () => {
-  const result = spawnSync(localTsx, [cliScript, "--help"], {
+  const result = spawnSync(process.execPath, runCliArgs("--help"), {
     encoding: "utf8",
     cwd: repoRoot,
     env: { ...process.env, SPECORATOR_ROOT: repoRoot },
@@ -106,7 +107,7 @@ test("cli --help exits 0 and lists verify subcommand", () => {
 });
 
 test("cli exits non-zero for unknown subcommand", () => {
-  const result = spawnSync(localTsx, [cliScript, "definitely-not-a-subcommand"], {
+  const result = spawnSync(process.execPath, runCliArgs("definitely-not-a-subcommand"), {
     encoding: "utf8",
     cwd: repoRoot,
     env: { ...process.env, SPECORATOR_ROOT: repoRoot },
@@ -118,7 +119,7 @@ test("cli --cwd flag overrides working directory for root discovery", () => {
   const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "specorator-cli-cwd-test-"));
   try {
     // Intentionally no package.json or .git — we pass --cwd pointing at the real repo root
-    const result = spawnSync(localTsx, [cliScript, "--cwd", repoRoot, "--help"], {
+    const result = spawnSync(process.execPath, runCliArgs("--cwd", repoRoot, "--help"), {
       encoding: "utf8",
       cwd: tmpRoot,
       env: process.env,
@@ -134,7 +135,7 @@ test("cli exits non-zero when invoked from a directory with no project root and 
   // (hard to guarantee in all environments, so we check the stderr message instead)
   const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "specorator-cli-noroot-"));
   try {
-    const result = spawnSync(localTsx, [cliScript, "verify"], {
+    const result = spawnSync(process.execPath, runCliArgs("verify"), {
       encoding: "utf8",
       cwd: tmpRoot,
       env: { ...process.env, SPECORATOR_ROOT: undefined },

@@ -109,7 +109,15 @@ export function walkFiles(startDir: string, predicate: (filePath: string) => boo
   if (!fs.existsSync(root)) return results;
 
   function walk(current: string): void {
-    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+    let entries: fs.Dirent[];
+    try {
+      entries = fs.readdirSync(current, { withFileTypes: true });
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code === "ENOENT") return;
+      throw err;
+    }
+
+    for (const entry of entries) {
       const full = path.join(current, entry.name);
       if (entry.isDirectory()) {
         if (!ignoredDirs.has(entry.name)) walk(full);

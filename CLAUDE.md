@@ -24,7 +24,7 @@ State lives in `specs/<feature-slug>/workflow-state.md`. Each `/spec:*` command 
 
 ### Other tracks
 
-The v1.0 track taxonomy is frozen in [ADR-0026](docs/adr/0026-freeze-v1-workflow-track-taxonomy.md). Besides the core lifecycle, opt-in / companion tracks are: Discovery (`/discovery:start`), Stock-taking (`/stock-taking:start`), Sales (`/sales:start`), Project Manager (`/project:start`), Roadmap (`/roadmap:start`), Portfolio (`/portfolio:start`), Quality Assurance (`/quality:start`), Project Scaffolding (`/scaffold:start`), Design (`/design:start`), Issue-breakdown (`/issue:breakdown`), and Specorator Improvement (`/specorator:update`). See `docs/*-track.md`, `docs/specorator.md`, and `.claude/skills/README.md` for methodology and conductor details.
+The v1.0 track taxonomy is frozen in [ADR-0026](docs/adr/0026-freeze-v1-workflow-track-taxonomy.md). Besides the core lifecycle, opt-in / companion tracks are: Discovery (`/discovery:start`), Stock-taking (`/stock-taking:start`), Sales (`/sales:start`), Project Manager (`/project:start`), Roadmap (`/roadmap:start`), Portfolio (`/portfolio:start`), Quality Assurance (`/quality:start`), Project Scaffolding (`/scaffold:start`), Design (`/design:start`), Issue-breakdown (`/issue:breakdown`), Issue-draft (`/issue:draft`), and Specorator Improvement (`/specorator:update`). See `docs/*-track.md`, `docs/specorator.md`, and `.claude/skills/README.md` for methodology and conductor details.
 
 ## Conventions specific to Claude Code
 
