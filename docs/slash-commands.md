@@ -28,7 +28,7 @@ Claude Code users can invoke these commands directly. Non-Claude users should tr
 /glossary:new
 
 # Issue Breakdown Track:
-/issue:breakdown
+/issue:breakdown  /issue:draft
 
 # Portfolio Track:
 /portfolio:start  /portfolio:x      /portfolio:y
