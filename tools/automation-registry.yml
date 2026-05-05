@@ -203,7 +203,7 @@ entries:
     kind: check
     command: npm run check:cli-contract
     path: scripts/check-cli-contract.ts
-    purpose: Validate the specorator CLI contract — bin entry, script existence, tsx in dependencies, registered scripts on disk, SPECORATOR_ROOT injection.
+    purpose: Validate the specorator CLI contract — bin entry points to specorator-bin.mjs, scripts exist, tsx in dependencies, registered scripts on disk, SPECORATOR_ROOT injection.
     read_only: true
     safe_to_run_locally: true
     emits_json: true

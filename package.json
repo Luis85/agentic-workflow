@@ -20,7 +20,7 @@
   "repository": "https://github.com/Luis85/agentic-workflow",
   "type": "module",
   "bin": {
-    "specorator": "./scripts/cli.ts"
+    "specorator": "./scripts/specorator-bin.mjs"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com",

@@ -5,17 +5,18 @@ import type { DiagnosticInput } from "./lib/diagnostics.js";
 
 /**
  * Validate that the specorator CLI contract is intact:
- * - package.json has a bin entry pointing to scripts/cli.ts
- * - scripts/cli.ts exists and is executable
- * - tsx is in dependencies (not devDependencies) so the bin shebang works when installed
+ * - package.json has a bin entry pointing to scripts/specorator-bin.mjs
+ * - scripts/specorator-bin.mjs and scripts/cli.ts exist
+ * - tsx is in dependencies (not devDependencies) so the bin wrapper resolves it
  * - every script-backed subcommand registered in cli.ts has a corresponding file on disk
- * - findRepoRoot is exported from scripts/lib/repo.ts
+ * - findRepoRoot is exported from scripts/lib/find-repo-root.ts and re-exported by repo.ts
  * - SPECORATOR_ROOT is referenced in cli.ts (injection contract)
  */
 
 const errors: DiagnosticInput[] = [];
 
 const pkgPath = path.join(repoRoot, "package.json");
+const binWrapperPath = path.join(repoRoot, "scripts/specorator-bin.mjs");
 const cliPath = path.join(repoRoot, "scripts/cli.ts");
 const repoTsPath = path.join(repoRoot, "scripts/lib/repo.ts");
 
@@ -25,14 +26,17 @@ const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8")) as Record<string, unkno
 const bin = pkg["bin"] as Record<string, string> | undefined;
 if (!bin || typeof bin !== "object") {
   errors.push({ path: "package.json", message: "missing bin field — specorator binary not declared" });
-} else if (bin["specorator"] !== "./scripts/cli.ts") {
+} else if (bin["specorator"] !== "./scripts/specorator-bin.mjs") {
   errors.push({
     path: "package.json",
-    message: `bin.specorator should be './scripts/cli.ts', got '${bin["specorator"]}'`,
+    message: `bin.specorator should be './scripts/specorator-bin.mjs', got '${bin["specorator"]}'`,
   });
 }
 
-// 2. scripts/cli.ts exists
+// 2. bin wrapper and cli dispatcher both exist
+if (!fs.existsSync(binWrapperPath)) {
+  errors.push({ path: "scripts/specorator-bin.mjs", message: "file does not exist" });
+}
 if (!fs.existsSync(cliPath)) {
   errors.push({ path: "scripts/cli.ts", message: "file does not exist" });
 }
