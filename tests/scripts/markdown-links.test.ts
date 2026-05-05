@@ -207,3 +207,14 @@ test("bare path inside a code fence is not flagged as a broken link (isCodeFence
   }
   assert.deepEqual(matches, []);
 });
+
+test("stripCodeRegions does not pair backticks across indented code block lines", () => {
+  const input = ["lead `", "    indented code", "[bad](missing.md) `ok`"].join("\n");
+  const stripped = stripCodeRegions(input);
+  assert.equal(
+    stripped.includes("[bad](missing.md)"),
+    true,
+    "stray opener before indented code must not consume a link after it",
+  );
+  assert.equal(stripped.includes("ok"), false, "real inline code after the block is still stripped");
+});

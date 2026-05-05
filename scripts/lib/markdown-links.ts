@@ -128,6 +128,7 @@ function isBlockBoundary(line: string): boolean {
   if (/^[ ]{0,3}(?:-[ \t]*){3,}$/.test(line)) return true;
   if (/^[ ]{0,3}(?:\*[ \t]*){3,}$/.test(line)) return true;
   if (/^[ ]{0,3}(?:_[ \t]*){3,}$/.test(line)) return true;
+  if (/^(?: {4}|\t)/.test(line)) return true;
   return false;
 }
 
