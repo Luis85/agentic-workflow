@@ -30,6 +30,7 @@ node_modules/
 # issue-breakdown skill — transient PR/issue body files staged for `gh ... --body-file`.
 # Never committed; deleted at end of run. See docs/issue-breakdown-track.md.
 .issue-breakdown-staging/
+.issue-draft-staging/
 
 # caveman:compress backups — kept locally for diff/sanity checks only.
 *.original.md
@@ -46,5 +47,7 @@ npm-shrinkwrap.json
 # Graphify cache and local run state — per-machine SHA256 tracking files
 # and absolute-path metadata (REQ-GRAPH-005). See docs/how-to/use-graphify.md.
 graph/cache/
+graph/manifest.json
+graph/cost.json
 graph/.graphify_*
 graphify-out/
