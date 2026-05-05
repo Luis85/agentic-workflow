@@ -1,7 +1,7 @@
 # Graph Report - graphify-0-7-6-update  (2026-05-05)
 
 ## Corpus Check
-- 104 files · ~592,211 words
+- 104 files · ~592,254 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b3918297`
+- Built from commit: `01aacd08`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -35,6 +35,10 @@
 - [[_COMMUNITY_Community 17|Community 17]]
 - [[_COMMUNITY_Community 18|Community 18]]
 - [[_COMMUNITY_Community 19|Community 19]]
+- [[_COMMUNITY_Community 20|Community 20]]
+- [[_COMMUNITY_Community 21|Community 21]]
+- [[_COMMUNITY_Community 22|Community 22]]
+- [[_COMMUNITY_Community 23|Community 23]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `readText()` - 46 edges
@@ -141,6 +145,23 @@ Nodes (6): addReadmeFrontmatter(), descriptionForGeneratedReadme(), stripFrontma
 ### Community 19 - "Community 19"
 Cohesion: 0.53
 Nodes (4): findRepoRoot(), resolveRepoRoot(), main(), printHelp()
+
+
+### Community 20 - "Community 20"
+Cohesion: 0.67
+Nodes (3): release-prepack-guard.test.ts, mkCwd(), runGuard()
+
+### Community 21 - "Community 21"
+Cohesion: 1
+Nodes (2): specorator-bin.mjs, resolveTsxArgs()
+
+### Community 22 - "Community 22"
+Cohesion: 0
+Nodes (1): node-types.d.ts
+
+### Community 23 - "Community 23"
+Cohesion: 0
+Nodes (1): release-prepack-guard.mjs
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_

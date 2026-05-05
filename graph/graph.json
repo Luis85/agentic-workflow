@@ -5171,9 +5171,9 @@
       "source_file": "scripts/check-cli-contract.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_check_cli_contract_ts",
-      "target": "scripts_lib_repo_ts",
-      "confidence_score": 1.0
+      "target": "scripts_lib_repo_ts"
     },
     {
       "relation": "imports",
@@ -5182,9 +5182,9 @@
       "source_file": "scripts/check-cli-contract.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_check_cli_contract_ts",
-      "target": "lib_repo_failiferrors",
-      "confidence_score": 1.0
+      "target": "lib_repo_failiferrors"
     },
     {
       "relation": "imports_from",
@@ -5193,9 +5193,9 @@
       "source_file": "scripts/check-cli-contract.ts",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_check_cli_contract_ts",
-      "target": "scripts_lib_diagnostics_ts",
-      "confidence_score": 1.0
+      "target": "scripts_lib_diagnostics_ts"
     },
     {
       "relation": "imports_from",
@@ -5918,9 +5918,9 @@
       "source_file": "scripts/check-markdown-links.ts",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_check_markdown_links_ts",
-      "target": "lib_markdown_links_stripcoderegions",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_stripcoderegions"
     },
     {
       "relation": "imports_from",
@@ -6971,9 +6971,9 @@
       "source_file": "scripts/cli.ts",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_cli_ts",
-      "target": "scripts_lib_find_repo_root_ts",
-      "confidence_score": 1.0
+      "target": "scripts_lib_find_repo_root_ts"
     },
     {
       "relation": "imports",
@@ -6982,9 +6982,9 @@
       "source_file": "scripts/cli.ts",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_cli_ts",
-      "target": "lib_find_repo_root_findreporoot",
-      "confidence_score": 1.0
+      "target": "lib_find_repo_root_findreporoot"
     },
     {
       "relation": "imports_from",
@@ -6993,9 +6993,9 @@
       "source_file": "scripts/cli.ts",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_cli_ts",
-      "target": "scripts_lib_tasks_ts",
-      "confidence_score": 1.0
+      "target": "scripts_lib_tasks_ts"
     },
     {
       "relation": "contains",
@@ -7003,9 +7003,9 @@
       "source_file": "scripts/cli.ts",
       "source_location": "L31",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_cli_ts",
-      "target": "scripts_cli_printhelp",
-      "confidence_score": 1.0
+      "target": "scripts_cli_printhelp"
     },
     {
       "relation": "contains",
@@ -7013,9 +7013,9 @@
       "source_file": "scripts/cli.ts",
       "source_location": "L46",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_cli_ts",
-      "target": "scripts_cli_main",
-      "confidence_score": 1.0
+      "target": "scripts_cli_main"
     },
     {
       "relation": "calls",
@@ -7024,9 +7024,9 @@
       "source_file": "scripts/cli.ts",
       "source_location": "L61",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_cli_main",
-      "target": "scripts_cli_printhelp",
-      "confidence_score": 1.0
+      "target": "scripts_cli_printhelp"
     },
     {
       "relation": "calls",
@@ -8047,9 +8047,9 @@
       "source_file": "scripts/specorator-bin.mjs",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_specorator_bin_mjs",
-      "target": "scripts_specorator_bin_resolvetsxargs",
-      "confidence_score": 1.0
+      "target": "scripts_specorator_bin_resolvetsxargs"
     },
     {
       "relation": "imports_from",
@@ -10789,9 +10789,9 @@
       "source_file": "scripts/lib/find-repo-root.ts",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_lib_find_repo_root_ts",
-      "target": "lib_find_repo_root_findreporoot",
-      "confidence_score": 1.0
+      "target": "lib_find_repo_root_findreporoot"
     },
     {
       "relation": "imports_from",
@@ -10800,9 +10800,9 @@
       "source_file": "scripts/lib/repo.ts",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_lib_repo_ts",
-      "target": "scripts_lib_find_repo_root_ts",
-      "confidence_score": 1.0
+      "target": "scripts_lib_find_repo_root_ts"
     },
     {
       "relation": "imports",
@@ -10811,9 +10811,9 @@
       "source_file": "scripts/lib/repo.ts",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_lib_repo_ts",
-      "target": "lib_find_repo_root_findreporoot",
-      "confidence_score": 1.0
+      "target": "lib_find_repo_root_findreporoot"
     },
     {
       "relation": "calls",
@@ -11411,9 +11411,9 @@
       "source_file": "scripts/lib/markdown-links.ts",
       "source_location": "L50",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_lib_markdown_links_ts",
-      "target": "lib_markdown_links_stripcoderegions",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_stripcoderegions"
     },
     {
       "relation": "contains",
@@ -11421,9 +11421,9 @@
       "source_file": "scripts/lib/markdown-links.ts",
       "source_location": "L54",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_lib_markdown_links_ts",
-      "target": "lib_markdown_links_stripfencedblocks",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_stripfencedblocks"
     },
     {
       "relation": "contains",
@@ -11431,9 +11431,9 @@
       "source_file": "scripts/lib/markdown-links.ts",
       "source_location": "L92",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_lib_markdown_links_ts",
-      "target": "lib_markdown_links_stripblockquoteprefix",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_stripblockquoteprefix"
     },
     {
       "relation": "contains",
@@ -11441,9 +11441,9 @@
       "source_file": "scripts/lib/markdown-links.ts",
       "source_location": "L97",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_lib_markdown_links_ts",
-      "target": "lib_markdown_links_stripinlinecodespansglobal",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_stripinlinecodespansglobal"
     },
     {
       "relation": "contains",
@@ -11451,9 +11451,9 @@
       "source_file": "scripts/lib/markdown-links.ts",
       "source_location": "L102",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_lib_markdown_links_ts",
-      "target": "lib_markdown_links_splitintoinlineblocks",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_splitintoinlineblocks"
     },
     {
       "relation": "contains",
@@ -11461,9 +11461,9 @@
       "source_file": "scripts/lib/markdown-links.ts",
       "source_location": "L124",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_lib_markdown_links_ts",
-      "target": "lib_markdown_links_isblockboundary",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_isblockboundary"
     },
     {
       "relation": "contains",
@@ -11471,9 +11471,9 @@
       "source_file": "scripts/lib/markdown-links.ts",
       "source_location": "L135",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_lib_markdown_links_ts",
-      "target": "lib_markdown_links_stripinlinecodespansinblock",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_stripinlinecodespansinblock"
     },
     {
       "relation": "contains",
@@ -11481,9 +11481,9 @@
       "source_file": "scripts/lib/markdown-links.ts",
       "source_location": "L162",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_lib_markdown_links_ts",
-      "target": "lib_markdown_links_isbackslashescaped",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_isbackslashescaped"
     },
     {
       "relation": "contains",
@@ -11491,9 +11491,9 @@
       "source_file": "scripts/lib/markdown-links.ts",
       "source_location": "L172",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_lib_markdown_links_ts",
-      "target": "lib_markdown_links_findclosingbackticksglobal",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_findclosingbackticksglobal"
     },
     {
       "relation": "contains",
@@ -11541,9 +11541,9 @@
       "source_file": "scripts/lib/markdown-links.ts",
       "source_location": "L234",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_lib_markdown_links_ts",
-      "target": "lib_markdown_links_iscodefencedelimiter",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_iscodefencedelimiter"
     },
     {
       "relation": "contains",
@@ -11551,9 +11551,9 @@
       "source_file": "scripts/lib/markdown-links.ts",
       "source_location": "L238",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_lib_markdown_links_ts",
-      "target": "lib_markdown_links_stripinlinecode",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_stripinlinecode"
     },
     {
       "relation": "imports_from",
@@ -11606,9 +11606,9 @@
       "source_file": "scripts/lib/markdown-links.ts",
       "source_location": "L51",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_markdown_links_stripcoderegions",
-      "target": "lib_markdown_links_stripinlinecodespansglobal",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_stripinlinecodespansglobal"
     },
     {
       "relation": "calls",
@@ -11617,9 +11617,9 @@
       "source_file": "scripts/lib/markdown-links.ts",
       "source_location": "L51",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_markdown_links_stripcoderegions",
-      "target": "lib_markdown_links_stripfencedblocks",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_stripfencedblocks"
     },
     {
       "relation": "imports",
@@ -11628,9 +11628,9 @@
       "source_file": "tests/scripts/markdown-links.test.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_scripts_markdown_links_test_ts",
-      "target": "lib_markdown_links_stripcoderegions",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_stripcoderegions"
     },
     {
       "relation": "calls",
@@ -11639,9 +11639,9 @@
       "source_file": "scripts/lib/markdown-links.ts",
       "source_location": "L60",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_markdown_links_stripfencedblocks",
-      "target": "lib_markdown_links_stripblockquoteprefix",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_stripblockquoteprefix"
     },
     {
       "relation": "calls",
@@ -11650,9 +11650,9 @@
       "source_file": "scripts/lib/markdown-links.ts",
       "source_location": "L98",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_markdown_links_stripinlinecodespansglobal",
-      "target": "lib_markdown_links_splitintoinlineblocks",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_splitintoinlineblocks"
     },
     {
       "relation": "calls",
@@ -11661,9 +11661,9 @@
       "source_file": "scripts/lib/markdown-links.ts",
       "source_location": "L113",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_markdown_links_splitintoinlineblocks",
-      "target": "lib_markdown_links_isblockboundary",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_isblockboundary"
     },
     {
       "relation": "calls",
@@ -11672,9 +11672,9 @@
       "source_file": "scripts/lib/markdown-links.ts",
       "source_location": "L145",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_markdown_links_stripinlinecodespansinblock",
-      "target": "lib_markdown_links_isbackslashescaped",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_isbackslashescaped"
     },
     {
       "relation": "calls",
@@ -11683,9 +11683,9 @@
       "source_file": "scripts/lib/markdown-links.ts",
       "source_location": "L149",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_markdown_links_stripinlinecodespansinblock",
-      "target": "lib_markdown_links_findclosingbackticksglobal",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_findclosingbackticksglobal"
     },
     {
       "relation": "imports",
@@ -11760,9 +11760,9 @@
       "source_file": "tests/scripts/markdown-links.test.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_scripts_markdown_links_test_ts",
-      "target": "lib_markdown_links_iscodefencedelimiter",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_iscodefencedelimiter"
     },
     {
       "relation": "imports",
@@ -11771,9 +11771,9 @@
       "source_file": "tests/scripts/markdown-links.test.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_scripts_markdown_links_test_ts",
-      "target": "lib_markdown_links_stripinlinecode",
-      "confidence_score": 1.0
+      "target": "lib_markdown_links_stripinlinecode"
     },
     {
       "relation": "imports_from",
@@ -15272,9 +15272,9 @@
       "source_file": "scripts/lib/repo.ts",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "scripts_lib_repo_ts",
-      "target": "lib_repo_resolvereporoot",
-      "confidence_score": 1.0
+      "target": "lib_repo_resolvereporoot"
     },
     {
       "relation": "contains",
@@ -15478,9 +15478,9 @@
       "source_file": "tests/scripts/cli.test.ts",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_scripts_cli_test_ts",
-      "target": "scripts_lib_repo_ts",
-      "confidence_score": 1.0
+      "target": "scripts_lib_repo_ts"
     },
     {
       "relation": "imports_from",
@@ -18330,5 +18330,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "b3918297f1573009941a25b83fe830dd5c883bb5"
+  "built_at_commit": "01aacd080fa6e740b646a23a85b41ba2534bf048"
 }
