@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 import { spawnSync } from "node:child_process";
 import path from "node:path";
-import { findRepoRoot } from "./lib/repo.js";
+import { findRepoRoot } from "./lib/find-repo-root.js";
 import { checkTasks, fixTasks } from "./lib/tasks.js";
 
 const VERSION = "0.5.1";

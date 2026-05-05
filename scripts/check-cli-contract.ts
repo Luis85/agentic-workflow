@@ -77,13 +77,29 @@ if (fs.existsSync(cliPath)) {
   }
 }
 
-// 6. findRepoRoot must be exported from scripts/lib/repo.ts
+// 6. findRepoRoot must be defined in scripts/lib/find-repo-root.ts and re-exported from repo.ts
+const findRepoRootPath = path.join(repoRoot, "scripts/lib/find-repo-root.ts");
+if (!fs.existsSync(findRepoRootPath)) {
+  errors.push({
+    path: "scripts/lib/find-repo-root.ts",
+    message: "file does not exist — findRepoRoot walk-up discovery is broken",
+  });
+} else {
+  const findRepoRootSource = fs.readFileSync(findRepoRootPath, "utf8");
+  if (!findRepoRootSource.includes("export function findRepoRoot")) {
+    errors.push({
+      path: "scripts/lib/find-repo-root.ts",
+      message: "findRepoRoot is not exported — CLI walk-up discovery is broken",
+    });
+  }
+}
+
 if (fs.existsSync(repoTsPath)) {
   const repoSource = fs.readFileSync(repoTsPath, "utf8");
-  if (!repoSource.includes("export function findRepoRoot")) {
+  if (!repoSource.includes("findRepoRoot")) {
     errors.push({
       path: "scripts/lib/repo.ts",
-      message: "findRepoRoot is not exported — CLI walk-up discovery is broken",
+      message: "findRepoRoot is not re-exported from repo.ts — scripts that import from repo.ts will break",
     });
   }
   // repoRoot must NOT use import.meta.url (old approach that breaks in node_modules)

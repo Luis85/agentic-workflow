@@ -1,7 +1,7 @@
 {
   "entryPoints": ["scripts/**/*.ts"],
   "entryPointStrategy": "expand",
-  "exclude": ["scripts/README.md", "scripts/global.d.ts"],
+  "exclude": ["scripts/README.md"],
   "out": "docs/scripts",
   "plugin": ["typedoc-plugin-markdown"],
   "tsconfig": "tsconfig.typedoc.json",

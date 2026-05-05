@@ -50,6 +50,7 @@
 - [lib/commands](lib/commands/README.md)
 - [lib/diagnostics](lib/diagnostics/README.md)
 - [lib/doctor](lib/doctor/README.md)
+- [lib/find-repo-root](lib/find-repo-root/README.md)
 - [lib/frontmatter](lib/frontmatter/README.md)
 - [lib/github-project-setup](lib/github-project-setup/README.md)
 - [lib/issue-frontmatter](lib/issue-frontmatter/README.md)

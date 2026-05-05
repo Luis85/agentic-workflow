@@ -199,6 +199,16 @@ entries:
     emits_json: true
     used_by: [human, agent, ci]
     rerun_command: npm run check:agents
+  - id: check:cli-contract
+    kind: check
+    command: npm run check:cli-contract
+    path: scripts/check-cli-contract.ts
+    purpose: Validate the specorator CLI contract — bin entry, script existence, tsx in dependencies, registered scripts on disk, SPECORATOR_ROOT injection.
+    read_only: true
+    safe_to_run_locally: true
+    emits_json: true
+    used_by: [human, agent, ci]
+    rerun_command: npm run check:cli-contract
   - id: check:links
     kind: check
     command: npm run check:links
