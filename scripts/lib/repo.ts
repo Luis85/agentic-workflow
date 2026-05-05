@@ -12,6 +12,17 @@ export type FrontmatterBlock = {
 
 export type SimpleYaml = Record<string, unknown>;
 
+function resolveRepoRoot(): string {
+  if (process.env["SPECORATOR_ROOT"]) return process.env["SPECORATOR_ROOT"];
+  try {
+    return findRepoRoot(process.cwd());
+  } catch {
+    // Script invoked from an unrelated directory (e.g. a test with a temp CWD).
+    // Walk up from this file's own location — always succeeds inside the repo.
+    return findRepoRoot(path.dirname(fileURLToPath(import.meta.url)));
+  }
+}
+
 /**
  * Absolute filesystem path to the repository root.
  *
@@ -24,17 +35,6 @@ export type SimpleYaml = Record<string, unknown>;
  * Script helpers resolve all checked and generated paths from this directory so
  * commands behave the same regardless of the caller's current working directory.
  */
-function resolveRepoRoot(): string {
-  if (process.env["SPECORATOR_ROOT"]) return process.env["SPECORATOR_ROOT"];
-  try {
-    return findRepoRoot(process.cwd());
-  } catch {
-    // Script invoked from an unrelated directory (e.g. a test with a temp CWD).
-    // Walk up from this file's own location — always succeeds inside the repo.
-    return findRepoRoot(path.dirname(fileURLToPath(import.meta.url)));
-  }
-}
-
 export const repoRoot: string = resolveRepoRoot();
 
 const ignoredDirs = new Set([
