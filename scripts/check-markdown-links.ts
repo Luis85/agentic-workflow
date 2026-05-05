@@ -1,14 +1,20 @@
 import fs from "node:fs";
 import path from "node:path";
 import { failIfErrors, markdownFiles, readText, relativeToRoot, repoRoot } from "./lib/repo.js";
-import { collectAnchors, linkDiagnostic, safeDecode, shouldIgnoreTarget } from "./lib/markdown-links.js";
+import {
+  collectAnchors,
+  linkDiagnostic,
+  safeDecode,
+  shouldIgnoreTarget,
+  stripCodeRegions,
+} from "./lib/markdown-links.js";
 
 const errors = [];
 const linkPattern = /!?\[[^\]]*?\]\(([^)\s]+(?:\s+"[^"]*")?)\)/g;
 
 for (const filePath of markdownFiles()) {
   const text = readText(filePath);
-  const lines = text.split(/\r?\n/);
+  const lines = stripCodeRegions(text).split(/\r?\n/);
   for (let lineIndex = 0; lineIndex < lines.length; lineIndex += 1) {
     const line = lines[lineIndex];
     for (const match of line.matchAll(linkPattern)) {
