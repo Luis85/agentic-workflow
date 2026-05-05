@@ -3,7 +3,7 @@
 ## Stack
 
 - **Primary artifact format:** Markdown with YAML frontmatter where required.
-- **Runtime for checks:** Node.js 20+.
+- **Runtime for checks:** Node.js 20.6+.
 - **Language for automation:** TypeScript run through `tsx`.
 - **Package manager:** npm with `npm-shrinkwrap.json`.
 - **Public page:** static HTML/CSS/JS under `sites/`, deployed by GitHub Pages.
@@ -46,12 +46,27 @@ sites/          - public product page
 
 ```bash
 npm ci
-npm run check:fast
+npm run check:fast          # or: specorator check:fast
 npm run verify:changed
-npm run verify
+npm run verify              # or: specorator verify
 ```
 
-Use `npm run verify` as the final local gate before pushing implementation PRs. Use narrower checks while iterating.
+Use `npm run verify` (or `specorator verify`) as the final local gate before pushing implementation PRs. Use narrower checks while iterating.
+
+## CLI Binary
+
+After `npm install`, the `specorator` binary is available via `node_modules/.bin/specorator`:
+
+```bash
+specorator verify           # full gate
+specorator check:fast       # fast subset
+specorator fix              # all deterministic fixers
+specorator --help           # list all subcommands
+specorator <sub> --help     # subcommand usage
+specorator --cwd <path> verify  # explicit project root
+```
+
+All `npm run <target>` aliases remain and produce identical output. The binary is a thin dispatcher — each subcommand delegates to the corresponding `scripts/<name>.ts` entry point. See ADR-0034 and `specs/extract-scripts-cli/` for the design and distribution model rationale.
 
 ## Dependency Policy
 
