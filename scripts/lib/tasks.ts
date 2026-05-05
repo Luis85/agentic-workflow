@@ -41,6 +41,12 @@ export const checkTasks = [
     jsonDiagnostics: true,
   },
   {
+    name: "check:cli-contract",
+    label: "CLI contract integrity",
+    script: "scripts/check-cli-contract.ts",
+    jsonDiagnostics: true,
+  },
+  {
     name: "check:links",
     label: "Markdown links",
     script: "scripts/check-markdown-links.ts",
@@ -129,7 +135,9 @@ export const checkTasks = [
  * @type {NodeTask[]}
  */
 export const fastCheckTasks = checkTasks.filter((task) =>
-  ["typecheck:scripts", "test:scripts", "check:automation-registry", "check:agents"].includes(task.name),
+  ["typecheck:scripts", "test:scripts", "check:automation-registry", "check:agents", "check:cli-contract"].includes(
+    task.name,
+  ),
 );
 
 /**

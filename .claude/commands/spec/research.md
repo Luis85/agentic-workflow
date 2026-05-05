@@ -22,3 +22,4 @@ Run **stage 2 — Research**.
 6. Update `workflow-state.md`.
 7. **Post-stage gate** — see `docs/specorator.md §3.0`: update `issues/<number>-<slug>.md` (`stage`, `roadmap_status`, `updated_at`), push the branch. Do not mark PR ready yet — PR stays draft through planning stages.
 8. Recommend `/spec:requirements` next (or `/spec:clarify` if anything is fuzzy).
+9. **Post-stage sync (non-fatal)** — invoke the `issue-pr-sync` skill (`.claude/skills/issue-pr-sync/SKILL.md`) with `stage: research` and `artifact_path: specs/<slug>/research.md`. If `draft_pr` is absent in `workflow-state.md`, the skill exits silently.
