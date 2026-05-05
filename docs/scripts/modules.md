@@ -8,9 +8,11 @@
 
 - [automation-registry-discover](automation-registry-discover/README.md)
 - [build-release-archive](build-release-archive/README.md)
+- [cli](cli/README.md)
 - [check-adr-index](check-adr-index/README.md)
 - [check-agents](check-agents/README.md)
 - [check-automation-registry](check-automation-registry/README.md)
+- [check-cli-contract](check-cli-contract/README.md)
 - [check-command-docs](check-command-docs/README.md)
 - [check-content](check-content/README.md)
 - [check-fast](check-fast/README.md)
