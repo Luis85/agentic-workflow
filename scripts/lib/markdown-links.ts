@@ -128,6 +128,7 @@ function isBlockBoundary(line: string): boolean {
   if (/^[ ]{0,3}(?:-[ \t]*){3,}$/.test(line)) return true;
   if (/^[ ]{0,3}(?:\*[ \t]*){3,}$/.test(line)) return true;
   if (/^[ ]{0,3}(?:_[ \t]*){3,}$/.test(line)) return true;
+  if (/^(?: {4}|\t)/.test(line)) return true;
   return false;
 }
 
@@ -228,4 +229,12 @@ export function githubSlug(value: string): string {
     .replace(/[^\p{L}\p{N}\s-]/gu, "")
     .trim()
     .replace(/\s/gu, "-");
+}
+
+export function isCodeFenceDelimiter(line: string): boolean {
+  return /^(`{3,}|~{3,})/.test(line);
+}
+
+export function stripInlineCode(line: string): string {
+  return line.replace(/`+[^`\n]*`+/g, "");
 }

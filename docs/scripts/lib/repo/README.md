@@ -33,3 +33,9 @@ entry_point: true
 - [toPosix](functions/toPosix.md)
 - [walkFiles](functions/walkFiles.md)
 - [writeText](functions/writeText.md)
+
+## References
+
+### findRepoRoot
+
+Re-exports [findRepoRoot](../find-repo-root/functions/findRepoRoot.md)

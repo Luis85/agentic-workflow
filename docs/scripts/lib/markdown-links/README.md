@@ -20,8 +20,10 @@ entry_point: true
 
 - [collectAnchors](functions/collectAnchors.md)
 - [githubSlug](functions/githubSlug.md)
+- [isCodeFenceDelimiter](functions/isCodeFenceDelimiter.md)
 - [linkDiagnostic](functions/linkDiagnostic.md)
 - [safeDecode](functions/safeDecode.md)
 - [shouldIgnoreTarget](functions/shouldIgnoreTarget.md)
 - [slugVariants](functions/slugVariants.md)
 - [stripCodeRegions](functions/stripCodeRegions.md)
+- [stripInlineCode](functions/stripInlineCode.md)
